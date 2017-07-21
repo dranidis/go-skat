@@ -1,8 +1,9 @@
 package main
 
 import (
-	_ "fmt"
+	"fmt"
 	"math/rand"
+	"time"
 )
 
 const CLUBS = "CLUBS"
@@ -26,6 +27,18 @@ type Player struct {
 	playerTactic tactic
 	score int
 }
+
+func Shuffle(cards []Card) []Card {  
+  r := rand.New(rand.NewSource(time.Now().Unix()))
+  ret := make([]Card, len(cards))
+  perm := r.Perm(len(cards))
+  for i, randIndex := range perm {
+    ret[i] = cards[randIndex]
+  }
+  return ret
+}
+
+
 
 func sum(trick []Card) int {
 	val := func(c Card) int {
@@ -59,15 +72,19 @@ func setNextTrickOrder(s *SuitState, players []*Player, trick []Card) []*Player 
 	return []*Player{players[2], players[0], players[1]}
 }
 
-func round(s *SuitState, players []*Player) {
+func round(s *SuitState, players []*Player) []*Player  {
 	var trick [3]Card
 	trick[0] = players[0].play(s)
 	s.follow = getSuite(*s, trick[0])
 	trick[1] = players[1].play(s)
 	trick[2] = players[2].play(s)
 
+	//fmt.Println(players)
 	players = setNextTrickOrder(s, players, trick[:])
+	//fmt.Println(players)
+
 	s.follow = ""
+	return players
 }
 
 var r = rand.New(rand.NewSource(99))
@@ -86,7 +103,7 @@ func (p *Player) play(s *SuitState) Card{
 	card := p.playerTactic(valid)
 	//fmt.Println(s, card, p.hand)
 	p.hand = remove(p.hand, card)
-	//fmt.Println(p.hand)
+	//fmt.Println(p)
 	return card
 }
 
@@ -195,6 +212,50 @@ func (s SuitState) greater(card1, card2 Card) bool {
 	return rank[card1.rank] > rank[card2.rank]
 }
 
+func makeSuitDeck(suit string) []Card {
+	return []Card{
+		Card{suit, "J"},
+		Card{suit, "A"},
+		Card{suit, "10"},
+		Card{suit, "K"},
+		Card{suit, "D"},
+		Card{suit, "9"},
+		Card{suit, "8"},
+		Card{suit, "7"},
+	}
+}
+
+func makeDeck() []Card {
+	cards := []Card{}
+	cards = append(cards, makeSuitDeck(CLUBS)...)
+	cards = append(cards, makeSuitDeck(SPADE)...)
+	cards = append(cards, makeSuitDeck(HEART)...)
+	cards = append(cards, makeSuitDeck(CARO)...)
+	return cards	
+}
+
+
+func makePlayer(hand []Card) Player {
+	return Player{hand, firstCardTactic, 0}
+}
+
+func game() {
+	cards := Shuffle(makeDeck())
+	//fmt.Println(cards)
+	player1 := makePlayer(cards[:10])
+	player2 := makePlayer(cards[10:20])
+	player3 := makePlayer(cards[20:30])
+	players := []*Player{&player1, &player2, &player3}
+
+	state := SuitState{CLUBS, ""}
+	for  i := 0; i < 10; i++ {
+		players = round(&state, players)
+	}
+	fmt.Println(player1.score, player2.score, player3.score)
+}
+
 func main() {
+	game()
+
 
 }

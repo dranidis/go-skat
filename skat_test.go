@@ -16,10 +16,13 @@ func TestGreater(t *testing.T) {
 	greaterAux(t, clubsHeart, Card{CLUBS, "8"}, Card{CLUBS, "7"})
 	greaterAux(t, clubsHeart, Card{CLUBS, "J"}, Card{SPADE, "J"})
 	greaterAux(t, clubsHeart, Card{SPADE, "J"}, Card{HEART, "J"})
+	greaterAux(t, clubsHeart, Card{HEART, "J"}, Card{CARO, "J"})
+	greaterAux(t, clubsHeart, Card{CARO, "J"}, Card{CLUBS, "A"})
 
 	greaterAux(t, clubsHeart, Card{HEART, "7"}, Card{CARO, "A"})
 	greaterAux(t, clubsHeart, Card{CLUBS, "A"}, Card{HEART, "7"})
 	greaterAux(t, clubsHeart, Card{SPADE, "A"}, Card{SPADE, "7"})
+
 }
 
 func greaterAux(t *testing.T, s SuitState, card1, card2 Card) {
@@ -134,10 +137,14 @@ func checkScore(t *testing.T, p Player, s int) {
 }
 
 func comparePlayers(t *testing.T, expected, returned []*Player) {
+	wrong := false
 	for i, p := range expected {
 		if p != returned[i] {
-			t.Errorf("Wrong order of players")
+			wrong = true
 		}
+	}
+	if wrong {
+		t.Errorf("Wrong order of players: Expected: %v, Got: %v", expected, returned)
 	}
 }
 
@@ -147,16 +154,16 @@ func makePlayer(hand []Card) Player {
 
 func TestTrick(t *testing.T) {
 	state := SuitState{CLUBS, ""}
-	firstPlayerHand := []Card{Card{SPADE, "J"}, Card{HEART, "A"}, Card{CARO, "7"}}
-	secondPlayerHand := []Card{Card{CLUBS, "J"}, Card{CLUBS, "A"}, Card{CARO, "8"}}
-	thirdPlayerHand := []Card{Card{SPADE, "K"}, Card{HEART, "D"}, Card{HEART, "10"}}
+	firstPlayerHand := []Card{Card{SPADE, "J"}, Card{HEART, "D"}, Card{CARO, "7"}}
+	secondPlayerHand := []Card{Card{CLUBS, "J"}, Card{HEART, "10"}, Card{CARO, "8"}}
+	thirdPlayerHand := []Card{Card{HEART, "A"}, Card{HEART, "K"}, Card{CLUBS, "10"}}
 
 	player1 := makePlayer(firstPlayerHand)
 	player2 := makePlayer(secondPlayerHand)
 	player3 := makePlayer(thirdPlayerHand)
 
 	players := []*Player{&player1, &player2, &player3}
-	round(&state, players)
+	players = round(&state, players)
 
 	if len(player1.hand) != 2 {
 		t.Errorf("Expected: player1 len hand 2: " + fmt.Sprintf("%v", player1.hand))
@@ -168,6 +175,32 @@ func TestTrick(t *testing.T) {
 		t.Errorf("Expected: player3 len hand 2" + fmt.Sprintf("%v", player3.hand))
 	}
 
-	round(&state, players)
+	expected := []*Player{&player2, &player3, &player1}
+	comparePlayers(t, expected, players)
+	checkScore(t, player1, 0)
+	checkScore(t, player2, 14)
+	checkScore(t, player3, 0)
 
+	players = round(&state, players)
+
+	expected = []*Player{&player3, &player1, &player2}
+	comparePlayers(t, expected, players)
+	checkScore(t, player1, 0)
+	checkScore(t, player2, 14)
+	checkScore(t, player3, 24)
+
+	players = round(&state, players)
+
+	expected = []*Player{&player3, &player1, &player2}
+	comparePlayers(t, expected, players)
+	checkScore(t, player1, 0)
+	checkScore(t, player2, 14)
+	checkScore(t, player3, 28)
+}
+
+func TestMakeDeck(t *testing.T) {
+	cards := makeDeck()
+	if len(cards) != 33 {
+		t.Errorf("Not 32 cards")
+	}
 }
