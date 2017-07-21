@@ -31,6 +31,14 @@ func greaterAux(t *testing.T, s SuitState, card1, card2 Card) {
 	}
 }
 
+func TestGetSuite(t *testing.T) {
+	s := SuitState{CLUBS, HEART}
+	card := Card{SPADE, "J"}
+	if getSuite(s, card) != CLUBS {
+		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + fmt.Sprintf("%v", card)  + " should be CLUBS")
+	}
+}
+
 func TestValidPlay(t *testing.T) {
 	clubsHeart := SuitState{CLUBS, HEART}
 
@@ -85,4 +93,81 @@ func compareLists(t *testing.T, returned, expected []Card) {
 			t.Errorf("Expected: " + fmt.Sprintf("%v", expected) + " found: " + fmt.Sprintf("%v", returned))
 		}
 	}
+}
+
+func TestSetNextTrickOrder(t *testing.T) {
+	state := SuitState{CLUBS, ""}
+	trick := []Card{Card{SPADE, "J"}, Card{HEART, "A"}, Card{HEART, "K"}}
+
+	player1 := makePlayer([]Card{})
+	player2 := makePlayer([]Card{})
+	player3 := makePlayer([]Card{})
+
+	players := []*Player{&player1, &player2, &player3}	
+	newPlayers := setNextTrickOrder(&state, players, trick)
+	comparePlayers(t, players, newPlayers)
+	checkScore(t, player1, 17)
+	checkScore(t, player2, 0)
+	checkScore(t, player3, 0)
+
+	trick = []Card{Card{HEART, "D"}, Card{SPADE, "J"}, Card{HEART, "10"}}
+	newPlayers = setNextTrickOrder(&state, players, trick)
+	expected := []*Player{&player2, &player3, &player1}
+	comparePlayers(t, expected, newPlayers)
+	checkScore(t, player1, 17)
+	checkScore(t, player2, 15)
+	checkScore(t, player3, 0)
+
+	trick = []Card{Card{HEART, "9"}, Card{HEART, "8"}, Card{SPADE, "J"}}
+	newPlayers = setNextTrickOrder(&state, players, trick)
+	expected = []*Player{&player3, &player1, &player2}
+	comparePlayers(t, expected, newPlayers)
+	checkScore(t, player1, 17)
+	checkScore(t, player2, 15)
+	checkScore(t, player3, 2)
+}
+
+func checkScore(t *testing.T, p Player, s int) {
+	if p.score != s {
+		t.Errorf("Expected score %d, got %d", s, p.score)
+	}
+}
+
+func comparePlayers(t *testing.T, expected, returned []*Player) {
+	for i, p := range expected {
+		if p != returned[i] {
+			t.Errorf("Wrong order of players")
+		}
+	}
+}
+
+func makePlayer(hand []Card) Player {
+	return Player{hand, firstCardTactic, 0}
+}
+
+func TestTrick(t *testing.T) {
+	state := SuitState{CLUBS, ""}
+	firstPlayerHand := []Card{Card{SPADE, "J"}, Card{HEART, "A"}, Card{CARO, "7"}}
+	secondPlayerHand := []Card{Card{CLUBS, "J"}, Card{CLUBS, "A"}, Card{CARO, "8"}}
+	thirdPlayerHand := []Card{Card{SPADE, "K"}, Card{HEART, "D"}, Card{HEART, "10"}}
+
+	player1 := makePlayer(firstPlayerHand)
+	player2 := makePlayer(secondPlayerHand)
+	player3 := makePlayer(thirdPlayerHand)
+
+	players := []*Player{&player1, &player2, &player3}
+	round(&state, players)
+
+	if len(player1.hand) != 2 {
+		t.Errorf("Expected: player1 len hand 2: " + fmt.Sprintf("%v", player1.hand))
+	}	
+	if len(player2.hand) != 2 {
+		t.Errorf("Expected: player2 len hand 2" + fmt.Sprintf("%v", player2.hand))
+	}
+	if len(player3.hand) != 2 {
+		t.Errorf("Expected: player3 len hand 2" + fmt.Sprintf("%v", player3.hand))
+	}
+
+	round(&state, players)
+
 }
