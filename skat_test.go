@@ -245,11 +245,133 @@ func TestMatadors(t *testing.T) {
 		Card{state.trump, "D"},
 		Card{state.trump, "9"},
 		Card{state.trump, "8"},
-	} 
+	}
 	m := 0
 	for _, card := range cards {
 		player.hand = append(player.hand, card)
 		m++
-		check(m, matadors(state, player))		
-	}	
+		check(m, matadors(state, player))
+	}
+}
+
+func TestBidding(t *testing.T) {
+	makeP := func(high int) Player {
+		return Player{
+			[]Card{},
+			firstCardTactic,
+			func(bidIndex int) bool {
+				//fmt.Println(bids[bidIndex], high)
+				return bids[bidIndex] <= high
+			},
+			0}
+	}
+	player1 := makeP(0)
+	player2 := makeP(18)
+	player3 := makeP(0)
+	players := []*Player{&player1, &player2, &player3}
+
+	bidIndex, declarer := bid(players)
+	if bidIndex != 0 {
+		t.Errorf("Expected %d, Got %d", 0, bidIndex)
+	}
+	if declarer != &player2 {
+		t.Errorf("Wrong declarer")
+	}
+
+	/*
+	scenario 2
+	*/
+	player1 = makeP(23)
+	player2 = makeP(20)
+	player3 = makeP(24)
+	players = []*Player{&player1, &player2, &player3}
+
+	bidIndex, declarer = bid(players)
+	if bids[bidIndex] != 24 {
+		t.Errorf("Expected %d, Got %d", 24, bids[bidIndex])
+	}
+	if declarer != &player3 {
+		t.Errorf("Wrong declarer")
+	}
+
+	/*
+	scenario 3
+	*/
+	player1 = makeP(18)
+	player2 = makeP(0)
+	player3 = makeP(18)
+	players = []*Player{&player1, &player2, &player3}
+
+	bidIndex, declarer = bid(players)
+	if bids[bidIndex] != 18 {
+		t.Errorf("Expected %d, Got %d", 18, bids[bidIndex])
+	}
+	if declarer != &player1 {
+		t.Errorf("Wrong declarer")
+	}
+
+	/*
+	scenario 4
+	*/
+	player1 = makeP(0)
+	player2 = makeP(18)
+	player3 = makeP(20)
+	players = []*Player{&player1, &player2, &player3}
+
+	bidIndex, declarer = bid(players)
+	if bids[bidIndex] != 20 {
+		t.Errorf("Expected %d, Got %d", 20, bids[bidIndex])
+	}
+	if declarer != &player3 {
+		t.Errorf("Wrong declarer")
+	}
+
+	/*
+	scenario 5
+	*/
+	player1 = makeP(0)
+	player2 = makeP(0)
+	player3 = makeP(0)
+	players = []*Player{&player1, &player2, &player3}
+
+	bidIndex, declarer = bid(players)
+	if bidIndex != -1 {
+		t.Errorf("Expected %d, Got %d", -1, bidIndex)
+	}
+	if declarer != nil {
+		t.Errorf("Wrong declarer. Everybody passed")
+	}
+
+	/*
+	scenario 6
+	*/
+	player1 = makeP(18)
+	player2 = makeP(0)
+	player3 = makeP(0)
+	players = []*Player{&player1, &player2, &player3}
+
+	bidIndex, declarer = bid(players)
+	if bids[bidIndex] != 18 {
+		t.Errorf("Expected %d, Got %d", 18, bids[bidIndex])
+	}
+	if declarer != &player1 {
+		t.Errorf("Wrong declarer")
+	}
+
+	/*
+	scenario 7
+	*/
+	player1 = makeP(0)
+	player2 = makeP(0)
+	player3 = makeP(18)
+	players = []*Player{&player1, &player2, &player3}
+
+	bidIndex, declarer = bid(players)
+	if bids[bidIndex] != 18 {
+		t.Errorf("Expected %d, Got %d", 18, bids[bidIndex])
+	}
+	if declarer != &player3 {
+		t.Errorf("Wrong declarer")
+	}
+
 }

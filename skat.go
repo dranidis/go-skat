@@ -26,6 +26,7 @@ type tactic func([]Card) Card
 type Player struct {
 	hand         []Card
 	playerTactic tactic
+	accepts      func(int) bool
 	score        int
 }
 
@@ -77,7 +78,7 @@ func matadors(s SuitState, p Player) int {
 		Card{s.trump, "D"},
 		Card{s.trump, "9"},
 		Card{s.trump, "8"},
-	} 
+	}
 	m := 0
 	if inHand(p.hand, Card{CLUBS, "J"}) {
 		m++
@@ -275,7 +276,57 @@ func makeDeck() []Card {
 }
 
 func makePlayer(hand []Card) Player {
-	return Player{hand, firstCardTactic, 0}
+	return Player{hand, firstCardTactic, accepts, 0}
+}
+
+var bids = []int{
+	18, 20, 22, 23, 24,
+	27, 30, 33, 35, 36,
+	40, 44, 45, 46, 48, 50,
+	54, 55, 59, 60,
+	63, 66, 70, 72, 77,
+	80, 81, 84, 88, 90, 96, 99, 100,
+}
+
+func accepts(bidIndex int) bool {
+	if r.Intn(10) > 5 {
+		return true
+	}
+	return false
+}
+
+func bidding(listener, speaker *Player, bidIndex int) (int, *Player) {
+	for speaker.accepts(bidIndex) {
+		fmt.Printf("Bid %d\n", bids[bidIndex])
+		if listener.accepts(bidIndex) {
+			fmt.Printf("Yes %d\n", bids[bidIndex])
+			bidIndex++
+		} else {
+			fmt.Printf("Listener Pass %d\n", bids[bidIndex])
+			return bidIndex, speaker
+		}
+	}
+	fmt.Printf("Speaker Pass %d\n", bids[bidIndex])
+	bidIndex--
+	return bidIndex, listener
+}
+
+func bid(players []*Player) (int, *Player) {
+	fmt.Println("FOREHAND vs MIDDLEHAND")
+	bidIndex, p := bidding(players[0], players[1], 0)
+	bidIndex++
+	fmt.Println("WINNER vs BACKHAND")
+	bidIndex, p = bidding(p, players[2], bidIndex)
+	if bidIndex == -1 {
+		if players[0].accepts(0) {
+			fmt.Printf("Yes %d\n", bids[0])
+			return 0, players[0]
+		} else {
+			fmt.Printf("Listener Pass %d\n", bids[0])
+			return -1, nil
+		}
+	}
+	return bidIndex, p
 }
 
 func game() {
@@ -286,7 +337,18 @@ func game() {
 	player3 := makePlayer(cards[20:30])
 	players := []*Player{&player1, &player2, &player3}
 
+	bidIndex, declarer := bid(players)
+	if declarer == &player2 {
+		players = []*Player{&player2, &player3, &player1}
+	}
+	if declarer == &player3 {
+		players = []*Player{&player3, &player1, &player2}
+	}
+
+	fmt.Println(bids[bidIndex])
+
 	state := SuitState{CLUBS, ""}
+
 	for i := 0; i < 10; i++ {
 		players = round(&state, players)
 	}
