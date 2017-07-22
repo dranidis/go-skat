@@ -219,7 +219,8 @@ func TestMatadors(t *testing.T) {
 		}
 	}
 
-	state := SuitState{CLUBS, ""}
+	//state := SuitState{CLUBS, ""}
+	state := CLUBS
 
 	player := makePlayer([]Card{})
 	check(-10, matadors(state, player.hand))
@@ -250,12 +251,12 @@ func TestMatadors(t *testing.T) {
 		Card{SPADE, "J"},
 		Card{HEART, "J"},
 		Card{CARO, "J"},
-		Card{state.trump, "A"},
-		Card{state.trump, "10"},
-		Card{state.trump, "K"},
-		Card{state.trump, "D"},
-		Card{state.trump, "9"},
-		Card{state.trump, "8"},
+		Card{state, "A"},
+		Card{state, "10"},
+		Card{state, "K"},
+		Card{state, "D"},
+		Card{state, "9"},
+		Card{state, "8"},
 	}
 	m := 0
 	for _, card := range cards {
@@ -270,10 +271,7 @@ func TestBidding(t *testing.T) {
 		return Player{
 			[]Card{},
 			firstCardTactic,
-			func(bidIndex int) bool {
-				//fmt.Println(bids[bidIndex], high)
-				return bids[bidIndex] <= high
-			},
+			high,
 			0, true, 0}
 	}
 	player1 := makeP(0)
@@ -577,4 +575,167 @@ func TestGameScore(t *testing.T) {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
+}
+
+func TestPickUpSkat(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{SPADE, "8"},
+	})		
+
+	skat := []Card {
+		Card{HEART, "A"},
+		Card{CLUBS, "A"},
+	}
+	_,_ = player, skat
+	// TODO
+}
+
+func TestCalculateHighestBid(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{SPADE, "8"},
+	})
+	player.calculateHighestBid()
+
+	act := player.highestBid
+	exp := 72
+	if act != exp {
+		t.Errorf("Expected high bid %d, got %d", exp, act)
+	}
+
+}
+func TestHandEstimation(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{SPADE, "8"},
+	})
+
+	fmt.Println(player.handEstimation())	
+}
+
+func TestSum(t *testing.T) {
+	c := makeDeck()
+	act := sum(c)
+	if act != 120 {
+		t.Errorf("Sum of deck is %d", act)
+	}
+}
+
+func TestDeck(t *testing.T) {
+	for i:=0; i < 10; i++ {
+		auxDeck(t)
+	}
+}
+func auxDeck(t *testing.T) {
+	cards := Shuffle(makeDeck())
+	//fmt.Printf("CARDS %d %v\n", -1, cards)
+	hand1 := cards[:10]
+	hand2 := cards[10:20]
+	hand3 := cards[20:30]
+	skat := cards[30:32]
+
+	sumAll := sum(hand1) + sum(hand2) + sum(hand3) + sum(skat)
+	if sumAll != 120 {
+		t.Errorf("DEAL PROBLEM: %d", sumAll)
+	}
+}
+
+func TestRemove1(t *testing.T) {
+	hand := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{SPADE, "8"},
+	}
+
+	cardToRemove := Card{CLUBS, "J"}
+	newhand := remove(hand, cardToRemove)
+	if inHand(newhand, cardToRemove) {
+		t.Errorf("First Card not removed")
+	}
+	fmt.Printf("New hand: %v\n", newhand)
+
+}
+
+func TestRemove2(t *testing.T) {
+	hand := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{SPADE, "8"},
+	}
+
+	cardToRemove := Card{SPADE, "8"}
+	newhand := remove(hand, cardToRemove)
+	if inHand(newhand, cardToRemove) {
+		t.Errorf("Last Card not removed")
+	}
+	fmt.Printf("New hand: %v\n", newhand)
+}
+
+func TestRemove3(t *testing.T) {
+	hand := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{SPADE, "8"},
+	}
+
+	cardToRemove := Card{CLUBS, "J"}
+	newhand := remove(hand, cardToRemove)
+	if inHand(newhand, cardToRemove) {
+		t.Errorf("First Card not removed")
+	}
+	fmt.Printf("New hand: %v\n", newhand)
+	fmt.Printf("Old hand: %v\n", hand)
+
+	cardToRemove = Card{SPADE, "8"}
+	newhand = remove(hand, cardToRemove)
+	if inHand(newhand, cardToRemove) {
+		t.Errorf("Last Card not removed")
+	}
+	fmt.Printf("New hand: %v\n", newhand)
 }
