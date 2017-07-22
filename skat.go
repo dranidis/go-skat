@@ -128,7 +128,8 @@ func round(s *SuitState, players []*Player) []*Player {
 	return players
 }
 
-var r = rand.New(rand.NewSource(99))
+//var r = rand.New(rand.NewSource(99))
+var	r = rand.New(rand.NewSource(time.Now().Unix()))
 
 func firstCardTactic(c []Card) Card {
 	return c[0]
@@ -177,20 +178,6 @@ func validCards(s SuitState, playerHand []Card) []Card {
 	return cards
 }
 
-// func (s SuitState) valid(playerHand []Card, card Card) bool {
-// 	followsSuite := func(s SuitState, card Card) bool {
-// 		if card.rank == "J" {
-// 			return s.trump == s.follow
-// 		}
-// 		return s.follow == card.suit
-// 	}
-// 	for _, c := range playerHand {
-// 		if followsSuite(s, c) {
-// 			return followsSuite(s, card)
-// 		}
-// 	}
-// 	return true
-// }
 func (s SuitState) valid(playerHand []Card, card Card) bool {
 	for _, c := range playerHand {
 		if s.follow == getSuite(s, c) {
@@ -289,73 +276,130 @@ var bids = []int{
 }
 
 func accepts(bidIndex int) bool {
-	if r.Intn(10) > 5 {
+	if r.Intn(10) > 1 {
 		return true
 	}
 	return false
 }
+func bidLog(format string, a ...interface{}) {
+
+} 
 
 func bidding(listener, speaker *Player, bidIndex int) (int, *Player) {
 	for speaker.accepts(bidIndex) {
-		fmt.Printf("Bid %d\n", bids[bidIndex])
+		bidLog("Bid %d\n", bids[bidIndex])
 		if listener.accepts(bidIndex) {
-			fmt.Printf("Yes %d\n", bids[bidIndex])
+			bidLog("Yes %d\n", bids[bidIndex])
 			bidIndex++
 		} else {
-			fmt.Printf("Listener Pass %d\n", bids[bidIndex])
+			bidLog("Listener Pass %d\n", bids[bidIndex])
 			return bidIndex, speaker
 		}
 	}
-	fmt.Printf("Speaker Pass %d\n", bids[bidIndex])
+	bidLog("Speaker Pass %d\n", bids[bidIndex])
 	bidIndex--
 	return bidIndex, listener
 }
 
 func bid(players []*Player) (int, *Player) {
-	fmt.Println("FOREHAND vs MIDDLEHAND")
+	bidLog("FOREHAND vs MIDDLEHAND")
 	bidIndex, p := bidding(players[0], players[1], 0)
 	bidIndex++
-	fmt.Println("WINNER vs BACKHAND")
+	bidLog("WINNER vs BACKHAND")
 	bidIndex, p = bidding(p, players[2], bidIndex)
 	if bidIndex == -1 {
 		if players[0].accepts(0) {
-			fmt.Printf("Yes %d\n", bids[0])
+			bidLog("Yes %d\n", bids[0])
 			return 0, players[0]
 		} else {
-			fmt.Printf("Listener Pass %d\n", bids[0])
+			bidLog("Listener Pass %d\n", bids[0])
 			return -1, nil
 		}
 	}
 	return bidIndex, p
 }
 
+func countCardsSuit(suit string, cards []Card) int {
+	count := 0
+	for _, c := range cards {
+		if c.suit == suit || c.rank == "J" {
+			count++
+		}
+	}
+	return count
+}
+
+func mostCardsSuit(cards []Card) string {
+	c := countCardsSuit(CLUBS, cards)
+	s := countCardsSuit(SPADE, cards)
+	h := countCardsSuit(HEART, cards)
+	k := countCardsSuit(CARO, cards)
+	if c > s && c > h && c > k {
+		return CLUBS
+	}
+	if s > h && s > k {
+		return SPADE
+	}
+	if h > k {
+		return HEART
+	}
+	return CARO
+}
+
+func (p *Player) declareTrump() SuitState {
+	return SuitState{mostCardsSuit(p.hand), ""}
+}
+
+func gameScore(state SuitState, cs []Card, score, bid int) int {
+	//multiplier := matadors(cs)
+	return 0
+}
+
 func game() {
+	fmt.Println("------------NEW GAME----------")
+	// DEALING
 	cards := Shuffle(makeDeck())
-	//fmt.Println(cards)
 	player1 := makePlayer(cards[:10])
 	player2 := makePlayer(cards[10:20])
 	player3 := makePlayer(cards[20:30])
+	skat := cards[30:32]
+
+	_ = skat
+
 	players := []*Player{&player1, &player2, &player3}
 
+	// BIDDING
 	bidIndex, declarer := bid(players)
-	if declarer == &player2 {
-		players = []*Player{&player2, &player3, &player1}
+	if bidIndex == -1 {
+		fmt.Println("ALL PASSED")
+		return
 	}
-	if declarer == &player3 {
-		players = []*Player{&player3, &player1, &player2}
-	}
+	// DECLARE 
+	state := declarer.declareTrump()
+	declarerCards := append(declarer.hand, skat...)
 
-	fmt.Println(bids[bidIndex])
+	fmt.Printf("BID: %d, SUIT: %d %s", 
+		bids[bidIndex], countCardsSuit(state.trump, declarer.hand), state.trump)
 
-	state := SuitState{CLUBS, ""}
-
+	// PLAY
 	for i := 0; i < 10; i++ {
 		players = round(&state, players)
 	}
-	fmt.Println(player1.score, player2.score, player3.score)
+
+	gs := gameScore(state, declarerCards, declarer.score, bids[bidIndex])
+
+	if declarer.score > 60 {
+		fmt.Printf(" VICTORY: %d, SCORE: %d\n", declarer.score, gs)
+	} else {
+		fmt.Printf(" LOSS: %d, SCORE: %d\n", declarer.score, gs)
+	}
+	//fmt.Println(player1.score, player2.score, player3.score)
 }
 
 func main() {
-	game()
+	for {
+		game()
+		time.Sleep(1000 * time.Millisecond)
+	}
 
 }

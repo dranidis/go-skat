@@ -375,3 +375,111 @@ func TestBidding(t *testing.T) {
 	}
 
 }
+
+func TestMostCardsSuit(t *testing.T) {
+
+	player := makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{HEART, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{SPADE, "8"},
+	})	
+
+	act := countCardsSuit(CLUBS, player.hand)
+	if act != 4 {
+		t.Errorf("Expected %d, got %d", 4, act)
+	}
+	act = countCardsSuit(SPADE, player.hand)
+	if act != 5 {
+		t.Errorf("Expected %d, got %d", 5, act)
+	}
+	act = countCardsSuit(CARO, player.hand)
+	if act != 6 {
+		t.Errorf("Expected %d, got %d", 6, act)
+	}	
+	act = countCardsSuit(HEART, player.hand)
+	if act != 7 {
+		t.Errorf("Expected %d, got %d", 7, act)
+	}	
+
+	most := mostCardsSuit(player.hand)
+	if most != HEART {
+		t.Errorf("Expected %s, got %s", HEART, most)
+	}
+
+	player = makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{SPADE, "8"},
+	})		
+	most = mostCardsSuit(player.hand)
+	if most != CARO {
+		t.Errorf("Expected %s, got %s", CARO, most)
+	}
+
+	player = makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{SPADE, "10"},
+		Card{SPADE, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{SPADE, "8"},
+	})		
+	most = mostCardsSuit(player.hand)
+	if most != SPADE {
+		t.Errorf("Expected %s, got %s", SPADE, most)
+	}
+	player = makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{SPADE, "10"},
+		Card{CLUBS, "K"},
+		Card{CLUBS, "D"},
+		Card{HEART, "9"},
+		Card{CLUBS, "8"},
+	})		
+	most = mostCardsSuit(player.hand)
+	if most != CLUBS {
+		t.Errorf("Expected %s, got %s", CLUBS, most)
+	}
+}
+
+func TestGameScore(t *testing.T) {
+	declarerCards := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{HEART, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{SPADE, "8"},
+	}
+	act := gameScore(SuitState{CARO,""}, declarerCards, 61, 60)
+	exp := 63
+	if act != exp {
+		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
+	}
+}
