@@ -587,16 +587,24 @@ func TestPickUpSkat(t *testing.T) {
 		Card{CARO, "10"},
 		Card{CARO, "K"},
 		Card{HEART, "D"},
-		Card{HEART, "9"},
+		Card{CARO, "9"},
 		Card{SPADE, "8"},
 	})		
 
 	skat := []Card {
-		Card{HEART, "A"},
+		Card{CARO, "D"},
 		Card{CLUBS, "A"},
 	}
-	_,_ = player, skat
-	// TODO
+
+	player.pickUpSkat(skat)
+	
+	if skat[1].suit != SPADE && skat[1].rank != "8"	&& skat[0].suit != HEART && skat[0].rank != "D" {
+		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
+	}
+
+	if len(player.hand) != 10 {
+		t.Errorf("Wrong hand size after skat change: %d", len(player.hand))
+	}
 }
 
 func TestCalculateHighestBid(t *testing.T) {
@@ -634,8 +642,8 @@ func TestHandEstimation(t *testing.T) {
 		Card{HEART, "9"},
 		Card{SPADE, "8"},
 	})
-
-	fmt.Println(player.handEstimation())	
+	_ = player
+	//fmt.Println(player.handEstimation())	
 }
 
 func TestSum(t *testing.T) {
@@ -684,7 +692,6 @@ func TestRemove1(t *testing.T) {
 	if inHand(newhand, cardToRemove) {
 		t.Errorf("First Card not removed")
 	}
-	fmt.Printf("New hand: %v\n", newhand)
 
 }
 
@@ -707,7 +714,6 @@ func TestRemove2(t *testing.T) {
 	if inHand(newhand, cardToRemove) {
 		t.Errorf("Last Card not removed")
 	}
-	fmt.Printf("New hand: %v\n", newhand)
 }
 
 func TestRemove3(t *testing.T) {
@@ -729,13 +735,50 @@ func TestRemove3(t *testing.T) {
 	if inHand(newhand, cardToRemove) {
 		t.Errorf("First Card not removed")
 	}
-	fmt.Printf("New hand: %v\n", newhand)
-	fmt.Printf("Old hand: %v\n", hand)
+
 
 	cardToRemove = Card{SPADE, "8"}
 	newhand = remove(hand, cardToRemove)
 	if inHand(newhand, cardToRemove) {
 		t.Errorf("Last Card not removed")
 	}
-	fmt.Printf("New hand: %v\n", newhand)
+}
+
+func TestFindBlankCards(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{SPADE, "10"},
+	})	
+	cards := player.findBlankCards()
+
+	if len(cards) != 1 {
+		t.Errorf("Expected 1. Found blank cards: %d", len(cards))
+	} else {
+		c := cards[0]
+		if c.suit != SPADE && c.rank != "10" {
+			t.Errorf("Found wrong blank card %v", c)
+		}	
+	}
+ 
+	player.hand = append(player.hand, Card{CLUBS, "7"})
+
+	cards = player.findBlankCards()
+
+	if len(cards) != 2 {
+		t.Errorf("Expected 2. Found blank cards: %d", len(cards))
+	} else {
+		c1 := cards[0]
+		c2 := cards[1]
+		if c1.suit != SPADE && c1.rank != "10" {
+			t.Errorf("Blank Cards in wrong order %v, %v", c1, c2)
+		}			
+	}
 }

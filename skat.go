@@ -404,6 +404,23 @@ func (p *Player) otherCardsEstimation(suit string) int {
 	return 0
 }
 
+var	suits = []string{CLUBS, SPADE, HEART, CARO}
+var	ranks = []string{"J", "A", "10", "K", "D", "9", "8", "7"}
+
+func sortRank(cs []Card) []Card {
+	cards := []Card{}
+
+	for _, r := range ranks {
+		for _, s := range suits {
+			if inHand(cs, Card{s, r}) {
+				cards = append(cards, Card{s, r})
+			}			
+		}
+
+	}
+	return cards
+}
+
 func sort(cs []Card) []Card {
 	cards := []Card{}
 
@@ -413,7 +430,6 @@ func sort(cs []Card) []Card {
 		Card{HEART, "J"},
 		Card{CARO, "J"},
 	}
-	suits := []string{CLUBS, SPADE, HEART, CARO}
 	cardsSuit := func(suit string) []Card {
 		return []Card{
 			Card{suit, "A"},
@@ -547,6 +563,17 @@ func countCardsSuit(suit string, cards []Card) int {
 	return count
 }
 
+
+func countCardsSuitNotJ(suit string, cards []Card) int {
+	count := 0
+	for _, c := range cards {
+		if c.suit == suit && c.rank != "J" {
+			count++
+		}
+	}
+	return count
+}
+
 func mostCardsSuit(cards []Card) string {
 	c := countCardsSuit(CLUBS, cards)
 	s := countCardsSuit(SPADE, cards)
@@ -564,12 +591,123 @@ func mostCardsSuit(cards []Card) string {
 	return CARO
 }
 
+func lessCardsSuit(cards []Card) string {
+	c := countCardsSuit(CLUBS, cards)
+	s := countCardsSuit(SPADE, cards)
+	h := countCardsSuit(HEART, cards)
+	k := countCardsSuit(CARO, cards)
+	if c < s && c < h && c < k {
+		return CLUBS
+	}
+	if s < h && s < k {
+		return SPADE
+	}
+	if h < k {
+		return HEART
+	}
+	return CARO
+}
+
+func filter(cards []Card, f func(Card) bool) []Card {
+	cs := []Card{}
+	for _, c := range cards {
+		if f(c) {
+			cs = append(cs, c)
+		}
+	}
+	return cs
+}
+
 func (p *Player) declareTrump() string {
 	return mostCardsSuit(p.hand)
 }
 
+func (p *Player) findBlank(suit string) Card {
+	cc := countCardsSuitNotJ(suit, p.hand)
+	if cc == 1 {
+		var card Card 
+		for _, c := range p.hand {
+			if c.rank == "J" {
+				continue
+			}
+			if c.suit == suit {
+				card = c
+				break
+			}
+		}
+		if card.rank != "A" {
+			return card
+		}
+	}
+	return Card{"", ""}
+}
+// returns blank cards in order of rank value
+func (p *Player) findBlankCards() []Card {
+	blankCards := []Card{}
+	for _,s := range suits {
+		card := p.findBlank(s) 
+		if card.rank != "" {
+			blankCards = append(blankCards, card)
+		}		
+	}
+	blankCards = sortRank(blankCards)
+	return blankCards
+}
+
+func (p *Player) discardInSkat(skat []Card) {
+	bcards := p.findBlankCards()
+	//fmt.Printf("BLANK %v\n", bcards)
+	removed := 0
+	if len(bcards) > 0 {
+		p.hand = remove(p.hand, bcards[0])
+		skat[0] = bcards[0]
+	//	fmt.Printf("1st %v\n", skat)
+		removed++
+	}
+	if len(bcards) > 1 {
+		p.hand = remove(p.hand, bcards[1])
+		skat[1] = bcards[1]
+	//	fmt.Printf("2nd %v\n", skat)
+		return
+	} 
+	
+	lsuit := lessCardsSuit(p.hand)
+	lcards := sortRank(filter(p.hand, func(c Card) bool {
+		return c.suit == lsuit && c.rank != "A"
+		}))
+	if len(lcards) > 1 {
+		i := 1
+		for removed < 2 {
+			p.hand = remove(p.hand, lcards[len(lcards)-i])
+			skat[removed] = lcards[len(lcards)-i]
+			i++
+			removed++	
+		}
+		return
+	}
+	if removed == 1 {
+		card := p.hand[0]
+		p.hand = remove(p.hand, card)
+		skat[1] = card
+		return
+	} 
+	c1 := p.hand[0]
+	c2 := p.hand[1]
+	p.hand = remove(p.hand, c1)
+	p.hand = remove(p.hand, c2)
+	skat[0] = c1
+	skat[1] = c2
+}
+
 func (p *Player) pickUpSkat(skat []Card) bool {
-	return false
+	hand := make([]Card, 10)
+	copy(hand, p.hand)
+	hand = append(hand, skat...)
+	p.hand = hand
+
+	p.discardInSkat(skat)
+
+	return true
 }
 
 func trumpBaseValue(s string) int {
@@ -630,10 +768,14 @@ func game(players []*Player) bool {
 	// DEALING
 	cards := Shuffle(makeDeck())
 	//fmt.Printf("CARDS %d %v\n", -1, cards)
-	players[0].hand = cards[:10]
-	players[1].hand = cards[10:20]
-	players[2].hand = cards[20:30]
-	skat := cards[30:32]
+	players[0].hand = make([]Card, 10)
+	players[1].hand = make([]Card, 10)
+	players[2].hand = make([]Card, 10)
+	copy(players[0].hand, cards[:10])
+	copy(players[1].hand, cards[10:20])
+	copy(players[2].hand, cards[20:30])
+	skat := make([]Card, 2)
+	copy(skat, cards[30:32])
 
 	// fmt.Printf("HAND 1 %v\n", players[0].hand)
 	// fmt.Printf("HAND 2 %v\n", players[1].hand)
@@ -671,8 +813,13 @@ func game(players []*Player) bool {
 
 	// HAND GAME?
 	handGame := true
+	fmt.Printf("HAND bef: %v\n", sort(declarer.hand))
+	fmt.Printf("SKAT bef: %v\n", skat)
+
 	if declarer.pickUpSkat(skat) {
+		fmt.Printf("HAND aft: %v\n", sort(declarer.hand))
 		handGame = false
+		fmt.Printf("SKAT aft: %v\n", skat)
 	}
 
 	// DECLARE
@@ -723,7 +870,7 @@ func main() {
 	players := []*Player{&player1, &player2, &player3}
 
 	passed := 0
-	totalGames := 3600
+	totalGames := 3
 	for times := totalGames; times > 0; times-- {
 		for _, p := range players {
 			p.score = 0
