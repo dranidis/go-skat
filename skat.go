@@ -22,23 +22,22 @@ type SuitState struct {
 }
 
 type tactic func([]Card) Card
+
 type Player struct {
 	hand         []Card
 	playerTactic tactic
-	score int
+	score        int
 }
 
-func Shuffle(cards []Card) []Card {  
-  r := rand.New(rand.NewSource(time.Now().Unix()))
-  ret := make([]Card, len(cards))
-  perm := r.Perm(len(cards))
-  for i, randIndex := range perm {
-    ret[i] = cards[randIndex]
-  }
-  return ret
+func Shuffle(cards []Card) []Card {
+	r := rand.New(rand.NewSource(time.Now().Unix()))
+	ret := make([]Card, len(cards))
+	perm := r.Perm(len(cards))
+	for i, randIndex := range perm {
+		ret[i] = cards[randIndex]
+	}
+	return ret
 }
-
-
 
 func sum(trick []Card) int {
 	val := func(c Card) int {
@@ -56,7 +55,48 @@ func sum(trick []Card) int {
 		}
 		return 0
 	}
-	return val(trick[0]) + val(trick[1]) + val(trick[2]) 
+	return val(trick[0]) + val(trick[1]) + val(trick[2])
+}
+
+func inHand(cs []Card, c Card) bool {
+	for _, card := range cs {
+		if card.suit == c.suit && card.rank == c.rank {
+			return true
+		}
+	}
+	return false
+}
+func matadors(s SuitState, p Player) int {
+	cards := []Card{
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{s.trump, "A"},
+		Card{s.trump, "10"},
+		Card{s.trump, "K"},
+		Card{s.trump, "D"},
+		Card{s.trump, "9"},
+		Card{s.trump, "8"},
+	} 
+	m := 0
+	if inHand(p.hand, Card{CLUBS, "J"}) {
+		m++
+		for _, card := range cards {
+			if !inHand(p.hand, card) {
+				break
+			}
+			m++
+		}
+		return m
+	}
+	m--
+	for _, card := range cards {
+		if inHand(p.hand, card) {
+			return m
+		}
+		m--
+	}
+	return m
 }
 
 func setNextTrickOrder(s *SuitState, players []*Player, trick []Card) []*Player {
@@ -72,7 +112,7 @@ func setNextTrickOrder(s *SuitState, players []*Player, trick []Card) []*Player 
 	return []*Player{players[2], players[0], players[1]}
 }
 
-func round(s *SuitState, players []*Player) []*Player  {
+func round(s *SuitState, players []*Player) []*Player {
 	var trick [3]Card
 	trick[0] = players[0].play(s)
 	s.follow = getSuite(*s, trick[0])
@@ -98,7 +138,7 @@ func randomCardTactic(c []Card) Card {
 	return c[cardIndex]
 }
 
-func (p *Player) play(s *SuitState) Card{
+func (p *Player) play(s *SuitState) Card {
 	valid := validCards(*s, p.hand)
 	card := p.playerTactic(valid)
 	//fmt.Println(s, card, p.hand)
@@ -231,9 +271,8 @@ func makeDeck() []Card {
 	cards = append(cards, makeSuitDeck(SPADE)...)
 	cards = append(cards, makeSuitDeck(HEART)...)
 	cards = append(cards, makeSuitDeck(CARO)...)
-	return cards	
+	return cards
 }
-
 
 func makePlayer(hand []Card) Player {
 	return Player{hand, firstCardTactic, 0}
@@ -248,7 +287,7 @@ func game() {
 	players := []*Player{&player1, &player2, &player3}
 
 	state := SuitState{CLUBS, ""}
-	for  i := 0; i < 10; i++ {
+	for i := 0; i < 10; i++ {
 		players = round(&state, players)
 	}
 	fmt.Println(player1.score, player2.score, player3.score)
@@ -256,6 +295,5 @@ func game() {
 
 func main() {
 	game()
-
 
 }

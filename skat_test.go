@@ -38,7 +38,7 @@ func TestGetSuite(t *testing.T) {
 	s := SuitState{CLUBS, HEART}
 	card := Card{SPADE, "J"}
 	if getSuite(s, card) != CLUBS {
-		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + fmt.Sprintf("%v", card)  + " should be CLUBS")
+		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + fmt.Sprintf("%v", card) + " should be CLUBS")
 	}
 }
 
@@ -106,7 +106,7 @@ func TestSetNextTrickOrder(t *testing.T) {
 	player2 := makePlayer([]Card{})
 	player3 := makePlayer([]Card{})
 
-	players := []*Player{&player1, &player2, &player3}	
+	players := []*Player{&player1, &player2, &player3}
 	newPlayers := setNextTrickOrder(&state, players, trick)
 	comparePlayers(t, players, newPlayers)
 	checkScore(t, player1, 17)
@@ -148,10 +148,6 @@ func comparePlayers(t *testing.T, expected, returned []*Player) {
 	}
 }
 
-func makePlayer(hand []Card) Player {
-	return Player{hand, firstCardTactic, 0}
-}
-
 func TestTrick(t *testing.T) {
 	state := SuitState{CLUBS, ""}
 	firstPlayerHand := []Card{Card{SPADE, "J"}, Card{HEART, "D"}, Card{CARO, "7"}}
@@ -167,7 +163,7 @@ func TestTrick(t *testing.T) {
 
 	if len(player1.hand) != 2 {
 		t.Errorf("Expected: player1 len hand 2: " + fmt.Sprintf("%v", player1.hand))
-	}	
+	}
 	if len(player2.hand) != 2 {
 		t.Errorf("Expected: player2 len hand 2" + fmt.Sprintf("%v", player2.hand))
 	}
@@ -200,7 +196,60 @@ func TestTrick(t *testing.T) {
 
 func TestMakeDeck(t *testing.T) {
 	cards := makeDeck()
-	if len(cards) != 33 {
+	if len(cards) != 32 {
 		t.Errorf("Not 32 cards")
 	}
+}
+
+func TestMatadors(t *testing.T) {
+	check := func(exp, act int) {
+		if act != exp {
+			t.Errorf("Expected %d matadors, got %d", exp, act)
+		}
+	}
+
+	state := SuitState{CLUBS, ""}
+
+	player := makePlayer([]Card{})
+	check(-10, matadors(state, player))
+
+	player.hand = append(player.hand, Card{CLUBS, "8"})
+	check(-9, matadors(state, player))
+	player.hand = append(player.hand, Card{CLUBS, "9"})
+	check(-8, matadors(state, player))
+	player.hand = append(player.hand, Card{CLUBS, "D"})
+	check(-7, matadors(state, player))
+	player.hand = append(player.hand, Card{CLUBS, "K"})
+	check(-6, matadors(state, player))
+	player.hand = append(player.hand, Card{CLUBS, "10"})
+	check(-5, matadors(state, player))
+	player.hand = append(player.hand, Card{CLUBS, "A"})
+	check(-4, matadors(state, player))
+	player.hand = append(player.hand, Card{CARO, "J"})
+	check(-3, matadors(state, player))
+	player.hand = append(player.hand, Card{HEART, "J"})
+	check(-2, matadors(state, player))
+	player.hand = append(player.hand, Card{SPADE, "J"})
+	check(-1, matadors(state, player))
+
+	player.hand = []Card{}
+
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{state.trump, "A"},
+		Card{state.trump, "10"},
+		Card{state.trump, "K"},
+		Card{state.trump, "D"},
+		Card{state.trump, "9"},
+		Card{state.trump, "8"},
+	} 
+	m := 0
+	for _, card := range cards {
+		player.hand = append(player.hand, card)
+		m++
+		check(m, matadors(state, player))		
+	}	
 }
