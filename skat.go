@@ -29,6 +29,7 @@ type Player struct {
 	accepts      func(int) bool
 	score        int
 	schwarz	bool
+	totalScore int
 }
 
 func Shuffle(cards []Card) []Card {
@@ -104,13 +105,16 @@ func matadors(s SuitState, cs []Card) int {
 func setNextTrickOrder(s *SuitState, players []*Player, trick []Card) []*Player {
 	if s.greater(trick[0], trick[1]) && s.greater(trick[0], trick[2]) {
 		players[0].score += sum(trick)
+		players[0].schwarz = false
 		return players
 	}
 	if s.greater(trick[1], trick[2]) {
 		players[1].score += sum(trick)
+		players[1].schwarz = false
 		return []*Player{players[1], players[2], players[0]}
 	}
 	players[2].score += sum(trick)
+	players[2].schwarz = false
 	return []*Player{players[2], players[0], players[1]}
 }
 
@@ -264,7 +268,7 @@ func makeDeck() []Card {
 }
 
 func makePlayer(hand []Card) Player {
-	return Player{hand, firstCardTactic, accepts, 0, true}
+	return Player{hand, firstCardTactic, accepts, 0, true, 0}
 }
 
 var bids = []int{
@@ -365,7 +369,7 @@ func trumpBaseValue(s string) int {
 	return 0
 }
 
-func gameScore(state SuitState, cs []Card, score, bid int) int {
+func gameScore(state SuitState, cs []Card, score, bid int, decSchwarz bool, oppSchwarz bool) int {
 	mat := matadors(state, cs)
 	if mat < 0 {
 		mat = mat * -1
@@ -375,6 +379,10 @@ func gameScore(state SuitState, cs []Card, score, bid int) int {
 
 	// Schneider?
 	if score > 89 || score < 31 {
+		multiplier++
+	}
+
+	if decSchwarz || oppSchwarz {
 		multiplier++
 	}
 
@@ -396,24 +404,33 @@ func gameScore(state SuitState, cs []Card, score, bid int) int {
 	}
 }
 
-func game() {
+func game(players []*Player) {
 	fmt.Println("------------NEW GAME----------")
 	// DEALING
 	cards := Shuffle(makeDeck())
-	player1 := makePlayer(cards[:10])
-	player2 := makePlayer(cards[10:20])
-	player3 := makePlayer(cards[20:30])
+	players[0].hand = cards[:10]
+	players[1].hand = cards[10:20]
+	players[2].hand = cards[20:30]
+
 	skat := cards[30:32]
 
 	_ = skat
-
-	players := []*Player{&player1, &player2, &player3}
 
 	// BIDDING
 	bidIndex, declarer := bid(players)
 	if bidIndex == -1 {
 		fmt.Println("ALL PASSED")
 		return
+	}
+	var opp1, opp2 *Player
+	if declarer == players[0] {
+		opp1, opp2 = players[1], players[2]
+	}
+	if declarer == players[1] {
+		opp1, opp2 = players[0], players[2]
+	}
+	if declarer == players[2] {
+		opp1, opp2 = players[0], players[1]
 	}
 	// DECLARE 
 	state := declarer.declareTrump()
@@ -427,19 +444,33 @@ func game() {
 		players = round(&state, players)
 	}
 
-	gs := gameScore(state, declarerCards, declarer.score, bids[bidIndex])
+	gs := gameScore(state, declarerCards, declarer.score, bids[bidIndex], 
+		declarer.schwarz, opp1.schwarz && opp2.schwarz)
+
+	declarer.totalScore += gs
 
 	if declarer.score > 60 {
 		fmt.Printf(" VICTORY: %d, SCORE: %d\n", declarer.score, gs)
 	} else {
 		fmt.Printf(" LOSS: %d, SCORE: %d\n", declarer.score, gs)
 	}
-	//fmt.Println(player1.score, player2.score, player3.score)
+
 }
 
 func main() {
-	for {
-		game()
+	player1 := makePlayer([]Card{})
+	player2 := makePlayer([]Card{})
+	player3 := makePlayer([]Card{})	
+
+	players := []*Player{&player1, &player2, &player3}
+
+	for times := 12; times > 0; times-- {
+		for _, p := range players {
+			p.score = 0
+			p.schwarz = true
+		}
+		game(players)
+		fmt.Println(player1.totalScore, player2.totalScore, player3.totalScore)
 		time.Sleep(1000 * time.Millisecond)
 	}
 
