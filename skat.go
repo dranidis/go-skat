@@ -355,6 +355,10 @@ func (p *Player) declareTrump() SuitState {
 	return SuitState{mostCardsSuit(p.hand), ""}
 }
 
+func (p *Player) pickUpSkat(skat []Card) bool {
+	return false
+}
+
 func trumpBaseValue(s string) int {
 	switch s {
 	case CLUBS:
@@ -369,7 +373,8 @@ func trumpBaseValue(s string) int {
 	return 0
 }
 
-func gameScore(state SuitState, cs []Card, score, bid int, decSchwarz bool, oppSchwarz bool) int {
+func gameScore(state SuitState, cs []Card, score, bid int, 
+	decSchwarz, oppSchwarz, handGame bool) int {
 	mat := matadors(state, cs)
 	if mat < 0 {
 		mat = mat * -1
@@ -377,6 +382,9 @@ func gameScore(state SuitState, cs []Card, score, bid int, decSchwarz bool, oppS
 	multiplier := mat + 1
 	base := trumpBaseValue(state.trump)
 
+	if handGame {
+		multiplier++
+	}
 	// Schneider?
 	if score > 89 || score < 31 {
 		multiplier++
@@ -414,8 +422,6 @@ func game(players []*Player) {
 
 	skat := cards[30:32]
 
-	_ = skat
-
 	// BIDDING
 	bidIndex, declarer := bid(players)
 	if bidIndex == -1 {
@@ -432,6 +438,13 @@ func game(players []*Player) {
 	if declarer == players[2] {
 		opp1, opp2 = players[0], players[1]
 	}
+	
+	// HAND GAME?
+	handGame := true
+	if declarer.pickUpSkat(skat) {
+		handGame = false
+	}
+
 	// DECLARE 
 	state := declarer.declareTrump()
 	declarerCards := append(declarer.hand, skat...)
@@ -445,7 +458,7 @@ func game(players []*Player) {
 	}
 
 	gs := gameScore(state, declarerCards, declarer.score, bids[bidIndex], 
-		declarer.schwarz, opp1.schwarz && opp2.schwarz)
+		declarer.schwarz, opp1.schwarz && opp2.schwarz, handGame)
 
 	declarer.totalScore += gs
 
