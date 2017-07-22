@@ -28,6 +28,7 @@ type Player struct {
 	playerTactic tactic
 	accepts      func(int) bool
 	score        int
+	schwarz	bool
 }
 
 func Shuffle(cards []Card) []Card {
@@ -67,7 +68,7 @@ func inHand(cs []Card, c Card) bool {
 	}
 	return false
 }
-func matadors(s SuitState, p Player) int {
+func matadors(s SuitState, cs []Card) int {
 	cards := []Card{
 		Card{SPADE, "J"},
 		Card{HEART, "J"},
@@ -80,10 +81,10 @@ func matadors(s SuitState, p Player) int {
 		Card{s.trump, "8"},
 	}
 	m := 0
-	if inHand(p.hand, Card{CLUBS, "J"}) {
+	if inHand(cs, Card{CLUBS, "J"}) {
 		m++
 		for _, card := range cards {
-			if !inHand(p.hand, card) {
+			if !inHand(cs, card) {
 				break
 			}
 			m++
@@ -92,7 +93,7 @@ func matadors(s SuitState, p Player) int {
 	}
 	m--
 	for _, card := range cards {
-		if inHand(p.hand, card) {
+		if inHand(cs, card) {
 			return m
 		}
 		m--
@@ -263,7 +264,7 @@ func makeDeck() []Card {
 }
 
 func makePlayer(hand []Card) Player {
-	return Player{hand, firstCardTactic, accepts, 0}
+	return Player{hand, firstCardTactic, accepts, 0, true}
 }
 
 var bids = []int{
@@ -350,9 +351,49 @@ func (p *Player) declareTrump() SuitState {
 	return SuitState{mostCardsSuit(p.hand), ""}
 }
 
-func gameScore(state SuitState, cs []Card, score, bid int) int {
-	//multiplier := matadors(cs)
+func trumpBaseValue(s string) int {
+	switch s {
+	case CLUBS:
+		return 12
+	case SPADE:
+		return 11
+	case HEART:
+		return 10
+	case CARO:
+		return 9
+	}
 	return 0
+}
+
+func gameScore(state SuitState, cs []Card, score, bid int) int {
+	mat := matadors(state, cs)
+	if mat < 0 {
+		mat = mat * -1
+	}
+	multiplier := mat + 1
+	base := trumpBaseValue(state.trump)
+
+	// Schneider?
+	if score > 89 || score < 31 {
+		multiplier++
+	}
+
+	gs := multiplier * base
+
+	// OVERBID?
+	if gs < bid {
+		leastMult := 0
+		for leastMult * base < bid {
+			leastMult++
+		}
+		return -2 * leastMult * base
+	}
+
+	if score > 60 {
+		return gs
+	} else {
+		return -2 * gs
+	}
 }
 
 func game() {

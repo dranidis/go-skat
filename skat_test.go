@@ -211,26 +211,26 @@ func TestMatadors(t *testing.T) {
 	state := SuitState{CLUBS, ""}
 
 	player := makePlayer([]Card{})
-	check(-10, matadors(state, player))
+	check(-10, matadors(state, player.hand))
 
 	player.hand = append(player.hand, Card{CLUBS, "8"})
-	check(-9, matadors(state, player))
+	check(-9, matadors(state, player.hand))
 	player.hand = append(player.hand, Card{CLUBS, "9"})
-	check(-8, matadors(state, player))
+	check(-8, matadors(state, player.hand))
 	player.hand = append(player.hand, Card{CLUBS, "D"})
-	check(-7, matadors(state, player))
+	check(-7, matadors(state, player.hand))
 	player.hand = append(player.hand, Card{CLUBS, "K"})
-	check(-6, matadors(state, player))
+	check(-6, matadors(state, player.hand))
 	player.hand = append(player.hand, Card{CLUBS, "10"})
-	check(-5, matadors(state, player))
+	check(-5, matadors(state, player.hand))
 	player.hand = append(player.hand, Card{CLUBS, "A"})
-	check(-4, matadors(state, player))
+	check(-4, matadors(state, player.hand))
 	player.hand = append(player.hand, Card{CARO, "J"})
-	check(-3, matadors(state, player))
+	check(-3, matadors(state, player.hand))
 	player.hand = append(player.hand, Card{HEART, "J"})
-	check(-2, matadors(state, player))
+	check(-2, matadors(state, player.hand))
 	player.hand = append(player.hand, Card{SPADE, "J"})
-	check(-1, matadors(state, player))
+	check(-1, matadors(state, player.hand))
 
 	player.hand = []Card{}
 
@@ -250,7 +250,7 @@ func TestMatadors(t *testing.T) {
 	for _, card := range cards {
 		player.hand = append(player.hand, card)
 		m++
-		check(m, matadors(state, player))
+		check(m, matadors(state, player.hand))
 	}
 }
 
@@ -263,7 +263,7 @@ func TestBidding(t *testing.T) {
 				//fmt.Println(bids[bidIndex], high)
 				return bids[bidIndex] <= high
 			},
-			0}
+			0, true}
 	}
 	player1 := makeP(0)
 	player2 := makeP(18)
@@ -477,8 +477,71 @@ func TestGameScore(t *testing.T) {
 		Card{HEART, "9"},
 		Card{SPADE, "8"},
 	}
-	act := gameScore(SuitState{CARO,""}, declarerCards, 61, 60)
+
+	act := gameScore(SuitState{CARO,""}, declarerCards, 61, 63)
 	exp := 63
+	if act != exp {
+		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
+	}
+
+	act = gameScore(SuitState{CARO,""}, declarerCards, 60, 63)
+	exp = -126
+	if act != exp {
+		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
+	}
+
+	act = gameScore(SuitState{HEART,""}, declarerCards, 61, 50)
+	exp = 50
+	if act != exp {
+		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
+	}
+
+	act = gameScore(SuitState{CLUBS,""}, declarerCards, 61, 50)
+	exp = 60
+	if act != exp {
+		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
+	}
+
+	act = gameScore(SuitState{SPADE,""}, declarerCards, 61, 50)
+	exp = 55
+	if act != exp {
+		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
+	}
+
+	// hand is 50, OVERBID
+	act = gameScore(SuitState{HEART,""}, declarerCards, 61, 51)
+	exp = -120
+	if act != exp {
+		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
+	}
+
+	declarerCards = []Card{
+		//Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{HEART, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{SPADE, "8"},
+	}
+	act = gameScore(SuitState{CARO,""}, declarerCards, 61, 18)
+	exp = 18
+	if act != exp {
+		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
+	}
+
+// schneider winner
+	act = gameScore(SuitState{CARO,""}, declarerCards, 90, 18)
+	exp = 27
+	if act != exp {
+		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
+	}
+// schneider loss
+	act = gameScore(SuitState{CARO,""}, declarerCards, 30, 18)
+	exp = -54
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
