@@ -6,7 +6,7 @@ import (
 )
 
 func TestGreater(t *testing.T) {
-	clubsHeart := SuitState{CLUBS, HEART}
+	clubsHeart := SuitState{CLUBS, HEART, []Card{}}
 	greaterAux(t, clubsHeart, Card{HEART, "A"}, Card{HEART, "10"})
 	greaterAux(t, clubsHeart, Card{HEART, "A"}, Card{HEART, "K"})
 
@@ -35,7 +35,7 @@ func greaterAux(t *testing.T, s SuitState, card1, card2 Card) {
 }
 
 func TestGetSuite(t *testing.T) {
-	s := SuitState{CLUBS, HEART}
+	s := SuitState{CLUBS, HEART, []Card{}}
 	card := Card{SPADE, "J"}
 	if getSuite(s.trump, card) != CLUBS {
 		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + fmt.Sprintf("%v", card) + " should be CLUBS")
@@ -43,24 +43,24 @@ func TestGetSuite(t *testing.T) {
 }
 
 func TestValidPlay(t *testing.T) {
-	clubsHeart := SuitState{CLUBS, HEART}
+	clubsHeart := SuitState{CLUBS, HEART, []Card{}}
 
 	playerHand := []Card{Card{SPADE, "J"}, Card{HEART, "A"}, Card{CARO, "7"}}
 	validAux(t, clubsHeart, playerHand, Card{HEART, "A"})
 	notValidAux(t, clubsHeart, playerHand, Card{CARO, "7"})
 	notValidAux(t, clubsHeart, playerHand, Card{SPADE, "J"})
 
-	validAux(t, SuitState{CLUBS, SPADE}, playerHand, Card{HEART, "A"})
-	validAux(t, SuitState{CLUBS, SPADE}, playerHand, Card{CARO, "7"})
-	validAux(t, SuitState{CLUBS, SPADE}, playerHand, Card{SPADE, "J"})
+	validAux(t, SuitState{CLUBS, SPADE, []Card{}}, playerHand, Card{HEART, "A"})
+	validAux(t, SuitState{CLUBS, SPADE, []Card{}}, playerHand, Card{CARO, "7"})
+	validAux(t, SuitState{CLUBS, SPADE, []Card{}}, playerHand, Card{SPADE, "J"})
 
-	notValidAux(t, SuitState{CLUBS, CLUBS}, playerHand, Card{HEART, "A"})
-	notValidAux(t, SuitState{CLUBS, CLUBS}, playerHand, Card{CARO, "7"})
-	validAux(t, SuitState{CLUBS, CLUBS}, playerHand, Card{SPADE, "J"})
+	notValidAux(t, SuitState{CLUBS, CLUBS, []Card{}}, playerHand, Card{HEART, "A"})
+	notValidAux(t, SuitState{CLUBS, CLUBS, []Card{}}, playerHand, Card{CARO, "7"})
+	validAux(t, SuitState{CLUBS, CLUBS, []Card{}}, playerHand, Card{SPADE, "J"})
 
-	validAux(t, SuitState{CLUBS, ""}, playerHand, Card{HEART, "A"})
-	validAux(t, SuitState{CLUBS, ""}, playerHand, Card{CARO, "7"})
-	validAux(t, SuitState{CLUBS, ""}, playerHand, Card{SPADE, "J"})
+	validAux(t, SuitState{CLUBS, "", []Card{}}, playerHand, Card{HEART, "A"})
+	validAux(t, SuitState{CLUBS, "", []Card{}}, playerHand, Card{CARO, "7"})
+	validAux(t, SuitState{CLUBS, "", []Card{}}, playerHand, Card{SPADE, "J"})
 
 }
 
@@ -77,13 +77,13 @@ func notValidAux(t *testing.T, s SuitState, cards []Card, card Card) {
 }
 
 func TestValidCards(t *testing.T) {
-	clubsHeart := SuitState{CLUBS, HEART}
+	clubsHeart := SuitState{CLUBS, HEART, []Card{}}
 
 	playerHand := []Card{Card{SPADE, "J"}, Card{HEART, "A"}, Card{CARO, "7"}}
 	cards := validCards(clubsHeart, playerHand)
 	compareLists(t, cards, []Card{Card{HEART, "A"}})
 
-	cards = validCards(SuitState{CLUBS, SPADE}, playerHand)
+	cards = validCards(SuitState{CLUBS, SPADE, []Card{}}, playerHand)
 	compareLists(t, cards, playerHand)
 }
 
@@ -99,15 +99,15 @@ func compareLists(t *testing.T, returned, expected []Card) {
 }
 
 func TestSetNextTrickOrder(t *testing.T) {
-	state := SuitState{CLUBS, ""}
-	trick := []Card{Card{SPADE, "J"}, Card{HEART, "A"}, Card{HEART, "K"}}
+	state := SuitState{CLUBS, "", []Card{}}
+	state.trick = []Card{Card{SPADE, "J"}, Card{HEART, "A"}, Card{HEART, "K"}}
 
 	player1 := makePlayer([]Card{})
 	player2 := makePlayer([]Card{})
 	player3 := makePlayer([]Card{})
 
 	players := []*Player{&player1, &player2, &player3}
-	newPlayers := setNextTrickOrder(&state, players, trick)
+	newPlayers := setNextTrickOrder(&state, players)
 	comparePlayers(t, players, newPlayers)
 	checkScore(t, player1, 17)
 	checkScore(t, player2, 0)
@@ -117,8 +117,8 @@ func TestSetNextTrickOrder(t *testing.T) {
 		t.Errorf("OUT OF SCHWARZ")
 	}
 
-	trick = []Card{Card{HEART, "D"}, Card{SPADE, "J"}, Card{HEART, "10"}}
-	newPlayers = setNextTrickOrder(&state, players, trick)
+	state.trick = []Card{Card{HEART, "D"}, Card{SPADE, "J"}, Card{HEART, "10"}}
+	newPlayers = setNextTrickOrder(&state, players)
 	expected := []*Player{&player2, &player3, &player1}
 	comparePlayers(t, expected, newPlayers)
 	checkScore(t, player1, 17)
@@ -128,8 +128,8 @@ func TestSetNextTrickOrder(t *testing.T) {
 		t.Errorf("OUT OF SCHWARZ")
 	}
 
-	trick = []Card{Card{HEART, "9"}, Card{HEART, "8"}, Card{SPADE, "J"}}
-	newPlayers = setNextTrickOrder(&state, players, trick)
+	state.trick = []Card{Card{HEART, "9"}, Card{HEART, "8"}, Card{SPADE, "J"}}
+	newPlayers = setNextTrickOrder(&state, players)
 	expected = []*Player{&player3, &player1, &player2}
 	comparePlayers(t, expected, newPlayers)
 	checkScore(t, player1, 17)
@@ -160,7 +160,7 @@ func comparePlayers(t *testing.T, expected, returned []*Player) {
 }
 
 func TestTrick(t *testing.T) {
-	state := SuitState{CLUBS, ""}
+	state := SuitState{CLUBS, "", []Card{}}
 	firstPlayerHand := []Card{Card{SPADE, "J"}, Card{HEART, "D"}, Card{CARO, "7"}}
 	secondPlayerHand := []Card{Card{CLUBS, "J"}, Card{HEART, "10"}, Card{CARO, "8"}}
 	thirdPlayerHand := []Card{Card{HEART, "A"}, Card{HEART, "K"}, Card{CLUBS, "10"}}
@@ -487,44 +487,44 @@ func TestGameScore(t *testing.T) {
 		Card{SPADE, "8"},
 	}
 
-	act := gameScore(SuitState{CARO, ""}, declarerCards, 61, 63, false, false, false)
+	act := gameScore(SuitState{CARO, "", []Card{}}, declarerCards, 61, 63, false, false, false)
 	exp := 63
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(SuitState{CARO, ""}, declarerCards, 60, 63, false, false, false)
+	act = gameScore(SuitState{CARO, "", []Card{}}, declarerCards, 60, 63, false, false, false)
 	exp = -126
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(SuitState{HEART, ""}, declarerCards, 61, 50, false, false, false)
+	act = gameScore(SuitState{HEART, "", []Card{}}, declarerCards, 61, 50, false, false, false)
 	exp = 50
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(SuitState{CLUBS, ""}, declarerCards, 61, 50, false, false, false)
+	act = gameScore(SuitState{CLUBS, "", []Card{}}, declarerCards, 61, 50, false, false, false)
 	exp = 60
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(SuitState{SPADE, ""}, declarerCards, 61, 50, false, false, false)
+	act = gameScore(SuitState{SPADE, "", []Card{}}, declarerCards, 61, 50, false, false, false)
 	exp = 55
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(SuitState{SPADE, ""}, declarerCards, 61, 50, false, false, true)
+	act = gameScore(SuitState{SPADE, "", []Card{}}, declarerCards, 61, 50, false, false, true)
 	exp = 66
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
 	// hand is 50, OVERBID
-	act = gameScore(SuitState{HEART, ""}, declarerCards, 61, 51, false, false, false)
+	act = gameScore(SuitState{HEART, "", []Card{}}, declarerCards, 61, 51, false, false, false)
 	exp = -120
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
@@ -542,34 +542,34 @@ func TestGameScore(t *testing.T) {
 		Card{HEART, "9"},
 		Card{SPADE, "8"},
 	}
-	act = gameScore(SuitState{CARO, ""}, declarerCards, 61, 18, false, false, false)
+	act = gameScore(SuitState{CARO, "", []Card{}}, declarerCards, 61, 18, false, false, false)
 	exp = 18
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
 	// schneider winner
-	act = gameScore(SuitState{CARO, ""}, declarerCards, 90, 18, false, false, false)
+	act = gameScore(SuitState{CARO, "", []Card{}}, declarerCards, 90, 18, false, false, false)
 	exp = 27
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 	// schneider loss
-	act = gameScore(SuitState{CARO, ""}, declarerCards, 30, 18, false, false, false)
+	act = gameScore(SuitState{CARO, "", []Card{}}, declarerCards, 30, 18, false, false, false)
 	exp = -54
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
 	// schwarz winner
-	act = gameScore(SuitState{CARO, ""}, declarerCards, 120, 18, false, true, false)
+	act = gameScore(SuitState{CARO, "", []Card{}}, declarerCards, 120, 18, false, true, false)
 	exp = 36
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
 	// schwarz loss
-	act = gameScore(SuitState{CARO, ""}, declarerCards, 0, 18, true, false, false)
+	act = gameScore(SuitState{CARO, "", []Card{}}, declarerCards, 0, 18, true, false, false)
 	exp = -72
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)

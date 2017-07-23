@@ -136,6 +136,7 @@ func sortSuit(cs []Card) []Card {
 type SuitState struct {
 	trump  string
 	follow string
+	trick []Card
 }
 
 type tactic func([]Card) Card
@@ -247,31 +248,37 @@ func matadors(trump string, cs []Card) int {
 	return m
 }
 
-func setNextTrickOrder(s *SuitState, players []*Player, trick []Card) []*Player {
-	if s.greater(trick[0], trick[1]) && s.greater(trick[0], trick[2]) {
-		players[0].score += sum(trick)
-		players[0].schwarz = false
-		return players
+func setNextTrickOrder(s *SuitState, players []*Player) []*Player {
+	var newPlayers []*Player
+	var winner *Player
+	if s.greater(s.trick[0], s.trick[1]) && s.greater(s.trick[0], s.trick[2]) {
+		winner = players[0]
+		newPlayers = players
+	} else if s.greater(s.trick[1], s.trick[2]) {
+		winner = players[1]
+		newPlayers = []*Player{players[1], players[2], players[0]}
+	} else {
+		winner = players[2]	
+		newPlayers = []*Player{players[2], players[0], players[1]}
 	}
-	if s.greater(trick[1], trick[2]) {
-		players[1].score += sum(trick)
-		players[1].schwarz = false
-		return []*Player{players[1], players[2], players[0]}
-	}
-	players[2].score += sum(trick)
-	players[2].schwarz = false
-	return []*Player{players[2], players[0], players[1]}
+
+	winner.score += sum(s.trick)
+	winner.schwarz = false
+	s.trick = []Card{}
+
+	return newPlayers
 }
 
 func round(s *SuitState, players []*Player) []*Player {
-	var trick [3]Card
-	trick[0] = players[0].play(s)
-	s.follow = getSuite(s.trump, trick[0])
-	trick[1] = players[1].play(s)
-	trick[2] = players[2].play(s)
+	//fmt.Printf("TRICK: %v\n", s.trick)
+	//var trick [3]Card
+	players[0].play(s)
+	s.follow = getSuite(s.trump, s.trick[0])
+	players[1].play(s)
+	players[2].play(s)
 
 	//fmt.Println(players)
-	players = setNextTrickOrder(s, players, trick[:])
+	players = setNextTrickOrder(s, players)
 	//fmt.Println(players)
 
 	//fmt.Printf("TRICK %v : %d\n", trick, sum(trick[:]))
@@ -295,6 +302,7 @@ func (p *Player) play(s *SuitState) Card {
 	card := p.playerTactic(valid)
 	// fmt.Println(s, card, p.hand)
 	p.hand = remove(p.hand, card)
+	s.trick = append(s.trick, card)
 	// fmt.Println(p.hand)
 	return card
 }
@@ -911,7 +919,7 @@ func game(players []*Player) (int, int) {
 	}
 
 	// DECLARE
-	state := SuitState{declarer.declareTrump(), ""}
+	state := SuitState{declarer.declareTrump(), "", []Card{}}
 	declarerCards := make([]Card, len(declarer.hand))
 	copy(declarerCards, declarer.hand)
 	declarerCards = append(declarerCards, skat...)
