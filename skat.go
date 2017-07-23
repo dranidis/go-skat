@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"math/rand"
 	"time"
 
@@ -166,6 +168,7 @@ func makeSuitState() SuitState {
 type tactic func([]Card) Card
 
 type Player struct {
+	isHuman	bool
 	isDeclarer bool
 	hand       []Card
 	highestBid int
@@ -327,7 +330,7 @@ func lowestThatWins(s *SuitState, c []Card) Card {
 		}
 		return wins
 	})
-	gameLog("Winners: %v\n", winners)
+	//gameLog("Winners: %v\n", winners)
 	if len(winners) > 0 {
 		winners = sortRank(winners)
 		return winners[len(winners)-1]
@@ -337,7 +340,7 @@ func lowestThatWins(s *SuitState, c []Card) Card {
 }
 
 func HighestLong(trump string, c []Card) Card {
-	gameLog("HIGHESTLONG\n")
+	//gameLog("HIGHESTLONG\n")
 	s := LongestNonTrumpSuit(trump, c)
 	cards := filter(c, func (c Card) bool {
 		return c.suit == s && c.rank != "J"
@@ -352,7 +355,7 @@ func HighestLong(trump string, c []Card) Card {
 }
 
 func (p Player) declarerTactic(s *SuitState, c []Card) Card {
-	gameLog("SOLIST\n")
+	//gameLog("SOLIST\n")
 	if len(s.trick) == 0 {
 		return firstCardTactic(c)
 	}
@@ -360,8 +363,30 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 }
 
 func (p Player) playerTactic(s *SuitState, c []Card) Card {
+
 	gameLog("Trick: %v\n", s.trick)
-	gameLog("Valid: %v\n", c)
+	if p.isDeclarer {
+		gameLog("SOLIST")
+	} 
+
+	if p.isHuman {
+		gameLog("Hand : %v\n", p.hand)
+		gameLog("Valid: %v\n", c)
+		fmt.Printf("CARD?")
+		// reader := bufio.NewReader(os.Stdin)
+		// char, _, err := reader.ReadRune()
+
+		// if err != nil {
+		// 	fmt.Println(err)
+		// }
+    	var i int
+    	_, err := fmt.Scanf("%d", &i)
+		if err != nil {
+			fmt.Println(err)
+		}    	
+    	return c[i-1]
+		//return c[int(char - '0')-1]
+	}
 
 	if p.isDeclarer {
 		return p.declarerTactic(s, c)
@@ -477,7 +502,7 @@ func (s SuitState) greater(card1, card2 Card) bool {
 }
 
 func makePlayer(hand []Card) Player {
-	return Player{false, hand, 0, 0, true, 0}
+	return Player{false, false, hand, 0, 0, true, 0}
 }
 
 var bids = []int{
@@ -504,6 +529,23 @@ avg: -75 -- -178 with random play
 avg: -25 with random play, 25 with random play and good discard
 */
 func (p *Player) accepts(bidIndex int) bool {
+	if p.isHuman {
+		fmt.Printf("HAND: %v", p.hand)
+		fmt.Printf("BID %d?", bids[bidIndex])
+		reader := bufio.NewReader(os.Stdin)
+		char, _, err := reader.ReadRune()
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		switch char {
+		case 'y':
+			return true
+		case 'n':
+			return false
+		}
+	}
 	return bids[bidIndex] <= p.highestBid
 }
 
@@ -654,10 +696,10 @@ func (p *Player) calculateHighestBid() {
 }
 
 func bidLog(format string, a ...interface{}) {
-	//fmt.Printf(format, a...)
+	fmt.Printf(format, a...)
 }
 func gameLog(format string, a ...interface{}) {
-	//fmt.Printf(format, a...)
+	fmt.Printf(format, a...)
 }
 
 func bidding(listener, speaker *Player, bidIndex int) (int, *Player) {
@@ -797,6 +839,29 @@ func lessCardsSuit(cards []Card) string {
 }
 
 func (p *Player) declareTrump() string {
+
+	if p.isHuman {
+		fmt.Printf("HAND: %v\n", sortSuit("", p.hand))
+		fmt.Printf("TRUMP? (1 for CLUBS, 2 for SPADE, 3 for HEART, 4 for CARO)")
+		reader := bufio.NewReader(os.Stdin)
+		char, _, err := reader.ReadRune()
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		switch char {
+		case '1':
+			return CLUBS
+		case '2':
+			return SPADE
+		case '3':
+			return HEART
+		case '4':
+			return CARO
+		}
+	}
+
 	return mostCardsSuit(p.hand)
 }
 
@@ -856,6 +921,29 @@ func nonA10cards(cs []Card) []Card {
 }
 
 func (p *Player) discardInSkat(skat []Card) {
+	if p.isHuman {
+		p.hand = sortSuit("", p.hand)
+		gameLog("Full Hand : %v\n", p.hand)
+		fmt.Printf("DISCARD CARD?")
+
+    	var i1, i2 int
+    	_, err := fmt.Scanf("%d", &i1)
+		if err != nil {
+			fmt.Println(err)
+		}  
+		 _, err = fmt.Scanf("%d", &i2)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(i1, i2)
+		card1 :=  p.hand[i1-1]   	
+		card2 :=  p.hand[i2-1]   	
+		p.hand = remove(p.hand, card1)
+		p.hand = remove(p.hand, card2)
+		skat[0] = card1
+		skat[1] = card2
+		return
+	}
 	// fmt.Printf("FULL HAND %v\n", p.hand)
 
 	// discard BLANKS
@@ -1001,11 +1089,17 @@ func game(players []*Player) (int, int) {
 	players[1].hand = sortSuit("", cards[10:20])
 	players[2].hand = sortSuit("", cards[20:30])
 
+	players[0].isHuman = true
+	fmt.Printf("%v\n", players[0].hand)
+
+
 	skat := make([]Card, 2)
 	copy(skat, cards[30:32])
 
 	for _, p := range players {
-		p.calculateHighestBid()
+		if !p.isHuman {
+			p.calculateHighestBid()
+		}
 	}
 
 	// BIDDING
@@ -1065,11 +1159,11 @@ func game(players []*Player) (int, int) {
 	declarer.totalScore += gs
 
 	if declarer.score > 60 {
-		// fmt.Printf(" VICTORY: %d - %d, SCORE: %d\n",
-		// declarer.score, opp1.score + opp2.score, gs)
+		fmt.Printf(" VICTORY: %d - %d, SCORE: %d\n",
+		declarer.score, opp1.score + opp2.score, gs)
 	} else {
-		// fmt.Printf(" LOSS: %d - %d, SCORE: %d\n",
-		// declarer.score, opp1.score + opp2.score, gs)
+		fmt.Printf(" LOSS: %d - %d, SCORE: %d\n",
+		declarer.score, opp1.score + opp2.score, gs)
 	}
 
 	return declarer.score, opp1.score + opp2.score
@@ -1086,7 +1180,7 @@ func main() {
 	passed := 0
 	won := 0
 	lost := 0
-	totalGames := 3600
+	totalGames := 1
 	for times := totalGames; times > 0; times-- {
 		for _, p := range players {
 			p.score = 0
