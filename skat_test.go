@@ -833,6 +833,42 @@ func TestPickUpSkat6(t *testing.T) {
 	}
 }
 
+func TestPickUpSkat7(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "J"},
+		Card{SPADE, "J"},
+		Card{CARO, "J"},
+
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{CARO, "D"},
+		Card{CARO, "9"},
+		Card{CARO, "8"},
+	})
+
+	skat := []Card{
+		Card{HEART, "A"},
+		Card{SPADE, "A"},
+	}
+	// fmt.Println("TestPickUpSkat7")
+	// fmt.Println(player.hand)
+	// fmt.Println(skat)
+	player.pickUpSkat(skat)
+	// fmt.Println(sort(player.hand))
+	// fmt.Println(skat)	
+	cc1 := skat[1].suit != CARO || skat[1].rank != "9"
+	cc2 := skat[0].suit != CARO || skat[0].rank != "8"
+	if cc1 || cc2 {
+		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
+	}
+
+	if len(player.hand) != 10 {
+		t.Errorf("Wrong hand size after skat change: %d", len(player.hand))
+	}
+}
+
 func TestCalculateHighestBid(t *testing.T) {
 	player := makePlayer([]Card{
 		Card{CLUBS, "J"},
@@ -1004,6 +1040,23 @@ func TestFindBlankCards(t *testing.T) {
 		c2 := cards[1]
 		if c1.suit != SPADE && c1.rank != "10" {
 			t.Errorf("Blank Cards in wrong order %v, %v", c1, c2)
+		}
+	}
+}
+
+func TestGame(t *testing.T) {
+	for i:= 0 ; i < 100; i++ {
+		player1 := makePlayer([]Card{})
+		player2 := makePlayer([]Card{})
+		player3 := makePlayer([]Card{})
+
+		players := []*Player{&player1, &player2, &player3}	
+		score, oppScore := game(players)
+
+		if score !=0 || oppScore != 0 {
+			if score + oppScore != 120 {
+				t.Errorf("Game score not 120: %d", score + oppScore)
+			}
 		}
 	}
 }

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	_"time"
+	"time"
 
 	"github.com/fatih/color"
 )
@@ -14,8 +14,8 @@ const HEART = "HEART"
 const CARO = "CARO"
 
 
-var r = rand.New(rand.NewSource(3))
-//var r = rand.New(rand.NewSource(time.Now().Unix()))
+// var r = rand.New(rand.NewSource(3))
+var r = rand.New(rand.NewSource(time.Now().Unix()))
 
 type Card struct {
 	suit string
@@ -156,7 +156,7 @@ func round(s *SuitState, players []*Player) []*Player {
 	players = setNextTrickOrder(s, players, trick[:])
 	//fmt.Println(players)
 
-	// fmt.Printf("TRICK %v : %d\n", trick, sum(trick[:]))
+	//fmt.Printf("TRICK %v : %d\n", trick, sum(trick[:]))
 
 	s.follow = ""
 	return players
@@ -647,7 +647,7 @@ func lessCardsSuit(cards []Card) string {
 	if k == 0 {
 		k = 9999
 	}	
-	fmt.Println("lessCardsSuit", c, s, h, k)
+	// fmt.Println("lessCardsSuit", c, s, h, k)
 	if c != 0 && c < s && c < h && c < k {
 		return CLUBS
 	}
@@ -733,12 +733,12 @@ func nonA10cards(cs []Card) [] Card {
 }
 
 func (p *Player) discardInSkat(skat []Card) {
-	fmt.Printf("FULL HAND %v\n", p.hand)
+	// fmt.Printf("FULL HAND %v\n", p.hand)
 
 	// discard BLANKS
 	
 	bcards := findBlankCards(p.hand)
-	fmt.Printf("BLANK %v\n", bcards)
+	// fmt.Printf("BLANK %v\n", bcards)
 	removed := 0
 	if len(bcards) > 0 {
 		p.hand = remove(p.hand, bcards[0])
@@ -761,7 +761,7 @@ func (p *Player) discardInSkat(skat []Card) {
 			return c.suit == lsuit && c.rank != "A" && c.rank != "J"
 		}), sranks)
 		if len(lcards) < 4 { // do not throw long fleets
-			fmt.Printf("SUIT %v LESS %v\n", lsuit, lcards)
+			// fmt.Printf("SUIT %v LESS %v\n", lsuit, lcards)
 
 			if len(lcards) > 1 {
 				i := 0
@@ -779,7 +779,7 @@ func (p *Player) discardInSkat(skat []Card) {
 	// Discard non-A-10 suit cards
 	ncards := nonA10cards(p.hand)
 	ncards = findBlankCards(ncards)
-	fmt.Printf("nonA10cards %v\n", ncards)
+	// fmt.Printf("nonA10cards %v\n", ncards)
 
 	if len(ncards) > 1 {
 		i := 0
@@ -803,6 +803,7 @@ func (p *Player) discardInSkat(skat []Card) {
 	}	
 
 	// DESPARATE???
+	// DISCARD LOW CARDS
 	p.hand = sort(p.hand)
 	if removed == 1 {
 		card := p.hand[len(p.hand)-1]
@@ -882,32 +883,18 @@ func gameScore(state SuitState, cs []Card, score, bid int,
 	}
 }
 
-func game(players []*Player) bool {
+func game(players []*Player) (int, int) {
 	//fmt.Println("------------NEW GAME----------")
 	// DEALING
 	cards := Shuffle(makeDeck())
 	//fmt.Printf("CARDS %d %v\n", -1, cards)
-	players[0].hand = make([]Card, 10)
-	players[1].hand = make([]Card, 10)
-	players[2].hand = make([]Card, 10)
-	copy(players[0].hand, cards[:10])
-	copy(players[1].hand, cards[10:20])
-	copy(players[2].hand, cards[20:30])
+	players[0].hand = sort(cards[:10])
+	players[1].hand = sort(cards[10:20])
+	players[2].hand = sort(cards[20:30])
+
 	skat := make([]Card, 2)
 	copy(skat, cards[30:32])
 
-	// fmt.Printf("HAND 1 %v\n", players[0].hand)
-	// fmt.Printf("HAND 2 %v\n", players[1].hand)
-	// fmt.Printf("HAND 3 %v\n", players[2].hand)
-	// fmt.Printf("SKAT %v\n", skat)
-
-	sumAll := sum(players[0].hand) + sum(players[1].hand) + sum(players[2].hand) + sum(skat)
-	if sumAll != 120 {
-		fmt.Printf("DEAL PROBLEM: %d", sumAll)
-	}
-	//fmt.Printf("HAND %d %v\n", 0, players[0].hand)
-	//fmt.Printf("HAND %d %v\n", 1, players[1].hand)
-	//fmt.Printf("HAND %d %v\n", 2, players[2].hand)
 	for _, p := range players {
 		p.calculateHighestBid()
 	}
@@ -916,7 +903,7 @@ func game(players []*Player) bool {
 	bidIndex, declarer := bid(players)
 	if bidIndex == -1 {
 		// fmt.Println("ALL PASSED")
-		return false
+		return 0, 0
 	}
 	var opp1, opp2 *Player
 	if declarer == players[0] {
@@ -931,13 +918,13 @@ func game(players []*Player) bool {
 
 	// HAND GAME?
 	handGame := true
-	fmt.Printf("\nHAND bef: %v\n", sort(declarer.hand))
-	fmt.Printf("SKAT bef: %v\n", skat)
+	// fmt.Printf("\nHAND bef: %v\n", sort(declarer.hand))
+	// fmt.Printf("SKAT bef: %v\n", skat)
 
 	if declarer.pickUpSkat(skat) {
-		fmt.Printf("HAND aft: %v\n", sort(declarer.hand))
+		// fmt.Printf("HAND aft: %v\n", sort(declarer.hand))
 		handGame = false
-		fmt.Printf("SKAT aft: %v\n", skat)
+		// fmt.Printf("SKAT aft: %v\n", skat)
 	}
 
 	// DECLARE
@@ -951,10 +938,6 @@ func game(players []*Player) bool {
 	// fmt.Printf("BID: %d, SUIT: %d %s",
 	// 	bids[bidIndex], countCardsSuit(state.trump, declarer.hand), state.trump)
 
-	// fmt.Printf("HAND 1 %v\n", players[0].hand)
-	// fmt.Printf("HAND 2 %v\n", players[1].hand)
-	// fmt.Printf("HAND 3 %v\n", players[2].hand)
-	// fmt.Printf("SKAT %v\n", skat)
 	// PLAY
 	for i := 0; i < 10; i++ {
 		players = round(&state, players)
@@ -975,7 +958,7 @@ func game(players []*Player) bool {
 		// declarer.score, opp1.score + opp2.score, gs)
 	}
 
-	return true
+	return declarer.score, opp1.score + opp2.score
 
 }
 
@@ -987,13 +970,14 @@ func main() {
 	players := []*Player{&player1, &player2, &player3}
 
 	passed := 0
-	totalGames := 36
+	totalGames := 3600
 	for times := totalGames; times > 0; times-- {
 		for _, p := range players {
 			p.score = 0
 			p.schwarz = true
 		}
-		if !game(players) {
+		score, oppScore := game(players)
+		if score == 0 && oppScore == 0 {
 			passed++
 		}
 		fmt.Println(player1.totalScore, player2.totalScore, player3.totalScore)
