@@ -13,7 +13,6 @@ const SPADE = "SPADE"
 const HEART = "HEART"
 const CARO = "CARO"
 
-
 // var r = rand.New(rand.NewSource(3))
 var r = rand.New(rand.NewSource(time.Now().Unix()))
 
@@ -29,16 +28,111 @@ func (c Card) String() string {
 	yellow := color.New(color.Bold, color.FgYellow).SprintFunc()
 	switch c.suit {
 	case CLUBS:
-		return black(c.rank) 
+		return black(c.rank)
 	case SPADE:
-		return green(c.rank) 
+		return green(c.rank)
 	case HEART:
-		return red(c.rank) 
+		return red(c.rank)
 	case CARO:
-		return yellow(c.rank) 
+		return yellow(c.rank)
 	}
 	return ""
 }
+
+func cardValue(c Card) int {
+	switch c.rank {
+	case "J":
+		return 2
+	case "A":
+		return 11
+	case "10":
+		return 10
+	case "K":
+		return 4
+	case "D":
+		return 3
+	}
+	return 0
+}
+
+func trumpBaseValue(s string) int {
+	switch s {
+	case CLUBS:
+		return 12
+	case SPADE:
+		return 11
+	case HEART:
+		return 10
+	case CARO:
+		return 9
+	}
+	return 0
+}
+
+func getSuite(trump string, card Card) string {
+	if card.rank == "J" {
+		return trump
+	}
+	return card.suit
+}
+
+var suits = []string{CLUBS, SPADE, HEART, CARO}
+var ranks = []string{"J", "A", "10", "K", "D", "9", "8", "7"}
+
+func sortRankSpecial(cs []Card, ranks []string) []Card {
+	cards := []Card{}
+
+	for _, r := range ranks {
+		for _, s := range suits {
+			if in(cs, Card{s, r}) {
+				cards = append(cards, Card{s, r})
+			}
+		}
+
+	}
+	return cards
+}
+
+func sortRank(cs []Card) []Card {
+	return sortRankSpecial(cs, ranks)
+}
+
+func sortSuit(cs []Card) []Card {
+	cards := []Card{}
+
+	cardJs := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+	}
+	cardsSuit := func(suit string) []Card {
+		return []Card{
+			Card{suit, "A"},
+			Card{suit, "10"},
+			Card{suit, "K"},
+			Card{suit, "D"},
+			Card{suit, "9"},
+			Card{suit, "8"},
+			Card{suit, "7"},
+		}
+	}
+	for _, c := range cardJs {
+		if in(cs, c) {
+			cards = append(cards, c)
+		}
+	}
+
+	for _, s := range suits {
+		for _, c := range cardsSuit(s) {
+			if in(cs, c) {
+				cards = append(cards, c)
+			}
+		}
+	}
+	return cards
+}
+
 type SuitState struct {
 	trump  string
 	follow string
@@ -66,29 +160,36 @@ func Shuffle(cards []Card) []Card {
 }
 
 func sum(trick []Card) int {
-	val := func(c Card) int {
-		switch c.rank {
-		case "J":
-			return 2
-		case "A":
-			return 11
-		case "10":
-			return 10
-		case "K":
-			return 4
-		case "D":
-			return 3
-		}
-		return 0
-	}
 	s := 0
 	for _, c := range trick {
-		s += val(c)
+		s += cardValue(c)
 	}
 	return s
 }
 
-func inHand(cs []Card, c Card) bool {
+func makeDeck() []Card {
+	makeSuitDeck := func(suit string) []Card {
+		return []Card{
+			Card{suit, "J"},
+			Card{suit, "A"},
+			Card{suit, "10"},
+			Card{suit, "K"},
+			Card{suit, "D"},
+			Card{suit, "9"},
+			Card{suit, "8"},
+			Card{suit, "7"},
+		}
+	}
+	cards := []Card{}
+	cards = append(cards, makeSuitDeck(CLUBS)...)
+	cards = append(cards, makeSuitDeck(SPADE)...)
+	cards = append(cards, makeSuitDeck(HEART)...)
+	cards = append(cards, makeSuitDeck(CARO)...)
+	return cards
+}
+
+// CARD MANIPULATION FUNCTIONS
+func in(cs []Card, c Card) bool {
 	for _, card := range cs {
 		if card.suit == c.suit && card.rank == c.rank {
 			return true
@@ -96,6 +197,23 @@ func inHand(cs []Card, c Card) bool {
 	}
 	return false
 }
+
+func filter(cards []Card, f func(Card) bool) []Card {
+	cs := []Card{}
+	for _, c := range cards {
+		if f(c) {
+			cs = append(cs, c)
+		}
+	}
+	return cs
+}
+
+func remove(cs []Card, c Card) []Card {
+	return filter(cs, func(cc Card) bool {
+		return !(cc.suit == c.suit && cc.rank == c.rank)
+	})
+}
+
 func matadors(trump string, cs []Card) int {
 	cards := []Card{
 		Card{SPADE, "J"},
@@ -109,10 +227,10 @@ func matadors(trump string, cs []Card) int {
 		Card{trump, "8"},
 	}
 	m := 0
-	if inHand(cs, Card{CLUBS, "J"}) {
+	if in(cs, Card{CLUBS, "J"}) {
 		m++
 		for _, card := range cards {
-			if !inHand(cs, card) {
+			if !in(cs, card) {
 				break
 			}
 			m++
@@ -121,7 +239,7 @@ func matadors(trump string, cs []Card) int {
 	}
 	m--
 	for _, card := range cards {
-		if inHand(cs, card) {
+		if in(cs, card) {
 			return m
 		}
 		m--
@@ -148,7 +266,7 @@ func setNextTrickOrder(s *SuitState, players []*Player, trick []Card) []*Player 
 func round(s *SuitState, players []*Player) []*Player {
 	var trick [3]Card
 	trick[0] = players[0].play(s)
-	s.follow = getSuite(*s, trick[0])
+	s.follow = getSuite(s.trump, trick[0])
 	trick[1] = players[1].play(s)
 	trick[2] = players[2].play(s)
 
@@ -161,7 +279,6 @@ func round(s *SuitState, players []*Player) []*Player {
 	s.follow = ""
 	return players
 }
-
 
 func firstCardTactic(c []Card) Card {
 	return c[0]
@@ -182,50 +299,22 @@ func (p *Player) play(s *SuitState) Card {
 	return card
 }
 
-// func remove(cs []Card, c Card) []Card {
-// 	for i, cc := range cs {
-// 		if cc.suit == c.suit && cc.rank == c.rank {
-// 			front := cs[:i]
-// 			back := cs[i+1:]
-// 			return append(front, back...)
-// 		}
-// 	}
-// 	return cs
-// }
-func remove(cs []Card, c Card) []Card {
-	cards := []Card{}
-	for _, cc := range cs {
-		if !(cc.suit == c.suit && cc.rank == c.rank) {
-			cards = append(cards, cc)
-		}
-	}
-	return cards
-}
-
-func getSuite(s SuitState, card Card) string {
-	if card.rank == "J" {
-		return s.trump
-	}
-	return card.suit
-}
-
 // Returns a list of all cards that are playeable from the player's hand.
 func validCards(s SuitState, playerHand []Card) []Card {
-	cards := []Card{}
-	for _, c := range playerHand {
-		if s.valid(playerHand, c) {
-			cards = append(cards, c)
-		}
-	}
-	return cards
+	return filter(playerHand, func(c Card) bool {
+		return s.valid(playerHand, c)
+	})
 }
 
 func (s SuitState) valid(playerHand []Card, card Card) bool {
 	for _, c := range playerHand {
-		if s.follow == getSuite(s, c) {
-			return s.follow == getSuite(s, card)
+		// if there is at least one card in your hand matching the followed suit
+		// your played card should follow
+		if s.follow == getSuite(s.trump, c) {
+			return s.follow == getSuite(s.trump, card)
 		}
 	}
+	// otherwise any card is playable
 	return true
 }
 
@@ -282,28 +371,6 @@ func (s SuitState) greater(card1, card2 Card) bool {
 	return rank[card1.rank] > rank[card2.rank]
 }
 
-func makeSuitDeck(suit string) []Card {
-	return []Card{
-		Card{suit, "J"},
-		Card{suit, "A"},
-		Card{suit, "10"},
-		Card{suit, "K"},
-		Card{suit, "D"},
-		Card{suit, "9"},
-		Card{suit, "8"},
-		Card{suit, "7"},
-	}
-}
-
-func makeDeck() []Card {
-	cards := []Card{}
-	cards = append(cards, makeSuitDeck(CLUBS)...)
-	cards = append(cards, makeSuitDeck(SPADE)...)
-	cards = append(cards, makeSuitDeck(HEART)...)
-	cards = append(cards, makeSuitDeck(CARO)...)
-	return cards
-}
-
 func makePlayer(hand []Card) Player {
 	return Player{hand, firstCardTactic, 0, 0, true, 0}
 }
@@ -329,7 +396,7 @@ avg: -75 -- -178 with random play
 // }
 
 /*
-avg: -25 with random play
+avg: -25 with random play, 25 with random play and good discard
 */
 func (p *Player) accepts(bidIndex int) bool {
 	return bids[bidIndex] <= p.highestBid
@@ -340,10 +407,10 @@ func (p *Player) accepts(bidIndex int) bool {
 // (McFarland, Wisconsin, 1975) versucht, dazu einen objektiven Berechnungsmodus zu
 // finden.
 func (p *Player) handEstimation() int {
-	kreuzB := inHand(p.hand, Card{CLUBS, "J"})
-	pikB := inHand(p.hand, Card{SPADE, "J"})
-	herzB := inHand(p.hand, Card{HEART, "J"})
-	karoB := inHand(p.hand, Card{CARO, "J"})
+	kreuzB := in(p.hand, Card{CLUBS, "J"})
+	pikB := in(p.hand, Card{SPADE, "J"})
+	herzB := in(p.hand, Card{HEART, "J"})
+	karoB := in(p.hand, Card{CARO, "J"})
 
 	wert := 0
 	// Kreuz-B allein
@@ -392,105 +459,46 @@ func (p *Player) handEstimation() int {
 		wert += 50
 	}
 
-	wert += p.otherCardsEstimation(CLUBS)
-	wert += p.otherCardsEstimation(SPADE)
-	wert += p.otherCardsEstimation(HEART)
-	wert += p.otherCardsEstimation(CARO)
+	otherCardsEstimation := func(suit string) int {
+		a := in(p.hand, Card{suit, "A"})
+		t := in(p.hand, Card{suit, "10"})
+		k := in(p.hand, Card{suit, "K"})
+		d := in(p.hand, Card{suit, "D"})
+		n := in(p.hand, Card{suit, "9"})
+
+		if a && t && k {
+			return 25
+		}
+		if a && t {
+			return 20
+		}
+		if a && k && d {
+			return 15
+		}
+		if a && k && n {
+			return 12
+		}
+		if a {
+			return 10
+		}
+		return 0
+	}
+	wert += otherCardsEstimation(CLUBS)
+	wert += otherCardsEstimation(SPADE)
+	wert += otherCardsEstimation(HEART)
+	wert += otherCardsEstimation(CARO)
 
 	return wert
-}
-
-func (p *Player) otherCardsEstimation(suit string) int {
-	a := inHand(p.hand, Card{suit, "A"})
-	t := inHand(p.hand, Card{suit, "10"})
-	k := inHand(p.hand, Card{suit, "K"})
-	d := inHand(p.hand, Card{suit, "D"})
-	n := inHand(p.hand, Card{suit, "9"})
-
-	if a && t && k {
-		return 25
-	}
-	if a && t {
-		return 20
-	}
-	if a && k && d {
-		return 15
-	}
-	if a && k && n {
-		return 12
-	}
-	if a {
-		return 10
-	}
-	return 0
-}
-
-var suits = []string{CLUBS, SPADE, HEART, CARO}
-var ranks = []string{"J", "A", "10", "K", "D", "9", "8", "7"}
-
-func sortRankSpecial(cs []Card, ranks[]string) []Card {
-	cards := []Card{}
-
-	for _, r := range ranks {
-		for _, s := range suits {
-			if inHand(cs, Card{s, r}) {
-				cards = append(cards, Card{s, r})
-			}
-		}
-
-	}
-	return cards
-}
-
-
-func sortRank(cs []Card) []Card {
-	return sortRankSpecial(cs, ranks)
-}
-
-func sort(cs []Card) []Card {
-	cards := []Card{}
-
-	cardJs := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-	}
-	cardsSuit := func(suit string) []Card {
-		return []Card{
-			Card{suit, "A"},
-			Card{suit, "10"},
-			Card{suit, "K"},
-			Card{suit, "D"},
-			Card{suit, "9"},
-			Card{suit, "8"},
-			Card{suit, "7"},
-		}
-	}
-	for _, c := range cardJs {
-		if inHand(cs, c) {
-			cards = append(cards, c)
-		}
-	}
-
-	for _, s := range suits {
-		for _, c := range cardsSuit(s) {
-			if inHand(cs, c) {
-				cards = append(cards, c)
-			}
-		}
-	}
-	return cards
 }
 
 func (p *Player) calculateHighestBid() {
 	assOtherThan := func(suit string) int {
 		asses := 0
-		c := inHand(p.hand, Card{CLUBS, "A"})
-		s := inHand(p.hand, Card{SPADE, "A"})
-		h := inHand(p.hand, Card{HEART, "A"})
-		k := inHand(p.hand, Card{CARO, "A"})
-		t := inHand(p.hand, Card{suit, "A"})
+		c := in(p.hand, Card{CLUBS, "A"})
+		s := in(p.hand, Card{SPADE, "A"})
+		h := in(p.hand, Card{HEART, "A"})
+		k := in(p.hand, Card{CARO, "A"})
+		t := in(p.hand, Card{suit, "A"})
 		if c {
 			asses++
 		}
@@ -513,7 +521,7 @@ func (p *Player) calculateHighestBid() {
 
 	suit := mostCardsSuit(p.hand)
 
-	largest := countCardsSuit(suit, p.hand)
+	largest := countTrumpsSuit(suit, p.hand)
 
 	prob := 0
 	if largest > 4 && assOtherThan(suit) > 1 {
@@ -527,10 +535,10 @@ func (p *Player) calculateHighestBid() {
 	}
 
 	if prob < 80 && p.handEstimation() < 45 {
-		//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sort(p.hand))
+		//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sortSuit(p.hand))
 		return
 	}
-	// fmt.Printf("HIGH %d %v\n", p.handEstimation(), sort(p.hand))
+	// fmt.Printf("HIGH %d %v\n", p.handEstimation(), sortSuit(p.hand))
 
 	trump := p.declareTrump()
 	mat := matadors(trump, p.hand)
@@ -578,7 +586,7 @@ func bid(players []*Player) (int, *Player) {
 	return bidIndex, p
 }
 
-func countCardsSuit(suit string, cards []Card) int {
+func countTrumpsSuit(suit string, cards []Card) int {
 	count := 0
 	for _, c := range cards {
 		if c.suit == suit || c.rank == "J" {
@@ -588,24 +596,9 @@ func countCardsSuit(suit string, cards []Card) int {
 	return count
 }
 
-func countCardsSuitNotJ(suit string, cards []Card) int {
+func countCardsSuit(suit string, cards []Card) int {
 	count := 0
 	for _, c := range cards {
-		if c.suit == suit && c.rank != "J" {
-			count++
-		}
-	}
-	return count
-}
-
-
-func countCardsSuitNotJNotA(suit string, cards []Card) int {
-	count := 0
-	for _, c := range cards {
-		if c.suit == suit && c.rank == "A" {
-			// we don't want to discard a suit having an A
-			return 100
-		}		
 		if c.suit == suit && c.rank != "J" {
 			count++
 		}
@@ -614,10 +607,10 @@ func countCardsSuitNotJNotA(suit string, cards []Card) int {
 }
 
 func mostCardsSuit(cards []Card) string {
-	c := countCardsSuit(CLUBS, cards)
-	s := countCardsSuit(SPADE, cards)
-	h := countCardsSuit(HEART, cards)
-	k := countCardsSuit(CARO, cards)
+	c := countTrumpsSuit(CLUBS, cards)
+	s := countTrumpsSuit(SPADE, cards)
+	h := countTrumpsSuit(HEART, cards)
+	k := countTrumpsSuit(CARO, cards)
 	if c > s && c > h && c > k {
 		return CLUBS
 	}
@@ -631,30 +624,44 @@ func mostCardsSuit(cards []Card) string {
 }
 
 func lessCardsSuit(cards []Card) string {
-	c := countCardsSuitNotJNotA(CLUBS, cards)
-	s := countCardsSuitNotJNotA(SPADE, cards)
-	h := countCardsSuitNotJNotA(HEART, cards)
-	k := countCardsSuitNotJNotA(CARO, cards)
+	c := countCardsSuit(CLUBS, cards)
+	s := countCardsSuit(SPADE, cards)
+	h := countCardsSuit(HEART, cards)
+	k := countCardsSuit(CARO, cards)
+
+	// we don't want to discard a suit having an A
+	if in(cards, Card{CLUBS, "A"}) {
+		c = 100
+	}
+	if in(cards, Card{SPADE, "A"}) {
+		s = 100
+	}
+	if in(cards, Card{HEART, "A"}) {
+		h = 100
+	}
+	if in(cards, Card{CARO, "A"}) {
+		k = 100
+	}
 	if c == 0 {
 		c = 9999 // no cards for comparison below
 	}
 	if s == 0 {
 		s = 9999
-	}	
+	}
 	if h == 0 {
 		h = 9999
-	}	
+	}
 	if k == 0 {
 		k = 9999
-	}	
+	}
 	// fmt.Println("lessCardsSuit", c, s, h, k)
 	if c != 0 && c < s && c < h && c < k {
 		return CLUBS
 	}
-	if s !=0 && s < h && s < k {
+	if s != 0 && s < h && s < k {
 		return SPADE
 	}
-	if h !=0 && h < k {
+	if h != 0 && h < k {
 		return HEART
 	}
 	if k != 0 {
@@ -663,22 +670,12 @@ func lessCardsSuit(cards []Card) string {
 	return ""
 }
 
-func filter(cards []Card, f func(Card) bool) []Card {
-	cs := []Card{}
-	for _, c := range cards {
-		if f(c) {
-			cs = append(cs, c)
-		}
-	}
-	return cs
-}
-
 func (p *Player) declareTrump() string {
 	return mostCardsSuit(p.hand)
 }
 
 func findBlank(cards []Card, suit string) Card {
-	cc := countCardsSuitNotJ(suit, cards)
+	cc := countCardsSuit(suit, cards)
 	if cc == 1 {
 		var card Card
 		for _, c := range cards {
@@ -710,16 +707,16 @@ func findBlankCards(cards []Card) []Card {
 	return blankCards
 }
 
-func nonA10cards(cs []Card) [] Card {
-	suitf := func(suit string, cs []Card) [] Card {
+func nonA10cards(cs []Card) []Card {
+	suitf := func(suit string, cs []Card) []Card {
 		cards := filter(cs, func(c Card) bool {
 			return c.suit == suit && c.rank != "J"
-			})
-		if inHand(cards, Card{suit, "A"}) && ! inHand(cards, Card{suit, "10"}) {
+		})
+		if in(cards, Card{suit, "A"}) && !in(cards, Card{suit, "10"}) {
 			cards := filter(cards, func(c Card) bool {
 				return c.rank != "A"
-				})
-			return cards			
+			})
+			return cards
 		}
 		return []Card{}
 	}
@@ -736,7 +733,7 @@ func (p *Player) discardInSkat(skat []Card) {
 	// fmt.Printf("FULL HAND %v\n", p.hand)
 
 	// discard BLANKS
-	
+
 	bcards := findBlankCards(p.hand)
 	// fmt.Printf("BLANK %v\n", bcards)
 	removed := 0
@@ -772,7 +769,7 @@ func (p *Player) discardInSkat(skat []Card) {
 					removed++
 				}
 				return
-			}			
+			}
 		}
 	}
 
@@ -800,11 +797,11 @@ func (p *Player) discardInSkat(skat []Card) {
 		if removed == 2 {
 			return
 		}
-	}	
+	}
 
 	// DESPARATE???
 	// DISCARD LOW CARDS
-	p.hand = sort(p.hand)
+	p.hand = sortSuit(p.hand)
 	if removed == 1 {
 		card := p.hand[len(p.hand)-1]
 		p.hand = remove(p.hand, card)
@@ -828,20 +825,6 @@ func (p *Player) pickUpSkat(skat []Card) bool {
 	p.discardInSkat(skat)
 
 	return true
-}
-
-func trumpBaseValue(s string) int {
-	switch s {
-	case CLUBS:
-		return 12
-	case SPADE:
-		return 11
-	case HEART:
-		return 10
-	case CARO:
-		return 9
-	}
-	return 0
 }
 
 func gameScore(state SuitState, cs []Card, score, bid int,
@@ -888,9 +871,9 @@ func game(players []*Player) (int, int) {
 	// DEALING
 	cards := Shuffle(makeDeck())
 	//fmt.Printf("CARDS %d %v\n", -1, cards)
-	players[0].hand = sort(cards[:10])
-	players[1].hand = sort(cards[10:20])
-	players[2].hand = sort(cards[20:30])
+	players[0].hand = sortSuit(cards[:10])
+	players[1].hand = sortSuit(cards[10:20])
+	players[2].hand = sortSuit(cards[20:30])
 
 	skat := make([]Card, 2)
 	copy(skat, cards[30:32])
@@ -918,11 +901,11 @@ func game(players []*Player) (int, int) {
 
 	// HAND GAME?
 	handGame := true
-	// fmt.Printf("\nHAND bef: %v\n", sort(declarer.hand))
+	// fmt.Printf("\nHAND bef: %v\n", sortSuit(declarer.hand))
 	// fmt.Printf("SKAT bef: %v\n", skat)
 
 	if declarer.pickUpSkat(skat) {
-		// fmt.Printf("HAND aft: %v\n", sort(declarer.hand))
+		// fmt.Printf("HAND aft: %v\n", sortSuit(declarer.hand))
 		handGame = false
 		// fmt.Printf("SKAT aft: %v\n", skat)
 	}
@@ -936,7 +919,7 @@ func game(players []*Player) (int, int) {
 	// fmt.Println("DECLARER Hand after SKAT: %v" , declarer.hand)
 
 	// fmt.Printf("BID: %d, SUIT: %d %s",
-	// 	bids[bidIndex], countCardsSuit(state.trump, declarer.hand), state.trump)
+	// 	bids[bidIndex], countTrumpsSuit(state.trump, declarer.hand), state.trump)
 
 	// PLAY
 	for i := 0; i < 10; i++ {

@@ -37,7 +37,7 @@ func greaterAux(t *testing.T, s SuitState, card1, card2 Card) {
 func TestGetSuite(t *testing.T) {
 	s := SuitState{CLUBS, HEART}
 	card := Card{SPADE, "J"}
-	if getSuite(s, card) != CLUBS {
+	if getSuite(s.trump, card) != CLUBS {
 		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + fmt.Sprintf("%v", card) + " should be CLUBS")
 	}
 }
@@ -400,19 +400,19 @@ func TestMostCardsSuit(t *testing.T) {
 		Card{SPADE, "8"},
 	})
 
-	act := countCardsSuit(CLUBS, player.hand)
+	act := countTrumpsSuit(CLUBS, player.hand)
 	if act != 4 {
 		t.Errorf("Expected %d, got %d", 4, act)
 	}
-	act = countCardsSuit(SPADE, player.hand)
+	act = countTrumpsSuit(SPADE, player.hand)
 	if act != 5 {
 		t.Errorf("Expected %d, got %d", 5, act)
 	}
-	act = countCardsSuit(CARO, player.hand)
+	act = countTrumpsSuit(CARO, player.hand)
 	if act != 6 {
 		t.Errorf("Expected %d, got %d", 6, act)
 	}
-	act = countCardsSuit(HEART, player.hand)
+	act = countTrumpsSuit(HEART, player.hand)
 	if act != 7 {
 		t.Errorf("Expected %d, got %d", 7, act)
 	}
@@ -951,7 +951,7 @@ func TestRemove1(t *testing.T) {
 
 	cardToRemove := Card{CLUBS, "J"}
 	newhand := remove(hand, cardToRemove)
-	if inHand(newhand, cardToRemove) {
+	if in(newhand, cardToRemove) {
 		t.Errorf("First Card not removed")
 	}
 
@@ -973,7 +973,7 @@ func TestRemove2(t *testing.T) {
 
 	cardToRemove := Card{SPADE, "8"}
 	newhand := remove(hand, cardToRemove)
-	if inHand(newhand, cardToRemove) {
+	if in(newhand, cardToRemove) {
 		t.Errorf("Last Card not removed")
 	}
 }
@@ -994,13 +994,13 @@ func TestRemove3(t *testing.T) {
 
 	cardToRemove := Card{CLUBS, "J"}
 	newhand := remove(hand, cardToRemove)
-	if inHand(newhand, cardToRemove) {
+	if in(newhand, cardToRemove) {
 		t.Errorf("First Card not removed")
 	}
 
 	cardToRemove = Card{SPADE, "8"}
 	newhand = remove(hand, cardToRemove)
-	if inHand(newhand, cardToRemove) {
+	if in(newhand, cardToRemove) {
 		t.Errorf("Last Card not removed")
 	}
 }
