@@ -288,7 +288,7 @@ func TestBidding(t *testing.T) {
 	}
 
 	/*
-	scenario 2
+		scenario 2
 	*/
 	player1 = makeP(23)
 	player2 = makeP(20)
@@ -304,7 +304,7 @@ func TestBidding(t *testing.T) {
 	}
 
 	/*
-	scenario 3
+		scenario 3
 	*/
 	player1 = makeP(18)
 	player2 = makeP(0)
@@ -320,7 +320,7 @@ func TestBidding(t *testing.T) {
 	}
 
 	/*
-	scenario 4
+		scenario 4
 	*/
 	player1 = makeP(0)
 	player2 = makeP(18)
@@ -336,7 +336,7 @@ func TestBidding(t *testing.T) {
 	}
 
 	/*
-	scenario 5
+		scenario 5
 	*/
 	player1 = makeP(0)
 	player2 = makeP(0)
@@ -352,7 +352,7 @@ func TestBidding(t *testing.T) {
 	}
 
 	/*
-	scenario 6
+		scenario 6
 	*/
 	player1 = makeP(18)
 	player2 = makeP(0)
@@ -368,7 +368,7 @@ func TestBidding(t *testing.T) {
 	}
 
 	/*
-	scenario 7
+		scenario 7
 	*/
 	player1 = makeP(0)
 	player2 = makeP(0)
@@ -398,7 +398,7 @@ func TestMostCardsSuit(t *testing.T) {
 		Card{HEART, "D"},
 		Card{HEART, "9"},
 		Card{SPADE, "8"},
-	})	
+	})
 
 	act := countCardsSuit(CLUBS, player.hand)
 	if act != 4 {
@@ -411,11 +411,11 @@ func TestMostCardsSuit(t *testing.T) {
 	act = countCardsSuit(CARO, player.hand)
 	if act != 6 {
 		t.Errorf("Expected %d, got %d", 6, act)
-	}	
+	}
 	act = countCardsSuit(HEART, player.hand)
 	if act != 7 {
 		t.Errorf("Expected %d, got %d", 7, act)
-	}	
+	}
 
 	most := mostCardsSuit(player.hand)
 	if most != HEART {
@@ -433,7 +433,7 @@ func TestMostCardsSuit(t *testing.T) {
 		Card{HEART, "D"},
 		Card{HEART, "9"},
 		Card{SPADE, "8"},
-	})		
+	})
 	most = mostCardsSuit(player.hand)
 	if most != CARO {
 		t.Errorf("Expected %s, got %s", CARO, most)
@@ -450,7 +450,7 @@ func TestMostCardsSuit(t *testing.T) {
 		Card{HEART, "D"},
 		Card{HEART, "9"},
 		Card{SPADE, "8"},
-	})		
+	})
 	most = mostCardsSuit(player.hand)
 	if most != SPADE {
 		t.Errorf("Expected %s, got %s", SPADE, most)
@@ -466,7 +466,7 @@ func TestMostCardsSuit(t *testing.T) {
 		Card{CLUBS, "D"},
 		Card{HEART, "9"},
 		Card{CLUBS, "8"},
-	})		
+	})
 	most = mostCardsSuit(player.hand)
 	if most != CLUBS {
 		t.Errorf("Expected %s, got %s", CLUBS, most)
@@ -487,44 +487,44 @@ func TestGameScore(t *testing.T) {
 		Card{SPADE, "8"},
 	}
 
-	act := gameScore(SuitState{CARO,""}, declarerCards, 61, 63, false, false, false)
+	act := gameScore(SuitState{CARO, ""}, declarerCards, 61, 63, false, false, false)
 	exp := 63
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(SuitState{CARO,""}, declarerCards, 60, 63, false, false, false)
+	act = gameScore(SuitState{CARO, ""}, declarerCards, 60, 63, false, false, false)
 	exp = -126
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(SuitState{HEART,""}, declarerCards, 61, 50, false, false, false)
+	act = gameScore(SuitState{HEART, ""}, declarerCards, 61, 50, false, false, false)
 	exp = 50
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(SuitState{CLUBS,""}, declarerCards, 61, 50, false, false, false)
+	act = gameScore(SuitState{CLUBS, ""}, declarerCards, 61, 50, false, false, false)
 	exp = 60
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(SuitState{SPADE,""}, declarerCards, 61, 50, false, false, false)
+	act = gameScore(SuitState{SPADE, ""}, declarerCards, 61, 50, false, false, false)
 	exp = 55
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(SuitState{SPADE,""}, declarerCards, 61, 50, false, false, true)
+	act = gameScore(SuitState{SPADE, ""}, declarerCards, 61, 50, false, false, true)
 	exp = 66
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
 	// hand is 50, OVERBID
-	act = gameScore(SuitState{HEART,""}, declarerCards, 61, 51, false, false, false)
+	act = gameScore(SuitState{HEART, ""}, declarerCards, 61, 51, false, false, false)
 	exp = -120
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
@@ -542,34 +542,34 @@ func TestGameScore(t *testing.T) {
 		Card{HEART, "9"},
 		Card{SPADE, "8"},
 	}
-	act = gameScore(SuitState{CARO,""}, declarerCards, 61, 18, false, false, false)
+	act = gameScore(SuitState{CARO, ""}, declarerCards, 61, 18, false, false, false)
 	exp = 18
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-// schneider winner
-	act = gameScore(SuitState{CARO,""}, declarerCards, 90, 18, false, false, false)
+	// schneider winner
+	act = gameScore(SuitState{CARO, ""}, declarerCards, 90, 18, false, false, false)
 	exp = 27
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
-// schneider loss
-	act = gameScore(SuitState{CARO,""}, declarerCards, 30, 18, false, false, false)
+	// schneider loss
+	act = gameScore(SuitState{CARO, ""}, declarerCards, 30, 18, false, false, false)
 	exp = -54
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-// schwarz winner
-	act = gameScore(SuitState{CARO,""}, declarerCards, 120, 18, false, true, false)
+	// schwarz winner
+	act = gameScore(SuitState{CARO, ""}, declarerCards, 120, 18, false, true, false)
 	exp = 36
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-// schwarz loss
-	act = gameScore(SuitState{CARO,""}, declarerCards, 0, 18, true, false, false)
+	// schwarz loss
+	act = gameScore(SuitState{CARO, ""}, declarerCards, 0, 18, true, false, false)
 	exp = -72
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
@@ -589,16 +589,242 @@ func TestPickUpSkat(t *testing.T) {
 		Card{HEART, "D"},
 		Card{CARO, "9"},
 		Card{SPADE, "8"},
-	})		
+	})
 
-	skat := []Card {
+	skat := []Card{
 		Card{CARO, "D"},
 		Card{CLUBS, "A"},
 	}
 
 	player.pickUpSkat(skat)
-	
-	if skat[1].suit != SPADE && skat[1].rank != "8"	&& skat[0].suit != HEART && skat[0].rank != "D" {
+
+	cc1 := skat[1].suit != SPADE || skat[1].rank != "8" 
+	cc2 := skat[0].suit != HEART || skat[0].rank != "D"
+	if cc1 || cc2 {
+		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
+	}
+
+	if len(player.hand) != 10 {
+		t.Errorf("Wrong hand size after skat change: %d", len(player.hand))
+	}
+}
+
+func TestPickUpSkat1(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CLUBS, "7"},
+		Card{SPADE, "10"},
+		Card{SPADE, "K"},
+		Card{SPADE, "D"},
+		Card{SPADE, "8"},
+		Card{HEART, "9"},
+		Card{CARO, "K"},
+		Card{CARO, "D"},
+	})
+
+	skat := []Card{
+		Card{CARO, "10"},
+		Card{HEART, "K"},
+	}
+	// fmt.Println(player.hand)
+	// fmt.Println(skat)
+	player.pickUpSkat(skat)
+	cc1 := skat[0].suit != CLUBS || skat[0].rank != "7"
+	cc2 := skat[1].suit != HEART || skat[1].rank != "K"
+	if cc1 || cc2 {
+		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
+	}
+
+	if len(player.hand) != 10 {
+		t.Errorf("Wrong hand size after skat change: %d", len(player.hand))
+	}
+}
+
+func TestPickUpSkat2(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{CLUBS, "J"},
+
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "9"},
+
+		Card{SPADE, "A"},
+		Card{SPADE, "K"},
+		Card{SPADE, "8"},
+
+		Card{HEART, "D"},
+		Card{HEART, "7"},
+		Card{CARO, "A"},
+	})
+
+	skat := []Card{
+		Card{HEART, "8"},
+		Card{CARO, "8"},
+	}
+	// fmt.Println("TestPickUpSkat2")
+	// fmt.Println(player.hand)
+	// fmt.Println(skat)
+	player.pickUpSkat(skat)
+	// fmt.Println(sort(player.hand))
+	// fmt.Println(skat)	
+	cc1 := skat[0].suit != HEART || skat[0].rank != "D"
+	cc2 := skat[1].suit != HEART || skat[1].rank != "7"
+	if cc1 || cc2 {
+		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
+	}
+
+	if len(player.hand) != 10 {
+		t.Errorf("Wrong hand size after skat change: %d", len(player.hand))
+	}
+}
+
+func TestPickUpSkat3(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{CLUBS, "9"},
+
+		Card{SPADE, "A"},
+		Card{SPADE, "D"},
+		Card{SPADE, "9"},
+		Card{SPADE, "8"},
+		Card{SPADE, "7"},
+
+		Card{HEART, "A"},
+		Card{HEART, "10"},
+
+		Card{CARO, "A"},
+		Card{CARO, "D"},
+	})
+
+	skat := []Card{
+		Card{CLUBS, "A"},
+		Card{CLUBS, "J"},
+	}
+	// fmt.Println("TestPickUpSkat3")
+	// fmt.Println(player.hand)
+	// fmt.Println(skat)
+	player.pickUpSkat(skat)
+	// fmt.Println(sort(player.hand))
+	// fmt.Println(skat)	
+	cc1 := skat[1].suit != CLUBS || skat[1].rank != "9"
+	cc2 := skat[0].suit != CARO || skat[0].rank != "D"
+	if cc1 || cc2 {
+		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
+	}
+
+	if len(player.hand) != 10 {
+		t.Errorf("Wrong hand size after skat change: %d", len(player.hand))
+	}
+}
+
+func TestPickUpSkat4(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+
+		Card{CLUBS, "10"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "8"},
+
+		Card{SPADE, "A"},
+		Card{SPADE, "10"},
+		Card{SPADE, "K"},
+
+		Card{HEART, "K"},
+
+		Card{CARO, "K"},
+	})
+
+	skat := []Card{
+		Card{CLUBS, "K"},
+		Card{HEART, "7"},
+	}
+	// fmt.Println("TestPickUpSkat4")
+	// fmt.Println(player.hand)
+	// fmt.Println(skat)
+	player.pickUpSkat(skat)
+	// fmt.Println(sort(player.hand))
+	// fmt.Println(skat)	
+	cc1 := skat[1].suit != HEART || skat[1].rank != "K"
+	cc2 := skat[0].suit != CARO || skat[0].rank != "K"
+	if cc1 || cc2 {
+		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
+	}
+
+	if len(player.hand) != 10 {
+		t.Errorf("Wrong hand size after skat change: %d", len(player.hand))
+	}
+}
+
+func TestPickUpSkat5(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{HEART, "J"},
+
+		Card{CLUBS, "A"},
+		Card{CLUBS, "K"},
+		Card{CLUBS, "D"},
+
+		Card{SPADE, "A"},
+
+		Card{HEART, "9"},
+
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{CARO, "9"},
+		Card{CARO, "8"},
+	})
+
+	skat := []Card{
+		Card{SPADE, "J"},
+		Card{SPADE, "9"},
+	}
+	// fmt.Println("TestPickUpSkat5")
+	// fmt.Println(player.hand)
+	// fmt.Println(skat)
+	player.pickUpSkat(skat)
+	// fmt.Println(sort(player.hand))
+	// fmt.Println(skat)	
+	cc1 := skat[1].suit != SPADE || skat[1].rank != "9"
+	cc2 := skat[0].suit != HEART || skat[0].rank != "9"
+	if cc1 || cc2 {
+		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
+	}
+
+	if len(player.hand) != 10 {
+		t.Errorf("Wrong hand size after skat change: %d", len(player.hand))
+	}
+}
+
+func TestPickUpSkat6(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+
+		Card{SPADE, "A"},
+		Card{SPADE, "9"},
+
+		Card{HEART, "A"},
+
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{CARO, "D"},
+		Card{CARO, "9"},
+	})
+
+	skat := []Card{
+		Card{CARO, "7"},
+		Card{SPADE, "J"},
+	}
+	// fmt.Println("TestPickUpSkat6")
+	// fmt.Println(player.hand)
+	// fmt.Println(skat)
+	player.pickUpSkat(skat)
+	// fmt.Println(sort(player.hand))
+	// fmt.Println(skat)	
+	cc1 := skat[1].suit != CARO || skat[1].rank != "7"
+	cc2 := skat[0].suit != SPADE || skat[0].rank != "9"
+	if cc1 || cc2 {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
 	}
 
@@ -643,7 +869,7 @@ func TestHandEstimation(t *testing.T) {
 		Card{SPADE, "8"},
 	})
 	_ = player
-	//fmt.Println(player.handEstimation())	
+	//fmt.Println(player.handEstimation())
 }
 
 func TestSum(t *testing.T) {
@@ -655,7 +881,7 @@ func TestSum(t *testing.T) {
 }
 
 func TestDeck(t *testing.T) {
-	for i:=0; i < 10; i++ {
+	for i := 0; i < 10; i++ {
 		auxDeck(t)
 	}
 }
@@ -736,7 +962,6 @@ func TestRemove3(t *testing.T) {
 		t.Errorf("First Card not removed")
 	}
 
-
 	cardToRemove = Card{SPADE, "8"}
 	newhand = remove(hand, cardToRemove)
 	if inHand(newhand, cardToRemove) {
@@ -756,8 +981,8 @@ func TestFindBlankCards(t *testing.T) {
 		Card{HEART, "D"},
 		Card{HEART, "9"},
 		Card{SPADE, "10"},
-	})	
-	cards := player.findBlankCards()
+	})
+	cards := findBlankCards(player.hand)
 
 	if len(cards) != 1 {
 		t.Errorf("Expected 1. Found blank cards: %d", len(cards))
@@ -765,12 +990,12 @@ func TestFindBlankCards(t *testing.T) {
 		c := cards[0]
 		if c.suit != SPADE && c.rank != "10" {
 			t.Errorf("Found wrong blank card %v", c)
-		}	
+		}
 	}
- 
+
 	player.hand = append(player.hand, Card{CLUBS, "7"})
 
-	cards = player.findBlankCards()
+	cards = findBlankCards(player.hand)
 
 	if len(cards) != 2 {
 		t.Errorf("Expected 2. Found blank cards: %d", len(cards))
@@ -779,6 +1004,6 @@ func TestFindBlankCards(t *testing.T) {
 		c2 := cards[1]
 		if c1.suit != SPADE && c1.rank != "10" {
 			t.Errorf("Blank Cards in wrong order %v, %v", c1, c2)
-		}			
+		}
 	}
 }

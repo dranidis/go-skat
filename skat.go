@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	"time"
+	_"time"
+
+	"github.com/fatih/color"
 )
 
 const CLUBS = "CLUBS"
@@ -11,11 +13,32 @@ const SPADE = "SPADE"
 const HEART = "HEART"
 const CARO = "CARO"
 
+
+var r = rand.New(rand.NewSource(3))
+//var r = rand.New(rand.NewSource(time.Now().Unix()))
+
 type Card struct {
 	suit string
 	rank string
 }
 
+func (c Card) String() string {
+	black := color.New(color.Bold, color.FgWhite).SprintFunc()
+	green := color.New(color.Bold, color.FgGreen).SprintFunc()
+	red := color.New(color.Bold, color.FgRed).SprintFunc()
+	yellow := color.New(color.Bold, color.FgYellow).SprintFunc()
+	switch c.suit {
+	case CLUBS:
+		return black(c.rank) 
+	case SPADE:
+		return green(c.rank) 
+	case HEART:
+		return red(c.rank) 
+	case CARO:
+		return yellow(c.rank) 
+	}
+	return ""
+}
 type SuitState struct {
 	trump  string
 	follow string
@@ -59,7 +82,7 @@ func sum(trick []Card) int {
 		return 0
 	}
 	s := 0
-	for _,c := range trick {
+	for _, c := range trick {
 		s += val(c)
 	}
 	return s
@@ -139,8 +162,6 @@ func round(s *SuitState, players []*Player) []*Player {
 	return players
 }
 
-//var r = rand.New(rand.NewSource(99))
-var r = rand.New(rand.NewSource(time.Now().Unix()))
 
 func firstCardTactic(c []Card) Card {
 	return c[0]
@@ -404,21 +425,26 @@ func (p *Player) otherCardsEstimation(suit string) int {
 	return 0
 }
 
-var	suits = []string{CLUBS, SPADE, HEART, CARO}
-var	ranks = []string{"J", "A", "10", "K", "D", "9", "8", "7"}
+var suits = []string{CLUBS, SPADE, HEART, CARO}
+var ranks = []string{"J", "A", "10", "K", "D", "9", "8", "7"}
 
-func sortRank(cs []Card) []Card {
+func sortRankSpecial(cs []Card, ranks[]string) []Card {
 	cards := []Card{}
 
 	for _, r := range ranks {
 		for _, s := range suits {
 			if inHand(cs, Card{s, r}) {
 				cards = append(cards, Card{s, r})
-			}			
+			}
 		}
 
 	}
 	return cards
+}
+
+
+func sortRank(cs []Card) []Card {
+	return sortRankSpecial(cs, ranks)
 }
 
 func sort(cs []Card) []Card {
@@ -492,7 +518,7 @@ func (p *Player) calculateHighestBid() {
 	prob := 0
 	if largest > 4 && assOtherThan(suit) > 1 {
 		prob = 80
-	}	
+	}
 	if largest > 5 {
 		prob = 85
 	}
@@ -500,9 +526,8 @@ func (p *Player) calculateHighestBid() {
 		prob = 99
 	}
 
-
 	if prob < 80 && p.handEstimation() < 45 {
-	//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sort(p.hand))
+		//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sort(p.hand))
 		return
 	}
 	// fmt.Printf("HIGH %d %v\n", p.handEstimation(), sort(p.hand))
@@ -563,10 +588,24 @@ func countCardsSuit(suit string, cards []Card) int {
 	return count
 }
 
-
 func countCardsSuitNotJ(suit string, cards []Card) int {
 	count := 0
 	for _, c := range cards {
+		if c.suit == suit && c.rank != "J" {
+			count++
+		}
+	}
+	return count
+}
+
+
+func countCardsSuitNotJNotA(suit string, cards []Card) int {
+	count := 0
+	for _, c := range cards {
+		if c.suit == suit && c.rank == "A" {
+			// we don't want to discard a suit having an A
+			return 100
+		}		
 		if c.suit == suit && c.rank != "J" {
 			count++
 		}
@@ -592,20 +631,36 @@ func mostCardsSuit(cards []Card) string {
 }
 
 func lessCardsSuit(cards []Card) string {
-	c := countCardsSuit(CLUBS, cards)
-	s := countCardsSuit(SPADE, cards)
-	h := countCardsSuit(HEART, cards)
-	k := countCardsSuit(CARO, cards)
-	if c < s && c < h && c < k {
+	c := countCardsSuitNotJNotA(CLUBS, cards)
+	s := countCardsSuitNotJNotA(SPADE, cards)
+	h := countCardsSuitNotJNotA(HEART, cards)
+	k := countCardsSuitNotJNotA(CARO, cards)
+	if c == 0 {
+		c = 9999 // no cards for comparison below
+	}
+	if s == 0 {
+		s = 9999
+	}	
+	if h == 0 {
+		h = 9999
+	}	
+	if k == 0 {
+		k = 9999
+	}	
+	fmt.Println("lessCardsSuit", c, s, h, k)
+	if c != 0 && c < s && c < h && c < k {
 		return CLUBS
 	}
-	if s < h && s < k {
+	if s !=0 && s < h && s < k {
 		return SPADE
 	}
-	if h < k {
+	if h !=0 && h < k {
 		return HEART
 	}
-	return CARO
+	if k != 0 {
+		return CARO
+	}
+	return ""
 }
 
 func filter(cards []Card, f func(Card) bool) []Card {
@@ -622,11 +677,11 @@ func (p *Player) declareTrump() string {
 	return mostCardsSuit(p.hand)
 }
 
-func (p *Player) findBlank(suit string) Card {
-	cc := countCardsSuitNotJ(suit, p.hand)
+func findBlank(cards []Card, suit string) Card {
+	cc := countCardsSuitNotJ(suit, cards)
 	if cc == 1 {
-		var card Card 
-		for _, c := range p.hand {
+		var card Card
+		for _, c := range cards {
 			if c.rank == "J" {
 				continue
 			}
@@ -641,58 +696,122 @@ func (p *Player) findBlank(suit string) Card {
 	}
 	return Card{"", ""}
 }
+
 // returns blank cards in order of rank value
-func (p *Player) findBlankCards() []Card {
+func findBlankCards(cards []Card) []Card {
 	blankCards := []Card{}
-	for _,s := range suits {
-		card := p.findBlank(s) 
+	for _, s := range suits {
+		card := findBlank(cards, s)
 		if card.rank != "" {
 			blankCards = append(blankCards, card)
-		}		
+		}
 	}
 	blankCards = sortRank(blankCards)
 	return blankCards
 }
 
+func nonA10cards(cs []Card) [] Card {
+	suitf := func(suit string, cs []Card) [] Card {
+		cards := filter(cs, func(c Card) bool {
+			return c.suit == suit && c.rank != "J"
+			})
+		if inHand(cards, Card{suit, "A"}) && ! inHand(cards, Card{suit, "10"}) {
+			cards := filter(cards, func(c Card) bool {
+				return c.rank != "A"
+				})
+			return cards			
+		}
+		return []Card{}
+	}
+
+	cards := []Card{}
+	cards = append(cards, suitf(CLUBS, cs)...)
+	cards = append(cards, suitf(SPADE, cs)...)
+	cards = append(cards, suitf(HEART, cs)...)
+	cards = append(cards, suitf(CARO, cs)...)
+	return cards
+}
+
 func (p *Player) discardInSkat(skat []Card) {
-	bcards := p.findBlankCards()
-	//fmt.Printf("BLANK %v\n", bcards)
+	fmt.Printf("FULL HAND %v\n", p.hand)
+
+	// discard BLANKS
+	
+	bcards := findBlankCards(p.hand)
+	fmt.Printf("BLANK %v\n", bcards)
 	removed := 0
 	if len(bcards) > 0 {
 		p.hand = remove(p.hand, bcards[0])
 		skat[0] = bcards[0]
-	//	fmt.Printf("1st %v\n", skat)
+		//	fmt.Printf("1st %v\n", skat)
 		removed++
 	}
 	if len(bcards) > 1 {
 		p.hand = remove(p.hand, bcards[1])
 		skat[1] = bcards[1]
-	//	fmt.Printf("2nd %v\n", skat)
+		//	fmt.Printf("2nd %v\n", skat)
 		return
-	} 
-	
+	}
+	// Discard high cards in non-A suits with few colors
+	sranks := []string{"J", "A", "10", "K", "D", "7", "8", "9"}
+
 	lsuit := lessCardsSuit(p.hand)
-	lcards := sortRank(filter(p.hand, func(c Card) bool {
-		return c.suit == lsuit && c.rank != "A"
-		}))
-	if len(lcards) > 1 {
-		i := 1
+	if lsuit != "" {
+		lcards := sortRankSpecial(filter(p.hand, func(c Card) bool {
+			return c.suit == lsuit && c.rank != "A" && c.rank != "J"
+		}), sranks)
+		if len(lcards) < 4 { // do not throw long fleets
+			fmt.Printf("SUIT %v LESS %v\n", lsuit, lcards)
+
+			if len(lcards) > 1 {
+				i := 0
+				for removed < 2 {
+					p.hand = remove(p.hand, lcards[i])
+					skat[removed] = lcards[i]
+					i++
+					removed++
+				}
+				return
+			}			
+		}
+	}
+
+	// Discard non-A-10 suit cards
+	ncards := nonA10cards(p.hand)
+	ncards = findBlankCards(ncards)
+	fmt.Printf("nonA10cards %v\n", ncards)
+
+	if len(ncards) > 1 {
+		i := 0
 		for removed < 2 {
-			p.hand = remove(p.hand, lcards[len(lcards)-i])
-			skat[removed] = lcards[len(lcards)-i]
+			p.hand = remove(p.hand, ncards[i])
+			skat[removed] = ncards[i]
 			i++
-			removed++	
+			removed++
 		}
 		return
 	}
+
+	if len(ncards) == 1 {
+		p.hand = remove(p.hand, ncards[0])
+		skat[removed] = ncards[0]
+		removed++
+
+		if removed == 2 {
+			return
+		}
+	}	
+
+	// DESPARATE???
+	p.hand = sort(p.hand)
 	if removed == 1 {
-		card := p.hand[0]
+		card := p.hand[len(p.hand)-1]
 		p.hand = remove(p.hand, card)
 		skat[1] = card
 		return
-	} 
-	c1 := p.hand[0]
-	c2 := p.hand[1]
+	}
+	c1 := p.hand[len(p.hand)-1]
+	c2 := p.hand[len(p.hand)-2]
 	p.hand = remove(p.hand, c1)
 	p.hand = remove(p.hand, c2)
 	skat[0] = c1
@@ -793,7 +912,6 @@ func game(players []*Player) bool {
 		p.calculateHighestBid()
 	}
 
-
 	// BIDDING
 	bidIndex, declarer := bid(players)
 	if bidIndex == -1 {
@@ -813,7 +931,7 @@ func game(players []*Player) bool {
 
 	// HAND GAME?
 	handGame := true
-	fmt.Printf("HAND bef: %v\n", sort(declarer.hand))
+	fmt.Printf("\nHAND bef: %v\n", sort(declarer.hand))
 	fmt.Printf("SKAT bef: %v\n", skat)
 
 	if declarer.pickUpSkat(skat) {
@@ -833,7 +951,6 @@ func game(players []*Player) bool {
 	// fmt.Printf("BID: %d, SUIT: %d %s",
 	// 	bids[bidIndex], countCardsSuit(state.trump, declarer.hand), state.trump)
 
-
 	// fmt.Printf("HAND 1 %v\n", players[0].hand)
 	// fmt.Printf("HAND 2 %v\n", players[1].hand)
 	// fmt.Printf("HAND 3 %v\n", players[2].hand)
@@ -844,18 +961,18 @@ func game(players []*Player) bool {
 	}
 	// fmt.Printf("SKAT: %v, %d\n", skat, sum(skat))
 	declarer.score += sum(skat)
- 
+
 	gs := gameScore(state, declarerCards, declarer.score, bids[bidIndex],
 		declarer.schwarz, opp1.schwarz && opp2.schwarz, handGame)
 
 	declarer.totalScore += gs
 
 	if declarer.score > 60 {
-			// fmt.Printf(" VICTORY: %d - %d, SCORE: %d\n", 
-				// declarer.score, opp1.score + opp2.score, gs)
+		// fmt.Printf(" VICTORY: %d - %d, SCORE: %d\n",
+		// declarer.score, opp1.score + opp2.score, gs)
 	} else {
-			// fmt.Printf(" LOSS: %d - %d, SCORE: %d\n", 
-				// declarer.score, opp1.score + opp2.score, gs)
+		// fmt.Printf(" LOSS: %d - %d, SCORE: %d\n",
+		// declarer.score, opp1.score + opp2.score, gs)
 	}
 
 	return true
@@ -870,7 +987,7 @@ func main() {
 	players := []*Player{&player1, &player2, &player3}
 
 	passed := 0
-	totalGames := 3
+	totalGames := 36
 	for times := totalGames; times > 0; times-- {
 		for _, p := range players {
 			p.score = 0
