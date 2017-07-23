@@ -270,7 +270,6 @@ func TestBidding(t *testing.T) {
 	makeP := func(high int) Player {
 		return Player{
 			[]Card{},
-			firstCardTactic,
 			high,
 			0, true, 0}
 	}

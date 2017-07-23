@@ -143,7 +143,6 @@ type tactic func([]Card) Card
 
 type Player struct {
 	hand         []Card
-	playerTactic tactic
 	highestBid   int
 	score        int
 	schwarz      bool
@@ -287,6 +286,10 @@ func round(s *SuitState, players []*Player) []*Player {
 	return players
 }
 
+func (p Player) playerTactic(s *SuitState, c []Card) Card {
+	return firstCardTactic(c)
+}
+
 func firstCardTactic(c []Card) Card {
 	return c[0]
 }
@@ -299,7 +302,7 @@ func randomCardTactic(c []Card) Card {
 func (p *Player) play(s *SuitState) Card {
 	// fmt.Println("\nPLAYER PLAYS")
 	valid := validCards(*s, p.hand)
-	card := p.playerTactic(valid)
+	card := p.playerTactic(s, valid)
 	// fmt.Println(s, card, p.hand)
 	p.hand = remove(p.hand, card)
 	s.trick = append(s.trick, card)
@@ -380,7 +383,7 @@ func (s SuitState) greater(card1, card2 Card) bool {
 }
 
 func makePlayer(hand []Card) Player {
-	return Player{hand, firstCardTactic, 0, 0, true, 0}
+	return Player{hand, 0, 0, true, 0}
 }
 
 var bids = []int{
