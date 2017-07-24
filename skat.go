@@ -351,6 +351,7 @@ func HighestLong(trump string, c []Card) Card {
 		return cards[0]
 	}
 	// last card?
+	gameLog("... DEBUG ... VALID: %v no highest long. Returning: %v\n", c, c[0])
 	return c[0]
 }
 
@@ -372,26 +373,43 @@ func (p Player) playerTactic(s *SuitState, c []Card) Card {
 	if p.isHuman {
 		gameLog("Hand : %v\n", p.hand)
 		gameLog("Valid: %v\n", c)
-		fmt.Printf("CARD?")
-		// reader := bufio.NewReader(os.Stdin)
-		// char, _, err := reader.ReadRune()
+		for {
+			fmt.Printf("CARD? ")
+			// reader := bufio.NewReader(os.Stdin)
+			// char, _, err := reader.ReadRune()
 
-		// if err != nil {
-		// 	fmt.Println(err)
-		// }
-    	var i int
-    	_, err := fmt.Scanf("%d", &i)
-		if err != nil {
-			fmt.Println(err)
-		}    	
-    	return c[i-1]
-		//return c[int(char - '0')-1]
+			// if err != nil {
+			// 	fmt.Println(err)
+			// }
+	    	var i int
+	    	_, err := fmt.Scanf("%d", &i)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			if i > len(c) {
+				continue
+			}    	
+	    	return c[i-1]
+			//return c[int(char - '0')-1]			
+		}
+
 	}
 
 	if p.isDeclarer {
 		return p.declarerTactic(s, c)
 	}
 	// OPPONENTS TACTIC
+
+	// if opp plays first high-value card and
+	// partner has highest trump then he should play it
+
+
+	// if trick has no value, e.g. 7 8
+	// don't take it with a trump if you can save it.
+
+	// if solist is fishing with a low value trump
+	// don't waste your high value trump to take a low-value trick
 
 	if len(s.trick) == 0 {
 		return HighestLong(s.trump, c)
@@ -531,20 +549,27 @@ avg: -25 with random play, 25 with random play and good discard
 func (p *Player) accepts(bidIndex int) bool {
 	if p.isHuman {
 		fmt.Printf("HAND: %v", p.hand)
-		fmt.Printf("BID %d?", bids[bidIndex])
-		reader := bufio.NewReader(os.Stdin)
-		char, _, err := reader.ReadRune()
+		for {
+			fmt.Printf("BID %d? (y/n)", bids[bidIndex])
+			reader := bufio.NewReader(os.Stdin)
+			char, _, err := reader.ReadRune()
 
-		if err != nil {
-			fmt.Println(err)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+
+			switch char {
+			case 'y':
+				return true
+			case 'n':
+				return false
+			default:
+				fmt.Printf("... don't understand! ")
+				continue
+			}
 		}
 
-		switch char {
-		case 'y':
-			return true
-		case 'n':
-			return false
-		}
 	}
 	return bids[bidIndex] <= p.highestBid
 }
@@ -842,24 +867,30 @@ func (p *Player) declareTrump() string {
 
 	if p.isHuman {
 		fmt.Printf("HAND: %v\n", sortSuit("", p.hand))
-		fmt.Printf("TRUMP? (1 for CLUBS, 2 for SPADE, 3 for HEART, 4 for CARO)")
-		reader := bufio.NewReader(os.Stdin)
-		char, _, err := reader.ReadRune()
+		for {
+			fmt.Printf("TRUMP? (1 for CLUBS, 2 for SPADE, 3 for HEART, 4 for CARO)")
+			reader := bufio.NewReader(os.Stdin)
+			char, _, err := reader.ReadRune()
 
-		if err != nil {
-			fmt.Println(err)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+
+			switch char {
+			case '1':
+				return CLUBS
+			case '2':
+				return SPADE
+			case '3':
+				return HEART
+			case '4':
+				return CARO
+			default:
+				continue
+			}			
 		}
 
-		switch char {
-		case '1':
-			return CLUBS
-		case '2':
-			return SPADE
-		case '3':
-			return HEART
-		case '4':
-			return CARO
-		}
 	}
 
 	return mostCardsSuit(p.hand)
@@ -924,25 +955,33 @@ func (p *Player) discardInSkat(skat []Card) {
 	if p.isHuman {
 		p.hand = sortSuit("", p.hand)
 		gameLog("Full Hand : %v\n", p.hand)
-		fmt.Printf("DISCARD CARD?")
+		for {
+			fmt.Printf("DISCARD CARDS?")
 
-    	var i1, i2 int
-    	_, err := fmt.Scanf("%d", &i1)
-		if err != nil {
-			fmt.Println(err)
-		}  
-		 _, err = fmt.Scanf("%d", &i2)
-		if err != nil {
-			fmt.Println(err)
+	    	var i1, i2 int
+	    	_, err := fmt.Scanf("%d", &i1)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}  
+			 _, err = fmt.Scanf("%d", &i2)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			//fmt.Println(i1, i2)
+			if i1 > len(p.hand) || i2 > len(p.hand) || i1 == i2 {
+				continue
+			}
+			card1 :=  p.hand[i1-1]   	
+			card2 :=  p.hand[i2-1]   	
+			p.hand = remove(p.hand, card1)
+			p.hand = remove(p.hand, card2)
+			skat[0] = card1
+			skat[1] = card2
+			return			
 		}
-		fmt.Println(i1, i2)
-		card1 :=  p.hand[i1-1]   	
-		card2 :=  p.hand[i2-1]   	
-		p.hand = remove(p.hand, card1)
-		p.hand = remove(p.hand, card2)
-		skat[0] = card1
-		skat[1] = card2
-		return
+
 	}
 	// fmt.Printf("FULL HAND %v\n", p.hand)
 
@@ -1048,24 +1087,31 @@ func gameScore(state SuitState, cs []Card, score, bid int,
 		mat = mat * -1
 	}
 	multiplier := mat + 1
+
+	gameLog("With %d ", mat)
+
 	base := trumpBaseValue(state.trump)
 
 	if handGame {
 		multiplier++
+		gameLog("Hand ")
 	}
 	// Schneider?
 	if score > 89 || score < 31 {
 		multiplier++
+		gameLog("Schneider ")
 	}
 
 	if decSchwarz || oppSchwarz {
 		multiplier++
+		gameLog("Schwarz ")
 	}
-
+	gameLog("\n")
 	gs := multiplier * base
 
 	// OVERBID?
 	if gs < bid {
+		gameLog("OVERBID!!! Game Value: %d < Bid: %d", gs, bid)
 		leastMult := 0
 		for leastMult*base < bid {
 			leastMult++
@@ -1148,6 +1194,7 @@ func game(players []*Player) (int, int) {
 
 	// PLAY
 	for i := 0; i < 10; i++ {
+		gameLog("\n")
 		players = round(&state, players)
 	}
 	// gameLog("SKAT: %v, %d\n", skat, sum(skat))
