@@ -1182,6 +1182,77 @@ func TestOpponentTactic2(t *testing.T) {
 	}
 }
 
+func TestOpponentTactic3(t *testing.T) {
+
+	// if you have a card with suit played in a previous trick 
+	// started from you or your partner continue with it.
+
+	otherPlayer := makePlayer([]Card{})
+	//teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &otherPlayer
+	s.trump = CLUBS
+	s.trick = []Card{}
+
+	player.previousSuit = CARO
+
+	validCards := []Card{Card{CARO, "8"}, 
+		Card{HEART, "9"},
+		Card{HEART, "10"},
+		Card{HEART, "A"},
+	}
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "8"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v and valid %v, expected to play %v to follow previously played suit, played %v", 
+			s.trick, validCards, exp, card)
+	}
+}
+
+func TestOpponentTactic4(t *testing.T) {
+
+	// if you have a card with suit played in a previous trick 
+	// started from you or your partner continue with it.
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &otherPlayer
+
+
+
+	s.trump = CLUBS
+	s.trick = []Card{}
+	teamMate.previousSuit = CARO
+	validCards := []Card{Card{CARO, "8"}, 
+		Card{HEART, "9"},
+		Card{HEART, "10"},
+		Card{HEART, "A"},
+	}
+//
+	s.opp1 = &player
+	s.opp2 = &teamMate
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "8"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v and valid %v, expected to play %v to follow previously played suit, played %v", 
+			s.trick, validCards, exp, card)
+	}
+//
+	s.opp2 = &player
+	s.opp1 = &teamMate
+	card = player.playerTactic(&s, validCards)
+	exp = Card{CARO, "8"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v and valid %v, expected to play %v to follow previously played suit, played %v", 
+			s.trick, validCards, exp, card)
+	}
+}
+
 func TestLongestNonTrumpSuit(t *testing.T) {
 	cards := []Card{
 		Card{CARO, "10"},

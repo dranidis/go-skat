@@ -179,6 +179,7 @@ type Player struct {
 	score      int
 	schwarz    bool
 	totalScore int
+	previousSuit string
 }
 
 func Shuffle(cards []Card) []Card {
@@ -342,7 +343,7 @@ func highestValueWinnerORlowestValueLoser(s *SuitState, c []Card) Card {
 	} else {
 		winners = sortValue(winners)
 	}
-	gameLog("Trick: %v Winners: %v\n", s.trick, winners)
+	//gameLog("Trick: %v Winners: %v\n", s.trick, winners)
 	if len(winners) > 0 {
 		// return winners[len(winners)-1]
 		return winners[0]
@@ -384,7 +385,7 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 }
 
 func (p *Player) playerTactic(s *SuitState, c []Card) Card {
-
+	c = sortSuit(s.trump, c)
 	//gameLog("Trick: %v\n", s.trick)
 	gameLog("Trick: %v,   valid: %v\n", s.trick, c)
 	if s.declarer == p {
@@ -430,19 +431,36 @@ func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 	// don't take it with a trump if you can save it.
 
 	if len(s.trick) == 0 {
-		return HighestLong(s.trump, c)
-	}
-	if len(s.trick) == 2 {
-		if s.leader == s.declarer {
-			if s.greater(s.trick[0], s.trick[1]) {
-				return highestValueWinnerORlowestValueLoser(s, c)
+		// if you have a card with suit played in a previous trick started from you or your partner continue with it
+		// else
+		prevSuit := ""
+		partnerFunc := func(p *Player) *Player {
+			if s.opp1 == p {
+				return s.opp2
 			}
-			return sortValue(c)[0]
+			return s.opp1
 		}
-		if s.greater(s.trick[0], s.trick[1]) {
-			return sortValue(c)[0]
+		if p.previousSuit != "" {
+			prevSuit = p.previousSuit
+		} else if partnerFunc(p).previousSuit != "" {
+			prevSuit = partnerFunc(p).previousSuit
 		}
-		return highestValueWinnerORlowestValueLoser(s, c)
+		if prevSuit == "" {
+			card := HighestLong(s.trump, c)
+			p.previousSuit = getSuite(s.trump, card)
+			return card
+		}
+		suitCards := filter(c, func (c Card) bool {
+			return c.suit == prevSuit
+			})
+		if len(suitCards) > 0 {
+			fmt.Println("Following previous suit...")
+			return suitCards[0]
+		}
+
+		card := HighestLong(s.trump, c)
+		p.previousSuit = card.suit
+		return card
 	}
 
 	if len(s.trick) == 1 {
@@ -456,6 +474,19 @@ func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 			// return sortValue(c)[len(c)-1]
 		}
 	}
+
+	if len(s.trick) == 2 {
+		if s.leader == s.declarer {
+			if s.greater(s.trick[0], s.trick[1]) {
+				return highestValueWinnerORlowestValueLoser(s, c)
+			}
+			return sortValue(c)[0]
+		}
+		if s.greater(s.trick[0], s.trick[1]) {
+			return sortValue(c)[0]
+		}
+		return highestValueWinnerORlowestValueLoser(s, c)
+	}	
 	return highestValueWinnerORlowestValueLoser(s, c)
 }
 
@@ -554,7 +585,7 @@ func (s SuitState) greater(card1, card2 Card) bool {
 func makePlayer(hand []Card) Player {
 	return Player{false, 
 		// false, 
-		hand, 0, 0, true, 0}
+		hand, 0, 0, true, 0, ""}
 }
 
 var bids = []int{
@@ -1104,6 +1135,32 @@ func (p *Player) discardInSkat(skat []Card) {
 }
 
 func (p *Player) pickUpSkat(skat []Card) bool {
+	if p.isHuman {
+		fmt.Printf("HAND: %v", p.hand)
+		yes := false
+		for !yes {
+			fmt.Printf("Pick up SKAT? (y/n/q) ")
+			reader := bufio.NewReader(os.Stdin)
+			char, _, err := reader.ReadRune()
+
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+
+			switch char {
+			case 'y':
+				yes = true
+			case 'n':
+				return false			
+			case 'q':
+				os.Exit(0)
+			default:
+				fmt.Printf("... don't understand! ")
+				continue
+			}
+		}
+	}
 	hand := make([]Card, 10)
 	copy(hand, p.hand)
 	hand = append(hand, skat...)
@@ -1275,6 +1332,7 @@ func main() {
 		for _, p := range players {
 			p.score = 0
 			p.schwarz = true
+			p.previousSuit = ""
 		}
 		score, oppScore := game(players)
 		if score == 0 && oppScore == 0 {
