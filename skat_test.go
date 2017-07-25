@@ -603,7 +603,7 @@ func TestPickUpSkat(t *testing.T) {
 
 	player.pickUpSkat(skat)
 
-	cc1 := skat[1].suit != SPADE || skat[1].rank != "8" 
+	cc1 := skat[1].suit != SPADE || skat[1].rank != "8"
 	cc2 := skat[0].suit != HEART || skat[0].rank != "D"
 	if cc1 || cc2 {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
@@ -672,7 +672,7 @@ func TestPickUpSkat2(t *testing.T) {
 	// fmt.Println(skat)
 	player.pickUpSkat(skat)
 	// fmt.Println(sort(player.hand))
-	// fmt.Println(skat)	
+	// fmt.Println(skat)
 	cc1 := skat[0].suit != HEART || skat[0].rank != "D"
 	cc2 := skat[1].suit != HEART || skat[1].rank != "7"
 	if cc1 || cc2 {
@@ -710,7 +710,7 @@ func TestPickUpSkat3(t *testing.T) {
 	// fmt.Println(skat)
 	player.pickUpSkat(skat)
 	// fmt.Println(sort(player.hand))
-	// fmt.Println(skat)	
+	// fmt.Println(skat)
 	cc1 := skat[1].suit != CLUBS || skat[1].rank != "9"
 	cc2 := skat[0].suit != CARO || skat[0].rank != "D"
 	if cc1 || cc2 {
@@ -749,7 +749,7 @@ func TestPickUpSkat4(t *testing.T) {
 	// fmt.Println(skat)
 	player.pickUpSkat(skat)
 	// fmt.Println(sort(player.hand))
-	// fmt.Println(skat)	
+	// fmt.Println(skat)
 	cc1 := skat[1].suit != HEART || skat[1].rank != "K"
 	cc2 := skat[0].suit != CARO || skat[0].rank != "K"
 	if cc1 || cc2 {
@@ -788,7 +788,7 @@ func TestPickUpSkat5(t *testing.T) {
 	// fmt.Println(skat)
 	player.pickUpSkat(skat)
 	// fmt.Println(sort(player.hand))
-	// fmt.Println(skat)	
+	// fmt.Println(skat)
 	cc1 := skat[1].suit != SPADE || skat[1].rank != "9"
 	cc2 := skat[0].suit != HEART || skat[0].rank != "9"
 	if cc1 || cc2 {
@@ -826,7 +826,7 @@ func TestPickUpSkat6(t *testing.T) {
 	// fmt.Println(skat)
 	player.pickUpSkat(skat)
 	// fmt.Println(sortSuit("", player.hand))
-	// fmt.Println(skat)	
+	// fmt.Println(skat)
 	cc1 := skat[1].suit != HEART || skat[1].rank != "A"
 	cc2 := skat[0].suit != SPADE || skat[0].rank != "9"
 	if cc1 || cc2 {
@@ -862,7 +862,7 @@ func TestPickUpSkat7(t *testing.T) {
 	// fmt.Println(skat)
 	player.pickUpSkat(skat)
 	// fmt.Println(sortSuit("", player.hand))
-	// fmt.Println(skat)	
+	// fmt.Println(skat)
 	cc1 := skat[1].suit != SPADE || skat[1].rank != "A"
 	cc2 := skat[0].suit != HEART || skat[0].rank != "A"
 	if cc1 || cc2 {
@@ -1050,18 +1050,183 @@ func TestFindBlankCards(t *testing.T) {
 }
 
 func TestGame(t *testing.T) {
-	for i:= 0 ; i < 100; i++ {
+	for i := 0; i < 10; i++ {
 		player1 := makePlayer([]Card{})
 		player2 := makePlayer([]Card{})
 		player3 := makePlayer([]Card{})
 
-		players := []*Player{&player1, &player2, &player3}	
+		players := []*Player{&player1, &player2, &player3}
 		score, oppScore := game(players)
 
-		if score !=0 || oppScore != 0 {
-			if score + oppScore != 120 {
-				t.Errorf("Game score not 120: %d", score + oppScore)
+		if score != 0 || oppScore != 0 {
+			if score+oppScore != 120 {
+				t.Errorf("Game score not 120: %d", score+oppScore)
 			}
 		}
+	}
+}
+
+func TestOpponentTactic1(t *testing.T) {
+
+	// if player has J caro and A trump and is required to play a trump
+	// in a losing trick he should play J
+	// in a winning trick he should play A
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.follow = CLUBS
+
+	validCards := []Card{Card{CARO, "J"}, Card{CLUBS, "A"}}
+
+	s.trick = []Card{Card{CLUBS, "J"}}
+
+	s.declarer = &otherPlayer
+
+	s.leader = &otherPlayer
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "J"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by opponent, valid %v, expected to play %v, played %v", 
+			s.trick, validCards, exp, card)
+	}
+
+	s.leader = &teamMate
+	card = player.playerTactic(&s, validCards)
+	exp = Card{CLUBS, "A"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by teammate, valid %v, expected to play %v, played %v", 
+			s.trick, validCards, exp, card)
+	}
+
+	s.trick = []Card{Card{CLUBS, "10"}}
+
+	s.leader = &otherPlayer
+	card = player.playerTactic(&s, validCards)
+
+	exp = Card{CLUBS, "A"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by opponent, and valid cards: %v expected to play %v, played %v", 
+			s.trick, validCards, exp, card)
+	}
+
+	s.leader = &teamMate
+	card = player.playerTactic(&s, validCards)
+
+	exp = Card{CLUBS, "A"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v, expected to play %v, played %v", s.trick, exp, card)
+	}
+
+	//////////////
+	s.trick = []Card{Card{CLUBS, "J"}}
+	validCards = []Card{Card{CARO, "J"}, Card{CLUBS, "A"}, Card{CLUBS, "D"}, Card{CLUBS, "9"}}
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	card = player.playerTactic(&s, validCards)
+	exp = Card{CLUBS, "9"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by opponent, and valid cards: %v expected to play %v, played %v", 
+			s.trick, validCards, exp, card)
+	}
+
+	//////////////
+	s.trick = []Card{Card{CARO, "A"}, Card{CARO, "7"}}
+	validCards = []Card{Card{CARO, "K"}, Card{CARO, "10"}, Card{CARO, "7"}}
+	s.leader = &teamMate
+	s.declarer = &otherPlayer
+	card = player.playerTactic(&s, validCards)
+	exp = Card{CARO, "10"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by teammate, and valid cards: %v expected to play %v, played %v", 
+			s.trick, validCards, exp, card)
+	}
+
+	//////////////
+	s.trump = SPADE
+	s.follow = SPADE
+	s.trick = []Card{Card{SPADE, "J"}, Card{HEART, "J"}}
+	validCards = []Card{Card{CARO, "J"}, Card{SPADE, "D"}}
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	card = player.playerTactic(&s, validCards)
+	exp = Card{SPADE, "D"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by declarer, and valid cards: %v expected to play %v, played %v", 
+			s.trick, validCards, exp, card)
+	}
+}
+
+func TestOpponentTactic2(t *testing.T) {
+
+	// if declarer leads with a low trump
+	// to not waste your high trumps
+	otherPlayer := makePlayer([]Card{})
+	//teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	s.trump = CLUBS
+	s.follow = CLUBS
+	s.trick = []Card{Card{CLUBS, "8"}}
+
+	validCards := []Card{Card{CARO, "J"}, Card{CLUBS, "9"}}
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CLUBS, "9"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by opponent, and valid %v, expected to play %v, played %v", 
+			s.trick, validCards, exp, card)
+	}
+}
+
+func TestLongestNonTrumpSuit(t *testing.T) {
+	cards := []Card{
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{CARO, "7"},		
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "K"},		
+		Card{SPADE, "8"},
+		Card{SPADE, "7"},
+	}
+	suit := LongestNonTrumpSuit(CARO, cards) 
+	if suit == CARO {
+		t.Errorf("CARO is the trump")
+	}
+
+	cards = []Card{
+		Card{SPADE, "K"},	
+		Card{CLUBS, "10"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "7"},		
+		Card{HEART, "K"},
+		Card{HEART, "8"},
+		Card{HEART, "7"},
+	}
+	suit = LongestNonTrumpSuit(SPADE, cards) 
+	if suit == CARO {
+		t.Errorf("CARO is not in the cards")
+	}
+}
+
+func TestHighestLong(t *testing.T) {
+	cards := []Card{
+		Card{SPADE, "K"},	
+		Card{CLUBS, "10"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "7"},		
+		Card{HEART, "K"},
+		Card{HEART, "8"},
+		Card{HEART, "7"},
+	}
+
+	card := HighestLong(SPADE, cards) 
+
+	if card.equals(cards[0]) {
+		t.Errorf("Error in HighestLong")
 	}
 }

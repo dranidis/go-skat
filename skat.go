@@ -23,6 +23,10 @@ type Card struct {
 	rank string
 }
 
+func (c Card) equals(o Card) bool {
+	return c.suit == o.suit && c.rank == o.rank
+}
+
 func (c Card) String() string {
 	black := color.New(color.Bold, color.FgWhite).SprintFunc()
 	green := color.New(color.Bold, color.FgGreen).SprintFunc()
@@ -100,7 +104,7 @@ func sortRank(cs []Card) []Card {
 }
 
 func sortValue(cs []Card) []Card {
-	valueRanks := []string{"A", "10", "K", "D", "9", "8", "7", "J"}
+	valueRanks := []string{"A", "10", "K", "D", "J", "7", "8", "9"}
 	return sortRankSpecial(cs, valueRanks)
 }
 
@@ -169,7 +173,7 @@ type tactic func([]Card) Card
 
 type Player struct {
 	isHuman	bool
-	isDeclarer bool
+//	isDeclarer bool
 	hand       []Card
 	highestBid int
 	score      int
@@ -219,7 +223,7 @@ func makeDeck() []Card {
 // CARD MANIPULATION FUNCTIONS
 func in(cs []Card, c Card) bool {
 	for _, card := range cs {
-		if card.suit == c.suit && card.rank == c.rank {
+		if card.equals(c) {
 			return true
 		}
 	}
@@ -238,7 +242,7 @@ func filter(cards []Card, f func(Card) bool) []Card {
 
 func remove(cs []Card, c Card) []Card {
 	return filter(cs, func(cc Card) bool {
-		return !(cc.suit == c.suit && cc.rank == c.rank)
+		return !(cc.equals(c))
 	})
 }
 
@@ -320,7 +324,7 @@ func round(s *SuitState, players []*Player) []*Player {
 	return players
 }
 
-func lowestThatWins(s *SuitState, c []Card) Card {
+func highestValueWinnerORlowestValueLoser(s *SuitState, c []Card) Card {
 	winners := filter(c, func(c Card) bool {
 		wins := true
 		for _, t := range s.trick {
@@ -330,22 +334,38 @@ func lowestThatWins(s *SuitState, c []Card) Card {
 		}
 		return wins
 	})
-	//gameLog("Winners: %v\n", winners)
-	if len(winners) > 0 {
-		winners = sortRank(winners)
-		return winners[len(winners)-1]
+	
+
+	if s.trump == s.follow {
+		trumpWinnerRanks := []string{"A","10","K","D","9","8","7","J"}
+		winners = sortRankSpecial(winners, trumpWinnerRanks)
+	} else {
+		winners = sortValue(winners)
 	}
-	cards := sortRank(c)
+	gameLog("Trick: %v Winners: %v\n", s.trick, winners)
+	if len(winners) > 0 {
+		// return winners[len(winners)-1]
+		return winners[0]
+	}
+
+
+	if s.trump == s.follow {
+		trumpRanks := []string{"A","10","J","K","D","9","8","7"}
+		cards := sortRankSpecial(c, trumpRanks)
+		return cards[len(cards)-1]		
+	}
+	cards := sortValue(c)
 	return cards[len(cards)-1]
 }
 
 func HighestLong(trump string, c []Card) Card {
 	//gameLog("HIGHESTLONG\n")
 	s := LongestNonTrumpSuit(trump, c)
+	fmt.Println("LongestNonTrumpSuit", s)
 	cards := filter(c, func (c Card) bool {
 		return c.suit == s && c.rank != "J"
 		})
-	//fmt.Println(cards)
+	fmt.Println(cards)
 	//fmt.Println(c)
 	if len(cards) > 0 {
 		return cards[0]
@@ -360,14 +380,15 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	if len(s.trick) == 0 {
 		return firstCardTactic(c)
 	}
-	return lowestThatWins(s, c)
+	return highestValueWinnerORlowestValueLoser(s, c)
 }
 
-func (p Player) playerTactic(s *SuitState, c []Card) Card {
+func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 
-	gameLog("Trick: %v\n", s.trick)
-	if p.isDeclarer {
-		gameLog("SOLIST")
+	//gameLog("Trick: %v\n", s.trick)
+	gameLog("Trick: %v,   valid: %v\n", s.trick, c)
+	if s.declarer == p {
+		gameLog("SOLIST ")
 	} 
 
 	if p.isHuman {
@@ -396,7 +417,7 @@ func (p Player) playerTactic(s *SuitState, c []Card) Card {
 
 	}
 
-	if p.isDeclarer {
+	if s.declarer == p {
 		return p.declarerTactic(s, c)
 	}
 	// OPPONENTS TACTIC
@@ -404,12 +425,9 @@ func (p Player) playerTactic(s *SuitState, c []Card) Card {
 	// if opp plays first high-value card and
 	// partner has highest trump then he should play it
 
-
+	// TODO:
 	// if trick has no value, e.g. 7 8
 	// don't take it with a trump if you can save it.
-
-	// if solist is fishing with a low value trump
-	// don't waste your high value trump to take a low-value trick
 
 	if len(s.trick) == 0 {
 		return HighestLong(s.trump, c)
@@ -417,14 +435,28 @@ func (p Player) playerTactic(s *SuitState, c []Card) Card {
 	if len(s.trick) == 2 {
 		if s.leader == s.declarer {
 			if s.greater(s.trick[0], s.trick[1]) {
-				return lowestThatWins(s, c)
+				return highestValueWinnerORlowestValueLoser(s, c)
 			}
-			// WE TAKE THE TRICK!!!
-			// Play high value
 			return sortValue(c)[0]
 		}
+		if s.greater(s.trick[0], s.trick[1]) {
+			return sortValue(c)[0]
+		}
+		return highestValueWinnerORlowestValueLoser(s, c)
 	}
-	return lowestThatWins(s, c)
+
+	if len(s.trick) == 1 {
+		if s.leader == s.declarer {
+			return highestValueWinnerORlowestValueLoser(s, c)
+		} else {
+			// TODO:
+			// if high chances that teammate's card wins
+			return sortValue(c)[0]
+			// else
+			// return sortValue(c)[len(c)-1]
+		}
+	}
+	return highestValueWinnerORlowestValueLoser(s, c)
 }
 
 func firstCardTactic(c []Card) Card {
@@ -520,7 +552,9 @@ func (s SuitState) greater(card1, card2 Card) bool {
 }
 
 func makePlayer(hand []Card) Player {
-	return Player{false, false, hand, 0, 0, true, 0}
+	return Player{false, 
+		// false, 
+		hand, 0, 0, true, 0}
 }
 
 var bids = []int{
@@ -550,7 +584,7 @@ func (p *Player) accepts(bidIndex int) bool {
 	if p.isHuman {
 		fmt.Printf("HAND: %v", p.hand)
 		for {
-			fmt.Printf("BID %d? (y/n)", bids[bidIndex])
+			fmt.Printf("BID %d? (y/n/q)", bids[bidIndex])
 			reader := bufio.NewReader(os.Stdin)
 			char, _, err := reader.ReadRune()
 
@@ -563,7 +597,9 @@ func (p *Player) accepts(bidIndex int) bool {
 			case 'y':
 				return true
 			case 'n':
-				return false
+				return false			
+			case 'q':
+				os.Exit(0)
 			default:
 				fmt.Printf("... don't understand! ")
 				continue
@@ -758,7 +794,7 @@ func bid(players []*Player) (int, *Player) {
 			return -1, nil
 		}
 	}
-	p.isDeclarer = true
+//	p.isDeclarer = true
 	return bidIndex, p
 }
 
@@ -783,20 +819,18 @@ func countCardsSuit(suit string, cards []Card) int {
 }
 
 func LongestNonTrumpSuit(trump string, cards []Card) string {
-	c := countCardsSuit(CLUBS, cards)
-	s := countCardsSuit(SPADE, cards)
-	h := countCardsSuit(HEART, cards)
-	k := countCardsSuit(CARO, cards)
-	if CLUBS != trump && c > s && c > h && c > k {
-		return CLUBS
+	maxI, maxCount := -1, -1
+	for i, s := range suits {
+		if s == trump {
+			continue
+		} 
+		c := countCardsSuit(s, cards)
+		if countCardsSuit(s, cards) > maxCount {
+			maxI = i
+			maxCount = c
+		} 
 	}
-	if SPADE != trump && s > h && s > k {
-		return SPADE
-	}
-	if HEART != trump && h > k {
-		return HEART
-	}
-	return CARO
+	return suits[maxI]
 }
 
 func mostCardsSuit(cards []Card) string {
@@ -864,9 +898,9 @@ func lessCardsSuit(cards []Card) string {
 }
 
 func (p *Player) declareTrump() string {
-
+	p.hand = sortSuit("", p.hand)
 	if p.isHuman {
-		fmt.Printf("HAND: %v\n", sortSuit("", p.hand))
+		fmt.Printf("HAND: %v\n", p.hand)
 		for {
 			fmt.Printf("TRUMP? (1 for CLUBS, 2 for SPADE, 3 for HEART, 4 for CARO)")
 			reader := bufio.NewReader(os.Stdin)
@@ -1135,9 +1169,9 @@ func game(players []*Player) (int, int) {
 	players[1].hand = sortSuit("", cards[10:20])
 	players[2].hand = sortSuit("", cards[20:30])
 
-	players[0].isHuman = true
-	fmt.Printf("%v\n", players[0].hand)
-
+	if players[0].isHuman {
+		fmt.Printf("%v\n", players[0].hand)
+	}
 
 	skat := make([]Card, 2)
 	copy(skat, cards[30:32])
@@ -1217,17 +1251,26 @@ func game(players []*Player) (int, int) {
 
 }
 
+func rotatePlayers(players []*Player) []*Player {
+	newPlayers := []*Player{}
+	newPlayers = append(newPlayers, players[2])
+	newPlayers = append(newPlayers, players[0])
+	newPlayers = append(newPlayers, players[1])
+	return newPlayers
+}
+
 func main() {
 	player1 := makePlayer([]Card{})
 	player2 := makePlayer([]Card{})
 	player3 := makePlayer([]Card{})
 
 	players := []*Player{&player1, &player2, &player3}
+	players[0].isHuman = true
 
 	passed := 0
 	won := 0
 	lost := 0
-	totalGames := 1
+	totalGames := 9
 	for times := totalGames; times > 0; times-- {
 		for _, p := range players {
 			p.score = 0
@@ -1244,6 +1287,7 @@ func main() {
 		}
 		fmt.Println(player1.totalScore, player2.totalScore, player3.totalScore)
 		//time.Sleep(1000 * time.Millisecond)
+		players = rotatePlayers(players)
 	}
 	avg := float64(player1.totalScore+player2.totalScore+player3.totalScore) / float64(totalGames-passed)
 	fmt.Printf("AVG %3.1f, passed %d, won %d, lost %d\n", avg, passed, won, lost)
