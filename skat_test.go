@@ -2,8 +2,17 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"testing"
 )
+
+func TestMain(m *testing.M) {
+	debugTacticsLogFlag = false
+	gameLogFlag = false
+
+	code := m.Run()
+	os.Exit(code)
+}
 
 func mState(trump, follow string) SuitState {
 	s := makeSuitState()
@@ -1089,7 +1098,7 @@ func TestOpponentTactic1(t *testing.T) {
 	card := player.playerTactic(&s, validCards)
 	exp := Card{CARO, "J"}
 	if !card.equals(exp) {
-		t.Errorf("In trick %v by opponent, valid %v, expected to play %v, played %v", 
+		t.Errorf("In trick %v by opponent, valid %v, expected to play %v, played %v",
 			s.trick, validCards, exp, card)
 	}
 
@@ -1097,7 +1106,7 @@ func TestOpponentTactic1(t *testing.T) {
 	card = player.playerTactic(&s, validCards)
 	exp = Card{CLUBS, "A"}
 	if !card.equals(exp) {
-		t.Errorf("In trick %v by teammate, valid %v, expected to play %v, played %v", 
+		t.Errorf("In trick %v by teammate, valid %v, expected to play %v, played %v",
 			s.trick, validCards, exp, card)
 	}
 
@@ -1108,7 +1117,7 @@ func TestOpponentTactic1(t *testing.T) {
 
 	exp = Card{CLUBS, "A"}
 	if !card.equals(exp) {
-		t.Errorf("In trick %v by opponent, and valid cards: %v expected to play %v, played %v", 
+		t.Errorf("In trick %v by opponent, and valid cards: %v expected to play %v, played %v",
 			s.trick, validCards, exp, card)
 	}
 
@@ -1128,7 +1137,7 @@ func TestOpponentTactic1(t *testing.T) {
 	card = player.playerTactic(&s, validCards)
 	exp = Card{CLUBS, "9"}
 	if !card.equals(exp) {
-		t.Errorf("In trick %v by opponent, and valid cards: %v expected to play %v, played %v", 
+		t.Errorf("In trick %v by opponent, and valid cards: %v expected to play %v, played %v",
 			s.trick, validCards, exp, card)
 	}
 
@@ -1140,7 +1149,7 @@ func TestOpponentTactic1(t *testing.T) {
 	card = player.playerTactic(&s, validCards)
 	exp = Card{CARO, "10"}
 	if !card.equals(exp) {
-		t.Errorf("In trick %v by teammate, and valid cards: %v expected to play %v, played %v", 
+		t.Errorf("In trick %v by teammate, and valid cards: %v expected to play %v, played %v",
 			s.trick, validCards, exp, card)
 	}
 
@@ -1154,7 +1163,7 @@ func TestOpponentTactic1(t *testing.T) {
 	card = player.playerTactic(&s, validCards)
 	exp = Card{SPADE, "D"}
 	if !card.equals(exp) {
-		t.Errorf("In trick %v by declarer, and valid cards: %v expected to play %v, played %v", 
+		t.Errorf("In trick %v by declarer, and valid cards: %v expected to play %v, played %v",
 			s.trick, validCards, exp, card)
 	}
 }
@@ -1177,14 +1186,14 @@ func TestOpponentTactic2(t *testing.T) {
 	card := player.playerTactic(&s, validCards)
 	exp := Card{CLUBS, "9"}
 	if !card.equals(exp) {
-		t.Errorf("In trick %v by opponent, and valid %v, expected to play %v, played %v", 
+		t.Errorf("In trick %v by opponent, and valid %v, expected to play %v, played %v",
 			s.trick, validCards, exp, card)
 	}
 }
 
 func TestOpponentTactic3(t *testing.T) {
 
-	// if you have a card with suit played in a previous trick 
+	// if you have a card with suit played in a previous trick
 	// started from you or your partner continue with it.
 
 	otherPlayer := makePlayer([]Card{})
@@ -1198,7 +1207,7 @@ func TestOpponentTactic3(t *testing.T) {
 
 	player.previousSuit = CARO
 
-	validCards := []Card{Card{CARO, "8"}, 
+	validCards := []Card{Card{CARO, "8"},
 		Card{HEART, "9"},
 		Card{HEART, "10"},
 		Card{HEART, "A"},
@@ -1206,14 +1215,14 @@ func TestOpponentTactic3(t *testing.T) {
 	card := player.playerTactic(&s, validCards)
 	exp := Card{CARO, "8"}
 	if !card.equals(exp) {
-		t.Errorf("In trick %v and valid %v, expected to play %v to follow previously played suit, played %v", 
+		t.Errorf("In trick %v and valid %v, expected to play %v to follow previously played suit, played %v",
 			s.trick, validCards, exp, card)
 	}
 }
 
 func TestOpponentTactic4(t *testing.T) {
 
-	// if you have a card with suit played in a previous trick 
+	// if you have a card with suit played in a previous trick
 	// started from you or your partner continue with it.
 
 	otherPlayer := makePlayer([]Card{})
@@ -1223,33 +1232,64 @@ func TestOpponentTactic4(t *testing.T) {
 	s.leader = &player
 	s.declarer = &otherPlayer
 
-
-
 	s.trump = CLUBS
 	s.trick = []Card{}
 	teamMate.previousSuit = CARO
-	validCards := []Card{Card{CARO, "8"}, 
+	validCards := []Card{Card{CARO, "8"},
 		Card{HEART, "9"},
 		Card{HEART, "10"},
 		Card{HEART, "A"},
 	}
-//
+	//
 	s.opp1 = &player
 	s.opp2 = &teamMate
 	card := player.playerTactic(&s, validCards)
 	exp := Card{CARO, "8"}
 	if !card.equals(exp) {
-		t.Errorf("In trick %v and valid %v, expected to play %v to follow previously played suit, played %v", 
+		t.Errorf("In trick %v and valid %v, expected to play %v to follow previously played suit, played %v",
 			s.trick, validCards, exp, card)
 	}
-//
+	//
 	s.opp2 = &player
 	s.opp1 = &teamMate
 	card = player.playerTactic(&s, validCards)
 	exp = Card{CARO, "8"}
 	if !card.equals(exp) {
-		t.Errorf("In trick %v and valid %v, expected to play %v to follow previously played suit, played %v", 
+		t.Errorf("In trick %v and valid %v, expected to play %v to follow previously played suit, played %v",
 			s.trick, validCards, exp, card)
+	}
+}
+
+func TestOpponentTactic5(t *testing.T) {
+
+	// if you have a card with suit played in a previous trick
+	// started from you or your partner continue with it.
+
+	// unless your card is a J
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &otherPlayer
+
+	s.trump = CLUBS
+	s.trick = []Card{}
+	teamMate.previousSuit = CARO
+	validCards := []Card{Card{CARO, "J"},
+		Card{HEART, "9"},
+		Card{HEART, "10"},
+		Card{HEART, "A"},
+	}
+	//
+	s.opp1 = &player
+	s.opp2 = &teamMate
+	card := player.playerTactic(&s, validCards)
+	unexp := Card{CARO, "J"}
+	if card.equals(unexp) {
+		t.Errorf("In trick %v and valid %v, not expected to play %v to follow previously played suit, played %v",
+			s.trick, validCards, unexp, card)
 	}
 }
 
@@ -1257,28 +1297,28 @@ func TestLongestNonTrumpSuit(t *testing.T) {
 	cards := []Card{
 		Card{CARO, "10"},
 		Card{CARO, "K"},
-		Card{CARO, "7"},		
+		Card{CARO, "7"},
 		Card{CLUBS, "A"},
 		Card{CLUBS, "10"},
-		Card{CLUBS, "K"},		
+		Card{CLUBS, "K"},
 		Card{SPADE, "8"},
 		Card{SPADE, "7"},
 	}
-	suit := LongestNonTrumpSuit(CARO, cards) 
+	suit := LongestNonTrumpSuit(CARO, cards)
 	if suit == CARO {
 		t.Errorf("CARO is the trump")
 	}
 
 	cards = []Card{
-		Card{SPADE, "K"},	
+		Card{SPADE, "K"},
 		Card{CLUBS, "10"},
 		Card{CLUBS, "9"},
-		Card{CLUBS, "7"},		
+		Card{CLUBS, "7"},
 		Card{HEART, "K"},
 		Card{HEART, "8"},
 		Card{HEART, "7"},
 	}
-	suit = LongestNonTrumpSuit(SPADE, cards) 
+	suit = LongestNonTrumpSuit(SPADE, cards)
 	if suit == CARO {
 		t.Errorf("CARO is not in the cards")
 	}
@@ -1286,18 +1326,72 @@ func TestLongestNonTrumpSuit(t *testing.T) {
 
 func TestHighestLong(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "K"},	
+		Card{SPADE, "K"},
 		Card{CLUBS, "10"},
 		Card{CLUBS, "9"},
-		Card{CLUBS, "7"},		
+		Card{CLUBS, "7"},
 		Card{HEART, "K"},
 		Card{HEART, "8"},
 		Card{HEART, "7"},
 	}
 
-	card := HighestLong(SPADE, cards) 
+	card := HighestLong(SPADE, cards)
 
 	if card.equals(cards[0]) {
 		t.Errorf("Error in HighestLong")
+	}
+}
+
+func TestDeclarerTactic1(t *testing.T) {
+	// don't play your A-10 trumps if Js still there
+
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &player
+
+	s.trump = CLUBS
+	s.trick = []Card{}
+	validCards := []Card{
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "7"},
+		Card{HEART, "A"},
+	}
+
+	s.trumpsInGame = []Card{Card{CLUBS, "J"}}
+
+	card := player.playerTactic(&s, validCards)
+	unexp1 := Card{CLUBS, "A"}
+	unexp2 := Card{CLUBS, "10"}
+	if card.equals(unexp1) || card.equals(unexp2) {
+		t.Errorf("Trump: CLUBS, In trick %v and valid %v, not expected to play %v since still in game are: %v",
+			s.trick, validCards, card, s.trumpsInGame)
+	}
+}
+
+func TestDeclarerTactic2(t *testing.T) {
+	// BUT play your A-10 trumps if Js ARE NOT still there
+
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &player
+
+	s.trump = CLUBS
+	s.trick = []Card{}
+	validCards := []Card{
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "7"},
+	}
+
+	s.trumpsInGame = []Card{Card{CLUBS, "K"}}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CLUBS, "A"}
+	if !card.equals(exp) {
+		t.Errorf("Trump: CLUBS, In trick %v and valid %v, was expected to play %v since still in game are: %v",
+			s.trick, validCards, exp, s.trumpsInGame)
 	}
 }
