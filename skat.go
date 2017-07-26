@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"math/rand"
 	"os"
-	"time"
 
 	"github.com/fatih/color"
 )
@@ -42,168 +40,15 @@ func debugTacticsLog(format string, a ...interface{}) {
 	logToFile(format, a...)
 }
 
-const CLUBS = "CLUBS"
-const SPADE = "SPADE"
-const HEART = "HEART"
-const CARO = "CARO"
-
-var _ = rand.New(rand.NewSource(1))
-var r = rand.New(rand.NewSource(time.Now().Unix()))
-
-type Card struct {
-	suit string
-	rank string
-}
-
-func (c Card) equals(o Card) bool {
-	return c.suit == o.suit && c.rank == o.rank
-}
-
-func (c Card) String() string {
-	black := color.New(color.Bold, color.FgWhite).SprintFunc()
-	green := color.New(color.Bold, color.FgGreen).SprintFunc()
-	red := color.New(color.Bold, color.FgRed).SprintFunc()
-	yellow := color.New(color.Bold, color.FgYellow).SprintFunc()
-	switch c.suit {
-	case CLUBS:
-		return black(c.rank)
-	case SPADE:
-		return green(c.rank)
-	case HEART:
-		return red(c.rank)
-	case CARO:
-		return yellow(c.rank)
-	}
-	return ""
-}
-
-func cardValue(c Card) int {
-	switch c.rank {
-	case "J":
-		return 2
-	case "A":
-		return 11
-	case "10":
-		return 10
-	case "K":
-		return 4
-	case "D":
-		return 3
-	}
-	return 0
-}
-
-func trumpBaseValue(s string) int {
-	switch s {
-	case CLUBS:
-		return 12
-	case SPADE:
-		return 11
-	case HEART:
-		return 10
-	case CARO:
-		return 9
-	}
-	return 0
-}
-
-func getSuite(trump string, card Card) string {
-	if card.rank == "J" {
-		return trump
-	}
-	return card.suit
-}
-
-var suits = []string{CLUBS, SPADE, HEART, CARO}
-var ranks = []string{"J", "A", "10", "K", "D", "9", "8", "7"}
-
-func sortRankSpecial(cs []Card, ranks []string) []Card {
-	cards := []Card{}
-
-	for _, r := range ranks {
-		for _, s := range suits {
-			if in(cs, Card{s, r}) {
-				cards = append(cards, Card{s, r})
-			}
-		}
-	}
-	return cards
-}
-
-func sortRank(cs []Card) []Card {
-	return sortRankSpecial(cs, ranks)
-}
-
-func sortValue(cs []Card) []Card {
-	valueRanks := []string{"A", "10", "K", "D", "J", "7", "8", "9"}
-	return sortRankSpecial(cs, valueRanks)
-}
-
-func sortSuit(trump string, cs []Card) []Card {
-	cards := []Card{}
-
-	cardJs := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-	}
-	cardsSuit := func(suit string) []Card {
-		return []Card{
-			Card{suit, "A"},
-			Card{suit, "10"},
-			Card{suit, "K"},
-			Card{suit, "D"},
-			Card{suit, "9"},
-			Card{suit, "8"},
-			Card{suit, "7"},
-		}
-	}
-	for _, c := range cardJs {
-		if in(cs, c) {
-			cards = append(cards, c)
-		}
-	}
-	if trump != "" {
-		switch trump {
-		case CLUBS:
-			suits = []string{CLUBS, SPADE, HEART, CARO}
-		case SPADE:
-			suits = []string{SPADE, CLUBS, HEART, CARO}
-		case HEART:
-			suits = []string{HEART, CLUBS, SPADE, CARO}
-		case CARO:
-			suits = []string{CARO, CLUBS, SPADE, HEART}
-		}
-	}
-	for _, s := range suits {
-		for _, c := range cardsSuit(s) {
-			if in(cs, c) {
-				cards = append(cards, c)
-			}
-		}
-	}
-	return cards
-}
-
-func Shuffle(cards []Card) []Card {
-	//r := rand.New(rand.NewSource(time.Now().Unix()))
-	ret := make([]Card, len(cards))
-	perm := r.Perm(len(cards))
-	for i, randIndex := range perm {
-		ret[i] = cards[randIndex]
-	}
-	return ret
-}
-
 type SuitState struct {
-	declarer     *Player
-	opp1         *Player
-	opp2         *Player
-	trump        string
-	leader       *Player
-	follow       string
-	trick        []Card
+	declarer *Player
+	opp1     *Player
+	opp2     *Player
+	trump    string
+	leader   *Player
+	follow   string
+	trick    []Card
+	// not necessary for game but for tactics
 	trumpsInGame []Card
 }
 
@@ -212,102 +57,14 @@ func makeSuitState() SuitState {
 }
 
 type Player struct {
-	isHuman bool
-	//	isDeclarer bool
+	name	string
+	isHuman      bool
 	hand         []Card
 	highestBid   int
 	score        int
 	schwarz      bool
 	totalScore   int
 	previousSuit string
-}
-
-func sum(trick []Card) int {
-	s := 0
-	for _, c := range trick {
-		s += cardValue(c)
-	}
-	return s
-}
-
-func makeDeck() []Card {
-	makeSuitDeck := func(suit string) []Card {
-		return []Card{
-			Card{suit, "J"},
-			Card{suit, "A"},
-			Card{suit, "10"},
-			Card{suit, "K"},
-			Card{suit, "D"},
-			Card{suit, "9"},
-			Card{suit, "8"},
-			Card{suit, "7"},
-		}
-	}
-	cards := []Card{}
-	cards = append(cards, makeSuitDeck(CLUBS)...)
-	cards = append(cards, makeSuitDeck(SPADE)...)
-	cards = append(cards, makeSuitDeck(HEART)...)
-	cards = append(cards, makeSuitDeck(CARO)...)
-	return cards
-}
-
-// CARD MANIPULATION FUNCTIONS
-func in(cs []Card, c Card) bool {
-	for _, card := range cs {
-		if card.equals(c) {
-			return true
-		}
-	}
-	return false
-}
-
-func filter(cards []Card, f func(Card) bool) []Card {
-	cs := []Card{}
-	for _, c := range cards {
-		if f(c) {
-			cs = append(cs, c)
-		}
-	}
-	return cs
-}
-
-func remove(cs []Card, c Card) []Card {
-	return filter(cs, func(cc Card) bool {
-		return !(cc.equals(c))
-	})
-}
-
-func matadors(trump string, cs []Card) int {
-	cards := []Card{
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{trump, "A"},
-		Card{trump, "10"},
-		Card{trump, "K"},
-		Card{trump, "D"},
-		Card{trump, "9"},
-		Card{trump, "8"},
-	}
-	m := 0
-	if in(cs, Card{CLUBS, "J"}) {
-		m++
-		for _, card := range cards {
-			if !in(cs, card) {
-				break
-			}
-			m++
-		}
-		return m
-	}
-	m--
-	for _, card := range cards {
-		if in(cs, card) {
-			return m
-		}
-		m--
-	}
-	return m
 }
 
 func setNextTrickOrder(s *SuitState, players []*Player) []*Player {
@@ -349,8 +106,8 @@ func round(s *SuitState, players []*Player) []*Player {
 	return players
 }
 
-func highestValueWinnerORlowestValueLoser(s *SuitState, c []Card) Card {
-	winners := filter(c, func(c Card) bool {
+func winnerCards(s *SuitState, c []Card) []Card {
+	return filter(c, func(c Card) bool {
 		wins := true
 		for _, t := range s.trick {
 			if s.greater(t, c) {
@@ -359,7 +116,11 @@ func highestValueWinnerORlowestValueLoser(s *SuitState, c []Card) Card {
 		}
 		return wins
 	})
+}
 
+func highestValueWinnerORlowestValueLoser(s *SuitState, c []Card) Card {
+	winners := winnerCards(s, c)
+	debugTacticsLog("Winners: %v\n", winners)
 	if s.trump == s.follow {
 		trumpWinnerRanks := []string{"A", "10", "K", "D", "9", "8", "7", "J"}
 		winners = sortRankSpecial(winners, trumpWinnerRanks)
@@ -395,31 +156,60 @@ func HighestLong(trump string, c []Card) Card {
 }
 
 func (p Player) otherPlayersHaveJs(s *SuitState) bool {
-	for _,suit := range suits {
+	for _, suit := range suits {
 		card := Card{suit, "J"}
-		if in(s.trumpsInGame, card) && ! in(p.hand, card) {
+		if in(s.trumpsInGame, card) && !in(p.hand, card) {
 			return true
 		}
 	}
 	return false
 }
 
+func (p Player) otherPlayersTrumps(s * SuitState) []Card {
+	return filter(makeDeck(), func (c Card) bool {
+			if getSuite(s.trump, c) != s.trump {
+				return false
+			}
+			if !in(s.trumpsInGame, c) {
+				return false
+			}
+			if in(p.hand, c) {
+				return false
+			}
+			return true
+		})
+}
+
 func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	//gameLog("SOLIST\n")
 	if len(s.trick) == 0 {
-		if p.otherPlayersHaveJs(s){
-			validCards := make([]Card, len(c))
-			copy(validCards, c)
-			first := firstCardTactic(validCards)
-			for len(validCards) > 1 && (first.equals(Card{s.trump, "A"}) || first.equals(Card{s.trump, "10"})) {
-				validCards = remove(validCards, first)
-				first = firstCardTactic(validCards)
+
+		// count your own trumps and other players trump
+		// if you have less you should not play trumps immediately
+
+		if len(p.otherPlayersTrumps(s)) > 0 {
+			debugTacticsLog("other TRUMPS in game: %v", p.otherPlayersTrumps(s))
+
+			if p.otherPlayersHaveJs(s) {
+				validCards := make([]Card, len(c))
+				copy(validCards, c)
+				first := firstCardTactic(validCards)
+				for len(validCards) > 1 && (first.equals(Card{s.trump, "A"}) || first.equals(Card{s.trump, "10"})) {
+					validCards = remove(validCards, first)
+					first = firstCardTactic(validCards)
+				}
+				return first
+			} else {
+				return firstCardTactic(c)
 			}
-			return first
-		} else {
-			return firstCardTactic(c)
 		}
+		debugTacticsLog(" -TRUMPS exhausted: Hand: %v ", p.hand)
+		return HighestLong(s.trump, c)
 	}
+	// TODO:
+	// in middlehand, if leader leads with an exhausted suit don't take
+	// it with the most valuable trump. It might be taken....
+
 	return highestValueWinnerORlowestValueLoser(s, c)
 }
 
@@ -449,6 +239,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 		} else if partnerFunc(p).previousSuit != "" {
 			prevSuit = partnerFunc(p).previousSuit
 		}
+		debugTacticsLog("Previous suit: %v\n", prevSuit)
 		if prevSuit == "" {
 			card := HighestLong(s.trump, c)
 			p.previousSuit = getSuite(s.trump, card)
@@ -468,7 +259,19 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	}
 
 	if len(s.trick) == 1 {
+		debugTacticsLog("MIDDLEHAND\n")
 		if s.leader == s.declarer {
+			debugTacticsLog(" -- Declarer leads ")
+		// MIDDLEHAND
+			// if declarer leads a low trump, and there are still higher trumps
+			// smear it with a high value
+			if getSuite(s.trump, s.trick[0]) == s.trump && len(winnerCards(s, c)) == 0 {
+				other := p.otherPlayersTrumps(s)
+				if len(other) > 0 {
+					debugTacticsLog("SMEAR ")
+					return sortValue(c)[0]
+				}
+			}
 			return highestValueWinnerORlowestValueLoser(s, c)
 		} else {
 			// TODO:TODO:TODO:TODO:TODO:TODO:
@@ -494,34 +297,32 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	return highestValueWinnerORlowestValueLoser(s, c)
 }
 
-func (p *Player) playerTactic(s *SuitState, c []Card) Card {
-	p.hand = sortSuit(s.trump, p.hand)
-	c = sortSuit(s.trump, c)
-	//gameLog("Trick: %v\n", s.trick)
-	gameLog("Trick: %v\n", s.trick)
-	debugTacticsLog("valid: %v\n", c)
-	if s.declarer == p {
-		gameLog("SOLIST ")
-	}
-
-	if p.isHuman {
-		gameLog("Your Hand : %v\n", p.hand)
-		gameLog("Valid: %v\n", c)
-		for {
-			fmt.Printf("CARD? (1 to %d) ", len(c))
-			var i int
-			_, err := fmt.Scanf("%d", &i)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-			if i > len(c) {
-				continue
-			}
-			return c[i-1]
+func (p *Player) HumanTactic(s *SuitState, c []Card) Card {
+	gameLog("Your Hand : %v\n", p.hand)
+	gameLog("Valid: %v\n", c)
+	for {
+		fmt.Printf("CARD? (1 to %d) ", len(c))
+		var i int
+		_, err := fmt.Scanf("%d", &i)
+		if err != nil {
+			fmt.Println(err)
+			continue
 		}
-	}
+		if i > len(c) {
+			continue
+		}
+		card := c[i-1]
+		if len(s.trick) == 0 {
+			p.previousSuit = card.suit
+		}
+		return c[i-1]
+	}	
+}
 
+func (p *Player) playerTactic(s *SuitState, c []Card) Card {
+	if p.isHuman {
+		return p.HumanTactic(s, c)
+	}
 	if s.declarer == p {
 		return p.declarerTactic(s, c)
 	}
@@ -538,13 +339,25 @@ func randomCardTactic(c []Card) Card {
 }
 
 func (p *Player) play(s *SuitState) Card {
-	// fmt.Println("\nPLAYER PLAYS")
-	valid := validCards(*s, p.hand)
+	valid := sortSuit(s.trump, validCards(*s, p.hand))
+
+	p.hand = sortSuit(s.trump, p.hand)
+	gameLog("Trick: %v\n", s.trick)
+	debugTacticsLog("valid: %v\n", valid)
+	if s.opp1 != nil && s.opp2 != nil {
+	debugTacticsLog("Previous suit: %s:%v, %s:%v\n", 
+			s.opp1.name, s.opp1.previousSuit,
+			s.opp2.name, s.opp2.previousSuit)		
+	}
+	if s.declarer == p {
+		red := color.New(color.Bold, color.FgRed).SprintFunc()
+		gameLog("(%s) ", red(p.name))
+	} else {
+		gameLog("(%v) ", p.name)
+	}
 	card := p.playerTactic(s, valid)
-	// fmt.Println(s, card, p.hand)
 	p.hand = remove(p.hand, card)
 	s.trick = append(s.trick, card)
-	// fmt.Println(p.hand)
 	if getSuite(s.trump, card) == s.trump {
 		s.trumpsInGame = remove(s.trumpsInGame, card)
 	}
@@ -624,7 +437,7 @@ func (s SuitState) greater(card1, card2 Card) bool {
 }
 
 func makePlayer(hand []Card) Player {
-	return Player{false,
+	return Player{"dummy", false,
 		// false,
 		hand, 0, 0, true, 0, ""}
 }
@@ -835,20 +648,20 @@ func bidding(listener, speaker *Player, bidIndex int) (int, *Player) {
 			bidLog("Yes %d\n", bids[bidIndex])
 			bidIndex++
 		} else {
-			bidLog("Listener Pass %d\n", bids[bidIndex])
+			bidLog("Listener (%v) Pass %d\n", listener.name, bids[bidIndex])
 			return bidIndex, speaker
 		}
 	}
-	bidLog("Speaker Pass %d\n", bids[bidIndex])
+	bidLog("Speaker (%v) Pass %d\n", speaker.name, bids[bidIndex])
 	bidIndex--
 	return bidIndex, listener
 }
 
 func bid(players []*Player) (int, *Player) {
-	bidLog("FOREHAND vs MIDDLEHAND\n")
+	bidLog("FOREHAND (%v) vs MIDDLEHAND (%v)\n", players[0].name, players[1].name)
 	bidIndex, p := bidding(players[0], players[1], 0)
 	bidIndex++
-	bidLog("WINNER vs BACKHAND\n")
+	bidLog("WINNER (%v) vs BACKHAND (%v)\n", p.name, players[2].name)
 	bidIndex, p = bidding(p, players[2], bidIndex)
 	if bidIndex == -1 {
 		if players[0].accepts(0) {
@@ -863,107 +676,8 @@ func bid(players []*Player) (int, *Player) {
 	return bidIndex, p
 }
 
-func countTrumpsSuit(suit string, cards []Card) int {
-	count := 0
-	for _, c := range cards {
-		if c.suit == suit || c.rank == "J" {
-			count++
-		}
-	}
-	return count
-}
-
-func countCardsSuit(suit string, cards []Card) int {
-	count := 0
-	for _, c := range cards {
-		if c.suit == suit && c.rank != "J" {
-			count++
-		}
-	}
-	return count
-}
-
-func LongestNonTrumpSuit(trump string, cards []Card) string {
-	maxI, maxCount := -1, -1
-	for i, s := range suits {
-		if s == trump {
-			continue
-		}
-		c := countCardsSuit(s, cards)
-		if countCardsSuit(s, cards) > maxCount {
-			maxI = i
-			maxCount = c
-		}
-	}
-	return suits[maxI]
-}
-
-func mostCardsSuit(cards []Card) string {
-	c := countTrumpsSuit(CLUBS, cards)
-	s := countTrumpsSuit(SPADE, cards)
-	h := countTrumpsSuit(HEART, cards)
-	k := countTrumpsSuit(CARO, cards)
-	if c > s && c > h && c > k {
-		return CLUBS
-	}
-	if s > h && s > k {
-		return SPADE
-	}
-	if h > k {
-		return HEART
-	}
-	return CARO
-}
-
-func lessCardsSuit(cards []Card) string {
-	c := countCardsSuit(CLUBS, cards)
-	s := countCardsSuit(SPADE, cards)
-	h := countCardsSuit(HEART, cards)
-	k := countCardsSuit(CARO, cards)
-
-	// we don't want to discard a suit having an A
-	if in(cards, Card{CLUBS, "A"}) {
-		c = 100
-	}
-	if in(cards, Card{SPADE, "A"}) {
-		s = 100
-	}
-	if in(cards, Card{HEART, "A"}) {
-		h = 100
-	}
-	if in(cards, Card{CARO, "A"}) {
-		k = 100
-	}
-	if c == 0 {
-		c = 9999 // no cards for comparison below
-	}
-	if s == 0 {
-		s = 9999
-	}
-	if h == 0 {
-		h = 9999
-	}
-	if k == 0 {
-		k = 9999
-	}
-	// fmt.Println("lessCardsSuit", c, s, h, k)
-	if c != 0 && c < s && c < h && c < k {
-		return CLUBS
-	}
-	if s != 0 && s < h && s < k {
-		return SPADE
-	}
-	if h != 0 && h < k {
-		return HEART
-	}
-	if k != 0 {
-		return CARO
-	}
-	return ""
-}
 
 func (p *Player) declareTrump() string {
-	p.hand = sortSuit("", p.hand)
 	if p.isHuman {
 		fmt.Printf("HAND: %v\n", p.hand)
 		for {
@@ -1259,8 +973,8 @@ func game(players []*Player) (int, int) {
 	players[1].hand = sortSuit("", cards[10:20])
 	players[2].hand = sortSuit("", cards[20:30])
 
-	for i, p := range players {
-		debugTacticsLog("Player's %d hand: %v\n", i, p.hand)
+	for _, p := range players {
+		debugTacticsLog("(%v) hand: %v\n", p.name, p.hand)
 	}
 	if players[0].isHuman {
 		gameLog("%v\n", players[0].hand)
@@ -1302,10 +1016,11 @@ func game(players []*Player) (int, int) {
 		handGame = false
 		// fmt.Printf("SKAT aft: %v\n", skat)
 	}
+
 	trump := declarer.declareTrump()
-	allTrumps := filter(makeDeck(), func (c Card) bool {
-			return getSuite(trump, c) == trump
-		})
+	allTrumps := filter(makeDeck(), func(c Card) bool {
+		return getSuite(trump, c) == trump
+	})
 	// DECLARE
 	state := SuitState{
 		declarer, opp1, opp2,
@@ -1377,6 +1092,9 @@ func main() {
 
 	players := []*Player{&player1, &player2, &player3}
 	players[0].isHuman = true
+	players[0].name = "You"
+	players[1].name = "Bob"
+	players[2].name = "Ana"
 
 	passed := 0
 	won := 0

@@ -487,6 +487,68 @@ func TestMostCardsSuit(t *testing.T) {
 	}
 }
 
+func TestMostCardsSuitA(t *testing.T) {
+// if two suits have the same length, choose the non-A suit
+	player := makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{HEART, "8"},
+	})
+	most := mostCardsSuit(player.hand)
+	if most != HEART {
+		t.Errorf("In hand %v, Two suits equal length. Expected %s, got %s", player.hand, HEART, most)
+	}
+}
+
+func TestMostCardsSuit1(t *testing.T) {
+	// from two A-suits prefer the strongest
+	player := makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+
+		Card{CARO, "A"},
+		Card{CARO, "7"},
+		Card{CARO, "8"},
+		Card{CARO, "9"},
+
+		Card{HEART, "A"},
+		Card{HEART, "10"},
+		Card{HEART, "K"},
+		Card{HEART, "8"},
+	})
+	most := mostCardsSuit(player.hand)
+	if most != HEART {
+		t.Errorf("In hand %v, Two suits equal length. Expected %s, got %s", player.hand, HEART, most)
+	}
+
+	player = makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+
+		Card{HEART, "A"},
+		Card{HEART, "7"},
+		Card{HEART, "8"},
+		Card{HEART, "9"},
+
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{CARO, "8"},
+	})
+	most = mostCardsSuit(player.hand)
+	if most != CARO {
+		t.Errorf("In hand %v, Two suits equal length. Expected %s, got %s", player.hand, CARO, most)
+	}
+}
+
 func TestGameScore(t *testing.T) {
 	declarerCards := []Card{
 		Card{CLUBS, "J"},
@@ -1293,6 +1355,43 @@ func TestOpponentTactic5(t *testing.T) {
 	}
 }
 
+func TestOpponentTactic6(t *testing.T) {
+	// MIDDLEHAND
+
+	// if declarer leads a low trump, and there are still higher trumps
+	// smear it with a high value
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{CLUBS, "D"}}
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+	}
+
+	validCards := []Card{
+		Card{SPADE, "9"},
+		Card{HEART, "9"},
+		Card{HEART, "10"},
+		Card{HEART, "A"},
+	}
+	//
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v, with trumps in game: %v and valid %v, expected to smear %v, played %v",
+			s.trick, s.trumpsInGame, validCards, exp, card)
+	}
+}
+
 func TestLongestNonTrumpSuit(t *testing.T) {
 	cards := []Card{
 		Card{CARO, "10"},
@@ -1394,4 +1493,75 @@ func TestDeclarerTactic2(t *testing.T) {
 		t.Errorf("Trump: CLUBS, In trick %v and valid %v, was expected to play %v since still in game are: %v",
 			s.trick, validCards, exp, s.trumpsInGame)
 	}
+}
+
+func TestDeclarerTactic3(t *testing.T) {
+	// BUT play your A-10 trumps if Js ARE NOT still there
+
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &player
+
+	s.trump = CLUBS
+	s.trick = []Card{}
+	validCards := []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "A"},
+		Card{HEART, "A"},
+		Card{HEART, "7"},
+	}
+	player.hand = validCards
+
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "A"},
+	}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("Trump: CLUBS, In trick %v and valid %v, was expected to play %v since still in game are: %v. Played %v",
+			s.trick, validCards, exp, s.trumpsInGame, card)
+	}
+}
+
+func TestOtherPlayersTrumps(t *testing.T) {
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+
+	s.trump = CLUBS
+	player.hand = []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "A"},
+		Card{HEART, "A"},
+		Card{HEART, "7"},
+	}
+
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "A"},
+	}
+
+	other := player.otherPlayersTrumps(&s)
+	//fmt.Printf("OTHER: %v\n", other)
+	if len(other) != 0 {
+		t.Errorf("No other trumps, since hand: %v and trumps in game %v",
+			player.hand, s.trumpsInGame)
+	}	
+
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "K"},
+	}
+
+	other = player.otherPlayersTrumps(&s)
+	//fmt.Printf("OTHER: %v\n", other)
+
+	if len(other) != 1 {
+		t.Errorf("One more trump in game, since hand: %v and trumps in game %v",
+			player.hand, s.trumpsInGame)
+	}	
+
 }
