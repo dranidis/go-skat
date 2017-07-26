@@ -121,7 +121,7 @@ func TestSetNextTrickOrder(t *testing.T) {
 	player2 := makePlayer([]Card{})
 	player3 := makePlayer([]Card{})
 
-	players := []*Player{&player1, &player2, &player3}
+	players := []PlayerI{&player1, &player2, &player3}
 	newPlayers := setNextTrickOrder(&state, players)
 	comparePlayers(t, players, newPlayers)
 	checkScore(t, player1, 17)
@@ -134,7 +134,7 @@ func TestSetNextTrickOrder(t *testing.T) {
 
 	state.trick = []Card{Card{HEART, "D"}, Card{SPADE, "J"}, Card{HEART, "10"}}
 	newPlayers = setNextTrickOrder(&state, players)
-	expected := []*Player{&player2, &player3, &player1}
+	expected := []PlayerI{&player2, &player3, &player1}
 	comparePlayers(t, expected, newPlayers)
 	checkScore(t, player1, 17)
 	checkScore(t, player2, 15)
@@ -145,7 +145,7 @@ func TestSetNextTrickOrder(t *testing.T) {
 
 	state.trick = []Card{Card{HEART, "9"}, Card{HEART, "8"}, Card{SPADE, "J"}}
 	newPlayers = setNextTrickOrder(&state, players)
-	expected = []*Player{&player3, &player1, &player2}
+	expected = []PlayerI{&player3, &player1, &player2}
 	comparePlayers(t, expected, newPlayers)
 	checkScore(t, player1, 17)
 	checkScore(t, player2, 15)
@@ -162,7 +162,7 @@ func checkScore(t *testing.T, p Player, s int) {
 	}
 }
 
-func comparePlayers(t *testing.T, expected, returned []*Player) {
+func comparePlayers(t *testing.T, expected, returned []PlayerI) {
 	wrong := false
 	for i, p := range expected {
 		if p != returned[i] {
@@ -291,7 +291,7 @@ func TestBidding(t *testing.T) {
 	player1 := makeP(0)
 	player2 := makeP(18)
 	player3 := makeP(0)
-	players := []*Player{&player1, &player2, &player3}
+	players := []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer := bid(players)
 	if bidIndex != 0 {
@@ -307,7 +307,7 @@ func TestBidding(t *testing.T) {
 	player1 = makeP(23)
 	player2 = makeP(20)
 	player3 = makeP(24)
-	players = []*Player{&player1, &player2, &player3}
+	players = []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer = bid(players)
 	if bids[bidIndex] != 24 {
@@ -323,7 +323,7 @@ func TestBidding(t *testing.T) {
 	player1 = makeP(18)
 	player2 = makeP(0)
 	player3 = makeP(18)
-	players = []*Player{&player1, &player2, &player3}
+	players = []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer = bid(players)
 	if bids[bidIndex] != 18 {
@@ -339,7 +339,7 @@ func TestBidding(t *testing.T) {
 	player1 = makeP(0)
 	player2 = makeP(18)
 	player3 = makeP(20)
-	players = []*Player{&player1, &player2, &player3}
+	players = []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer = bid(players)
 	if bids[bidIndex] != 20 {
@@ -355,7 +355,7 @@ func TestBidding(t *testing.T) {
 	player1 = makeP(0)
 	player2 = makeP(0)
 	player3 = makeP(0)
-	players = []*Player{&player1, &player2, &player3}
+	players = []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer = bid(players)
 	if bidIndex != -1 {
@@ -371,7 +371,7 @@ func TestBidding(t *testing.T) {
 	player1 = makeP(18)
 	player2 = makeP(0)
 	player3 = makeP(0)
-	players = []*Player{&player1, &player2, &player3}
+	players = []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer = bid(players)
 	if bids[bidIndex] != 18 {
@@ -387,7 +387,7 @@ func TestBidding(t *testing.T) {
 	player1 = makeP(0)
 	player2 = makeP(0)
 	player3 = makeP(18)
-	players = []*Player{&player1, &player2, &player3}
+	players = []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer = bid(players)
 	if bids[bidIndex] != 18 {
@@ -1126,7 +1126,7 @@ func TestGame(t *testing.T) {
 		player2 := makePlayer([]Card{})
 		player3 := makePlayer([]Card{})
 
-		players := []*Player{&player1, &player2, &player3}
+		players := []PlayerI{&player1, &player2, &player3}
 		score, oppScore := game(players)
 
 		if score != 0 || oppScore != 0 {
