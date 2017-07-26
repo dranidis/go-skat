@@ -126,7 +126,6 @@ func sortRankSpecial(cs []Card, ranks []string) []Card {
 				cards = append(cards, Card{s, r})
 			}
 		}
-
 	}
 	return cards
 }
@@ -187,6 +186,16 @@ func sortSuit(trump string, cs []Card) []Card {
 	return cards
 }
 
+func Shuffle(cards []Card) []Card {
+	//r := rand.New(rand.NewSource(time.Now().Unix()))
+	ret := make([]Card, len(cards))
+	perm := r.Perm(len(cards))
+	for i, randIndex := range perm {
+		ret[i] = cards[randIndex]
+	}
+	return ret
+}
+
 type SuitState struct {
 	declarer     *Player
 	opp1         *Player
@@ -202,8 +211,6 @@ func makeSuitState() SuitState {
 	return SuitState{nil, nil, nil, "", nil, "", []Card{}, []Card{}}
 }
 
-type tactic func([]Card) Card
-
 type Player struct {
 	isHuman bool
 	//	isDeclarer bool
@@ -213,16 +220,6 @@ type Player struct {
 	schwarz      bool
 	totalScore   int
 	previousSuit string
-}
-
-func Shuffle(cards []Card) []Card {
-	//r := rand.New(rand.NewSource(time.Now().Unix()))
-	ret := make([]Card, len(cards))
-	perm := r.Perm(len(cards))
-	for i, randIndex := range perm {
-		ret[i] = cards[randIndex]
-	}
-	return ret
 }
 
 func sum(trick []Card) int {
@@ -342,17 +339,12 @@ func setNextTrickOrder(s *SuitState, players []*Player) []*Player {
 }
 
 func round(s *SuitState, players []*Player) []*Player {
-	//fmt.Printf("TRICK: %v\n", s.trick)
-	//var trick [3]Card
 	players[0].play(s)
 	s.follow = getSuite(s.trump, s.trick[0])
 	players[1].play(s)
 	players[2].play(s)
 
-	//fmt.Println(players)
 	players = setNextTrickOrder(s, players)
-	//fmt.Println(players)
-
 	s.follow = ""
 	return players
 }
@@ -374,9 +366,7 @@ func highestValueWinnerORlowestValueLoser(s *SuitState, c []Card) Card {
 	} else {
 		winners = sortValue(winners)
 	}
-	//gameLog("Trick: %v Winners: %v\n", s.trick, winners)
 	if len(winners) > 0 {
-		// return winners[len(winners)-1]
 		return winners[0]
 	}
 
@@ -390,14 +380,12 @@ func highestValueWinnerORlowestValueLoser(s *SuitState, c []Card) Card {
 }
 
 func HighestLong(trump string, c []Card) Card {
-	//gameLog("HIGHESTLONG\n")
 	s := LongestNonTrumpSuit(trump, c)
 	debugTacticsLog("LongestNonTrumpSuit %v\n", s)
 	cards := filter(c, func(c Card) bool {
 		return c.suit == s && c.rank != "J"
 	})
 	debugTacticsLog("%v", cards)
-	//fmt.Println(c)
 	if len(cards) > 0 {
 		return cards[0]
 	}
@@ -406,10 +394,20 @@ func HighestLong(trump string, c []Card) Card {
 	return c[0]
 }
 
+func (p Player) otherPlayersHaveJs(s *SuitState) bool {
+	for _,suit := range suits {
+		card := Card{suit, "J"}
+		if in(s.trumpsInGame, card) && ! in(p.hand, card) {
+			return true
+		}
+	}
+	return false
+}
+
 func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	//gameLog("SOLIST\n")
 	if len(s.trick) == 0 {
-		if in(s.trumpsInGame, Card{CLUBS, "J"}) || in(s.trumpsInGame, Card{SPADE, "J"}) || in(s.trumpsInGame, Card{HEART, "J"}) || in(s.trumpsInGame, Card{CARO, "J"}) {
+		if p.otherPlayersHaveJs(s){
 			validCards := make([]Card, len(c))
 			copy(validCards, c)
 			first := firstCardTactic(validCards)
@@ -425,50 +423,10 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	return highestValueWinnerORlowestValueLoser(s, c)
 }
 
-func (p *Player) playerTactic(s *SuitState, c []Card) Card {
-	p.hand = sortSuit(s.trump, p.hand)
-	c = sortSuit(s.trump, c)
-	//gameLog("Trick: %v\n", s.trick)
-	gameLog("Trick: %v\n", s.trick)
-	debugTacticsLog("valid: %v\n", c)
-	if s.declarer == p {
-		gameLog("SOLIST ")
-	}
-	if p.isHuman {
-		gameLog("You ")
-	}
-
-	if p.isHuman {
-		gameLog("Hand : %v\n", p.hand)
-		gameLog("Valid: %v\n", c)
-		for {
-			fmt.Printf("CARD? ")
-			// reader := bufio.NewReader(os.Stdin)
-			// char, _, err := reader.ReadRune()
-
-			// if err != nil {
-			// 	fmt.Println(err)
-			// }
-			var i int
-			_, err := fmt.Scanf("%d", &i)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-			if i > len(c) {
-				continue
-			}
-			return c[i-1]
-			//return c[int(char - '0')-1]
-		}
-
-	}
-
-	if s.declarer == p {
-		return p.declarerTactic(s, c)
-	}
+func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	// OPPONENTS TACTIC
 
+	// TODO:
 	// if opp plays first high-value card and
 	// partner has highest trump then he should play it
 
@@ -513,7 +471,7 @@ func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 		if s.leader == s.declarer {
 			return highestValueWinnerORlowestValueLoser(s, c)
 		} else {
-			// TODO:
+			// TODO:TODO:TODO:TODO:TODO:TODO:
 			// if high chances that teammate's card wins
 			return sortValue(c)[0]
 			// else
@@ -536,6 +494,40 @@ func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 	return highestValueWinnerORlowestValueLoser(s, c)
 }
 
+func (p *Player) playerTactic(s *SuitState, c []Card) Card {
+	p.hand = sortSuit(s.trump, p.hand)
+	c = sortSuit(s.trump, c)
+	//gameLog("Trick: %v\n", s.trick)
+	gameLog("Trick: %v\n", s.trick)
+	debugTacticsLog("valid: %v\n", c)
+	if s.declarer == p {
+		gameLog("SOLIST ")
+	}
+
+	if p.isHuman {
+		gameLog("Your Hand : %v\n", p.hand)
+		gameLog("Valid: %v\n", c)
+		for {
+			fmt.Printf("CARD? (1 to %d) ", len(c))
+			var i int
+			_, err := fmt.Scanf("%d", &i)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			if i > len(c) {
+				continue
+			}
+			return c[i-1]
+		}
+	}
+
+	if s.declarer == p {
+		return p.declarerTactic(s, c)
+	}
+	return p.opponentTactic(s, c)
+}
+
 func firstCardTactic(c []Card) Card {
 	return c[0]
 }
@@ -553,6 +545,9 @@ func (p *Player) play(s *SuitState) Card {
 	p.hand = remove(p.hand, card)
 	s.trick = append(s.trick, card)
 	// fmt.Println(p.hand)
+	if getSuite(s.trump, card) == s.trump {
+		s.trumpsInGame = remove(s.trumpsInGame, card)
+	}
 	return card
 }
 
@@ -1060,7 +1055,7 @@ func (p *Player) discardInSkat(skat []Card) {
 		p.hand = sortSuit("", p.hand)
 		gameLog("Full Hand : %v\n", p.hand)
 		for {
-			gameLog("DISCARD CARDS?")
+			gameLog("DISCARD CARDS? (1 to %d) ", len(p.hand))
 
 			var i1, i2 int
 			_, err := fmt.Scanf("%d", &i1)
@@ -1260,11 +1255,13 @@ func game(players []*Player) (int, int) {
 	//fmt.Println("------------NEW GAME----------")
 	// DEALING
 	cards := Shuffle(makeDeck())
-	//fmt.Printf("CARDS %d %v\n", -1, cards)
 	players[0].hand = sortSuit("", cards[:10])
 	players[1].hand = sortSuit("", cards[10:20])
 	players[2].hand = sortSuit("", cards[20:30])
 
+	for i, p := range players {
+		debugTacticsLog("Player's %d hand: %v\n", i, p.hand)
+	}
 	if players[0].isHuman {
 		gameLog("%v\n", players[0].hand)
 	}
@@ -1281,7 +1278,7 @@ func game(players []*Player) (int, int) {
 	// BIDDING
 	bidIndex, declarer := bid(players)
 	if bidIndex == -1 {
-		// fmt.Println("ALL PASSED")
+		gameLog("ALL PASSED\n")
 		return 0, 0
 	}
 	var opp1, opp2 *Player
@@ -1305,15 +1302,18 @@ func game(players []*Player) (int, int) {
 		handGame = false
 		// fmt.Printf("SKAT aft: %v\n", skat)
 	}
-
+	trump := declarer.declareTrump()
+	allTrumps := filter(makeDeck(), func (c Card) bool {
+			return getSuite(trump, c) == trump
+		})
 	// DECLARE
 	state := SuitState{
 		declarer, opp1, opp2,
-		declarer.declareTrump(),
+		trump,
 		players[0],
 		"",
 		[]Card{},
-		[]Card{},
+		allTrumps,
 	}
 	players[0].hand = sortSuit(state.trump, players[0].hand)
 	players[1].hand = sortSuit(state.trump, players[1].hand)
@@ -1331,6 +1331,7 @@ func game(players []*Player) (int, int) {
 
 	// PLAY
 	for i := 0; i < 10; i++ {
+		debugTacticsLog("TRUMPS IN PLAY %v\n", state.trumpsInGame)
 		gameLog("\n")
 		players = round(&state, players)
 	}
