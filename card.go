@@ -15,6 +15,11 @@ const CARO = "CARO"
 var _ = rand.New(rand.NewSource(1))
 var r = rand.New(rand.NewSource(time.Now().Unix()))
 
+var black = color.New(color.Bold, color.FgWhite).SprintFunc()
+var green = color.New(color.Bold, color.FgGreen).SprintFunc()
+var red = color.New(color.Bold, color.FgRed).SprintFunc()
+var yellow = color.New(color.Bold, color.FgYellow).SprintFunc()
+
 type Card struct {
 	suit string
 	rank string
@@ -25,10 +30,7 @@ func (c Card) equals(o Card) bool {
 }
 
 func (c Card) String() string {
-	black := color.New(color.Bold, color.FgWhite).SprintFunc()
-	green := color.New(color.Bold, color.FgGreen).SprintFunc()
-	red := color.New(color.Bold, color.FgRed).SprintFunc()
-	yellow := color.New(color.Bold, color.FgYellow).SprintFunc()
+
 	switch c.suit {
 	case CLUBS:
 		return black(c.rank)

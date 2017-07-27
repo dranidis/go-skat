@@ -151,32 +151,35 @@ var bids = []int{
 
 func bidding(listener, speaker PlayerI, bidIndex int) (int, PlayerI) {
 	for speaker.accepts(bidIndex) {
-		bidLog("Bid %d\n", bids[bidIndex])
+		bidLog("\t(%v) %d\n", speaker.getName(), bids[bidIndex])
 		if listener.accepts(bidIndex) {
-			bidLog("Yes %d\n", bids[bidIndex])
+			//bidLog("Yes %d\n", bids[bidIndex])
+			bidLog("\t(%v) Yes\n", listener.getName())
 			bidIndex++
 		} else {
-			bidLog("Listener (%v) Pass %d\n", listener.getName(), bids[bidIndex])
+		//	bidLog("Listener (%v) Pass %d\n", listener.getName(), bids[bidIndex])
+			bidLog("\t(%v) Pass\n", listener.getName())
 			return bidIndex, speaker
 		}
-	}
-	bidLog("Speaker (%v) Pass %d\n", speaker.getName(), bids[bidIndex])
+	} 
+	//bidLog("(%v) Pass %d\n", speaker.getName(), bids[bidIndex])
+	bidLog("\t(%v) Pass \n", speaker.getName())
 	bidIndex--
 	return bidIndex, listener
 }
 
 func bid(players []PlayerI) (int, PlayerI) {
-	bidLog("FOREHAND (%v) vs MIDDLEHAND (%v)\n", players[0].getName(), players[1].getName())
+	bidLog("(%v) vs (%v)\n", players[0].getName(), players[1].getName())
 	bidIndex, p := bidding(players[0], players[1], 0)
 	bidIndex++
-	bidLog("WINNER (%v) vs BACKHAND (%v)\n", p.getName(), players[2].getName())
+	bidLog("(%v) vs (%v)\n", p.getName(), players[2].getName())
 	bidIndex, p = bidding(p, players[2], bidIndex)
 	if bidIndex == -1 {
 		if players[0].accepts(0) {
-			bidLog("Yes %d\n", bids[0])
+			bidLog("\t(%s) Yes %d\n", players[0].getName(), bids[0])
 			return 0, players[0]
 		} else {
-			bidLog("Listener Pass %d\n", bids[0])
+			bidLog("\t(%s) Pass\n", players[0].getName())
 			return -1, nil
 		}
 	}
@@ -231,28 +234,19 @@ func gameScore(state SuitState, cs []Card, score, bid int,
 }
 
 func game(players []PlayerI) (int, int) {
-	//fmt.Println("------------NEW GAME----------")
+	gameLog("\n\nGAME %d/%d", gameIndex, totalGames)
 	// DEALING
 	cards := Shuffle(makeDeck())
 	players[0].setHand(sortSuit("", cards[:10]))
 	players[1].setHand(sortSuit("", cards[10:20]))
 	players[2].setHand(sortSuit("", cards[20:30]))
-
-	for _, p := range players {
-		debugTacticsLog("(%v) hand: %v\n", p.getName(), p.getHand())
-	}
-	if players[0].isHuman() {
-		gameLog("%v\n", players[0].getHand())
-	}
-
 	skat := make([]Card, 2)
 	copy(skat, cards[30:32])
-
 	for _, p := range players {
-		if !p.isHuman() {
-			p.calculateHighestBid()
-		}
+		debugTacticsLog("(%v) hand: %v Bid up to: %d\n", p.getName(), p.getHand(), p.calculateHighestBid())
 	}
+
+	gameLog("\n\nPLAYER ORDER: %s - %s - %s\n\n", players[0].getName(), players[1].getName(), players[2].getName())
 
 	// BIDDING
 	bidIndex, declarer := bid(players)
@@ -299,15 +293,10 @@ func game(players []PlayerI) (int, int) {
 	players[1].setHand(sortSuit(state.trump, players[1].getHand()))
 	players[2].setHand(sortSuit(state.trump, players[2].getHand()))
 
-	gameLog("TRUMP: %v\n", state.trump)
+	gameLog("\n(%s) TRUMP: %s\n", red(declarer.getName()), state.trump)
 	declarerCards := make([]Card, len(declarer.getHand()))
 	copy(declarerCards, declarer.getHand())
 	declarerCards = append(declarerCards, skat...)
-
-	// fmt.Println("DECLARER Hand after SKAT: %v" , declarer.getHand())
-
-	// gameLog("BID: %d, SUIT: %d %s",
-	// 	bids[bidIndex], countTrumpsSuit(state.trump, declarer.getHand()), state.trump)
 
 	// PLAY
 	for i := 0; i < 10; i++ {
@@ -323,11 +312,11 @@ func game(players []PlayerI) (int, int) {
 
 	declarer.incTotalScore(gs)
 
-	if declarer.getScore() > 60 {
-		gameLog(" VICTORY: %d - %d, SCORE: %d\n",
+	if declarer.getScore() > 60 && gs > 0 {
+		gameLog("VICTORY: %d - %d, SCORE: %d\n",
 			declarer.getScore(), opp1.getScore()+opp2.getScore(), gs)
 	} else {
-		gameLog(" LOSS: %d - %d, SCORE: %d\n",
+		gameLog("DEFEAT: %d - %d, SCORE: %d\n",
 			declarer.getScore(), opp1.getScore()+opp2.getScore(), gs)
 	}
 
@@ -337,11 +326,14 @@ func game(players []PlayerI) (int, int) {
 
 func rotatePlayers(players []PlayerI) []PlayerI {
 	newPlayers := []PlayerI{}
+	newPlayers = append(newPlayers, players[1])
 	newPlayers = append(newPlayers, players[2])
 	newPlayers = append(newPlayers, players[0])
-	newPlayers = append(newPlayers, players[1])
 	return newPlayers
 }
+
+var totalGames = 9
+var gameIndex = 1
 
 func main() {
 	file, err := os.Create("gameLog.txt")
@@ -364,8 +356,7 @@ func main() {
 	passed := 0
 	won := 0
 	lost := 0
-	totalGames := 9
-	for times := totalGames; times > 0; times-- {
+	for ;gameIndex <= totalGames; gameIndex++ {
 		for _, p := range players {
 			p.setScore(0)
 			p.setSchwarz(true)
@@ -380,7 +371,7 @@ func main() {
 		} else {
 			lost++
 		}
-		fmt.Println(player1.getTotalScore(), player2.getTotalScore(), player3.getTotalScore())
+		fmt.Printf("\n(%s) %3d     (%s) %3d     (%s) %3d\n", player1.getName(), player1.getTotalScore(), player2.getName(), player2.getTotalScore(), player3.getName(), player3.getTotalScore())
 		//time.Sleep(1000 * time.Millisecond)
 		players = rotatePlayers(players)
 	}

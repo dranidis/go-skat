@@ -12,7 +12,7 @@ type PlayerI interface {
 	declareTrump() string
 	discardInSkat(skat []Card)
 	pickUpSkat(skat []Card) bool
-	calculateHighestBid()
+	calculateHighestBid() int
 	//
 
 	incTotalScore(s int)
@@ -27,7 +27,6 @@ type PlayerI interface {
 	setName(n string)
 	getName() string
 	getHand() []Card
-	isHuman() bool
 	isSchwarz() bool
 }
 
@@ -79,7 +78,8 @@ func (p *HumanPlayer) declareTrump() string {
 	return mostCardsSuit(p.getHand())
 }
 
-func (p *HumanPlayer) calculateHighestBid() {
+func (p *HumanPlayer) calculateHighestBid() int {
+	return 0
 }
 
 func (p *HumanPlayer) discardInSkat(skat []Card) {

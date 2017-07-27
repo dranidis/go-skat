@@ -260,7 +260,16 @@ func (p *Player) handEstimation() int {
 		wert += 25
 	}
 	// Jede andere 2-Buben-Kombi
+	if kreuzB && !pikB && herzB && !karoB {
+		wert += 20
+	}
+	if kreuzB && !pikB && !herzB && karoB {
+		wert += 20
+	}
 	if !kreuzB && pikB && herzB && !karoB {
+		wert += 20
+	}
+	if !kreuzB && pikB && !herzB && karoB {
 		wert += 20
 	}
 	if !kreuzB && !pikB && herzB && karoB {
@@ -374,7 +383,7 @@ func nonA10cards(cs []Card) []Card {
 	return cards
 }
 
-func (p *Player) calculateHighestBid() {
+func (p *Player) calculateHighestBid() int {
 	assOtherThan := func(suit string) int {
 		asses := 0
 		c := in(p.getHand(), Card{CLUBS, "A"})
@@ -417,9 +426,11 @@ func (p *Player) calculateHighestBid() {
 		prob = 99
 	}
 
-	if prob < 80 && p.handEstimation() < 45 {
+	est := p.handEstimation()
+	debugTacticsLog("(%s) Hand: %v, Estimation: %d\n", p.name, p.hand, est)
+	if prob < 80 && est < 45 {
 		//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
-		return
+		return p.highestBid
 	}
 	// fmt.Printf("HIGH %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
 
@@ -429,6 +440,7 @@ func (p *Player) calculateHighestBid() {
 		mat *= -1
 	}
 	p.highestBid = (mat + 1) * trumpBaseValue(trump)
+	return p.highestBid
 }
 
 func (p *Player) declareTrump() string {

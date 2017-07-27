@@ -1602,3 +1602,77 @@ func TestOtherPlayersTrumps(t *testing.T) {
 	}
 
 }
+
+func TestRotatePlayers(t *testing.T) {
+	player1 := makePlayer([]Card{})
+	player2 := makePlayer([]Card{})
+	player3 := makePlayer([]Card{})
+	players := []PlayerI {&player1, &player2, &player3}
+
+	players = rotatePlayers(players)
+	next := players[0]
+	expNext := &player2
+
+	if next != expNext {
+		t.Errorf("Wrong order")
+	}
+
+	next = players[1]
+	expNext = &player3
+
+	if next != expNext {
+		t.Errorf("Wrong order")
+	}
+
+	next = players[2]
+	expNext = &player1
+
+	if next != expNext {
+		t.Errorf("Wrong order")
+	}
+
+
+	players = rotatePlayers(players)
+	next = players[0]
+	expNext = &player3
+
+	if next != expNext {
+		t.Errorf("Wrong order")
+	}
+
+	next = players[1]
+	expNext = &player1
+
+	if next != expNext {
+		t.Errorf("Wrong order")
+	}
+
+	next = players[2]
+	expNext = &player2
+
+	if next != expNext {
+		t.Errorf("Wrong order")
+	}
+
+	players = rotatePlayers(players)
+	next = players[0]
+	expNext = &player1
+
+	if next != expNext {
+		t.Errorf("Wrong order")
+	}
+
+	next = players[1]
+	expNext = &player2
+
+	if next != expNext {
+		t.Errorf("Wrong order")
+	}
+
+	next = players[2]
+	expNext = &player3
+
+	if next != expNext {
+		t.Errorf("Wrong order")
+	}
+}

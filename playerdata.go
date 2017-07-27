@@ -63,10 +63,6 @@ func (p *PlayerData) getHand() []Card {
 	return p.hand
 }
 
-func (p *PlayerData) isHuman() bool {
-	return true
-}
-
 func (p *PlayerData) isSchwarz() bool {
 	return p.schwarz
 }
