@@ -195,7 +195,7 @@ func gameScore(state SuitState, cs []Card, score, bid int,
 	}
 	multiplier := mat + 1
 
-	gameLog("With %d ", mat)
+	gameLog("\nSCORING\n\tWith %d ", mat)
 
 	base := trumpBaseValue(state.trump)
 
@@ -213,7 +213,7 @@ func gameScore(state SuitState, cs []Card, score, bid int,
 		multiplier++
 		gameLog("Schwarz ")
 	}
-	gameLog("\n")
+	gameLog("\n\n")
 	gs := multiplier * base
 
 	// OVERBID?

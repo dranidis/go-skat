@@ -448,12 +448,12 @@ func (p *Player) declareTrump() string {
 }
 
 func (p *Player) discardInSkat(skat []Card) {
-	// fmt.Printf("FULL HAND %v\n", p.getHand())
+	debugTacticsLog("FULL HAND %v\n", p.getHand())
 
 	// discard BLANKS
 
 	bcards := findBlankCards(p.getHand())
-	// fmt.Printf("BLANK %v\n", bcards)
+	debugTacticsLog("BLANK %v\n", bcards)
 	removed := 0
 	if len(bcards) > 0 {
 		p.setHand(remove(p.getHand(), bcards[0]))
@@ -476,7 +476,7 @@ func (p *Player) discardInSkat(skat []Card) {
 			return c.suit == lsuit && c.rank != "A" && c.rank != "J"
 		}), sranks)
 		if len(lcards) < 4 { // do not throw long fleets
-			// fmt.Printf("SUIT %v LESS %v\n", lsuit, lcards)
+			debugTacticsLog("SUIT %v LESS %v\n", lsuit, lcards)
 
 			if len(lcards) > 1 {
 				i := 0
@@ -535,12 +535,15 @@ func (p *Player) discardInSkat(skat []Card) {
 }
 
 func (p *Player) pickUpSkat(skat []Card) bool {
+	// TODO:
+	// current implementation always picks up skat
+	debugTacticsLog("SKAT BEF: %v\n", skat)
 	hand := make([]Card, 10)
 	copy(hand, p.getHand())
 	hand = append(hand, skat...)
 	p.setHand(hand)
 
 	p.discardInSkat(skat)
-
+	debugTacticsLog("SKAT AFT: %v\n", skat)
 	return true
 }
