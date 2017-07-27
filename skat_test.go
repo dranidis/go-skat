@@ -488,7 +488,7 @@ func TestMostCardsSuit(t *testing.T) {
 }
 
 func TestMostCardsSuitA(t *testing.T) {
-// if two suits have the same length, choose the non-A suit
+	// if two suits have the same length, choose the non-A suit
 	player := makePlayer([]Card{
 		Card{CLUBS, "J"},
 		Card{SPADE, "J"},
@@ -1392,6 +1392,43 @@ func TestOpponentTactic6(t *testing.T) {
 	}
 }
 
+func TestOpponentTactic7(t *testing.T) {
+	// MIDDLEHAND
+
+	// if declarer leads a low trump, and there are still higher trumps
+	// smear it with a high value
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{CLUBS, "D"}}
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "9"},
+	}
+
+	validCards := []Card{
+		Card{SPADE, "9"},
+		Card{HEART, "9"},
+		Card{HEART, "10"},
+		Card{HEART, "A"},
+	}
+	//
+
+	card := player.playerTactic(&s, validCards)
+	unexp := Card{HEART, "A"}
+	if card.equals(unexp) {
+		t.Errorf("In trick %v, with trumps in game: %v and valid %v, it is NOT expected to smear %v, played %v",
+			s.trick, s.trumpsInGame, validCards, unexp, card)
+	}
+}
+
 func TestLongestNonTrumpSuit(t *testing.T) {
 	cards := []Card{
 		Card{CARO, "10"},
@@ -1548,7 +1585,7 @@ func TestOtherPlayersTrumps(t *testing.T) {
 	if len(other) != 0 {
 		t.Errorf("No other trumps, since hand: %v and trumps in game %v",
 			player.hand, s.trumpsInGame)
-	}	
+	}
 
 	s.trumpsInGame = []Card{
 		Card{CLUBS, "J"},
@@ -1562,6 +1599,6 @@ func TestOtherPlayersTrumps(t *testing.T) {
 	if len(other) != 1 {
 		t.Errorf("One more trump in game, since hand: %v and trumps in game %v",
 			player.hand, s.trumpsInGame)
-	}	
+	}
 
 }

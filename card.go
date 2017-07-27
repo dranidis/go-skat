@@ -250,8 +250,8 @@ func matadors(trump string, cs []Card) int {
 }
 
 func trumpCards(trump string, cards []Card) []Card {
-	return filter(cards, func (c Card) bool {
-		return c.suit == trump || c.rank == "J" 
+	return filter(cards, func(c Card) bool {
+		return c.suit == trump || c.rank == "J"
 	})
 }
 
@@ -301,7 +301,7 @@ func mostCardsSuit(cards []Card) string {
 		if count > maxCount {
 			maxCount = count
 			maxI = i
-		}	
+		}
 	}
 	return suits[maxI]
 }
@@ -351,4 +351,57 @@ func lessCardsSuit(cards []Card) string {
 		return CARO
 	}
 	return ""
+}
+
+func (s SuitState) greater(card1, card2 Card) bool {
+	rank := map[string]int{
+		"A":  13,
+		"10": 12,
+		"K":  11,
+		"D":  10,
+		"9":  9,
+		"8":  8,
+		"7":  7,
+	}
+	JRank := map[string]int{
+		CLUBS: 4,
+		SPADE: 3,
+		HEART: 2,
+		CARO:  1,
+	}
+
+	if card1.rank == "J" {
+		if card2.rank == "J" {
+			return JRank[card1.suit] > JRank[card2.suit]
+		}
+		return true
+	}
+
+	if card2.rank == "J" {
+		return false
+	}
+
+	if card1.suit == s.trump {
+		if card2.suit == s.trump {
+			return rank[card1.rank] > rank[card2.rank]
+		}
+		return true
+	}
+
+	if card2.suit == s.trump {
+		return false
+	}
+
+	if card1.suit == s.follow {
+		if card2.suit == s.follow {
+			return rank[card1.rank] > rank[card2.rank]
+		}
+		return true
+	}
+
+	if card2.suit == s.follow {
+		return false
+	}
+
+	return rank[card1.rank] > rank[card2.rank]
 }
