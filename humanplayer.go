@@ -18,7 +18,6 @@ type PlayerI interface {
 	incTotalScore(s int)
 	setHand(cs []Card)
 	setScore(s int)
-	setHuman(b bool)
 	setSchwarz(b bool)
 	setPreviousSuit(s string)
 	getScore() int

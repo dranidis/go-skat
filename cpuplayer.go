@@ -11,7 +11,7 @@ type Player struct {
 
 func makePlayer(hand []Card) Player {
 	return Player{
-		PlayerData: makePlayerData(hand),
+		PlayerData:    makePlayerData(hand),
 		firstCardPlay: false,
 	}
 }
@@ -118,12 +118,24 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				cards := filter(c, func(c Card) bool {
 					return c.suit == AKXsuit
 				})
-				return cards[len(cards)-1]		
+				return cards[len(cards)-1]
 			}
 		}
 
 		debugTacticsLog(" -TRUMPS exhausted: Hand: %v ", p.getHand())
 		return HighestLong(s.trump, c)
+	}
+	if len(s.trick) == 2 {
+		debugTacticsLog("BACKHAND ")
+		if sum(s.trick) == 0 {
+			debugTacticsLog("ZERO valued trick")
+			sortedValue := filter(sortValue(c), func(card Card) bool {
+				return card.suit != s.trump && card.rank != "J"
+			})
+			if len(sortedValue) > 0 {
+				return sortedValue[len(sortedValue)-1]
+			}
+		}
 	}
 	// TODO:
 	// in middlehand, if leader leads with an exhausted suit don't take
@@ -179,7 +191,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	// don't take it with a trump if you can save it.
 
 	if len(s.trick) == 0 {
-		// if you have a card with suit played in a previous trick 
+		// if you have a card with suit played in a previous trick
 		// started from you or your partner continue with it
 		// else
 		prevSuit := ""
@@ -231,12 +243,46 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			}
 			return highestValueWinnerORlowestValueLoser(s, c)
 		} else {
-			// TODO:TODO:TODO:TODO:TODO:TODO:
-			// if high chances that teammate's card wins
-			return sortValue(c)[0]
+			sortedValueNoTrumps := filter(sortValue(c), func(card Card) bool {
+				return card.suit != s.trump && card.rank != "J"
+			})
+			debugTacticsLog("SORT-VALUE no trumps %v\n", sortedValueNoTrumps)
+
+			cardsSuit := filter(c, func(card Card) bool {
+				return s.trick[0].suit == card.suit && card.rank != "J"
+			})
+			if len(cardsSuit) > 0 {
+				return sortValue(c)[0]
+			}
+			trickFollowCards := filter(makeDeck(), func(card Card) bool {
+				if card.rank == "J" {
+					return false
+				}
+				if card.suit != s.trick[0].suit {
+					return false
+				}
+				if card.rank == s.trick[0].rank {
+					return false
+				}
+				return true
+			})
 			// else
-			// return sortValue(c)[len(c)-1]
+			if inMany(s.cardsPlayed, trickFollowCards...) && sum(s.trick) == 0 {
+				debugTacticsLog("All suit %s played and zero trick. Increase trick value\n", s.trick[0].suit)
+				for i := len(sortedValueNoTrumps) - 1; i >= 0; i-- {
+					if cardValue(sortedValueNoTrumps[i]) > 0 {
+						return sortedValueNoTrumps[i]
+					}
+				}
+			}
+			debugTacticsLog("PLAY lowest value card\n")
+			if len(sortedValueNoTrumps) > 0 {
+				return sortedValueNoTrumps[len(sortedValueNoTrumps)-1]
+			}
+			// LASt card?
+			return sortValue(c)[0]
 		}
+
 	}
 
 	if len(s.trick) == 2 {
@@ -487,8 +533,8 @@ func (p *Player) calculateHighestBid() int {
 			return p.highestBid
 		}
 	}
-		//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
-	
+	//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
+
 	// fmt.Printf("HIGH %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
 
 	trump := p.declareTrump()

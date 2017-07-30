@@ -13,8 +13,7 @@ var logFile io.Writer = nil
 var debugTacticsLogFlag = false
 var gameLogFlag = false
 var delayMs = 0
-var totalGames = 27
-
+var totalGames = 27000
 
 func logToFile(format string, a ...interface{}) {
 	if logFile != nil {
@@ -52,7 +51,7 @@ type SuitState struct {
 	trick    []Card
 	// not necessary for game but for tactics
 	trumpsInGame []Card
-	cardsPlayed []Card
+	cardsPlayed  []Card
 }
 
 func makeSuitState() SuitState {
@@ -353,6 +352,7 @@ func main() {
 	defer file.Close()
 
 	//player1 := makeHumanPlayer([]Card{})
+	//gameLogFlag = true
 	player1 := makePlayer([]Card{})
 	player2 := makePlayer([]Card{})
 	player3 := makePlayer([]Card{})
@@ -361,7 +361,6 @@ func main() {
 	//player3.firstCardPlay = true
 
 	players := []PlayerI{&player1, &player2, &player3}
-	players[0].setHuman(true)
 	players[0].setName("You")
 	players[1].setName("Bob")
 	players[2].setName("Ana")
@@ -390,12 +389,12 @@ func main() {
 	}
 	avg := float64(player1.getTotalScore()+player2.getTotalScore()+player3.getTotalScore()) / float64(totalGames-passed)
 
-	money1 := float64(2.0 * player1.getTotalScore() - player2.getTotalScore() - player3.getTotalScore())/100.0
-	money2 := float64(2.0 * player2.getTotalScore() - player1.getTotalScore() - player3.getTotalScore())/100.0
-	money3 := float64(2.0 * player3.getTotalScore() - player1.getTotalScore() - player2.getTotalScore())/100.0
-	fmt.Printf("\n(%s) %5.2f     (%s) %5.2f     (%s) %5.2f\n", 
-		player1.getName(), money1, 
-		player2.getName(), money2, 
+	money1 := float64(2.0*player1.getTotalScore()-player2.getTotalScore()-player3.getTotalScore()) / 100.0
+	money2 := float64(2.0*player2.getTotalScore()-player1.getTotalScore()-player3.getTotalScore()) / 100.0
+	money3 := float64(2.0*player3.getTotalScore()-player1.getTotalScore()-player2.getTotalScore()) / 100.0
+	fmt.Printf("\n(%s) %5.2f     (%s) %5.2f     (%s) %5.2f\n",
+		player1.getName(), money1,
+		player2.getName(), money2,
 		player3.getName(), money3)
 	fmt.Printf("AVG %3.1f, passed %d, won %d, lost %d / %d games\n", avg, passed, won, lost, totalGames)
 }

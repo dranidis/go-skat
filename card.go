@@ -226,7 +226,6 @@ func filter(cards []Card, f func(Card) bool) []Card {
 	return cs
 }
 
-
 func filterSuit(cards []string, f func(string) bool) []string {
 	cs := []string{}
 	for _, c := range cards {

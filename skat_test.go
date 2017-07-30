@@ -7,8 +7,8 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	debugTacticsLogFlag = true
-	gameLogFlag = true
+	debugTacticsLogFlag = false
+	gameLogFlag = false
 	delayMs = 0
 
 	code := m.Run()
@@ -1121,22 +1121,16 @@ func TestFindBlankCards(t *testing.T) {
 	}
 }
 
-// func TestGame(t *testing.T) {
-// 	for i := 0; i < 10; i++ {
-// 		player1 := makePlayer([]Card{})
-// 		player2 := makePlayer([]Card{})
-// 		player3 := makePlayer([]Card{})
+func TestGame(t *testing.T) {
+	for i := 0; i < 10; i++ {
+		player1 := makePlayer([]Card{})
+		player2 := makePlayer([]Card{})
+		player3 := makePlayer([]Card{})
 
-// 		players := []PlayerI{&player1, &player2, &player3}
-// 		score, oppScore := game(players)
-
-// 		if score != 0 || oppScore != 0 {
-// 			if score+oppScore != 120 {
-// 				t.Errorf("Game score not 120: %d", score+oppScore)
-// 			}
-// 		}
-// 	}
-// }
+		players := []PlayerI{&player1, &player2, &player3}
+		_ = game(players)
+	}
+}
 
 func TestOpponentTactic1(t *testing.T) {
 
@@ -1430,6 +1424,57 @@ func TestOpponentTactic7(t *testing.T) {
 	}
 }
 
+func TestOpponentTacticMID(t *testing.T) {
+	// MIDDLEHAND
+
+	// if partner leads a very low card
+	// don't SMEAR the trick
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &teamMate
+	s.declarer = &otherPlayer
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{SPADE, "7"}}
+	s.follow = SPADE
+	s.cardsPlayed = []Card{
+		Card{SPADE, "A"},
+		Card{SPADE, "10"},
+		Card{SPADE, "K"},
+		Card{SPADE, "D"},
+		Card{SPADE, "8"},
+		//	Card{SPADE, "9"},
+	}
+
+	validCards := []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "7"},
+		Card{HEART, "A"},
+		Card{CARO, "8"},
+		Card{CARO, "10"},
+	}
+	//
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "8"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by teammate, and SPADES still in game, and valid %v, it is NOT expected to Increase the value of the trick for the declarer to trump, expected: %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+
+	s.cardsPlayed = append(s.cardsPlayed, Card{SPADE, "9"})
+	card = player.playerTactic(&s, validCards)
+	exp = Card{CARO, "10"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by teammate, all SPADE played, and valid %v, it is expected to Increase the value of the trick for the declarer to trump, expected: %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
 func TestLongestNonTrumpSuit(t *testing.T) {
 	cards := []Card{
 		Card{CARO, "10"},
@@ -1600,7 +1645,37 @@ func TestDeclarerTacticAKX(t *testing.T) {
 		t.Errorf("A-K-X tactic. 10 already player. Trump: CLUBS, In trick %v and hand %v, was expected to play %v since still in game are: %v. Played %v",
 			s.trick, player.hand, exp, s.trumpsInGame, card)
 	}
+}
 
+func TestDeclarerTacticDoNotTrumpZeroValueTricks(t *testing.T) {
+	// BUT play your A-10 trumps if Js ARE NOT still there
+
+	other := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &other
+	s.declarer = &player
+
+	s.trump = CLUBS
+	s.trick = []Card{
+		Card{HEART, "7"},
+		Card{HEART, "8"},
+	}
+	s.follow = HEART
+
+	player.hand = []Card{
+		Card{CLUBS, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "K"},
+		Card{CARO, "7"},
+	}
+
+	card := player.playerTactic(&s, player.hand)
+	exp := Card{CARO, "7"}
+	if !card.equals(exp) {
+		t.Errorf("Zero value trick. In trick %v and hand %v, was expected to play %v . Played %v",
+			s.trick, player.hand, exp, card)
+	}
 
 }
 

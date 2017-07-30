@@ -29,9 +29,6 @@ func (p *PlayerData) setScore(s int) {
 	p.score = s
 }
 
-func (p *PlayerData) setHuman(b bool) {
-}
-
 func (p *PlayerData) setSchwarz(b bool) {
 	p.schwarz = b
 }
