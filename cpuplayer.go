@@ -16,8 +16,8 @@ func makePlayer(hand []Card) Player {
 	}
 }
 
-func winnerCards(s *SuitState, c []Card) []Card {
-	return filter(c, func(c Card) bool {
+func winnerCards(s *SuitState, cs []Card) []Card {
+	return filter(cs, func(c Card) bool {
 		wins := true
 		for _, t := range s.trick {
 			if s.greater(t, c) {
@@ -85,7 +85,6 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 
 		// count your own trumps and other players trump
 		// if you have less you should not play trumps immediately
-
 		if len(p.otherPlayersTrumps(s)) > 0 {
 			debugTacticsLog("other TRUMPS in game: %v", p.otherPlayersTrumps(s))
 
@@ -137,8 +136,8 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 			}
 		}
 	}
-	// TODO:
-	// in middlehand, if leader leads with an exhausted suit don't take
+	// TODO:exhausted
+	// in middlehand, if leader leads with an  suit don't take
 	// it with the most valuable trump. It might be taken....
 
 	return highestValueWinnerORlowestValueLoser(s, c)
@@ -149,11 +148,11 @@ func isAKX(trump string, cs []Card) bool {
 		return c.suit == trump
 	})
 
-	if !inMany(cards, Card{trump, "A"}, Card{trump, "K"}) {
+	if !in(cards, Card{trump, "A"}, Card{trump, "K"}) {
 		//	fmt.Printf("Not A-K:  %v\n", cs)
 		return false
 	}
-	if inMany(cards, Card{trump, "10"}) {
+	if in(cards, Card{trump, "10"}) {
 		// fmt.Printf("Yes 10\n")
 		return false
 	}
@@ -164,12 +163,23 @@ func isAKX(trump string, cs []Card) bool {
 	return true
 }
 
+func HighestShort(trump string, c []Card) Card {
+	s := ShortestNonTrumpSuit(trump, c)
+	debugTacticsLog("ShortestNonTrumpSuit %v\n", s)
+	cards := sortRank(nonTrumpCards(s, c))
+	debugTacticsLog("%v", cards)
+	if len(cards) > 0 {
+		return cards[0]
+	}
+	// last card?
+	debugTacticsLog("... DEBUG ... VALID: %v no HighestShort. Returning: %v\n", c, c[0])
+	return c[0]
+}
+
 func HighestLong(trump string, c []Card) Card {
 	s := LongestNonTrumpSuit(trump, c)
 	debugTacticsLog("LongestNonTrumpSuit %v\n", s)
-	cards := filter(c, func(c Card) bool {
-		return c.suit == s && c.rank != "J"
-	})
+	cards := sortRank(nonTrumpCards(s, c))
 	debugTacticsLog("%v", cards)
 	if len(cards) > 0 {
 		return cards[0]
@@ -191,6 +201,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	// don't take it with a trump if you can save it.
 
 	if len(s.trick) == 0 {
+		debugTacticsLog("FOREHAND\n")
 		// if you have a card with suit played in a previous trick
 		// started from you or your partner continue with it
 		// else
@@ -208,7 +219,15 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 		}
 		debugTacticsLog("Previous suit: %v\n", prevSuit)
 		if prevSuit == "" {
-			card := HighestLong(s.trump, c)
+			// DECLARER AT MID
+			var card Card
+			if s.opp2 == p {
+				debugTacticsLog("Declarer at MIDDLEHAND, playing LONG\n")
+				card = HighestLong(s.trump, c)
+			} else {
+				debugTacticsLog("Declarer at BACKHAND, playing SHORT\n")
+				card = HighestShort(s.trump, c)
+			}
 			p.setPreviousSuit(getSuite(s.trump, card))
 			return card
 		}
@@ -267,7 +286,10 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 				return true
 			})
 			// else
-			if inMany(s.cardsPlayed, trickFollowCards...) && sum(s.trick) == 0 {
+			debugTacticsLog("PLAYED from suite %v", filter(s.cardsPlayed, func(card Card) bool {
+				return card.suit == s.trick[0].suit && card.rank != "J"
+			}))
+			if in(s.cardsPlayed, trickFollowCards...) && sum(s.trick) == 0 {
 				debugTacticsLog("All suit %s played and zero trick. Increase trick value\n", s.trick[0].suit)
 				for i := len(sortedValueNoTrumps) - 1; i >= 0; i-- {
 					if cardValue(sortedValueNoTrumps[i]) > 0 {
@@ -427,7 +449,7 @@ func (p *Player) handEstimation() int {
 }
 
 func findBlank(cards []Card, suit string) Card {
-	cc := countCardsSuit(suit, cards)
+	cc := len(nonTrumpCards(suit, cards))
 	if cc == 1 {
 		var card Card
 		for _, c := range cards {
@@ -511,7 +533,7 @@ func (p *Player) calculateHighestBid() int {
 
 	suit := mostCardsSuit(p.getHand())
 
-	largest := countTrumpsSuit(suit, p.getHand())
+	largest := len(trumpCards(suit, p.getHand()))
 	debugTacticsLog("Longest suit %s, %d cards\n", suit, largest)
 
 	prob := 0

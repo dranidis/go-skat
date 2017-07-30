@@ -198,18 +198,18 @@ func makeDeck() []Card {
 }
 
 // CARD MANIPULATION FUNCTIONS
-func in(cs []Card, c Card) bool {
-	for _, card := range cs {
-		if card.equals(c) {
-			return true
-		}
-	}
-	return false
-}
 
-func inMany(cs []Card, card ...Card) bool {
+func in(cs []Card, card ...Card) bool {
+	inOne := func(cs []Card, c Card) bool {
+		for _, card := range cs {
+			if card.equals(c) {
+				return true
+			}
+		}
+		return false
+	}
 	for _, c := range card {
-		if !in(cs, c) {
+		if !inOne(cs, c) {
 			return false
 		}
 	}
@@ -226,9 +226,9 @@ func filter(cards []Card, f func(Card) bool) []Card {
 	return cs
 }
 
-func filterSuit(cards []string, f func(string) bool) []string {
+func filterSuit(suits []string, f func(string) bool) []string {
 	cs := []string{}
-	for _, c := range cards {
+	for _, c := range suits {
 		if f(c) {
 			cs = append(cs, c)
 		}
@@ -281,21 +281,28 @@ func trumpCards(trump string, cards []Card) []Card {
 	})
 }
 
-func countTrumpsSuit(suit string, cards []Card) int {
-	return len(trumpCards(suit, cards))
-}
-
-func countCardsSuit(suit string, cards []Card) int {
-	count := 0
-	for _, c := range cards {
-		if c.suit == suit && c.rank != "J" {
-			count++
-		}
-	}
-	return count
+func nonTrumpCards(suit string, cards []Card) []Card {
+	return filter(cards, func(c Card) bool {
+		return c.suit == suit && c.rank != "J"
+	})
 }
 
 // TACTICS aux functions
+
+func ShortestNonTrumpSuit(trump string, cards []Card) string {
+	minI, minCount := -1, 99
+	for i, s := range suits {
+		if s == trump {
+			continue
+		}
+		c := len(nonTrumpCards(s, cards))
+		if c < minCount && c > 0 {
+			minI = i
+			minCount = c
+		}
+	}
+	return suits[minI]
+}
 
 func LongestNonTrumpSuit(trump string, cards []Card) string {
 	maxI, maxCount := -1, -1
@@ -303,8 +310,8 @@ func LongestNonTrumpSuit(trump string, cards []Card) string {
 		if s == trump {
 			continue
 		}
-		c := countCardsSuit(s, cards)
-		if countCardsSuit(s, cards) > maxCount {
+		c := len(nonTrumpCards(s, cards))
+		if c > maxCount {
 			maxI = i
 			maxCount = c
 		}
@@ -333,10 +340,10 @@ func mostCardsSuit(cards []Card) string {
 }
 
 func lessCardsSuit(cards []Card) string {
-	c := countCardsSuit(CLUBS, cards)
-	s := countCardsSuit(SPADE, cards)
-	h := countCardsSuit(HEART, cards)
-	k := countCardsSuit(CARO, cards)
+	c := len(nonTrumpCards(CLUBS, cards))
+	s := len(nonTrumpCards(SPADE, cards))
+	h := len(nonTrumpCards(HEART, cards))
+	k := len(nonTrumpCards(CARO, cards))
 
 	// we don't want to discard a suit having an A
 	if in(cards, Card{CLUBS, "A"}) {

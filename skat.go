@@ -13,7 +13,7 @@ var logFile io.Writer = nil
 var debugTacticsLogFlag = false
 var gameLogFlag = false
 var delayMs = 0
-var totalGames = 27000
+var totalGames = 21
 
 func logToFile(format string, a ...interface{}) {
 	if logFile != nil {
@@ -267,7 +267,7 @@ func game(players []PlayerI) int {
 		opp1, opp2 = players[1], players[2]
 	}
 	if declarer == players[1] {
-		opp1, opp2 = players[0], players[2]
+		opp2, opp1 = players[0], players[2]
 	}
 	if declarer == players[2] {
 		opp1, opp2 = players[0], players[1]
@@ -313,6 +313,8 @@ func game(players []PlayerI) int {
 		gameLog("\n")
 		players = round(&state, players)
 	}
+	gameLog("\nSKAT: %v\n", skat)
+
 	// gameLog("SKAT: %v, %d\n", skat, sum(skat))
 	declarer.setScore(declarer.getScore() + sum(skat))
 
@@ -351,19 +353,22 @@ func main() {
 	logFile = file
 	defer file.Close()
 
-	//player1 := makeHumanPlayer([]Card{})
-	//gameLogFlag = true
-	player1 := makePlayer([]Card{})
+	// player1 := makePlayer([]Card{})
+	player1 := makeHumanPlayer([]Card{})
+	gameLogFlag = true
 	player2 := makePlayer([]Card{})
 	player3 := makePlayer([]Card{})
-
+	player1.setName("You")
+	player2.setName("Bob")
+	player3.setName("Ana")
 	// Try a player with a first card tactic
 	//player3.firstCardPlay = true
 
 	players := []PlayerI{&player1, &player2, &player3}
-	players[0].setName("You")
-	players[1].setName("Bob")
-	players[2].setName("Ana")
+	rotateTimes := r.Intn(5)
+	for i := 0; i < rotateTimes; i++ {
+		players = rotatePlayers(players)
+	}
 
 	passed := 0
 	won := 0

@@ -415,19 +415,19 @@ func TestMostCardsSuit(t *testing.T) {
 		Card{SPADE, "8"},
 	})
 
-	act := countTrumpsSuit(CLUBS, player.hand)
+	act := len(trumpCards(CLUBS, player.hand))
 	if act != 4 {
 		t.Errorf("Expected %d, got %d", 4, act)
 	}
-	act = countTrumpsSuit(SPADE, player.hand)
+	act = len(trumpCards(SPADE, player.hand))
 	if act != 5 {
 		t.Errorf("Expected %d, got %d", 5, act)
 	}
-	act = countTrumpsSuit(CARO, player.hand)
+	act = len(trumpCards(CARO, player.hand))
 	if act != 6 {
 		t.Errorf("Expected %d, got %d", 6, act)
 	}
-	act = countTrumpsSuit(HEART, player.hand)
+	act = len(trumpCards(HEART, player.hand))
 	if act != 7 {
 		t.Errorf("Expected %d, got %d", 7, act)
 	}
@@ -1122,12 +1122,20 @@ func TestFindBlankCards(t *testing.T) {
 }
 
 func TestGame(t *testing.T) {
+	player1 := makePlayer([]Card{})
+	player2 := makePlayer([]Card{})
+	player3 := makePlayer([]Card{})
+	player3.firstCardPlay = true
+	player1.setName("NAME")
+	if player1.getName() != "NAME" {
+		t.Errorf("Error in set/get name")
+	}
+	if player1.getTotalScore() != 0 {
+		t.Errorf("Error in get total score")
+	}
+	players := []PlayerI{&player1, &player2, &player3}
 	for i := 0; i < 10; i++ {
-		player1 := makePlayer([]Card{})
-		player2 := makePlayer([]Card{})
-		player3 := makePlayer([]Card{})
 
-		players := []PlayerI{&player1, &player2, &player3}
 		_ = game(players)
 	}
 }
@@ -1475,6 +1483,57 @@ func TestOpponentTacticMID(t *testing.T) {
 	}
 }
 
+func TestOpponentTacticFORE(t *testing.T) {
+	// FOREHAND
+
+	// if declarer BACK short
+	// if declarer MID long
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &otherPlayer
+
+	teamMate.previousSuit = ""
+	player.previousSuit = ""
+	s.trump = CLUBS
+	s.trick = []Card{}
+	_ = teamMate
+
+	validCards := []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "7"},
+		Card{HEART, "A"},
+		Card{CARO, "8"},
+		Card{CARO, "10"},
+	}
+	// declarer MID
+	s.opp2 = &player
+	s.opp1 = &teamMate
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "10"}
+	if !card.equals(exp) {
+		t.Errorf("FOREHAND, DECLARER MID, valid %v, expected: %v, played %v",
+			validCards, exp, card)
+	}
+	// declarer BACK
+	s.opp1 = &player
+	s.opp2 = &teamMate
+	teamMate.previousSuit = ""
+	player.previousSuit = ""
+
+	card = player.playerTactic(&s, validCards)
+	exp = Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("FOREHAND, DECLARER BACK, valid %v, expected: %v, played %v",
+			validCards, exp, card)
+	}
+}
+
 func TestLongestNonTrumpSuit(t *testing.T) {
 	cards := []Card{
 		Card{CARO, "10"},
@@ -1506,6 +1565,41 @@ func TestLongestNonTrumpSuit(t *testing.T) {
 	}
 }
 
+func TestShortestNonTrumpSuit(t *testing.T) {
+	cards := []Card{
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{CARO, "7"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "K"},
+		Card{SPADE, "8"},
+		Card{SPADE, "7"},
+	}
+	suit := ShortestNonTrumpSuit(CARO, cards)
+	if suit == CARO {
+		t.Errorf("CARO is the trump")
+	}
+
+	cards = []Card{
+		Card{SPADE, "K"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "7"},
+		Card{HEART, "K"},
+		Card{HEART, "8"},
+		Card{HEART, "7"},
+	}
+	suit = ShortestNonTrumpSuit(CARO, cards)
+	if suit == CARO {
+		t.Errorf("CARO is not in the cards")
+	}
+
+	if suit != SPADE {
+		t.Errorf("SPADE is the shortest: %v", cards)
+	}
+}
+
 func TestHighestLong(t *testing.T) {
 	cards := []Card{
 		Card{SPADE, "K"},
@@ -1521,6 +1615,25 @@ func TestHighestLong(t *testing.T) {
 
 	if card.equals(cards[0]) {
 		t.Errorf("Error in HighestLong")
+	}
+}
+
+func TestHighestShort(t *testing.T) {
+	cards := []Card{
+		Card{SPADE, "K"},
+		Card{SPADE, "10"},
+		Card{SPADE, "9"},
+		Card{HEART, "7"},
+		Card{HEART, "K"},
+		Card{HEART, "8"},
+		Card{CARO, "10"},
+		Card{CARO, "7"},
+	}
+
+	card := HighestShort(SPADE, cards)
+	exp := Card{CARO, "10"}
+	if !card.equals(exp) {
+		t.Errorf("Error in HighestShort: %v, exp: %v, got %v", cards, exp, card)
 	}
 }
 
@@ -1823,16 +1936,16 @@ func TestInMany(t *testing.T) {
 		Card{CARO, "7"},
 	}
 
-	act := inMany(cards, Card{CARO, "K"}, Card{CARO, "A"})
+	act := in(cards, Card{CARO, "K"}, Card{CARO, "A"})
 	if !act {
 		t.Errorf("FAILED inMANY")
 	}
-	act = inMany(cards, Card{CARO, "10"}, Card{CARO, "A"})
+	act = in(cards, Card{CARO, "10"}, Card{CARO, "A"})
 	if act {
 		t.Errorf("FAILED inMANY")
 	}
 
-	if !inMany(cards, Card{CARO, "A"}, Card{CARO, "K"}) {
+	if !in(cards, Card{CARO, "A"}, Card{CARO, "K"}) {
 		t.Errorf("FAILED inMANY")
 	}
 
