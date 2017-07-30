@@ -11,6 +11,7 @@ const CLUBS = "CLUBS"
 const SPADE = "SPADE"
 const HEART = "HEART"
 const CARO = "CARO"
+const GRAND = "Grand"
 
 var _ = rand.New(rand.NewSource(1))
 var r = rand.New(rand.NewSource(time.Now().Unix()))
@@ -70,6 +71,8 @@ func trumpBaseValue(s string) int {
 		return 10
 	case CARO:
 		return 9
+	case GRAND:
+		return 24
 	}
 	return 0
 }
@@ -141,6 +144,8 @@ func sortSuit(trump string, cs []Card) []Card {
 			suits = []string{HEART, CLUBS, SPADE, CARO}
 		case CARO:
 			suits = []string{CARO, CLUBS, SPADE, HEART}
+		default:
+			suits = []string{CLUBS, SPADE, HEART, CARO}
 		}
 	}
 	for _, s := range suits {
@@ -202,8 +207,28 @@ func in(cs []Card, c Card) bool {
 	return false
 }
 
+func inMany(cs []Card, card ...Card) bool {
+	for _, c := range card {
+		if !in(cs, c) {
+			return false
+		}
+	}
+	return true
+}
+
 func filter(cards []Card, f func(Card) bool) []Card {
 	cs := []Card{}
+	for _, c := range cards {
+		if f(c) {
+			cs = append(cs, c)
+		}
+	}
+	return cs
+}
+
+
+func filterSuit(cards []string, f func(string) bool) []string {
+	cs := []string{}
 	for _, c := range cards {
 		if f(c) {
 			cs = append(cs, c)

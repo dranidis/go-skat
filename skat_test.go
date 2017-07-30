@@ -7,8 +7,9 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	debugTacticsLogFlag = false
-	gameLogFlag = false
+	debugTacticsLogFlag = true
+	gameLogFlag = true
+	delayMs = 0
 
 	code := m.Run()
 	os.Exit(code)
@@ -1120,22 +1121,22 @@ func TestFindBlankCards(t *testing.T) {
 	}
 }
 
-func TestGame(t *testing.T) {
-	for i := 0; i < 10; i++ {
-		player1 := makePlayer([]Card{})
-		player2 := makePlayer([]Card{})
-		player3 := makePlayer([]Card{})
+// func TestGame(t *testing.T) {
+// 	for i := 0; i < 10; i++ {
+// 		player1 := makePlayer([]Card{})
+// 		player2 := makePlayer([]Card{})
+// 		player3 := makePlayer([]Card{})
 
-		players := []PlayerI{&player1, &player2, &player3}
-		score, oppScore := game(players)
+// 		players := []PlayerI{&player1, &player2, &player3}
+// 		score, oppScore := game(players)
 
-		if score != 0 || oppScore != 0 {
-			if score+oppScore != 120 {
-				t.Errorf("Game score not 120: %d", score+oppScore)
-			}
-		}
-	}
-}
+// 		if score != 0 || oppScore != 0 {
+// 			if score+oppScore != 120 {
+// 				t.Errorf("Game score not 120: %d", score+oppScore)
+// 			}
+// 		}
+// 	}
+// }
 
 func TestOpponentTactic1(t *testing.T) {
 
@@ -1563,6 +1564,46 @@ func TestDeclarerTactic3(t *testing.T) {
 	}
 }
 
+func TestDeclarerTacticAKX(t *testing.T) {
+	// BUT play your A-10 trumps if Js ARE NOT still there
+
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &player
+
+	s.trump = CLUBS
+	s.trick = []Card{}
+	player.hand = []Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "A"},
+		Card{HEART, "K"},
+		Card{HEART, "7"},
+	}
+
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+	}
+
+	card := player.playerTactic(&s, player.hand)
+	exp := Card{HEART, "7"}
+	if !card.equals(exp) {
+		t.Errorf("A-K-X tactic. Trump: CLUBS, In trick %v and hand %v, was expected to play %v since still in game are: %v. Played %v",
+			s.trick, player.hand, exp, s.trumpsInGame, card)
+	}
+
+	s.cardsPlayed = append(s.cardsPlayed, Card{HEART, "10"})
+
+	card = player.playerTactic(&s, player.hand)
+	exp = Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("A-K-X tactic. 10 already player. Trump: CLUBS, In trick %v and hand %v, was expected to play %v since still in game are: %v. Played %v",
+			s.trick, player.hand, exp, s.trumpsInGame, card)
+	}
+
+
+}
+
 func TestOtherPlayersTrumps(t *testing.T) {
 	player := makePlayer([]Card{})
 	s := makeSuitState()
@@ -1607,7 +1648,7 @@ func TestRotatePlayers(t *testing.T) {
 	player1 := makePlayer([]Card{})
 	player2 := makePlayer([]Card{})
 	player3 := makePlayer([]Card{})
-	players := []PlayerI {&player1, &player2, &player3}
+	players := []PlayerI{&player1, &player2, &player3}
 
 	players = rotatePlayers(players)
 	next := players[0]
@@ -1631,7 +1672,6 @@ func TestRotatePlayers(t *testing.T) {
 		t.Errorf("Wrong order")
 	}
 
-
 	players = rotatePlayers(players)
 	next = players[0]
 	expNext = &player3
@@ -1675,4 +1715,50 @@ func TestRotatePlayers(t *testing.T) {
 	if next != expNext {
 		t.Errorf("Wrong order")
 	}
+}
+
+func TestIsAKX(t *testing.T) {
+	hand := []Card{
+		Card{CARO, "A"},
+		Card{CARO, "K"},
+	}
+
+	act := isAKX(CARO, hand)
+	if act {
+		t.Errorf("Hand is NOT AKX (too short): %v", hand)
+	}
+
+	hand = append(hand, Card{CARO, "8"})
+	act = isAKX(CARO, hand)
+	if !act {
+		t.Errorf("Hand is AKX: %v", hand)
+	}
+
+	hand = append(hand, Card{CARO, "10"})
+	act = isAKX(CARO, hand)
+	if act {
+		t.Errorf("Hand is NOT AKX: %v", hand)
+	}
+}
+
+func TestInMany(t *testing.T) {
+	cards := []Card{
+		Card{CARO, "A"},
+		Card{CARO, "K"},
+		Card{CARO, "7"},
+	}
+
+	act := inMany(cards, Card{CARO, "K"}, Card{CARO, "A"})
+	if !act {
+		t.Errorf("FAILED inMANY")
+	}
+	act = inMany(cards, Card{CARO, "10"}, Card{CARO, "A"})
+	if act {
+		t.Errorf("FAILED inMANY")
+	}
+
+	if !inMany(cards, Card{CARO, "A"}, Card{CARO, "K"}) {
+		t.Errorf("FAILED inMANY")
+	}
+
 }

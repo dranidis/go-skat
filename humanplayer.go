@@ -45,14 +45,14 @@ func (p *HumanPlayer) accepts(bidIndex int) bool {
 
 	if !getYes(" Do you accept %d? (y/n/q)", bids[bidIndex]) {
 		return false
-	}	
+	}
 	return true
 }
 
 func (p *HumanPlayer) declareTrump() string {
 	fmt.Printf("HAND: %v\n", p.getHand())
 	for {
-		fmt.Printf("TRUMP? (1 for CLUBS, 2 for SPADE, 3 for HEART, 4 for CARO) ")
+		fmt.Printf("TRUMP? (1 for CLUBS, 2 for SPADE, 3 for HEART, 4 for CARO, G for GRAND) ")
 		reader := bufio.NewReader(os.Stdin)
 		char, _, err := reader.ReadRune()
 
@@ -70,6 +70,10 @@ func (p *HumanPlayer) declareTrump() string {
 			return HEART
 		case '4':
 			return CARO
+		case 'G':
+			return GRAND
+		case 'g':
+			return GRAND
 		default:
 			continue
 		}

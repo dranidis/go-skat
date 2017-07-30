@@ -2,16 +2,19 @@ package main
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"io"
 	"log"
 	"os"
-
-	"github.com/fatih/color"
+	"time"
 )
 
 var logFile io.Writer = nil
 var debugTacticsLogFlag = false
-var gameLogFlag = true
+var gameLogFlag = false
+var delayMs = 0
+var totalGames = 27
+
 
 func logToFile(format string, a ...interface{}) {
 	if logFile != nil {
@@ -49,10 +52,11 @@ type SuitState struct {
 	trick    []Card
 	// not necessary for game but for tactics
 	trumpsInGame []Card
+	cardsPlayed []Card
 }
 
 func makeSuitState() SuitState {
-	return SuitState{nil, nil, nil, "", nil, "", []Card{}, []Card{}}
+	return SuitState{nil, nil, nil, "", nil, "", []Card{}, []Card{}, []Card{}}
 }
 
 func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
@@ -85,9 +89,12 @@ func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
 
 func round(s *SuitState, players []PlayerI) []PlayerI {
 	play(s, players[0])
+	time.Sleep(time.Duration(delayMs) * time.Millisecond)
 	s.follow = getSuite(s.trump, s.trick[0])
 	play(s, players[1])
+	time.Sleep(time.Duration(delayMs) * time.Millisecond)
 	play(s, players[2])
+	time.Sleep(time.Duration(delayMs) * time.Millisecond)
 
 	players = setNextTrickOrder(s, players)
 	s.follow = ""
@@ -99,6 +106,7 @@ func play(s *SuitState, p PlayerI) Card {
 
 	p.setHand(sortSuit(s.trump, p.getHand()))
 	gameLog("Trick: %v\n", s.trick)
+	debugTacticsLog("(%v) HAND %v ", p.getName(), p.getHand())
 	debugTacticsLog("valid: %v\n", valid)
 	if s.opp1 != nil && s.opp2 != nil {
 		debugTacticsLog("Previous suit: %s:%v, %s:%v\n",
@@ -117,6 +125,7 @@ func play(s *SuitState, p PlayerI) Card {
 	if getSuite(s.trump, card) == s.trump {
 		s.trumpsInGame = remove(s.trumpsInGame, card)
 	}
+	s.cardsPlayed = append(s.cardsPlayed, card)
 	return card
 }
 
@@ -157,11 +166,11 @@ func bidding(listener, speaker PlayerI, bidIndex int) (int, PlayerI) {
 			bidLog("\t(%v) Yes\n", listener.getName())
 			bidIndex++
 		} else {
-		//	bidLog("Listener (%v) Pass %d\n", listener.getName(), bids[bidIndex])
+			//	bidLog("Listener (%v) Pass %d\n", listener.getName(), bids[bidIndex])
 			bidLog("\t(%v) Pass\n", listener.getName())
 			return bidIndex, speaker
 		}
-	} 
+	}
 	//bidLog("(%v) Pass %d\n", speaker.getName(), bids[bidIndex])
 	bidLog("\t(%v) Pass \n", speaker.getName())
 	bidIndex--
@@ -233,8 +242,8 @@ func gameScore(state SuitState, cs []Card, score, bid int,
 	}
 }
 
-func game(players []PlayerI) (int, int) {
-	gameLog("\n\nGAME %d/%d", gameIndex, totalGames)
+func game(players []PlayerI) int {
+	gameLog("\n\nGAME %d/%d\n", gameIndex, totalGames)
 	// DEALING
 	cards := Shuffle(makeDeck())
 	players[0].setHand(sortSuit("", cards[:10]))
@@ -246,13 +255,13 @@ func game(players []PlayerI) (int, int) {
 		debugTacticsLog("(%v) hand: %v Bid up to: %d\n", p.getName(), p.getHand(), p.calculateHighestBid())
 	}
 
-	gameLog("\n\nPLAYER ORDER: %s - %s - %s\n\n", players[0].getName(), players[1].getName(), players[2].getName())
+	gameLog("\nPLAYER ORDER: %s - %s - %s\n\n", players[0].getName(), players[1].getName(), players[2].getName())
 
 	// BIDDING
 	bidIndex, declarer := bid(players)
 	if bidIndex == -1 {
 		gameLog("ALL PASSED\n")
-		return 0, 0
+		return 0
 	}
 	var opp1, opp2 PlayerI
 	if declarer == players[0] {
@@ -288,6 +297,7 @@ func game(players []PlayerI) (int, int) {
 		"",
 		[]Card{},
 		allTrumps,
+		[]Card{},
 	}
 	players[0].setHand(sortSuit(state.trump, players[0].getHand()))
 	players[1].setHand(sortSuit(state.trump, players[1].getHand()))
@@ -320,7 +330,7 @@ func game(players []PlayerI) (int, int) {
 			declarer.getScore(), opp1.getScore()+opp2.getScore(), gs)
 	}
 
-	return declarer.getScore(), opp1.getScore() + opp2.getScore()
+	return gs
 
 }
 
@@ -332,7 +342,6 @@ func rotatePlayers(players []PlayerI) []PlayerI {
 	return newPlayers
 }
 
-var totalGames = 9
 var gameIndex = 1
 
 func main() {
@@ -343,9 +352,13 @@ func main() {
 	logFile = file
 	defer file.Close()
 
-	player1 := makeHumanPlayer([]Card{})
+	//player1 := makeHumanPlayer([]Card{})
+	player1 := makePlayer([]Card{})
 	player2 := makePlayer([]Card{})
 	player3 := makePlayer([]Card{})
+
+	// Try a player with a first card tactic
+	//player3.firstCardPlay = true
 
 	players := []PlayerI{&player1, &player2, &player3}
 	players[0].setHuman(true)
@@ -356,25 +369,33 @@ func main() {
 	passed := 0
 	won := 0
 	lost := 0
-	for ;gameIndex <= totalGames; gameIndex++ {
+	for ; gameIndex <= totalGames; gameIndex++ {
 		for _, p := range players {
 			p.setScore(0)
 			p.setSchwarz(true)
 			p.setPreviousSuit("")
 		}
-		score, oppScore := game(players)
-		if score == 0 && oppScore == 0 {
+		score := game(players)
+		if score == 0 {
 			passed++
 		}
-		if score > 60 {
+		if score > 0 {
 			won++
-		} else {
+		} else if score < 0 {
 			lost++
 		}
-		fmt.Printf("\n(%s) %3d     (%s) %3d     (%s) %3d\n", player1.getName(), player1.getTotalScore(), player2.getName(), player2.getTotalScore(), player3.getName(), player3.getTotalScore())
+		fmt.Printf("\n(%s) %5d     (%s) %5d     (%s) %5d\n", player1.getName(), player1.getTotalScore(), player2.getName(), player2.getTotalScore(), player3.getName(), player3.getTotalScore())
 		//time.Sleep(1000 * time.Millisecond)
 		players = rotatePlayers(players)
 	}
 	avg := float64(player1.getTotalScore()+player2.getTotalScore()+player3.getTotalScore()) / float64(totalGames-passed)
-	fmt.Printf("AVG %3.1f, passed %d, won %d, lost %d\n", avg, passed, won, lost)
+
+	money1 := float64(2.0 * player1.getTotalScore() - player2.getTotalScore() - player3.getTotalScore())/100.0
+	money2 := float64(2.0 * player2.getTotalScore() - player1.getTotalScore() - player3.getTotalScore())/100.0
+	money3 := float64(2.0 * player3.getTotalScore() - player1.getTotalScore() - player2.getTotalScore())/100.0
+	fmt.Printf("\n(%s) %5.2f     (%s) %5.2f     (%s) %5.2f\n", 
+		player1.getName(), money1, 
+		player2.getName(), money2, 
+		player3.getName(), money3)
+	fmt.Printf("AVG %3.1f, passed %d, won %d, lost %d / %d games\n", avg, passed, won, lost, totalGames)
 }

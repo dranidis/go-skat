@@ -1,12 +1,19 @@
 package main
 
+import (
+	_ "fmt"
+)
+
 type Player struct {
 	PlayerData
+	firstCardPlay bool
 }
 
 func makePlayer(hand []Card) Player {
 	return Player{
-		PlayerData: makePlayerData(hand)}
+		PlayerData: makePlayerData(hand),
+		firstCardPlay: false,
+	}
 }
 
 func winnerCards(s *SuitState, c []Card) []Card {
@@ -95,6 +102,26 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				return firstCardTactic(c)
 			}
 		}
+		// Declarer still has trumps
+		if len(s.trumpsInGame) > 0 {
+			// Check for A-K-x suits
+			AKXsuits := filterSuit(suits, func(suit string) bool {
+				return s.trump != suit && isAKX(suit, c)
+			})
+			// should also check that 10 is still in play
+			for _, AKXsuit := range AKXsuits {
+				debugTacticsLog("A-K-X: play X in hand %v\n", p.hand)
+				if in(s.cardsPlayed, Card{AKXsuit, "10"}) {
+					debugTacticsLog("%s 10 already played\n", AKXsuit)
+					continue
+				}
+				cards := filter(c, func(c Card) bool {
+					return c.suit == AKXsuit
+				})
+				return cards[len(cards)-1]		
+			}
+		}
+
 		debugTacticsLog(" -TRUMPS exhausted: Hand: %v ", p.getHand())
 		return HighestLong(s.trump, c)
 	}
@@ -103,6 +130,26 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	// it with the most valuable trump. It might be taken....
 
 	return highestValueWinnerORlowestValueLoser(s, c)
+}
+
+func isAKX(trump string, cs []Card) bool {
+	cards := filter(cs, func(c Card) bool {
+		return c.suit == trump
+	})
+
+	if !inMany(cards, Card{trump, "A"}, Card{trump, "K"}) {
+		//	fmt.Printf("Not A-K:  %v\n", cs)
+		return false
+	}
+	if inMany(cards, Card{trump, "10"}) {
+		// fmt.Printf("Yes 10\n")
+		return false
+	}
+	if len(cards) < 3 {
+		// fmt.Printf("less than 3\n")
+		return false
+	}
+	return true
 }
 
 func HighestLong(trump string, c []Card) Card {
@@ -132,7 +179,8 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	// don't take it with a trump if you can save it.
 
 	if len(s.trick) == 0 {
-		// if you have a card with suit played in a previous trick started from you or your partner continue with it
+		// if you have a card with suit played in a previous trick 
+		// started from you or your partner continue with it
 		// else
 		prevSuit := ""
 		partnerFunc := func(p PlayerI) PlayerI {
@@ -173,9 +221,9 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			// if declarer leads a low trump, and there are still HIGHER trumps
 			// smear it with a high value
 			if getSuite(s.trump, s.trick[0]) == s.trump && len(winnerCards(s, c)) == 0 {
-				other := filter(p.otherPlayersTrumps(s), func (c Card) bool {
+				other := filter(p.otherPlayersTrumps(s), func(c Card) bool {
 					return s.greater(c, s.trick[0])
-					})
+				})
 				if len(other) > 0 {
 					debugTacticsLog("SMEAR ")
 					return sortValue(c)[0]
@@ -207,6 +255,10 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 }
 
 func (p *Player) playerTactic(s *SuitState, c []Card) Card {
+	if p.firstCardPlay {
+		debugTacticsLog("(%s) FIRST CARD PLAY\n", p.name)
+		return c[0]
+	}
 	if s.declarer == p {
 		return p.declarerTactic(s, c)
 	}
@@ -414,9 +466,11 @@ func (p *Player) calculateHighestBid() int {
 	suit := mostCardsSuit(p.getHand())
 
 	largest := countTrumpsSuit(suit, p.getHand())
+	debugTacticsLog("Longest suit %s, %d cards\n", suit, largest)
 
 	prob := 0
 	if largest > 4 && assOtherThan(suit) > 1 {
+		debugTacticsLog("One more A-suit\n")
 		prob = 80
 	}
 	if largest > 5 {
@@ -428,10 +482,13 @@ func (p *Player) calculateHighestBid() int {
 
 	est := p.handEstimation()
 	debugTacticsLog("(%s) Hand: %v, Estimation: %d\n", p.name, p.hand, est)
-	if prob < 80 && est < 45 {
-		//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
-		return p.highestBid
+	if prob < 80 {
+		if est < 50 {
+			return p.highestBid
+		}
 	}
+		//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
+	
 	// fmt.Printf("HIGH %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
 
 	trump := p.declareTrump()
