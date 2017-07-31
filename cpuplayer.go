@@ -7,12 +7,14 @@ import (
 type Player struct {
 	PlayerData
 	firstCardPlay bool
+	risky         bool
 }
 
 func makePlayer(hand []Card) Player {
 	return Player{
 		PlayerData:    makePlayerData(hand),
 		firstCardPlay: false,
+		risky:         false,
 	}
 }
 
@@ -400,7 +402,15 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 		}
 		debugTacticsLog(" -- teammate leads --\n")
 		if s.greater(s.trick[0], s.trick[1]) {
-			return sortValue(c)[0]
+			debugTacticsLog(" largest non-trump")
+			sortedValue := sortValue(c)
+			noTrumps := filter(sortedValue, func(card Card) bool {
+				return card.suit != s.trump && card.rank != "J"
+			})
+			if len(noTrumps) > 0 {
+				return noTrumps[0]
+			}
+			return sortedValue[0]
 		}
 		return highestValueWinnerORlowestValueLoser(s, c)
 	}
@@ -620,9 +630,19 @@ func (p *Player) calculateHighestBid() int {
 	asses := assOtherThan(suit)
 	debugTacticsLog("Extra suits: %d\n", asses)
 	prob := 0
-	if largest > 4 && asses > 1 {
-		prob = 80
+	if p.risky {
+		if largest > 4 && asses > 0 {
+			prob = 80
+		}
+		if largest > 3 && asses > 1 {
+			prob = 80
+		}
+	} else {
+		if largest > 4 && asses > 1 {
+			prob = 80
+		}
 	}
+
 	if largest > 5 {
 		prob = 85
 	}
@@ -653,7 +673,10 @@ func (p *Player) calculateHighestBid() int {
 func (p *Player) declareTrump() string {
 	// TODO:
 	// if after SKAT pick up bid less than score use the next suit
-	return mostCardsSuit(p.getHand())
+	trump := mostCardsSuit(p.getHand())
+	// gs := gameScore(trump, p.hand, 61, 18,false, false, false)
+	// if gs .....
+	return trump
 }
 
 func (p *Player) discardInSkat(skat []Card) {

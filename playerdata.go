@@ -8,16 +8,31 @@ type PlayerData struct {
 	schwarz      bool
 	totalScore   int
 	previousSuit string
+	won          int
+	lost         int
+}
+
+func (p *PlayerData) getWon() int {
+	return p.won
+}
+
+func (p *PlayerData) getLost() int {
+	return p.lost
 }
 
 func makePlayerData(hand []Card) PlayerData {
 	return PlayerData{"dummy",
 		//false,
 		// false,
-		hand, 0, 0, true, 0, ""}
+		hand, 0, 0, true, 0, "", 0, 0}
 }
 
 func (p *PlayerData) incTotalScore(s int) {
+	if s > 0 {
+		p.won++
+	} else {
+		p.lost++
+	}
 	p.totalScore += s
 }
 

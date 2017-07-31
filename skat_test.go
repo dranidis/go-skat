@@ -564,44 +564,44 @@ func TestGameScore(t *testing.T) {
 		Card{SPADE, "8"},
 	}
 
-	act := gameScore(mState(CARO, ""), declarerCards, 61, 63, false, false, false)
+	act := gameScore(CARO, declarerCards, 61, 63, false, false, false)
 	exp := 63
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(mState(CARO, ""), declarerCards, 60, 63, false, false, false)
+	act = gameScore(CARO, declarerCards, 60, 63, false, false, false)
 	exp = -126
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(mState(HEART, ""), declarerCards, 61, 50, false, false, false)
+	act = gameScore(HEART, declarerCards, 61, 50, false, false, false)
 	exp = 50
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(mState(CLUBS, ""), declarerCards, 61, 50, false, false, false)
+	act = gameScore(CLUBS, declarerCards, 61, 50, false, false, false)
 	exp = 60
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(mState(SPADE, ""), declarerCards, 61, 50, false, false, false)
+	act = gameScore(SPADE, declarerCards, 61, 50, false, false, false)
 	exp = 55
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(mState(SPADE, ""), declarerCards, 61, 50, false, false, true)
+	act = gameScore(SPADE, declarerCards, 61, 50, false, false, true)
 	exp = 66
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
 	// hand is 50, OVERBID
-	act = gameScore(mState(HEART, ""), declarerCards, 61, 51, false, false, false)
+	act = gameScore(HEART, declarerCards, 61, 51, false, false, false)
 	exp = -120
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
@@ -619,34 +619,34 @@ func TestGameScore(t *testing.T) {
 		Card{HEART, "9"},
 		Card{SPADE, "8"},
 	}
-	act = gameScore(mState(CARO, ""), declarerCards, 61, 18, false, false, false)
+	act = gameScore(CARO, declarerCards, 61, 18, false, false, false)
 	exp = 18
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
 	// schneider winner
-	act = gameScore(mState(CARO, ""), declarerCards, 90, 18, false, false, false)
+	act = gameScore(CARO, declarerCards, 90, 18, false, false, false)
 	exp = 27
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 	// schneider loss
-	act = gameScore(mState(CARO, ""), declarerCards, 30, 18, false, false, false)
+	act = gameScore(CARO, declarerCards, 30, 18, false, false, false)
 	exp = -54
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
 	// schwarz winner
-	act = gameScore(mState(CARO, ""), declarerCards, 120, 18, false, true, false)
+	act = gameScore(CARO, declarerCards, 120, 18, false, true, false)
 	exp = 36
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
 	// schwarz loss
-	act = gameScore(mState(CARO, ""), declarerCards, 0, 18, true, false, false)
+	act = gameScore(CARO, declarerCards, 0, 18, true, false, false)
 	exp = -72
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
@@ -1607,6 +1607,41 @@ func TestOpponentTacticBACK1(t *testing.T) {
 	if getSuit(s.trump, card) == s.trump {
 		t.Errorf("In trick %v, TRUMPS CARO, and valid %v, NOT expected a trump: %v",
 			s.trick, validCards, card)
+	}
+
+}
+
+func TestOpponentTacticBACK2(t *testing.T) {
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &teamMate
+	s.declarer = &otherPlayer
+
+	s.trump = CARO
+	s.trick = []Card{Card{CLUBS, "10"}, Card{CLUBS, "7"}}
+	s.follow = CLUBS
+
+	validCards := []Card{
+		Card{CARO, "10"},
+		Card{SPADE, "D"},
+		Card{HEART, "K"},
+		Card{HEART, "8"},
+	}
+	//
+
+	card := player.playerTactic(&s, validCards)
+	if getSuit(s.trump, card) == s.trump {
+		t.Errorf("In trick %v, TRUMPS CARO, and valid %v, NOT expected a trump: %v",
+			s.trick, validCards, card)
+	}
+
+	exp := Card{HEART, "K"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v, TRUMPS CARO, and valid %v, expected : %v, got %v",
+			s.trick, validCards, exp, card)
 	}
 
 }

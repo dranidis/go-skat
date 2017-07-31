@@ -27,6 +27,8 @@ type PlayerI interface {
 	getName() string
 	getHand() []Card
 	isSchwarz() bool
+	getWon() int
+	getLost() int
 }
 
 type HumanPlayer struct {

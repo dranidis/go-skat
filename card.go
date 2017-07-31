@@ -1,9 +1,6 @@
 package main
 
 import (
-	"math/rand"
-	"time"
-
 	"github.com/fatih/color"
 )
 
@@ -12,9 +9,6 @@ const SPADE = "SPADE"
 const HEART = "HEART"
 const CARO = "CARO"
 const GRAND = "Grand"
-
-var r = rand.New(rand.NewSource(1))
-var _ = rand.New(rand.NewSource(time.Now().Unix()))
 
 var black = color.New(color.Bold, color.FgWhite).SprintFunc()
 var green = color.New(color.Bold, color.FgGreen).SprintFunc()

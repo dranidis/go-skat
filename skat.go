@@ -1,22 +1,28 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/fatih/color"
 	"io"
 	"log"
+	"math/rand"
 	"os"
 	"time"
 )
 
+var r = rand.New(rand.NewSource(1))
+var _ = rand.New(rand.NewSource(time.Now().Unix()))
 var logFile io.Writer = nil
 var debugTacticsLogFlag = false
 var gameLogFlag = false
+var fileLogFlag = true
 var delayMs = 0
 var totalGames = 21
+var oficialScoring = true
 
 func logToFile(format string, a ...interface{}) {
-	if logFile != nil {
+	if fileLogFlag && logFile != nil {
 		fmt.Fprintf(logFile, format, a...)
 	}
 }
@@ -196,9 +202,9 @@ func bid(players []PlayerI) (int, PlayerI) {
 	return bidIndex, p
 }
 
-func gameScore(state SuitState, cs []Card, score, bid int,
+func gameScore(trump string, cs []Card, score, bid int,
 	decSchwarz, oppSchwarz, handGame bool) int {
-	mat := matadors(state.trump, cs)
+	mat := matadors(trump, cs)
 	if mat < 0 {
 		mat = mat * -1
 	}
@@ -206,7 +212,7 @@ func gameScore(state SuitState, cs []Card, score, bid int,
 
 	gameLog("\nSCORING\n\tWith %d ", mat)
 
-	base := trumpBaseValue(state.trump)
+	base := trumpBaseValue(trump)
 
 	if handGame {
 		multiplier++
@@ -232,14 +238,13 @@ func gameScore(state SuitState, cs []Card, score, bid int,
 		for leastMult*base < bid {
 			leastMult++
 		}
-		return -2 * leastMult * base
-	}
-
-	if score > 60 {
-		return gs
+		score = -2 * leastMult * base
+	} else if score > 60 {
+		score = gs
 	} else {
-		return -2 * gs
+		score = -2 * gs
 	}
+	return score
 }
 
 func game(players []PlayerI) int {
@@ -320,19 +325,26 @@ func game(players []PlayerI) int {
 	// gameLog("SKAT: %v, %d\n", skat, sum(skat))
 	declarer.setScore(declarer.getScore() + sum(state.skat))
 
-	gs := gameScore(state, declarerCards, declarer.getScore(), bids[bidIndex],
+	gs := gameScore(state.trump, declarerCards, declarer.getScore(), bids[bidIndex],
 		declarer.isSchwarz(), opp1.isSchwarz() && opp2.isSchwarz(), handGame)
 
 	declarer.incTotalScore(gs)
 
-	if declarer.getScore() > 60 && gs > 0 {
+	if gs > 0 {
+		if oficialScoring {
+			declarer.incTotalScore(50)
+		}
 		gameLog("VICTORY: %d - %d, SCORE: %d\n",
 			declarer.getScore(), opp1.getScore()+opp2.getScore(), gs)
 	} else {
+		if oficialScoring {
+			declarer.incTotalScore(-50)
+			opp1.incTotalScore(40)
+			opp2.incTotalScore(40)
+		}
 		gameLog("DEFEAT: %d - %d, SCORE: %d\n",
 			declarer.getScore(), opp1.getScore()+opp2.getScore(), gs)
 	}
-
 	return gs
 
 }
@@ -348,25 +360,56 @@ func rotatePlayers(players []PlayerI) []PlayerI {
 var gameIndex = 1
 
 func main() {
-	file, err := os.Create("gameLog.txt")
-	if err != nil {
-		log.Fatal("Cannot create file", err)
-	}
-	logFile = file
-	defer file.Close()
+	auto := false
+	var player1 PlayerI
+	var randSeed int
+	flag.IntVar(&totalGames, "n", 21, "total number of games")
+	flag.IntVar(&randSeed, "r", 0, "Seed for random number generator. A value of 0 (default) uses the UNIX time as a seed.")
+	flag.BoolVar(&auto, "auto", false, "Runs with CPU players only")
+	flag.BoolVar(&fileLogFlag, "log", true, "Saves log in a file")
+	flag.Parse()
 
-	// player1 := makePlayer([]Card{})
-	player1 := makeHumanPlayer([]Card{})
-	gameLogFlag = true
+	fmt.Printf("%v", fileLogFlag)
+
+	if randSeed == 0 {
+		r = rand.New(rand.NewSource(time.Now().Unix()))
+	} else {
+		r = rand.New(rand.NewSource(int64(randSeed)))
+	}
+
+	if auto {
+		player := makePlayer([]Card{})
+		player1 = &player
+		player.risky = true
+		//	fileLogFlag = false
+	} else {
+		player := makeHumanPlayer([]Card{})
+		player1 = &player
+		gameLogFlag = true
+		delayMs = 500
+	}
+
 	player2 := makePlayer([]Card{})
 	player3 := makePlayer([]Card{})
+
+	//var player1 = makeHumanPlayer([]Card{})
+
+	if fileLogFlag {
+		file, err := os.Create("gameLog.txt")
+		if err != nil {
+			log.Fatal("Cannot create file", err)
+		}
+		logFile = file
+		defer file.Close()
+	}
+
 	player1.setName("You")
 	player2.setName("Bob")
 	player3.setName("Ana")
 	// Try a player with a first card tactic
 	//player3.firstCardPlay = true
 
-	players := []PlayerI{&player1, &player2, &player3}
+	players := []PlayerI{player1, &player2, &player3}
 	rotateTimes := r.Intn(5)
 	for i := 0; i < rotateTimes; i++ {
 		players = rotatePlayers(players)
@@ -399,9 +442,17 @@ func main() {
 	money1 := float64(2.0*player1.getTotalScore()-player2.getTotalScore()-player3.getTotalScore()) / 100.0
 	money2 := float64(2.0*player2.getTotalScore()-player1.getTotalScore()-player3.getTotalScore()) / 100.0
 	money3 := float64(2.0*player3.getTotalScore()-player1.getTotalScore()-player2.getTotalScore()) / 100.0
-	fmt.Printf("\n(%s) %5.2f     (%s) %5.2f     (%s) %5.2f\n",
+	fmt.Printf("\n(%s) %5.2f     (%s) %5.2f     (%s) %5.2f\tEURO\n",
 		player1.getName(), money1,
 		player2.getName(), money2,
 		player3.getName(), money3)
+	fmt.Printf("\n(%s) %5d     (%s) %5d     (%s) %5d\tWON\n",
+		player1.getName(), player1.getWon(),
+		player2.getName(), player2.getWon(),
+		player3.getName(), player3.getWon())
+	fmt.Printf("(%s) %5d     (%s) %5d     (%s) %5d\tLOST\n",
+		player1.getName(), player1.getLost(),
+		player2.getName(), player2.getLost(),
+		player3.getName(), player3.getLost())
 	fmt.Printf("AVG %3.1f, passed %d, won %d, lost %d / %d games\n", avg, passed, won, lost, totalGames)
 }
