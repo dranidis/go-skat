@@ -90,7 +90,7 @@ func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
 func round(s *SuitState, players []PlayerI) []PlayerI {
 	play(s, players[0])
 	time.Sleep(time.Duration(delayMs) * time.Millisecond)
-	s.follow = getSuite(s.trump, s.trick[0])
+	s.follow = getSuit(s.trump, s.trick[0])
 	play(s, players[1])
 	time.Sleep(time.Duration(delayMs) * time.Millisecond)
 	play(s, players[2])
@@ -122,7 +122,7 @@ func play(s *SuitState, p PlayerI) Card {
 	card := p.playerTactic(s, valid)
 	p.setHand(remove(p.getHand(), card))
 	s.trick = append(s.trick, card)
-	if getSuite(s.trump, card) == s.trump {
+	if getSuit(s.trump, card) == s.trump {
 		s.trumpsInGame = remove(s.trumpsInGame, card)
 	}
 	s.cardsPlayed = append(s.cardsPlayed, card)
@@ -140,8 +140,8 @@ func (s SuitState) valid(playerHand []Card, card Card) bool {
 	for _, c := range playerHand {
 		// if there is at least one card in your hand matching the followed suit
 		// your played card should follow
-		if s.follow == getSuite(s.trump, c) {
-			return s.follow == getSuite(s.trump, card)
+		if s.follow == getSuit(s.trump, c) {
+			return s.follow == getSuit(s.trump, card)
 		}
 	}
 	// otherwise any card is playable
@@ -287,7 +287,7 @@ func game(players []PlayerI) int {
 
 	trump := declarer.declareTrump()
 	allTrumps := filter(makeDeck(), func(c Card) bool {
-		return getSuite(trump, c) == trump
+		return getSuit(trump, c) == trump
 	})
 	// DECLARE
 	state := SuitState{

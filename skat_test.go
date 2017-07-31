@@ -53,7 +53,7 @@ func greaterAux(t *testing.T, s SuitState, card1, card2 Card) {
 func TestGetSuite(t *testing.T) {
 	s := mState(CLUBS, HEART)
 	card := Card{SPADE, "J"}
-	if getSuite(s.trump, card) != CLUBS {
+	if getSuit(s.trump, card) != CLUBS {
 		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + fmt.Sprintf("%v", card) + " should be CLUBS")
 	}
 }
@@ -1140,7 +1140,7 @@ func TestGame(t *testing.T) {
 	}
 }
 
-func TestOpponentTactic1(t *testing.T) {
+func TestOpponentTacticMIDTrump1(t *testing.T) {
 
 	// if player has J caro and A trump and is required to play a trump
 	// in a losing trick he should play J
@@ -1233,7 +1233,7 @@ func TestOpponentTactic1(t *testing.T) {
 	}
 }
 
-func TestOpponentTactic2(t *testing.T) {
+func TestOpponentTacticMIDTrump2(t *testing.T) {
 
 	// if declarer leads with a low trump
 	// to not waste your high trumps
@@ -1256,7 +1256,7 @@ func TestOpponentTactic2(t *testing.T) {
 	}
 }
 
-func TestOpponentTactic3(t *testing.T) {
+func TestOpponentTacticFOREFollowPreviousSuit3(t *testing.T) {
 
 	// if you have a card with suit played in a previous trick
 	// started from you or your partner continue with it.
@@ -1285,7 +1285,7 @@ func TestOpponentTactic3(t *testing.T) {
 	}
 }
 
-func TestOpponentTactic4(t *testing.T) {
+func TestOpponentTacticFOREFollowPreviousSuit4(t *testing.T) {
 
 	// if you have a card with suit played in a previous trick
 	// started from you or your partner continue with it.
@@ -1325,7 +1325,7 @@ func TestOpponentTactic4(t *testing.T) {
 	}
 }
 
-func TestOpponentTactic5(t *testing.T) {
+func TestOpponentTacticFOREFollowPreviousSuit5(t *testing.T) {
 
 	// if you have a card with suit played in a previous trick
 	// started from you or your partner continue with it.
@@ -1358,7 +1358,7 @@ func TestOpponentTactic5(t *testing.T) {
 	}
 }
 
-func TestOpponentTactic6(t *testing.T) {
+func TestOpponentTacticMIDTrump6(t *testing.T) {
 	// MIDDLEHAND
 
 	// if declarer leads a low trump, and there are still higher trumps
@@ -1395,7 +1395,7 @@ func TestOpponentTactic6(t *testing.T) {
 	}
 }
 
-func TestOpponentTactic7(t *testing.T) {
+func TestOpponentTacticMIDTrump7(t *testing.T) {
 	// MIDDLEHAND
 
 	// if declarer leads a low trump, and there are still higher trumps
@@ -1483,6 +1483,51 @@ func TestOpponentTacticMID(t *testing.T) {
 	}
 }
 
+func TestOpponentTacticMIDFollow(t *testing.T) {
+	// MIDDLEHAND
+
+	// if partner leads a very low card
+	// and you cannot win it
+	// slightly increase the value
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &teamMate
+	s.declarer = &otherPlayer
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{SPADE, "7"}}
+	s.follow = SPADE
+	s.cardsPlayed = []Card{}
+
+	validCards := []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{SPADE, "10"},
+		Card{SPADE, "K"},
+		Card{SPADE, "D"},
+		Card{SPADE, "8"},
+	}
+	//
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{SPADE, "D"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by teammate, and A SPADE still in game, and valid %v, expected: %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+
+	s.cardsPlayed = append(s.cardsPlayed, Card{SPADE, "A"})
+	card = player.playerTactic(&s, validCards)
+	exp = Card{SPADE, "10"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by teammate, A SPADE played, and valid %v, expected: %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
 func TestOpponentTacticFORE(t *testing.T) {
 	// FOREHAND
 
@@ -1532,6 +1577,38 @@ func TestOpponentTacticFORE(t *testing.T) {
 		t.Errorf("FOREHAND, DECLARER BACK, valid %v, expected: %v, played %v",
 			validCards, exp, card)
 	}
+}
+
+func TestOpponentTacticBACK1(t *testing.T) {
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &teamMate
+	s.declarer = &otherPlayer
+
+	s.trump = CARO
+	s.trick = []Card{Card{CLUBS, "9"}, Card{CARO, "A"}}
+	s.follow = CLUBS
+
+	validCards := []Card{
+		Card{CARO, "D"},
+		Card{CARO, "9"},
+		Card{CARO, "7"},
+		Card{SPADE, "D"},
+		Card{HEART, "10"},
+		Card{HEART, "D"},
+		Card{HEART, "8"},
+	}
+	//
+
+	card := player.playerTactic(&s, validCards)
+	if getSuit(s.trump, card) == s.trump {
+		t.Errorf("In trick %v, TRUMPS CARO, and valid %v, NOT expected a trump: %v",
+			s.trick, validCards, card)
+	}
+
 }
 
 func TestLongestNonTrumpSuit(t *testing.T) {
@@ -2014,4 +2091,58 @@ func TestInMany(t *testing.T) {
 		t.Errorf("FAILED inMANY")
 	}
 
+}
+
+func TestDiscardInSkat(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "D"},
+		Card{CLUBS, "9"},
+		Card{SPADE, "A"},
+		Card{SPADE, "10"},
+		Card{HEART, "A"},
+		Card{HEART, "D"},
+		Card{HEART, "8"},
+		Card{CARO, "A"},
+	}
+	skat := []Card{Card{CARO, "7"}, Card{SPADE, "D"}}
+	p := makePlayer(cards)
+	p.discardInSkat(skat)
+
+	if in(skat, Card{SPADE, "A"}) || in(skat, Card{HEART, "A"}) || in(skat, Card{CARO, "A"}) {
+		t.Errorf("A discarded in SKAT: %v", skat)
+	}
+}
+
+func TestDiscardInSkatAllTrumps(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "K"},
+		Card{CLUBS, "D"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "7"},
+		Card{SPADE, "A"},
+	}
+	skat := make([]Card, 2)
+	p := makePlayer(cards)
+	p.discardInSkat(skat)
+
+	if in(skat, Card{SPADE, "A"}) || in(skat, Card{CLUBS, "A"}) {
+		t.Errorf("A discarded in SKAT: %v", skat)
+	}
+
+	if in(skat, Card{CLUBS, "J"}) || in(skat, Card{SPADE, "J"}) || in(skat, Card{HEART, "J"}) || in(skat, Card{CARO, "J"}) {
+		t.Errorf("J discarded in SKAT: %v", skat)
+	}
+
+	if !in(skat, Card{CLUBS, "7"}, Card{CLUBS, "8"}) {
+		t.Errorf("Wrong discarded: %v", skat)
+	}
 }

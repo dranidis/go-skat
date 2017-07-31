@@ -13,8 +13,8 @@ const HEART = "HEART"
 const CARO = "CARO"
 const GRAND = "Grand"
 
-var _ = rand.New(rand.NewSource(1))
-var r = rand.New(rand.NewSource(time.Now().Unix()))
+var r = rand.New(rand.NewSource(1))
+var _ = rand.New(rand.NewSource(time.Now().Unix()))
 
 var black = color.New(color.Bold, color.FgWhite).SprintFunc()
 var green = color.New(color.Bold, color.FgGreen).SprintFunc()
@@ -77,7 +77,7 @@ func trumpBaseValue(s string) int {
 	return 0
 }
 
-func getSuite(trump string, card Card) string {
+func getSuit(trump string, card Card) string {
 	if card.rank == "J" {
 		return trump
 	}
