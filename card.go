@@ -176,19 +176,21 @@ func sum(trick []Card) int {
 	return s
 }
 
-func makeDeck() []Card {
-	makeSuitDeck := func(suit string) []Card {
-		return []Card{
-			Card{suit, "J"},
-			Card{suit, "A"},
-			Card{suit, "10"},
-			Card{suit, "K"},
-			Card{suit, "D"},
-			Card{suit, "9"},
-			Card{suit, "8"},
-			Card{suit, "7"},
-		}
+func makeSuitDeck(suit string) []Card {
+	return []Card{
+		Card{suit, "J"},
+		Card{suit, "A"},
+		Card{suit, "10"},
+		Card{suit, "K"},
+		Card{suit, "D"},
+		Card{suit, "9"},
+		Card{suit, "8"},
+		Card{suit, "7"},
 	}
+}
+
+func makeDeck() []Card {
+
 	cards := []Card{}
 	cards = append(cards, makeSuitDeck(CLUBS)...)
 	cards = append(cards, makeSuitDeck(SPADE)...)

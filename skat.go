@@ -50,12 +50,13 @@ type SuitState struct {
 	follow   string
 	trick    []Card
 	// not necessary for game but for tactics
+	skat         []Card
 	trumpsInGame []Card
 	cardsPlayed  []Card
 }
 
 func makeSuitState() SuitState {
-	return SuitState{nil, nil, nil, "", nil, "", []Card{}, []Card{}, []Card{}}
+	return SuitState{nil, nil, nil, "", nil, "", []Card{}, []Card{}, []Card{}, []Card{}}
 }
 
 func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
@@ -248,8 +249,8 @@ func game(players []PlayerI) int {
 	players[0].setHand(sortSuit("", cards[:10]))
 	players[1].setHand(sortSuit("", cards[10:20]))
 	players[2].setHand(sortSuit("", cards[20:30]))
-	skat := make([]Card, 2)
-	copy(skat, cards[30:32])
+	skatL := make([]Card, 2)
+	copy(skatL, cards[30:32])
 	for _, p := range players {
 		debugTacticsLog("(%v) hand: %v Bid up to: %d\n", p.getName(), p.getHand(), p.calculateHighestBid())
 	}
@@ -278,7 +279,7 @@ func game(players []PlayerI) int {
 	// fmt.Printf("\nHAND bef: %v\n", sortSuit(declarer.getHand()))
 	// fmt.Printf("SKAT bef: %v\n", skat)
 
-	if declarer.pickUpSkat(skat) {
+	if declarer.pickUpSkat(skatL) {
 		// fmt.Printf("HAND aft: %v\n", sortSuit(declarer.getHand()))
 		handGame = false
 		// fmt.Printf("SKAT aft: %v\n", skat)
@@ -295,6 +296,7 @@ func game(players []PlayerI) int {
 		players[0],
 		"",
 		[]Card{},
+		skatL,
 		allTrumps,
 		[]Card{},
 	}
@@ -305,18 +307,18 @@ func game(players []PlayerI) int {
 	gameLog("\n(%s) TRUMP: %s\n", red(declarer.getName()), state.trump)
 	declarerCards := make([]Card, len(declarer.getHand()))
 	copy(declarerCards, declarer.getHand())
-	declarerCards = append(declarerCards, skat...)
+	declarerCards = append(declarerCards, state.skat...)
 
 	// PLAY
 	for i := 0; i < 10; i++ {
-		debugTacticsLog("TRUMPS IN PLAY %v\n", state.trumpsInGame)
+		debugTacticsLog("TRUMPS IN PLAY %v\n", sortRank(state.trumpsInGame))
 		gameLog("\n")
 		players = round(&state, players)
 	}
-	gameLog("\nSKAT: %v\n", skat)
+	gameLog("\nSKAT: %v\n", state.skat)
 
 	// gameLog("SKAT: %v, %d\n", skat, sum(skat))
-	declarer.setScore(declarer.getScore() + sum(skat))
+	declarer.setScore(declarer.getScore() + sum(state.skat))
 
 	gs := gameScore(state, declarerCards, declarer.getScore(), bids[bidIndex],
 		declarer.isSchwarz(), opp1.isSchwarz() && opp2.isSchwarz(), handGame)

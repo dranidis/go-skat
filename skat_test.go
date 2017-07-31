@@ -7,8 +7,8 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	debugTacticsLogFlag = false
-	gameLogFlag = false
+	debugTacticsLogFlag = true
+	gameLogFlag = true
 	delayMs = 0
 
 	code := m.Run()
@@ -1757,6 +1757,71 @@ func TestDeclarerTacticAKX(t *testing.T) {
 	if !card.equals(exp) {
 		t.Errorf("A-K-X tactic. 10 already player. Trump: CLUBS, In trick %v and hand %v, was expected to play %v since still in game are: %v. Played %v",
 			s.trick, player.hand, exp, s.trumpsInGame, card)
+	}
+}
+
+func TestDeclarerTacticKX(t *testing.T) {
+
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &player
+
+	s.trump = CLUBS
+	s.trick = []Card{}
+	player.hand = []Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "K"},
+		Card{HEART, "7"},
+	}
+
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+	}
+
+	card := player.playerTactic(&s, player.hand)
+	exp := Card{HEART, "7"}
+	if !card.equals(exp) {
+		t.Errorf("K-X tactic. Trump: CLUBS exhausted, In trick %v and hand %v, was expected to play %v since still in game are: A 10. Played %v",
+			s.trick, player.hand, exp, card)
+	}
+
+	s.cardsPlayed = append(s.cardsPlayed, Card{HEART, "10"}, Card{HEART, "A"})
+
+	card = player.playerTactic(&s, player.hand)
+	exp = Card{HEART, "K"}
+	if !card.equals(exp) {
+		t.Errorf("K-X tactic. Trump: CLUBS, In trick %v and hand %v, was expected to play %v since still in game are: %v. Played %v",
+			s.trick, player.hand, exp, s.trumpsInGame, card)
+	}
+}
+
+func TestDeclarerTacticKXLessValuableLoser(t *testing.T) {
+
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &player
+
+	s.trump = CLUBS
+	s.trick = []Card{}
+	player.hand = []Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "K"},
+		Card{HEART, "D"},
+		Card{CARO, "10"},
+		Card{CARO, "7"},
+	}
+
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+	}
+
+	card := player.playerTactic(&s, player.hand)
+	exp := Card{CARO, "7"}
+	if !card.equals(exp) {
+		t.Errorf("K-X tactic. Trump: CLUBS exhausted, In trick %v and hand %v, was expected to play %v since still in game are: A 10. Played %v",
+			s.trick, player.hand, exp, card)
 	}
 }
 

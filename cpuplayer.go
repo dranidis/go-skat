@@ -79,10 +79,32 @@ func firstCardTactic(c []Card) Card {
 	return c[0]
 }
 
-func (p Player) declarerTactic(s *SuitState, c []Card) Card {
-	//gameLog("SOLIST\n")
-	if len(s.trick) == 0 {
+func noHigherCard(s *SuitState, viewSkat bool, c Card) bool {
+	allCards := makeSuitDeck(c.suit)
+	allCardsPlayed := []Card{}
+	if viewSkat {
+		allCardsPlayed = append(allCardsPlayed, s.skat...)
+	}
+	allCardsPlayed = append(allCardsPlayed, s.cardsPlayed...)
+	for _, cardPlayed := range allCardsPlayed {
+		allCards = remove(allCards, cardPlayed)
+	}
+	allCards = filter(allCards, func(card Card) bool {
+		return card.rank != "J"
+	})
+	debugTacticsLog("Cards of suit %s still in play: %v", c.suit, allCards)
+	for _, card := range allCards {
+		if s.greater(card, c) {
+			return false
+		}
+	}
+	return true
+}
 
+func (p Player) declarerTactic(s *SuitState, c []Card) Card {
+	debugTacticsLog("DECLARER ")
+	if len(s.trick) == 0 {
+		debugTacticsLog("FOREHAND ")
 		// count your own trumps and other players trump
 		// if you have less you should not play trumps immediately
 		if len(p.otherPlayersTrumps(s)) > 0 {
@@ -118,6 +140,34 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 					return c.suit == AKXsuit
 				})
 				return cards[len(cards)-1]
+			}
+
+			// check K-x or 10-x cases where higher cards stil in play
+			for _, suit := range suits {
+				if suit == s.trump {
+					continue
+				}
+				cs := sortRank(nonTrumpCards(suit, c))
+				if len(cs) == 0 {
+					continue
+				}
+				if noHigherCard(s, true, cs[0]) {
+					debugTacticsLog(" Sure winner card %v", cs[0])
+					return cs[0]
+				}
+				if len(cs) > 1 {
+					if cardValue(cs[len(cs)-1]) == 0 {
+						debugTacticsLog(" Play loser card %v", cs[len(cs)-1])
+						return cs[len(cs)-1]
+					}
+				}
+			}
+			//REPETITION: see below
+			sortedValue := filter(sortValue(c), func(card Card) bool {
+				return card.suit != s.trump && card.rank != "J"
+			})
+			if len(sortedValue) > 0 {
+				return sortedValue[len(sortedValue)-1]
 			}
 		}
 
@@ -506,25 +556,22 @@ func nonA10cards(cs []Card) []Card {
 func (p *Player) calculateHighestBid() int {
 	assOtherThan := func(suit string) int {
 		asses := 0
-		c := in(p.getHand(), Card{CLUBS, "A"})
-		s := in(p.getHand(), Card{SPADE, "A"})
-		h := in(p.getHand(), Card{HEART, "A"})
-		k := in(p.getHand(), Card{CARO, "A"})
-		t := in(p.getHand(), Card{suit, "A"})
-		if c {
-			asses++
-		}
-		if s {
-			asses++
-		}
-		if h {
-			asses++
-		}
-		if k {
-			asses++
-		}
-		if t {
-			asses--
+		for _, s := range suits {
+			if s == suit {
+				continue
+			}
+			if in(p.getHand(), Card{s, "A"}) {
+				debugTacticsLog("(A %s) ", s)
+				asses++
+				if in(p.getHand(), Card{s, "10"}) {
+					debugTacticsLog("(10 %s) ", s)
+					asses++
+					if in(p.getHand(), Card{s, "K"}) {
+						debugTacticsLog("(K %s) ", s)
+						asses++
+					}
+				}
+			}
 		}
 		return asses
 	}
@@ -535,10 +582,10 @@ func (p *Player) calculateHighestBid() int {
 
 	largest := len(trumpCards(suit, p.getHand()))
 	debugTacticsLog("Longest suit %s, %d cards\n", suit, largest)
-
+	asses := assOtherThan(suit)
+	debugTacticsLog("Extra suits: %d\n", asses)
 	prob := 0
-	if largest > 4 && assOtherThan(suit) > 1 {
-		debugTacticsLog("One more A-suit\n")
+	if largest > 4 && asses > 1 {
 		prob = 80
 	}
 	if largest > 5 {
@@ -573,7 +620,7 @@ func (p *Player) declareTrump() string {
 }
 
 func (p *Player) discardInSkat(skat []Card) {
-	debugTacticsLog("FULL HAND %v\n", p.getHand())
+	debugTacticsLog("FULL HAND %v\n", sortSuit("", p.getHand()))
 
 	// discard BLANKS
 
