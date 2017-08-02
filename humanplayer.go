@@ -29,6 +29,8 @@ type PlayerI interface {
 	isSchwarz() bool
 	getWon() int
 	getLost() int
+	wonAsDefenders()
+	getWonAsDefenders() int
 }
 
 type HumanPlayer struct {

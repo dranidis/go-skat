@@ -947,6 +947,7 @@ func TestPickUpSkat7(t *testing.T) {
 }
 
 func TestCalculateHighestBid(t *testing.T) {
+
 	player := makePlayer([]Card{
 		Card{CLUBS, "J"},
 		Card{SPADE, "J"},

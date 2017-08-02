@@ -8,6 +8,7 @@ type Player struct {
 	PlayerData
 	firstCardPlay bool
 	risky         bool
+	grand bool
 }
 
 func makePlayer(hand []Card) Player {
@@ -15,6 +16,7 @@ func makePlayer(hand []Card) Player {
 		PlayerData:    makePlayerData(hand),
 		firstCardPlay: false,
 		risky:         false,
+		grand: false,
 	}
 }
 
@@ -250,87 +252,75 @@ func HighestLong(trump string, c []Card) Card {
 	return c[0]
 }
 
+func (p * Player) FindPreviousSuit(s *SuitState) string {
+	partnerFunc := func(p PlayerI) PlayerI {
+		if s.opp1 == p {
+			return s.opp2
+		}
+		return s.opp1
+	}
+	if p.getPreviousSuit() != "" {
+		return p.getPreviousSuit()
+	} else if partnerFunc(p).getPreviousSuit() != "" {
+		return partnerFunc(p).getPreviousSuit()
+	}
+	return ""
+}
+
 func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	// OPPONENTS TACTIC
-
-	// TODO:
-	// if opp plays first high-value card and
-	// partner has highest trump then he should play it
-
-	// TODO:
-	// if trick has no value, e.g. 7 8
-	// don't take it with a trump if you can save it.
-
 	if len(s.trick) == 0 {
 		debugTacticsLog("OPP FOREHAND\n")
 		// if you have a card with suit played in a previous trick
 		// started from you or your partner continue with it
-		// else
-		prevSuit := ""
-		partnerFunc := func(p PlayerI) PlayerI {
-			if s.opp1 == p {
-				return s.opp2
-			}
-			return s.opp1
-		}
-		if p.getPreviousSuit() != "" {
-			prevSuit = p.getPreviousSuit()
-		} else if partnerFunc(p).getPreviousSuit() != "" {
-			prevSuit = partnerFunc(p).getPreviousSuit()
-		}
-		debugTacticsLog("Previous suit: %v\n", prevSuit)
-		if prevSuit == "" {
-			// DECLARER AT MID
-			var card Card
-			if s.opp2 == p {
-				debugTacticsLog("Declarer at MIDDLEHAND, playing LONG\n")
-				card = HighestLong(s.trump, c)
-			} else {
-				debugTacticsLog("Declarer at BACKHAND, playing SHORT\n")
-				card = HighestShort(s.trump, c)
-			}
-			suit := getSuit(s.trump, card)
-			if suit != s.trump {
-				p.setPreviousSuit(getSuit(s.trump, card))
-			}
-			return card
-		}
-		suitCards := filter(c, func(c Card) bool {
-			return c.suit == prevSuit && c.rank != "J"
-		})
-		if len(suitCards) > 0 {
+		prevSuit := p.FindPreviousSuit(s)
+		var prevSuitCards []Card
+		if prevSuit != "" {
+			prevSuitCards = filter(c, func(c Card) bool {
+				return c.suit == prevSuit && c.rank != "J"
+			})		
+		} 
+		if len(prevSuitCards) > 0 {
 			debugTacticsLog("Following previous suit...")
-			return suitCards[0]
+			// TODO:
+			// should I play the highest even if in the previous trick
+			// declarer has taken with trump?
+			// He will take it again.
+			return prevSuitCards[0]
 		}
-
-		card := HighestLong(s.trump, c)
+		debugTacticsLog("No cards in previous suit '%v' ...", prevSuit)
+		var card Card
+		if s.opp2 == p {
+			debugTacticsLog("Declarer at MIDDLEHAND, playing LONG...")
+			card = HighestLong(s.trump, c)
+		} else {
+			debugTacticsLog("Declarer at BACKHAND, playing SHORT...")
+			card = HighestShort(s.trump, c)
+		}
 		suit := getSuit(s.trump, card)
 		if suit != s.trump {
-			p.setPreviousSuit(getSuit(s.trump, card))
+			p.setPreviousSuit(suit)
 		}
 		return card
 	}
 
 	if len(s.trick) == 1 {
-		debugTacticsLog("OPP MIDDLEHAND")
+		debugTacticsLog("OPP MIDDLEHAND\n")
 		if s.leader == s.declarer {
-			debugTacticsLog(" -- Declarer leads, ")
-			// MIDDLEHAND
+			debugTacticsLog("Declarer leads...")
 			// if declarer leads a low trump, and there are still HIGHER trumps
-			// smear it with a high value
+			// smear the trick with a high value
 			if getSuit(s.trump, s.trick[0]) == s.trump && len(winnerCards(s, c)) == 0 {
-				other := filter(p.otherPlayersTrumps(s), func(c Card) bool {
+				if len(filter(p.otherPlayersTrumps(s), func(c Card) bool {
 					return s.greater(c, s.trick[0])
-				})
-				if len(other) > 0 {
-					debugTacticsLog("SMEAR ")
+				})) > 0 {
+					debugTacticsLog("TRUMP...There are higher trumps...SMEAR...")
 					return sortValue(c)[0]
 				}
 			}
 			return highestValueWinnerORlowestValueLoser(s, c)
 		} else {
-			debugTacticsLog(" -- Teammate leads, ")
-
+			debugTacticsLog("Teammate leads...")
 			sortedValueNoTrumps := filter(sortValue(c), func(card Card) bool {
 				return card.suit != s.trump && card.rank != "J"
 			})
@@ -388,7 +378,6 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			// LASt card?
 			return sortValue(c)[0]
 		}
-
 	}
 
 	if len(s.trick) == 2 {
@@ -598,7 +587,11 @@ func nonA10cards(cs []Card) []Card {
 	return cards
 }
 
-func (p *Player) calculateHighestBid() int {
+func (p *Player) canPlayGrand() bool {
+	return false
+}
+
+func (p *Player) canWin() bool {
 	assOtherThan := func(suit string) int {
 		asses := 0
 		for _, s := range suits {
@@ -623,20 +616,37 @@ func (p *Player) calculateHighestBid() int {
 
 	p.highestBid = 0
 
-	suit := mostCardsSuit(p.getHand())
+	if p.canPlayGrand() {
+		p.grand = true
+	}
 
+	suit := mostCardsSuit(p.getHand())
 	largest := len(trumpCards(suit, p.getHand()))
 	debugTacticsLog("Longest suit %s, %d cards\n", suit, largest)
 	asses := assOtherThan(suit)
 	debugTacticsLog("Extra suits: %d\n", asses)
 	prob := 0
+
+// (You) 2571.27     (Bob) -784.38     (Ana) -1786.89      EURO
+
+// (You) 61951     (Bob) 48905     (Ana) 48242     WON
+// (You) 15028     (Bob)  7516     (Ana)  7570     LOST
+// AVG 62.8, passed 20451, won 64492, lost 15057 / 100000 games	
+// 76979	
+	// You plays RISKY and wins
 	if p.risky {
 		if largest > 4 && asses > 0 {
 			prob = 80
 		}
-		if largest > 3 && asses > 1 {
-			prob = 80
-		}
+// (You) 1487.00     (Bob) -506.20     (Ana) -980.80       EURO
+
+// (You) 71919     (Bob) 48536     (Ana) 48303     WON
+// (You) 22176     (Bob)  6802     (Ana)  6844     LOST
+// AVG 59.4, passed 15621, won 66468, lost 17911 / 100000 games		
+// 94095 - 76979 = 17116 more games: 9968 won- 7148 lost
+		// if largest > 3 && asses > 1 {
+		// 	prob = 80
+		// }
 	} else {
 		if largest > 4 && asses > 1 {
 			prob = 80
@@ -654,14 +664,25 @@ func (p *Player) calculateHighestBid() int {
 	debugTacticsLog("(%s) Hand: %v, Estimation: %d\n", p.name, p.hand, est)
 	if prob < 80 {
 		if est < 50 {
-			return p.highestBid
+			return false
 		}
 	}
 	//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
 
 	// fmt.Printf("HIGH %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
+	return true
+}
 
-	trump := p.declareTrump()
+func (p *Player) calculateHighestBid() int {
+	if !p.canWin() {
+		return 0
+	}
+	
+	p.grand = false
+	trump := mostCardsSuit(p.getHand())
+	if p.grand {
+		trump = GRAND
+	}
 	mat := matadors(trump, p.getHand())
 	if mat < 0 {
 		mat *= -1
@@ -671,6 +692,9 @@ func (p *Player) calculateHighestBid() int {
 }
 
 func (p *Player) declareTrump() string {
+	if p.grand {
+		return GRAND
+	}
 	// TODO:
 	// if after SKAT pick up bid less than score use the next suit
 	trump := mostCardsSuit(p.getHand())
@@ -749,10 +773,7 @@ func (p *Player) discardInSkat(skat []Card) {
 		}
 	}
 
-	// DESPARATE???
-	// DISCARD LOW CARDS
-	//p.setHand(sortSuit(p.declareTrump(), p.getHand()))
-	trumpToDeclare := p.declareTrump()
+	trumpToDeclare := mostCardsSuit(p.getHand())
 	cardsTodiscard := filter(sortRank(p.hand), func(c Card) bool {
 		return c.suit != trumpToDeclare && c.rank != "J"
 	})

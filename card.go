@@ -297,7 +297,10 @@ func ShortestNonTrumpSuit(trump string, cards []Card) string {
 			minCount = c
 		}
 	}
-	return suits[minI]
+	if minI >= 0 {
+		return suits[minI]
+	}
+	return ""
 }
 
 func LongestNonTrumpSuit(trump string, cards []Card) string {

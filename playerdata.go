@@ -10,6 +10,16 @@ type PlayerData struct {
 	previousSuit string
 	won          int
 	lost         int
+	defWon int
+}
+
+func (p *PlayerData) wonAsDefenders() {
+	p.defWon++
+}
+
+
+func (p *PlayerData) getWonAsDefenders() int {
+	return p.defWon
 }
 
 func (p *PlayerData) getWon() int {
@@ -24,7 +34,7 @@ func makePlayerData(hand []Card) PlayerData {
 	return PlayerData{"dummy",
 		//false,
 		// false,
-		hand, 0, 0, true, 0, "", 0, 0}
+		hand, 0, 0, true, 0, "", 0, 0, 0}
 }
 
 func (p *PlayerData) incTotalScore(s int) {
