@@ -1970,6 +1970,148 @@ func TestDeclarerTacticDoNotTrumpZeroValueTricks(t *testing.T) {
 
 }
 
+func TestDeclarerTacticKeepTheAForThe10(t *testing.T) {
+	other := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &other
+	s.declarer = &player
+
+	s.trump = CLUBS
+	s.trick = []Card{
+		Card{HEART, "7"},
+		Card{HEART, "K"},
+	}
+	s.follow = HEART
+
+	player.hand = []Card{
+	//	Card{HEART, "J"},
+		Card{HEART, "A"},
+		Card{HEART, "D"},
+		Card{HEART, "8"},
+	}
+
+	s.cardsPlayed = []Card{}
+
+	card := player.playerTactic(&s, player.hand)
+	exp := Card{HEART, "8"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v and hand %v, and 10 still in game it was expected to play %v . Played %v",
+			s.trick, player.hand, exp, card)
+	}
+}
+
+func TestDeclarerTacticKeepTheAForThe10_2(t *testing.T) {
+	other := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &other
+	s.declarer = &player
+
+	s.trump = CLUBS
+	s.trick = []Card{
+		Card{HEART, "7"},
+		Card{HEART, "K"},
+	}
+	s.follow = HEART
+
+	player.hand = []Card{
+	//	Card{HEART, "J"},
+		Card{HEART, "A"},
+		Card{HEART, "D"},
+		Card{HEART, "8"},
+	}
+
+	s.cardsPlayed = []Card{}
+
+	s.cardsPlayed = append(s.cardsPlayed, Card{HEART, "10"})
+	card := player.playerTactic(&s, player.hand)
+	exp := Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v and hand %v, and 10 played, it was expected to play %v . Played %v",
+			s.trick, player.hand, exp, card)
+	}
+
+	s.trick = []Card{
+		Card{HEART, "7"},
+		Card{HEART, "10"},
+	}
+	s.cardsPlayed = []Card{}
+	card = player.playerTactic(&s, player.hand)
+	exp = Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v and hand %v, it was expected to play %v . Played %v",
+			s.trick, player.hand, exp, card)
+	}
+}
+
+func TestDeclarerTacticKeepTheAForThe10_1(t *testing.T) {
+
+	other := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &other
+	s.declarer = &player
+
+	s.trump = CLUBS
+	s.follow = HEART
+
+	player.hand = []Card{
+	//	Card{HEART, "J"},
+		Card{HEART, "A"},
+		Card{HEART, "D"},
+		Card{HEART, "8"},
+	}
+
+	s.cardsPlayed = []Card{}
+
+	s.trick = []Card{
+		Card{HEART, "7"},
+		Card{HEART, "9"},
+	}
+	s.cardsPlayed = []Card{}
+	card := player.playerTactic(&s, player.hand)
+	exp := Card{HEART, "D"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v and hand %v, it was expected to play %v . Played %v",
+			s.trick, player.hand, exp, card)
+	}
+
+}
+
+func TestDeclarerTacticKeepTheAForThe10_3(t *testing.T) {
+	other := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &other
+	s.declarer = &player
+
+	s.trump = CLUBS
+	s.follow = HEART
+
+	player.hand = []Card{
+	//	Card{HEART, "J"},
+		Card{HEART, "A"},
+		Card{HEART, "K"},
+		Card{HEART, "8"},
+	}
+
+	s.cardsPlayed = []Card{}
+
+	s.trick = []Card{
+		Card{HEART, "7"},
+		Card{HEART, "9"},
+	}
+	s.cardsPlayed = []Card{}
+	card := player.playerTactic(&s, player.hand)
+	exp := Card{HEART, "K"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v and hand %v, it was expected to play %v . Played %v",
+			s.trick, player.hand, exp, card)
+	}
+
+}
+
 func TestOtherPlayersTrumps(t *testing.T) {
 	player := makePlayer([]Card{})
 	s := makeSuitState()
@@ -2180,5 +2322,44 @@ func TestDiscardInSkatAllTrumps(t *testing.T) {
 
 	if !in(skat, Card{CLUBS, "7"}, Card{CLUBS, "8"}) {
 		t.Errorf("Wrong discarded: %v", skat)
+	}
+}
+
+func TestSortRank(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "D"},
+		Card{CLUBS, "8"},
+	}
+
+	sr := sortRank(cards)
+
+	if len(sr) != len(cards) {
+		t.Errorf("ERROR IN SORTRANK")
+	}	
+
+}
+
+func TestNextLowestCardsStillInPlay(t *testing.T) {
+	s := makeSuitState()
+
+	s.trick = []Card{Card{SPADE, "7"}, Card{SPADE, "9"}}
+	s.cardsPlayed = []Card{
+		Card{SPADE, "D"},
+		Card{SPADE, "8"},
+		//	Card{SPADE, "9"},
+	}
+	w := Card{SPADE, "A"}
+	followCards := []Card{Card{SPADE, "A"}, Card{SPADE, "K"}}
+	still10 := true
+	if nextLowestCardsStillInPlay(&s, w, followCards) != still10 {
+		t.Errorf("10 not played")
+	}
+
+	s.cardsPlayed = append(s.cardsPlayed, Card{SPADE, "10"})
+	still10 = false
+	if nextLowestCardsStillInPlay(&s, w, followCards) != still10 {
+		t.Errorf("10 played")
 	}
 }

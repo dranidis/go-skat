@@ -114,6 +114,23 @@ func noHigherCard(s *SuitState, viewSkat bool, c Card) bool {
 	return true
 }
 
+func nextLowestCardsStillInPlay(s *SuitState, w Card, followCards []Card) bool {
+	next := nextCard(w)
+	debugTacticsLog("Next of %v is %v...", w, next)
+	// ONLY the declarer knows that. Use a flag if opp uses it.
+	if in(s.skat, next) {
+		return false
+	}
+	if in(followCards, next) {
+		return false
+	}
+	if in(s.cardsPlayed, next) {
+		return false
+	}
+	return true
+}
+
+
 func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	debugTacticsLog("DECLARER ")
 	if len(s.trick) == 0 {
@@ -189,14 +206,65 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	}
 	if len(s.trick) == 2 {
 		debugTacticsLog("BACKHAND ")
+		followCards := filter(c, func(card Card) bool {
+				return card.suit != s.trump && card.rank != "J"
+			})
+		if len(followCards) > 0 {
+			debugTacticsLog("Following normal suit...")
+			winners := sortRank(winnerCards(s, followCards))
+			debugTacticsLog("winners %v...", winners)
+			for _, w := range winners {
+				if w.rank == "D" || w.rank == "K" {
+					return w
+				}
+				if nextLowestCardsStillInPlay(s, w, followCards) {
+					debugTacticsLog("Next lower still in play...")
+					continue
+				}
+				debugTacticsLog("Returning  %v...", w)
+				return w
+			}
+			// if len(winners) > 0 {
+			// 	debugTacticsLog("Returning last of winners %v...", winners[len(winners)-1])
+			// 	return winners[len(winners)-1]
+			// }
+		} else {
+			debugTacticsLog("TRUMP OR No cards of suit played...")
+		}
 		if sum(s.trick) == 0 {
-			debugTacticsLog("ZERO valued trick")
+			debugTacticsLog("ZERO valued trick. DO not trump!...")
+			// do not trump
+			nonTrumps := filter(sortValue(c), func(card Card) bool {
+				return card.suit != s.trump && card.rank != "J"
+			})
+			debugTacticsLog("Non-trumps: %v...", nonTrumps)
+
 			sortedValue := filter(sortValue(c), func(card Card) bool {
 				return card.suit != s.trump && card.rank != "J"
 			})
 			if len(sortedValue) > 0 {
-				return sortedValue[len(sortedValue)-1]
+				return highestValueWinnerORlowestValueLoser(s, sortedValue)
 			}
+		}
+// EURO 259.46     -256.24 -3.22
+// WON  27001      18710   18886
+// LOST  7706       3723    3645
+// bidp    44         28      28
+// pcw     78         83      84
+// pcwd    16         20      20
+// AVG  16.6, passed 20329, won 64597, lost 15074 / 100000 game
+
+		// don't throw your A if not 10 in the trick and still in game
+		debugTacticsLog("CHECKING the A... in trick %v, valid %v, played %v..", s.trick, c, s.cardsPlayed)
+		if s.follow != s.trump && in(c, Card{s.follow, "A"}) && !in(s.trick, Card{s.follow, "10"}) && !in(append(s.cardsPlayed, s.skat...),  Card{s.follow, "10"}) {
+			debugTacticsLog("Keeping the A... in trick %v..", s.trick)
+			sortedRank := filter(sortRank(c), func(card Card) bool {
+				return card.rank != "A" && card.rank != "J" 
+			})
+			if len(sortedRank) > 0 {
+				debugTacticsLog("Valid: %v, Non A-cards of suit %v\n", c, sortedRank)
+				return highestValueWinnerORlowestValueLoser(s, sortedRank)
+			}			
 		}
 	}
 	// TODO:exhausted
@@ -677,7 +745,7 @@ func (p *Player) calculateHighestBid() int {
 	if !p.canWin() {
 		return 0
 	}
-	
+
 	p.grand = false
 	trump := mostCardsSuit(p.getHand())
 	if p.grand {

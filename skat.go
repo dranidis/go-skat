@@ -263,16 +263,17 @@ func game(players []PlayerI) int {
 
 	gameLog("\nPLAYER ORDER: %s - %s - %s\n\n", players[0].getName(), players[1].getName(), players[2].getName())
 
-	state := SuitState{
-		nil, nil, nil,
-		"",
-		nil,
-		"",
-		[]Card{},
-		skatL,
-		[]Card{},
-		[]Card{},
-	}
+	state :=  makeSuitState()
+	// state := SuitState{
+	// 	nil, nil, nil,
+	// 	"",
+	// 	nil,
+	// 	"",
+	// 	[]Card{},
+	// 	skatL,
+	// 	[]Card{},
+	// 	[]Card{},
+	// }
 
 	// BIDDING
 	bidIndex, declarer := bid(players)
@@ -447,7 +448,7 @@ func main() {
 		} else if score < 0 {
 			lost++
 		}
-		fmt.Printf("\n(%s) %5d     (%s) %5d     (%s) %5d\n", player1.getName(), player1.getTotalScore(), player2.getName(), player2.getTotalScore(), player3.getName(), player3.getTotalScore())
+		fmt.Printf("\nGAME: %6d (%s) %5d     (%s) %5d     (%s) %5d\n", gameIndex, player1.getName(), player1.getTotalScore(), player2.getName(), player2.getTotalScore(), player3.getName(), player3.getTotalScore())
 		//time.Sleep(1000 * time.Millisecond)
 		players = rotatePlayers(players)
 	}

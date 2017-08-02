@@ -94,6 +94,19 @@ func sortRankSpecial(cs []Card, ranks []string) []Card {
 	return cards
 }
 
+func nextCard(c Card) Card {
+	i, r := -1, ""
+	for i, r = range ranks {
+		if c.rank == r {
+			break
+		}
+	}
+	if i+1 < len(ranks) {
+		return Card{c.suit, ranks[i+1]}
+	}
+	return Card{"",""}
+}
+
 func sortRank(cs []Card) []Card {
 	return sortRankSpecial(cs, ranks)
 }
