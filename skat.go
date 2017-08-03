@@ -192,14 +192,17 @@ func bid(players []PlayerI) (int, PlayerI) {
 	if bidIndex == -1 {
 		if players[0].accepts(0) {
 			bidLog("\t(%s) Yes %d\n", players[0].getName(), bids[0])
-			return 0, players[0]
+			return bids[0], players[0]
 		} else {
 			bidLog("\t(%s) Pass\n", players[0].getName())
-			return -1, nil
+			return 0, nil
 		}
 	}
 	//	p.isDeclarer = true
-	return bidIndex, p
+	if bidIndex < 0 {
+		return 0, p
+	}
+	return bids[bidIndex], p
 }
 
 func gameScore(trump string, cs []Card, score, bid int,
@@ -271,25 +274,14 @@ func game(players []PlayerI) int {
 
 	gameLog("\nPLAYER ORDER: %s - %s - %s\n\n", players[0].getName(), players[1].getName(), players[2].getName())
 
-
-	// state := SuitState{
-	// 	nil, nil, nil,
-	// 	"",
-	// 	nil,
-	// 	"",
-	// 	[]Card{},
-	// 	skatL,
-	// 	[]Card{},
-	// 	[]Card{},
-	// }
-
 	// BIDDING
-	bidIndex, declarer := bid(players)
-	if bidIndex == -1 {
+	bidDecl, declarer := bid(players)
+	if bidDecl == 0 {
 		gameLog("ALL PASSED\n")
 		return 0
 	}
-	declarer.setDeclaredBid(bids[bidIndex])
+	debugTacticsLog("Declarer %v\n", declarer)
+	declarer.setDeclaredBid(bidDecl)
 
 	var opp1, opp2 PlayerI
 	if declarer == players[0] {
@@ -348,7 +340,7 @@ func game(players []PlayerI) int {
 	// gameLog("SKAT: %v, %d\n", skat, sum(skat))
 	declarer.setScore(declarer.getScore() + sum(state.skat))
 
-	gs := gameScore(state.trump, declarerCards, declarer.getScore(), bids[bidIndex],
+	gs := gameScore(state.trump, declarerCards, declarer.getScore(), bidDecl,
 		declarer.isSchwarz(), opp1.isSchwarz() && opp2.isSchwarz(), handGame)
 
 	declarer.incTotalScore(gs)

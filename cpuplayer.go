@@ -118,20 +118,13 @@ func noHigherCard(s *SuitState, viewSkat bool, c Card) bool {
 
 func nextLowestCardsStillInPlay(s *SuitState, w Card, followCards []Card) bool {
 	next := nextCard(w)
-	debugTacticsLog("Next of %v is %v...", w, next)
+	// debugTacticsLog("Next of %v is %v...", w, next)
 	// ONLY the declarer knows that. Use a flag if opp uses it.
-	if in(s.skat, next) {
-		return false
-	}
-	if in(followCards, next) {
-		return false
-	}
-	if in(s.cardsPlayed, next) {
+	if in(s.skat, next) || in(followCards, next) || in(s.cardsPlayed, next) {
 		return false
 	}
 	return true
 }
-
 
 func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	debugTacticsLog("DECLARER ")
@@ -245,22 +238,6 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				return highestValueWinnerORlowestValueLoser(s, sortedValue)
 			}
 		}
-// EURO 386.44     -305.00 -81.44
-// WON  27165      18808   18978
-// LOST  7542       3625    3553
-// bidp    44         28      28
-// pcw     78         84      84
-// pcwd    16         19      20
-// AVG  17.1, passed 20329, won 64951, lost 14720 / 100000 game
-
-// 		EURO 487.79     -364.63 -123.16
-// WON  27225      18802   18999
-// LOST  7482       3631    3532
-// bidp    44         28      28
-// pcw     78         84      84
-// pcwd    16         19      19
-// AVG  17.2, passed 20329, won 65026, lost 14645 / 100000 game
-
 		// don't throw your A if not 10 in the trick and still in game
 		debugTacticsLog("CHECKING the A... in trick %v, valid %v, played %v..", s.trick, c, s.cardsPlayed)
 		if s.follow != s.trump && in(c, Card{s.follow, "A"}) && !in(s.trick, Card{s.follow, "10"}) && !in(append(s.cardsPlayed, s.skat...),  Card{s.follow, "10"}) {
@@ -768,6 +745,8 @@ func (p *Player) calculateHighestBid() int {
 
 	p.highestBid = p.getGamevalue(trump)
 
+/* NOT BIDDING HIGH WITHOUT MATADORS INCREASES SCORE
+*/
 // EURO 320.96     -101.86 -219.10
 // WON  13651       9452    9458
 // LOST  3639       1792    1773
@@ -775,6 +754,15 @@ func (p *Player) calculateHighestBid() int {
 // pcw     79         84      84
 // pcwd    16         19      19
 // AVG  17.5, passed 10235, won 32561, lost 7204 / 50000 games
+
+// 	EURO 531.50     -313.42 -218.08
+// WON  13760       9792    9939
+// LOST  3144       1577    1553
+// bidp    43         29      29
+// pcw     81         86      86
+// pcwd    14         17      17
+// AVG  20.3, passed 10235, won 33491, lost 6274 / 50000 games
+
 	if matadors(trump, p.hand) < -1 {
 		// maybe you pick the CLUBS J from the skat 1/4
 		worstCaseScore := 2 * trumpBaseValue(trump)

@@ -295,8 +295,8 @@ func TestBidding(t *testing.T) {
 	players := []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer := bid(players)
-	if bidIndex != 0 {
-		t.Errorf("Expected %d, Got %d", 0, bidIndex)
+	if bidIndex != bids[0] {
+		t.Errorf("Expected %d, Got %d", 18, bidIndex)
 	}
 	if declarer != &player2 {
 		t.Errorf("Wrong declarer")
@@ -311,8 +311,8 @@ func TestBidding(t *testing.T) {
 	players = []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer = bid(players)
-	if bids[bidIndex] != 24 {
-		t.Errorf("Expected %d, Got %d", 24, bids[bidIndex])
+	if bidIndex != 24 {
+		t.Errorf("Expected %d, Got %d", 24, bidIndex)
 	}
 	if declarer != &player3 {
 		t.Errorf("Wrong declarer")
@@ -327,8 +327,8 @@ func TestBidding(t *testing.T) {
 	players = []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer = bid(players)
-	if bids[bidIndex] != 18 {
-		t.Errorf("Expected %d, Got %d", 18, bids[bidIndex])
+	if bidIndex != 18 {
+		t.Errorf("Expected %d, Got %d", 18, bidIndex)
 	}
 	if declarer != &player1 {
 		t.Errorf("Wrong declarer")
@@ -343,8 +343,8 @@ func TestBidding(t *testing.T) {
 	players = []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer = bid(players)
-	if bids[bidIndex] != 20 {
-		t.Errorf("Expected %d, Got %d", 20, bids[bidIndex])
+	if bidIndex != 20 {
+		t.Errorf("Expected %d, Got %d", 20, bidIndex)
 	}
 	if declarer != &player3 {
 		t.Errorf("Wrong declarer")
@@ -359,8 +359,8 @@ func TestBidding(t *testing.T) {
 	players = []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer = bid(players)
-	if bidIndex != -1 {
-		t.Errorf("Expected %d, Got %d", -1, bidIndex)
+	if bidIndex != 0 {
+		t.Errorf("Expected %d, Got %d", 0, bidIndex)
 	}
 	if declarer != nil {
 		t.Errorf("Wrong declarer. Everybody passed")
@@ -375,8 +375,8 @@ func TestBidding(t *testing.T) {
 	players = []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer = bid(players)
-	if bids[bidIndex] != 18 {
-		t.Errorf("Expected %d, Got %d", 18, bids[bidIndex])
+	if bidIndex != 18 {
+		t.Errorf("Expected %d, Got %d", 18, bidIndex)
 	}
 	if declarer != &player1 {
 		t.Errorf("Wrong declarer")
@@ -391,8 +391,8 @@ func TestBidding(t *testing.T) {
 	players = []PlayerI{&player1, &player2, &player3}
 
 	bidIndex, declarer = bid(players)
-	if bids[bidIndex] != 18 {
-		t.Errorf("Expected %d, Got %d", 18, bids[bidIndex])
+	if bidIndex != 18 {
+		t.Errorf("Expected %d, Got %d", 18, bidIndex)
 	}
 	if declarer != &player3 {
 		t.Errorf("Wrong declarer")
@@ -1137,7 +1137,6 @@ func TestGame(t *testing.T) {
 	}
 	players := []PlayerI{&player1, &player2, &player3}
 	for i := 0; i < 10; i++ {
-
 		_ = game(players)
 	}
 }
