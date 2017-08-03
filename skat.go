@@ -205,12 +205,17 @@ func bid(players []PlayerI) (int, PlayerI) {
 func gameScore(trump string, cs []Card, score, bid int,
 	decSchwarz, oppSchwarz, handGame bool) int {
 	mat := matadors(trump, cs)
+	mat1 := mat
 	if mat < 0 {
 		mat = mat * -1
 	}
 	multiplier := mat + 1
 
-	gameLog("\nSCORING\n\t%s, With %d ", trump, mat)
+	if mat1 > 0 {
+		gameLog("\nSCORING\n\t%s, With %d ", trump, mat)
+	} else {
+		gameLog("\nSCORING\n\t%s, Without %d ", trump, mat)
+	}
 
 	base := trumpBaseValue(trump)
 
@@ -228,12 +233,12 @@ func gameScore(trump string, cs []Card, score, bid int,
 		multiplier++
 		gameLog("Schwarz ")
 	}
-	gameLog("\n\n")
+	//gameLog("\n\n")
 	gs := multiplier * base
 
 	// OVERBID?
 	if gs < bid {
-		gameLog("OVERBID!!! Game Value: %d < Bid: %d", gs, bid)
+		gameLog(" --OVERBID!!! Game Value: %d < Bid: %d-- ", gs, bid)
 		leastMult := 0
 		for leastMult*base < bid {
 			leastMult++
@@ -244,11 +249,14 @@ func gameScore(trump string, cs []Card, score, bid int,
 	} else {
 		score = -2 * gs
 	}
+	gameLog("SCORE %d\n", score)
+
 	return score
 }
 
 func game(players []PlayerI) int {
 	gameLog("\n\nGAME %d/%d\n", gameIndex, totalGames)
+	state :=  makeSuitState()
 	// DEALING
 	cards := Shuffle(makeDeck())
 	players[0].setHand(sortSuit("", cards[:10]))
@@ -263,7 +271,7 @@ func game(players []PlayerI) int {
 
 	gameLog("\nPLAYER ORDER: %s - %s - %s\n\n", players[0].getName(), players[1].getName(), players[2].getName())
 
-	state :=  makeSuitState()
+
 	// state := SuitState{
 	// 	nil, nil, nil,
 	// 	"",
@@ -281,6 +289,8 @@ func game(players []PlayerI) int {
 		gameLog("ALL PASSED\n")
 		return 0
 	}
+	declarer.setDeclaredBid(bids[bidIndex])
+
 	var opp1, opp2 PlayerI
 	if declarer == players[0] {
 		opp1, opp2 = players[1], players[2]
@@ -438,6 +448,7 @@ func main() {
 			p.setScore(0)
 			p.setSchwarz(true)
 			p.setPreviousSuit("")
+			p.setDeclaredBid(0)
 		}
 		score := game(players)
 		if score == 0 {

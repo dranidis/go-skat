@@ -11,6 +11,11 @@ type PlayerData struct {
 	won          int
 	lost         int
 	defWon int
+	declaredBid int
+}
+
+func (p* PlayerData) setDeclaredBid(b int) {
+	p.declaredBid = b
 }
 
 func (p *PlayerData) wonAsDefenders() {
@@ -34,7 +39,7 @@ func makePlayerData(hand []Card) PlayerData {
 	return PlayerData{"dummy",
 		//false,
 		// false,
-		hand, 0, 0, true, 0, "", 0, 0, 0}
+		hand, 0, 0, true, 0, "", 0, 0, 0, 0}
 }
 
 func (p *PlayerData) incTotalScore(s int) {

@@ -31,6 +31,7 @@ type PlayerI interface {
 	getLost() int
 	wonAsDefenders()
 	getWonAsDefenders() int
+	setDeclaredBid(int)
 }
 
 type HumanPlayer struct {

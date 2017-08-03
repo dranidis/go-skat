@@ -9,6 +9,7 @@ type Player struct {
 	firstCardPlay bool
 	risky         bool
 	grand bool
+	trumpToDeclare string
 }
 
 func makePlayer(hand []Card) Player {
@@ -17,6 +18,7 @@ func makePlayer(hand []Card) Player {
 		firstCardPlay: false,
 		risky:         false,
 		grand: false,
+		trumpToDeclare: "",
 	}
 }
 
@@ -207,7 +209,7 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	if len(s.trick) == 2 {
 		debugTacticsLog("BACKHAND ")
 		followCards := filter(c, func(card Card) bool {
-				return card.suit != s.trump && card.rank != "J"
+				return card.suit == s.follow && card.rank != "J"
 			})
 		if len(followCards) > 0 {
 			debugTacticsLog("Following normal suit...")
@@ -215,6 +217,7 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 			debugTacticsLog("winners %v...", winners)
 			for _, w := range winners {
 				if w.rank == "D" || w.rank == "K" {
+					debugTacticsLog("Returning  %v...", w)
 					return w
 				}
 				if nextLowestCardsStillInPlay(s, w, followCards) {
@@ -224,10 +227,6 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				debugTacticsLog("Returning  %v...", w)
 				return w
 			}
-			// if len(winners) > 0 {
-			// 	debugTacticsLog("Returning last of winners %v...", winners[len(winners)-1])
-			// 	return winners[len(winners)-1]
-			// }
 		} else {
 			debugTacticsLog("TRUMP OR No cards of suit played...")
 		}
@@ -246,13 +245,21 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				return highestValueWinnerORlowestValueLoser(s, sortedValue)
 			}
 		}
-// EURO 259.46     -256.24 -3.22
-// WON  27001      18710   18886
-// LOST  7706       3723    3645
+// EURO 386.44     -305.00 -81.44
+// WON  27165      18808   18978
+// LOST  7542       3625    3553
 // bidp    44         28      28
-// pcw     78         83      84
-// pcwd    16         20      20
-// AVG  16.6, passed 20329, won 64597, lost 15074 / 100000 game
+// pcw     78         84      84
+// pcwd    16         19      20
+// AVG  17.1, passed 20329, won 64951, lost 14720 / 100000 game
+
+// 		EURO 487.79     -364.63 -123.16
+// WON  27225      18802   18999
+// LOST  7482       3631    3532
+// bidp    44         28      28
+// pcw     78         84      84
+// pcwd    16         19      19
+// AVG  17.2, passed 20329, won 65026, lost 14645 / 100000 game
 
 		// don't throw your A if not 10 in the trick and still in game
 		debugTacticsLog("CHECKING the A... in trick %v, valid %v, played %v..", s.trick, c, s.cardsPlayed)
@@ -740,6 +747,13 @@ func (p *Player) canWin() bool {
 	// fmt.Printf("HIGH %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
 	return true
 }
+func (p *Player) getGamevalue(suit string) int {
+	mat := matadors(suit, p.getHand())
+	if mat < 0 {
+		mat *= -1
+	}
+	return (mat + 1) * trumpBaseValue(suit)
+}
 
 func (p *Player) calculateHighestBid() int {
 	if !p.canWin() {
@@ -751,11 +765,26 @@ func (p *Player) calculateHighestBid() int {
 	if p.grand {
 		trump = GRAND
 	}
-	mat := matadors(trump, p.getHand())
-	if mat < 0 {
-		mat *= -1
+
+	p.highestBid = p.getGamevalue(trump)
+
+// EURO 320.96     -101.86 -219.10
+// WON  13651       9452    9458
+// LOST  3639       1792    1773
+// bidp    43         28      28
+// pcw     79         84      84
+// pcwd    16         19      19
+// AVG  17.5, passed 10235, won 32561, lost 7204 / 50000 games
+	if matadors(trump, p.hand) < -1 {
+		// maybe you pick the CLUBS J from the skat 1/4
+		worstCaseScore := 2 * trumpBaseValue(trump)
+		if worstCaseScore < p.highestBid {
+			debugTacticsLog("(%s) I will not raise more. Bid: %d, worst: %d\n", p.name, p.declaredBid, worstCaseScore)
+			p.highestBid = worstCaseScore
+		}
 	}
-	p.highestBid = (mat + 1) * trumpBaseValue(trump)
+
+	p.trumpToDeclare = trump
 	return p.highestBid
 }
 
@@ -766,6 +795,27 @@ func (p *Player) declareTrump() string {
 	// TODO:
 	// if after SKAT pick up bid less than score use the next suit
 	trump := mostCardsSuit(p.getHand())
+
+// 	EURO 487.79     -364.63 -123.16
+// WON  27225      18802   18999
+// LOST  7482       3631    3532
+// bidp    44         28      28
+// pcw     78         84      84
+// pcwd    16         19      19
+// AVG  17.2, passed 20329, won 65026, lost 14645 / 100000 game
+	if p.getGamevalue(trump) < p.declaredBid {
+		debugTacticsLog("Game Value: %d. Declared bid: %d. TO AVOID OVERBID I will play first trump %s and not new %s.\n", 
+			p.getGamevalue(trump), p.declaredBid, p.trumpToDeclare, trump)
+		trump = p.trumpToDeclare
+	}
+// EURO -524.86    229.37  295.49
+// WON  26504      18436   18633
+// LOST  8205       3996    3897
+// bidp    44         28      28
+// pcw     76         82      83
+// pcwd    18         21      21
+// AVG  18.2, passed 20329, won 63573, lost 16098 / 100000 game
+
 	// gs := gameScore(trump, p.hand, 61, 18,false, false, false)
 	// if gs .....
 	return trump
@@ -773,6 +823,7 @@ func (p *Player) declareTrump() string {
 
 func (p *Player) discardInSkat(skat []Card) {
 	debugTacticsLog("FULL HAND %v\n", sortSuit("", p.getHand()))
+	most := mostCardsSuit(p.getHand())
 
 	// discard BLANKS
 
@@ -841,9 +892,8 @@ func (p *Player) discardInSkat(skat []Card) {
 		}
 	}
 
-	trumpToDeclare := mostCardsSuit(p.getHand())
 	cardsTodiscard := filter(sortRank(p.hand), func(c Card) bool {
-		return c.suit != trumpToDeclare && c.rank != "J"
+		return c.suit != most && c.rank != "J"
 	})
 	if len(cardsTodiscard) < 2 {
 		debugTacticsLog("ALL TRUMPS (no 2 cards to discard)? %v", p.hand)
@@ -865,8 +915,8 @@ func (p *Player) discardInSkat(skat []Card) {
 }
 
 func (p *Player) pickUpSkat(skat []Card) bool {
-	// TODO:
-	// current implementation always picks up skat
+
+
 	debugTacticsLog("SKAT BEF: %v\n", skat)
 	hand := make([]Card, 10)
 	copy(hand, p.getHand())
