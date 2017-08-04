@@ -48,6 +48,7 @@ func debugTacticsLog(format string, a ...interface{}) {
 }
 
 type SuitState struct {
+	forehand PlayerI
 	declarer PlayerI
 	opp1     PlayerI
 	opp2     PlayerI
@@ -62,7 +63,7 @@ type SuitState struct {
 }
 
 func makeSuitState() SuitState {
-	return SuitState{nil, nil, nil, "", nil, "", []Card{}, []Card{}, []Card{}, []Card{}}
+	return SuitState{nil, nil, nil, nil, "", nil, "", []Card{}, []Card{}, []Card{}, []Card{}}
 }
 
 func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
@@ -257,20 +258,30 @@ func gameScore(trump string, cs []Card, score, bid int,
 	return score
 }
 
+
+var grandGames = 0
+
 func game(players []PlayerI) int {
 	gameLog("\n\nGAME %d/%d\n", gameIndex, totalGames)
 	state :=  makeSuitState()
-	// DEALING
-	cards := Shuffle(makeDeck())
-	players[0].setHand(sortSuit("", cards[:10]))
-	players[1].setHand(sortSuit("", cards[10:20]))
-	players[2].setHand(sortSuit("", cards[20:30]))
 	skatL := make([]Card, 2)
-	copy(skatL, cards[30:32])
+	// DEALING
+	// for {
+		cards := Shuffle(makeDeck())
+		players[0].setHand(sortSuit("", cards[:10]))
+		players[1].setHand(sortSuit("", cards[10:20]))
+		players[2].setHand(sortSuit("", cards[20:30]))
+		copy(skatL, cards[30:32])
+	// 	if canWin(players[0].getHand()) == "GRAND" || canWin(players[1].getHand()) == "GRAND" || canWin(players[2].getHand()) == "GRAND" {
+	// 		break
+	// 	}
+	// }
+
 	for _, p := range players {
 		h := p.calculateHighestBid()
 		debugTacticsLog("(%v) hand: %v Bid up to: %d\n", p.getName(), p.getHand(), h)
 	}
+
 
 	gameLog("\nPLAYER ORDER: %s - %s - %s\n\n", players[0].getName(), players[1].getName(), players[2].getName())
 
@@ -293,7 +304,7 @@ func game(players []PlayerI) int {
 	if declarer == players[2] {
 		opp1, opp2 = players[0], players[1]
 	}
-
+	forehand := players[0]
 	// HAND GAME?
 	handGame := true
 	// fmt.Printf("\nHAND bef: %v\n", sortSuit(declarer.getHand()))
@@ -306,12 +317,16 @@ func game(players []PlayerI) int {
 	}
 
 	trump := declarer.declareTrump()
+	if trump == GRAND {
+		fmt.Println(GRAND)
+		grandGames++
+	}
 	allTrumps := filter(makeDeck(), func(c Card) bool {
 		return getSuit(trump, c) == trump
 	})
 	// DECLARE
 	state = SuitState{
-		declarer, opp1, opp2,
+		forehand, declarer, opp1, opp2,
 		trump,
 		players[0],
 		"",
@@ -478,4 +493,5 @@ func main() {
 		100 * float64(player2.getWonAsDefenders())/float64(totalGames-passed-(player2.getLost()+player2.getWon())) , 
 		100 * float64(player3.getWonAsDefenders())/float64(totalGames-passed-(player3.getLost()+player3.getWon())) )
 	fmt.Printf("AVG  %3.1f, passed %d, won %d, lost %d / %d games\n", avg, passed, won, lost, totalGames)
+	fmt.Printf("Grand games %d, perc: %5.2f", grandGames, 100 * float64(grandGames)/float64(totalGames))
 }

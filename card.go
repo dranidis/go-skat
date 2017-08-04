@@ -357,19 +357,6 @@ func lessCardsSuit(cards []Card) string {
 	h := len(nonTrumpCards(HEART, cards))
 	k := len(nonTrumpCards(CARO, cards))
 
-	// we don't want to discard a suit having an A
-	if in(cards, Card{CLUBS, "A"}) {
-		c = 100
-	}
-	if in(cards, Card{SPADE, "A"}) {
-		s = 100
-	}
-	if in(cards, Card{HEART, "A"}) {
-		h = 100
-	}
-	if in(cards, Card{CARO, "A"}) {
-		k = 100
-	}
 	if c == 0 {
 		c = 9999 // no cards for comparison below
 	}
@@ -382,7 +369,20 @@ func lessCardsSuit(cards []Card) string {
 	if k == 0 {
 		k = 9999
 	}
-	// fmt.Println("lessCardsSuit", c, s, h, k)
+	// we don't want to discard a suit having an A
+	if in(cards, Card{CLUBS, "A"}) {
+		c += 100
+	}
+	if in(cards, Card{SPADE, "A"}) {
+		s += 100
+	}
+	if in(cards, Card{HEART, "A"}) {
+		h += 100
+	}
+	if in(cards, Card{CARO, "A"}) {
+		k += 100
+	}
+	debugTacticsLog("...lessCardsSuit %v, %v, %v, %v...", c, s, h, k)
 	if c != 0 && c < s && c < h && c < k {
 		return CLUBS
 	}

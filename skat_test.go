@@ -855,6 +855,7 @@ func TestPickUpSkat5(t *testing.T) {
 		Card{SPADE, "J"},
 		Card{SPADE, "9"},
 	}
+	player.trumpToDeclare = CARO
 	// fmt.Println("TestPickUpSkat5")
 	// fmt.Println(player.hand)
 	// fmt.Println(skat)
@@ -893,6 +894,7 @@ func TestPickUpSkat6(t *testing.T) {
 		Card{CARO, "7"},
 		Card{SPADE, "J"},
 	}
+	player.trumpToDeclare = CARO
 	// fmt.Println("TestPickUpSkat6")
 	// fmt.Println(player.hand)
 	// fmt.Println(skat)
@@ -2112,6 +2114,49 @@ func TestDeclarerTacticKeepTheAForThe10_3(t *testing.T) {
 
 }
 
+func TestDeclarerTacticGrand(t *testing.T) {
+	//other := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &player
+
+	s.trump = GRAND
+
+	player.hand = []Card{
+		Card{HEART, "J"},
+		Card{HEART, "A"},
+		Card{HEART, "10"},
+		Card{HEART, "8"},
+	}
+
+	s.cardsPlayed = []Card{}
+
+	s.trick = []Card{}
+	s.cardsPlayed = []Card{}
+	card := player.playerTactic(&s, player.hand)
+	exp := Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v and hand %v, it was expected to play %v . Played %v",
+			s.trick, player.hand, exp, card)
+	}
+
+	player.hand = []Card{
+		Card{HEART, "J"},
+		Card{HEART, "10"},
+		Card{HEART, "8"},
+	}
+	s.cardsPlayed = []Card{Card{HEART, "A"}}
+
+	card = player.playerTactic(&s, player.hand)
+	exp = Card{HEART, "10"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v and hand %v, A played, it was expected to play %v . Played %v",
+			s.trick, player.hand, exp, card)
+	}
+
+}
+
 func TestOtherPlayersTrumps(t *testing.T) {
 	player := makePlayer([]Card{})
 	s := makeSuitState()
@@ -2293,6 +2338,57 @@ func TestDiscardInSkat(t *testing.T) {
 	}
 }
 
+func TestDiscardInSkatGRAND(t *testing.T) {
+	cards := []Card{
+		Card{HEART, "J"},//L1
+		Card{CLUBS, "A"},//1
+		Card{CLUBS, "9"},//L2
+		Card{SPADE, "A"},//2
+		Card{SPADE, "9"},//DISCARD
+		Card{SPADE, "8"},//L3
+		Card{HEART, "A"},//3
+		Card{HEART, "10"},//4
+		Card{HEART, "K"},
+		Card{HEART, "9"},
+		Card{CARO, "10"},// DISCARD
+	}
+	skat := []Card{Card{SPADE, "9"}, Card{HEART, "9"}}
+	p := makePlayer(cards)
+	p.discardInSkat(skat)
+
+	if in(skat, Card{HEART, "10"}) {
+		t.Errorf("%v from hand: %v discarded in SKAT: %v", Card{HEART, "10"}, p.hand, skat)
+	}
+}
+
+func TestDiscardInSkatGRANDBlank(t *testing.T) {
+	cards := []Card{
+		Card{SPADE, "J"}, //LOSER
+		Card{CLUBS, "A"},
+		Card{CLUBS, "8"},//LOSER
+		Card{CLUBS, "9"},//LOSER
+		Card{SPADE, "A"},
+		Card{SPADE, "10"},
+		Card{SPADE, "D"},//LOSER
+		Card{SPADE, "9"},//LOSER
+		Card{HEART, "A"}, 
+		Card{HEART, "10"}, 
+		Card{HEART, "K"}, 
+		Card{CARO, "9"}, //LOSER
+	}
+	skat := []Card{Card{CLUBS, "9"}, Card{SPADE, "D"}}
+	p := makePlayer(cards)
+	p.trumpToDeclare = GRAND	
+	p.discardInSkat(skat)
+
+	if !in(skat, Card{SPADE, "D"}, Card{CARO, "9"}) {
+		t.Errorf("hand: %v discarded in SKAT: %v", p.hand, skat)
+	}
+}
+
+
+
+
 func TestDiscardInSkatAllTrumps(t *testing.T) {
 	cards := []Card{
 		Card{CLUBS, "J"},
@@ -2363,3 +2459,136 @@ func TestNextLowestCardsStillInPlay(t *testing.T) {
 		t.Errorf("10 played")
 	}
 }
+
+func TestCanWin(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+
+		Card{CLUBS, "9"}, // LOSER
+		Card{CLUBS, "8"}, // LOSER
+		Card{CLUBS, "7"}, // LOSER
+		Card{SPADE, "A"},
+		Card{SPADE, "10"},
+	}
+	p := makePlayer(cards)	
+
+	canWin := canWin(p.hand) 
+	if canWin != "GRAND"  {
+		t.Errorf("Hand %v can win GRAND. Got: %v", p.hand, canWin)
+	}
+}
+
+func TestGrandLosers(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "K"},
+		Card{CLUBS, "9"}, //LOSER
+		Card{SPADE, "A"},
+		Card{SPADE, "K"}, //LOSER
+		Card{HEART, "10"}, //LOSER
+	}
+
+	losers := grandLosers(cards)
+	if !in(losers, Card{CLUBS, "9"}, Card{SPADE, "K"}, Card{HEART, "10"}) {
+		t.Errorf("Losers: %v", losers)
+	}
+}
+
+func TestGrandLosersCount(t *testing.T) {
+	cs := []Card{
+		Card{SPADE, "J"}, //LOSER
+		Card{CLUBS, "A"},
+		Card{CLUBS, "8"},//LOSER
+		Card{SPADE, "A"},
+		Card{SPADE, "10"},
+		Card{SPADE, "9"},//LOSER
+		Card{HEART, "A"}, 
+		Card{HEART, "10"}, 
+		Card{HEART, "K"}, 
+		Card{CARO, "9"}, //LOSER
+	}
+
+	losers := len(grandLosers(cs)) + jackLosers(cs)
+	if losers != 4 {
+		t.Errorf("Losers: %v, Expected 4", losers)
+	}
+}
+
+func TestGrandLosersJ0(t *testing.T) {
+	cards := []Card{
+		Card{SPADE, "J"},
+	}
+
+	losers := jackLosers(cards)
+	if losers != 1 {
+		t.Errorf("Losers: %v", losers)
+	}
+}
+
+func TestGrandLosersJ1(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+	}
+
+	losers := jackLosers(cards)
+	if losers != 0 {
+		t.Errorf("Losers: %v", losers)
+	}
+}
+
+func TestGrandLosersJ2(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "J"},
+	}
+
+	losers := jackLosers(cards)
+	if losers != 1 {
+		t.Errorf("Losers: %v", losers)
+	}
+}
+
+
+func TestGrandLosersJ3(t *testing.T) {
+	cards := []Card{
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+	}
+
+	losers := jackLosers(cards)
+	if losers != 1 {
+		t.Errorf("Losers: %v", losers)
+	}
+}
+
+func TestGrandLosersJ4(t *testing.T) {
+	cards := []Card{
+		Card{SPADE, "J"},
+		Card{CARO, "J"},
+	}
+
+	losers := jackLosers(cards)
+	if losers != 2 {
+		t.Errorf("Losers: %v", losers)
+	}
+}
+
+
+func TestGrandLosersJ5(t *testing.T) {
+	cards := []Card{
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+	}
+
+	losers := jackLosers(cards)
+	if losers != 2 {
+		t.Errorf("Losers: %v", losers)
+	}
+}
+
