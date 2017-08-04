@@ -258,12 +258,11 @@ func gameScore(trump string, cs []Card, score, bid int,
 	return score
 }
 
-
 var grandGames = 0
 
 func game(players []PlayerI) int {
 	gameLog("\n\nGAME %d/%d\n", gameIndex, totalGames)
-	state :=  makeSuitState()
+	state := makeSuitState()
 	skatL := make([]Card, 2)
 	// DEALING
 	// for {
@@ -281,7 +280,6 @@ func game(players []PlayerI) int {
 		h := p.calculateHighestBid()
 		debugTacticsLog("(%v) hand: %v Bid up to: %d\n", p.getName(), p.getHand(), h)
 	}
-
 
 	gameLog("\nPLAYER ORDER: %s - %s - %s\n\n", players[0].getName(), players[1].getName(), players[2].getName())
 
@@ -475,23 +473,23 @@ func main() {
 	money1 := float64(2.0*player1.getTotalScore()-player2.getTotalScore()-player3.getTotalScore()) / 100.0
 	money2 := float64(2.0*player2.getTotalScore()-player1.getTotalScore()-player3.getTotalScore()) / 100.0
 	money3 := float64(2.0*player3.getTotalScore()-player1.getTotalScore()-player2.getTotalScore()) / 100.0
-	
+
 	fmt.Printf("\t%s\t%s\t%s\n", player1.getName(), player2.getName(), player3.getName())
 	fmt.Printf("EURO %5.2f\t%5.2f\t%5.2f\n", money1, money2, money3)
 	fmt.Printf("WON  %5d\t%5d\t%5d\n", player1.getWon(), player2.getWon(), player3.getWon())
 	fmt.Printf("LOST %5d\t%5d\t%5d\t\n", player1.getLost(), player2.getLost(), player3.getLost())
-	fmt.Printf("bidp %5.0f\t%5.0f\t%5.0f\t\n", 
-		100 * float64(player1.getLost()+player1.getWon())/float64(totalGames-passed) , 
-		100 * float64(player2.getLost()+player2.getWon())/float64(totalGames-passed) , 
-		100 * float64(player3.getLost()+player3.getWon())/float64(totalGames-passed) ) 
-	fmt.Printf("pcw  %5.0f\t%5.0f\t%5.0f\t\n", 
-		100 * float64(player1.getWon())/float64(player1.getLost()+player1.getWon()) , 
-		100 * float64(player2.getWon())/float64(player2.getLost()+player2.getWon()) , 
-		100 * float64(player3.getWon())/float64(player3.getLost()+player3.getWon()) )
-	fmt.Printf("pcwd %5.0f\t%5.0f\t%5.0f\t\n", 
-		100 * float64(player1.getWonAsDefenders())/float64(totalGames-passed-(player1.getLost()+player1.getWon())) , 
-		100 * float64(player2.getWonAsDefenders())/float64(totalGames-passed-(player2.getLost()+player2.getWon())) , 
-		100 * float64(player3.getWonAsDefenders())/float64(totalGames-passed-(player3.getLost()+player3.getWon())) )
+	fmt.Printf("bidp %5.0f\t%5.0f\t%5.0f\t\n",
+		100*float64(player1.getLost()+player1.getWon())/float64(totalGames-passed),
+		100*float64(player2.getLost()+player2.getWon())/float64(totalGames-passed),
+		100*float64(player3.getLost()+player3.getWon())/float64(totalGames-passed))
+	fmt.Printf("pcw  %5.0f\t%5.0f\t%5.0f\t\n",
+		100*float64(player1.getWon())/float64(player1.getLost()+player1.getWon()),
+		100*float64(player2.getWon())/float64(player2.getLost()+player2.getWon()),
+		100*float64(player3.getWon())/float64(player3.getLost()+player3.getWon()))
+	fmt.Printf("pcwd %5.0f\t%5.0f\t%5.0f\t\n",
+		100*float64(player1.getWonAsDefenders())/float64(totalGames-passed-(player1.getLost()+player1.getWon())),
+		100*float64(player2.getWonAsDefenders())/float64(totalGames-passed-(player2.getLost()+player2.getWon())),
+		100*float64(player3.getWonAsDefenders())/float64(totalGames-passed-(player3.getLost()+player3.getWon())))
 	fmt.Printf("AVG  %3.1f, passed %d, won %d, lost %d / %d games\n", avg, passed, won, lost, totalGames)
-	fmt.Printf("Grand games %d, perc: %5.2f", grandGames, 100 * float64(grandGames)/float64(totalGames))
+	fmt.Printf("Grand games %d, perc: %5.2f", grandGames, 100*float64(grandGames)/float64(totalGames))
 }

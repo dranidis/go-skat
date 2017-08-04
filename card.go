@@ -104,7 +104,7 @@ func nextCard(c Card) Card {
 	if i+1 < len(ranks) {
 		return Card{c.suit, ranks[i+1]}
 	}
-	return Card{"",""}
+	return Card{"", ""}
 }
 
 func sortRank(cs []Card) []Card {

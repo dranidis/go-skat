@@ -6,16 +6,16 @@ import (
 
 type Player struct {
 	PlayerData
-	firstCardPlay bool
-	risky         bool
+	firstCardPlay  bool
+	risky          bool
 	trumpToDeclare string
 }
 
 func makePlayer(hand []Card) Player {
 	return Player{
-		PlayerData:    makePlayerData(hand),
-		firstCardPlay: false,
-		risky:         false,
+		PlayerData:     makePlayerData(hand),
+		firstCardPlay:  false,
+		risky:          false,
 		trumpToDeclare: "",
 	}
 }
@@ -131,9 +131,9 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 		// count your own trumps and other players trump
 		// if you have less you should not play trumps immediately
 		if len(p.otherPlayersTrumps(s)) > 0 {
-			ownTrumps := sortRank(filter(p.hand, func (card Card) bool {
+			ownTrumps := sortRank(filter(p.hand, func(card Card) bool {
 				return card.rank == "J" || card.suit == s.trump
-				}))
+			}))
 			otherTrumps := p.otherPlayersTrumps(s)
 			debugTacticsLog("..other TRUMPS in game: %v", otherTrumps)
 			debugTacticsLog("..own TRUMPS: %v", ownTrumps)
@@ -150,25 +150,25 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 					return ownTrumps[0]
 				}
 			}
-			if len(ownTrumps) * 2 < len(otherTrumps) + 2 {
+			if len(ownTrumps)*2 < len(otherTrumps)+2 {
 				debugTacticsLog("Not enough trumps.  Playing suits")
-				suits := filter(c, func (card Card) bool {
+				suits := filter(c, func(card Card) bool {
 					return card.suit != s.trump && card.rank != "J"
-					})
+				})
 				debugTacticsLog("..SUITS : %v...", suits)
 				asses := filter(suits, func(card Card) bool {
 					return card.rank == "A"
-					})
+				})
 				if len(asses) > 0 {
 					return asses[0]
 				}
 				tens := filter(suits, func(card Card) bool {
 					cardsPlayed := append(s.cardsPlayed, s.skat...)
 					return card.rank == "10" && in(cardsPlayed, Card{card.suit, "A"})
-					})
+				})
 				if len(tens) > 0 {
 					return tens[0]
-				}				
+				}
 			}
 
 			if p.otherPlayersHaveJs(s) {
@@ -239,8 +239,8 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	if len(s.trick) == 2 {
 		debugTacticsLog("BACKHAND ")
 		followCards := filter(c, func(card Card) bool {
-				return card.suit == s.follow && card.rank != "J"
-			})
+			return card.suit == s.follow && card.rank != "J"
+		})
 		if len(followCards) > 0 {
 			debugTacticsLog("Following normal suit...")
 			winners := sortRank(winnerCards(s, followCards))
@@ -277,15 +277,15 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 		}
 		// don't throw your A if not 10 in the trick and still in game
 		debugTacticsLog("CHECKING the A... in trick %v, valid %v, played %v..", s.trick, c, s.cardsPlayed)
-		if s.follow != s.trump && in(c, Card{s.follow, "A"}) && !in(s.trick, Card{s.follow, "10"}) && !in(append(s.cardsPlayed, s.skat...),  Card{s.follow, "10"}) {
+		if s.follow != s.trump && in(c, Card{s.follow, "A"}) && !in(s.trick, Card{s.follow, "10"}) && !in(append(s.cardsPlayed, s.skat...), Card{s.follow, "10"}) {
 			debugTacticsLog("Keeping the A... in trick %v..", s.trick)
 			sortedRank := filter(sortRank(c), func(card Card) bool {
-				return card.rank != "A" && card.rank != "J" 
+				return card.rank != "A" && card.rank != "J"
 			})
 			if len(sortedRank) > 0 {
 				debugTacticsLog("Valid: %v, Non A-cards of suit %v\n", c, sortedRank)
 				return highestValueWinnerORlowestValueLoser(s, sortedRank)
-			}			
+			}
 		}
 	}
 	// TODO:exhausted
@@ -341,7 +341,7 @@ func HighestLong(trump string, c []Card) Card {
 	return c[0]
 }
 
-func (p * Player) FindPreviousSuit(s *SuitState) string {
+func (p *Player) FindPreviousSuit(s *SuitState) string {
 	partnerFunc := func(p PlayerI) PlayerI {
 		if s.opp1 == p {
 			return s.opp2
@@ -367,8 +367,8 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 		if prevSuit != "" {
 			prevSuitCards = filter(c, func(c Card) bool {
 				return c.suit == prevSuit && c.rank != "J"
-			})		
-		} 
+			})
+		}
 		if len(prevSuitCards) > 0 {
 			debugTacticsLog("Following previous suit...")
 			// TODO:
@@ -684,10 +684,10 @@ func canWin(cs []Card) string {
 				continue
 			}
 			if in(cs, Card{s, "A"}) {
-				debugTacticsLog("(A %s) ", s)
+				//	debugTacticsLog("(A %s) ", s)
 				asses++
 				if in(cs, Card{s, "10"}) {
-					debugTacticsLog("(10 %s) ", s)
+					//		debugTacticsLog("(10 %s) ", s)
 					asses++
 					// if in(p.getHand(), Card{s, "K"}) {
 					// 	debugTacticsLog("(K %s) ", s)
@@ -712,16 +712,16 @@ func canWin(cs []Card) string {
 		}
 		Js := filter(cs, func(c Card) bool {
 			return c.rank == "J"
-			})
+		})
 		debugTacticsLog("Js %v, Asuits %d\n", Js, asuits)
 		if len(Js) > 1 {
 			debugTacticsLog("WILL PLAY GRAND with Jacks: %v\n", Js)
-			return "GRAND"		
+			return "GRAND"
 		}
 		if len(Js) == 1 {
 			if asuits >= 4 {
 				debugTacticsLog("WILL PLAY GRAND with 1 Jack and 4 suits covered with A: %v\n", Js)
-				return "GRAND"						
+				return "GRAND"
 			}
 		}
 		//return "GRAND"
@@ -744,9 +744,8 @@ func canWin(cs []Card) string {
 	debugTacticsLog("Extra suits: %d\n", asses)
 	prob := 0
 
-
 	if largest > 4 && asses > 0 {
-			prob = 80
+		prob = 80
 	}
 
 	if largest > 5 {
@@ -800,7 +799,7 @@ func (p *Player) calculateHighestBid() int {
 			p.highestBid = worstCaseScore
 		}
 	}
-	return p.highestBid 
+	return p.highestBid
 }
 
 func (p *Player) declareTrump() string {
@@ -811,30 +810,50 @@ func (p *Player) declareTrump() string {
 	// if after SKAT pick up bid less than score use the next suit
 	trump := mostCardsSuit(p.getHand())
 
-// 	EURO 487.79     -364.63 -123.16
-// WON  27225      18802   18999
-// LOST  7482       3631    3532
-// bidp    44         28      28
-// pcw     78         84      84
-// pcwd    16         19      19
-// AVG  17.2, passed 20329, won 65026, lost 14645 / 100000 game
+	// 	EURO 487.79     -364.63 -123.16
+	// WON  27225      18802   18999
+	// LOST  7482       3631    3532
+	// bidp    44         28      28
+	// pcw     78         84      84
+	// pcwd    16         19      19
+	// AVG  17.2, passed 20329, won 65026, lost 14645 / 100000 game
 	if p.getGamevalue(trump) < p.declaredBid {
-		debugTacticsLog("Game Value: %d. Declared bid: %d. TO AVOID OVERBID I will play first trump %s and not new %s.\n", 
+		debugTacticsLog("Game Value: %d. Declared bid: %d. TO AVOID OVERBID I will play first trump %s and not new %s.\n",
 			p.getGamevalue(trump), p.declaredBid, p.trumpToDeclare, trump)
 		trump = p.trumpToDeclare
 	}
-// EURO -524.86    229.37  295.49
-// WON  26504      18436   18633
-// LOST  8205       3996    3897
-// bidp    44         28      28
-// pcw     76         82      83
-// pcwd    18         21      21
-// AVG  18.2, passed 20329, won 63573, lost 16098 / 100000 game
+	// EURO -524.86    229.37  295.49
+	// WON  26504      18436   18633
+	// LOST  8205       3996    3897
+	// bidp    44         28      28
+	// pcw     76         82      83
+	// pcwd    18         21      21
+	// AVG  18.2, passed 20329, won 63573, lost 16098 / 100000 game
 
 	// gs := gameScore(trump, p.hand, 61, 18,false, false, false)
 	// if gs .....
 	return trump
 }
+
+//         You     Bob     Ana
+// EURO 342.82     -315.20 -27.62
+// WON  24407      24244   24411
+// LOST  5289       5485    5404
+// bidp    33         33      33
+// pcw     82         82      82
+// pcwd    18         18      18
+// AVG  17.9, passed 10760, won 73062, lost 16178 / 100000 game
+
+// WITH GRAND
+//         You     Bob     Ana
+// EURO 345.80     -324.31 -21.49
+// WON  24410      24249   24437
+// LOST  5283       5476    5385
+// bidp    33         33      33
+// pcw     82         82      82
+// pcwd    18         18      18
+// AVG  18.6, passed 10760, won 73096, lost 16144 / 100000 games
+// Grand games 1351, perc:  1.35
 
 func grandSuitLosers(cs []Card) []Card {
 	if len(cs) == 0 {
@@ -849,13 +868,13 @@ func grandSuitLosers(cs []Card) []Card {
 				cs = remove(cs, Card{s, "K"})
 				if in(cs, Card{s, "D"}) {
 					cs = remove(cs, Card{s, "D"})
-				} 
+				}
 				return cs
 			}
 			return cs
-		} 
+		}
 		return cs
-	} 
+	}
 	return cs
 }
 
@@ -872,31 +891,40 @@ func jackLosers(cs []Card) int {
 			if k {
 				return 1
 			}
-			return 0
+			// return 0
 		} else if h || k {
 			return 1
 		}
-	}
-	if s {
-		if h {
+		return 0
+	} else {
+		if s {
+			if h {
+				return 1
+			}
+			if k {
+				return 2
+			}
 			return 1
-		}
-		if k {
+		} else if h {
+			if k {
+				return 2
+			}
+			return 1
+		} else if k {
+			return 1
+		} else if h && k {
 			return 2
 		}
-		return 1
-	} else if h || k {
-		return 2
-	}	
-	return 0
+		return 0
+	}
 }
 
 func grandLosers(cs []Card) []Card {
 	losers := []Card{}
 	for _, s := range suits {
-		cards := filter(cs, func (c Card) bool {
+		cards := filter(cs, func(c Card) bool {
 			return c.rank != "J" && c.suit == s
-			})
+		})
 		losers = append(losers, grandSuitLosers(cards)...)
 	}
 	return losers
@@ -924,7 +952,7 @@ func (p *Player) discardInSkat(skat []Card) {
 			card := bcards[0]
 			skat[removed] = card
 			p.hand = remove(p.hand, card)
-			bcards = remove(bcards, card)		
+			bcards = remove(bcards, card)
 		}
 		if removed == 2 {
 			return
@@ -957,7 +985,7 @@ func (p *Player) discardInSkat(skat []Card) {
 			return c.suit == lsuit && c.rank != "A" && c.rank != "J"
 		}), sranks)
 		debugTacticsLog(".. TRUMP to DECLARE [%s]..", p.trumpToDeclare)
-		if lsuit != p.trumpToDeclare {//len(lcards) < 4 { // do not throw long fleets
+		if lsuit != p.trumpToDeclare { //len(lcards) < 4 { // do not throw long fleets
 			debugTacticsLog("SUIT %v LESS %v\n", lsuit, lcards)
 
 			if len(lcards) > 1 {

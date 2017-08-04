@@ -10,18 +10,17 @@ type PlayerData struct {
 	previousSuit string
 	won          int
 	lost         int
-	defWon int
-	declaredBid int
+	defWon       int
+	declaredBid  int
 }
 
-func (p* PlayerData) setDeclaredBid(b int) {
+func (p *PlayerData) setDeclaredBid(b int) {
 	p.declaredBid = b
 }
 
 func (p *PlayerData) wonAsDefenders() {
 	p.defWon++
 }
-
 
 func (p *PlayerData) getWonAsDefenders() int {
 	return p.defWon
