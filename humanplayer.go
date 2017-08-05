@@ -56,7 +56,7 @@ func (p *HumanPlayer) accepts(bidIndex int) bool {
 func (p *HumanPlayer) declareTrump() string {
 	fmt.Printf("HAND: %v\n", p.getHand())
 	for {
-		fmt.Printf("TRUMP? (1 for CLUBS, 2 for SPADE, 3 for HEART, 4 for CARO, G for GRAND) ")
+		fmt.Printf("TRUMP? (1 for CLUBS, 2 for SPADE, 3 for HEART, 4 for CARO, g for GRAND, n for NULL) ")
 		reader := bufio.NewReader(os.Stdin)
 		char, _, err := reader.ReadRune()
 
@@ -78,6 +78,8 @@ func (p *HumanPlayer) declareTrump() string {
 			return GRAND
 		case 'g':
 			return GRAND
+		case 'n':
+			return NULL
 		default:
 			continue
 		}
@@ -94,12 +96,16 @@ func (p *HumanPlayer) discardInSkat(skat []Card) {
 	p.setHand(sortSuit("", p.getHand()))
 	for {
 		gameLog("Full Hand : %v\n", p.getHand())
-		gameLog("DISCARD CARDS? (1 to %d) ", len(p.getHand()))
+		gameLog("DISCARD CARDS? (1 to %d) (0 to change to NULL sorting)", len(p.getHand()))
 
 		var i1, i2 int
 		_, err := fmt.Scanf("%d", &i1)
 		if err != nil {
 			gameLog("%v", err)
+			continue
+		}
+		if i1 == 0 {
+			p.setHand(sortSuit(NULL, p.getHand()))
 			continue
 		}
 		_, err = fmt.Scanf("%d", &i2)
@@ -172,6 +178,7 @@ func (p *HumanPlayer) pickUpSkat(skat []Card) bool {
 }
 
 func (p *HumanPlayer) playerTactic(s *SuitState, c []Card) Card {
+
 	gameLog("Your Hand : %v\n", p.getHand())
 	gameLog("Valid: %v\n", c)
 	for {

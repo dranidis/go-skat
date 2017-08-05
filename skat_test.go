@@ -1125,7 +1125,9 @@ func TestFindBlankCards(t *testing.T) {
 }
 
 func TestGame(t *testing.T) {
-	player1 := makePlayer([]Card{})
+	// declared globally
+	player := makePlayer([]Card{})
+	player1 = &player
 	player2 := makePlayer([]Card{})
 	player3 := makePlayer([]Card{})
 	player3.firstCardPlay = true
@@ -1136,7 +1138,7 @@ func TestGame(t *testing.T) {
 	if player1.getTotalScore() != 0 {
 		t.Errorf("Error in get total score")
 	}
-	players := []PlayerI{&player1, &player2, &player3}
+	players := []PlayerI{player1, &player2, &player3}
 	for i := 0; i < 10; i++ {
 		_ = game(players)
 	}
@@ -2618,4 +2620,74 @@ func TestGrandLosersJ7(t *testing.T) {
 	if losers != 2 {
 		t.Errorf("Losers: %v", losers)
 	}
+}
+
+func TestOpponentTacticNULLBack(t *testing.T) {
+	otherPlayer := makePlayer([]Card{})
+	//teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.declarer = &otherPlayer
+	s.trump = NULL
+	s.follow = HEART
+	s.trick = []Card{Card{HEART, "8"}, Card{HEART, "10"}}
+
+	validCards := []Card{
+		Card{HEART, "J"},
+		Card{HEART, "D"},
+		Card{HEART, "A"},
+	}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("NULL, In trick %v and valid %v, expected to play %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
+func TestOpponentTacticNULLMID(t *testing.T) {
+	otherPlayer := makePlayer([]Card{})
+	//teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.declarer = &otherPlayer
+	s.trump = NULL
+	s.follow = HEART
+	s.trick = []Card{Card{HEART, "10"}}
+
+	validCards := []Card{
+		Card{HEART, "J"},
+		Card{HEART, "D"},
+		Card{HEART, "A"},
+	}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("NULL, In trick %v and valid %v, expected to play %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
+func TestSingletons(t *testing.T) {
+	cs := []Card{
+		Card{CLUBS, "A"},
+		Card{CLUBS, "8"}, 
+		Card{CLUBS, "10"},
+		Card{SPADE, "9"}, 
+		Card{HEART, "A"},
+		Card{HEART, "10"},
+		Card{HEART, "K"},
+		Card{CARO, "9"}, 
+	}
+
+	s := singletons(cs)	
+	if len(s) != 2 {
+		t.Errorf("Singleton error, found: %v", s)
+	}
+
+	if !in(s, Card{CARO, "9"}, Card{SPADE, "9"}) {
+		t.Errorf("Singleton error, found: %v", s)
+	}	
 }

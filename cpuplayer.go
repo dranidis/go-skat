@@ -356,7 +356,27 @@ func (p *Player) FindPreviousSuit(s *SuitState) string {
 	return ""
 }
 
+func (p *Player) opponentTacticNull(s *SuitState, c []Card) Card {
+	revValue := sortValueNull(c)
+	debugTacticsLog("NULL: %v\n", revValue)
+	if len(s.trick) == 1 {
+		if s.greater(revValue[0], s.trick[0]) {
+			return revValue[len(revValue)-1]
+		}
+	}
+	if len(s.trick) == 2 {
+		if s.greater(revValue[0], s.trick[0]) || s.greater(revValue[0], s.trick[1]) {
+			return revValue[len(revValue)-1]
+		}
+	}
+
+	return revValue[0]
+}
+
 func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
+	if s.trump == NULL {
+		return p.opponentTacticNull(s, c)
+	}
 	// OPPONENTS TACTIC
 	if len(s.trick) == 0 {
 		debugTacticsLog("OPP FOREHAND\n")

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/fatih/color"
+	"log"
 )
 
 const CLUBS = "CLUBS"
@@ -9,6 +10,7 @@ const SPADE = "SPADE"
 const HEART = "HEART"
 const CARO = "CARO"
 const GRAND = "Grand"
+const NULL = "Null"
 
 var black = color.New(color.Bold, color.FgWhite).SprintFunc()
 var green = color.New(color.Bold, color.FgGreen).SprintFunc()
@@ -67,11 +69,22 @@ func trumpBaseValue(s string) int {
 		return 9
 	case GRAND:
 		return 24
+	case NULL:
+		log.Fatal("Error! No base value for NULL")
 	}
 	return 0
 }
 
+func sevens(cs []Card) []Card {
+	return filter(cs, func(c Card) bool {
+		return c.rank == "7"
+	})
+}
+
 func getSuit(trump string, card Card) string {
+	if trump == NULL {
+		return card.suit
+	}
 	if card.rank == "J" {
 		return trump
 	}
@@ -92,6 +105,19 @@ func sortRankSpecial(cs []Card, ranks []string) []Card {
 		}
 	}
 	return cards
+}
+
+func singletons(cs []Card) []Card {
+	singles := []Card{}
+	for _, s := range suits {
+		cards := filter(cs, func(c Card) bool {
+			return c.suit == s
+			})
+		if len(cards) == 1 {
+			singles = append(singles, cards[0])
+		}
+	}	
+	return singles
 }
 
 func nextCard(c Card) Card {
@@ -116,6 +142,11 @@ func sortValue(cs []Card) []Card {
 	return sortRankSpecial(cs, valueRanks)
 }
 
+func sortValueNull(cs []Card) []Card {
+	valueRanks := []string{"7", "8", "9", "10", "J", "D", "K", "A"}
+	return sortRankSpecial(cs, valueRanks)
+}
+
 func sortSuit(trump string, cs []Card) []Card {
 	cards := []Card{}
 
@@ -136,11 +167,28 @@ func sortSuit(trump string, cs []Card) []Card {
 			Card{suit, "7"},
 		}
 	}
-	for _, c := range cardJs {
-		if in(cs, c) {
-			cards = append(cards, c)
+	if trump == NULL {
+		cardsSuit = func(suit string) []Card {
+			return []Card{
+				Card{suit, "A"},
+				Card{suit, "K"},
+				Card{suit, "D"},
+				Card{suit, "J"},
+				Card{suit, "10"},
+				Card{suit, "9"},
+				Card{suit, "8"},
+				Card{suit, "7"},
+			}
 		}
 	}
+	if trump != NULL {
+		for _, c := range cardJs {
+			if in(cs, c) {
+				cards = append(cards, c)
+			}
+		}
+	}
+
 	if trump != "" {
 		switch trump {
 		case CLUBS:
@@ -398,7 +446,36 @@ func lessCardsSuit(cards []Card) string {
 	return ""
 }
 
+func (s SuitState) nullGreater(card1, card2 Card) bool {
+	rank := map[string]int{
+		"A":  13,
+		"K":  12,
+		"D":  11,
+		"J":  10,
+		"10": 9,
+		"9":  8,
+		"8":  7,
+		"7":  6,
+	}
+	if card1.suit == s.follow {
+		if card2.suit == s.follow {
+			return rank[card1.rank] > rank[card2.rank]
+		}
+		return true
+	}
+
+	if card2.suit == s.follow {
+		return false
+	}
+
+	return rank[card1.rank] > rank[card2.rank]
+}
+
 func (s SuitState) greater(card1, card2 Card) bool {
+	if s.trump == NULL {
+		return s.nullGreater(card1, card2)
+	}
+
 	rank := map[string]int{
 		"A":  13,
 		"10": 12,

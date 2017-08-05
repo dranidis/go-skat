@@ -91,6 +91,13 @@ func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
 	s.trick = []Card{}
 	s.leader = newPlayers[0]
 
+	if s.trump == NULL {
+		if winner == s.declarer {
+			// declarer lost
+			return nil
+		}
+	}
+
 	return newPlayers
 }
 
@@ -208,6 +215,28 @@ func bid(players []PlayerI) (int, PlayerI) {
 
 func gameScore(trump string, cs []Card, score, bid int,
 	decSchwarz, oppSchwarz, handGame bool) int {
+
+	if trump == NULL {
+		gs := 0
+		gameLog("\nSCORING\n\tNULL ")
+		if handGame {
+			gameLog("HAND \n")
+			if decSchwarz {
+				gs = 35
+			} else {
+				gs = -70
+			}
+		} else {
+			if decSchwarz {
+				gs = 23
+			} else {
+				gs = -46
+			}
+		}
+		gameLog("SCORE %d\n", gs)
+		return gs
+	}
+
 	mat := matadors(trump, cs)
 	mat1 := mat
 	if mat < 0 {
@@ -265,16 +294,21 @@ func game(players []PlayerI) int {
 	state := makeSuitState()
 	skatL := make([]Card, 2)
 	// DEALING
-	// for {
+	for {
+		debugTacticsLog("SHUFFLING..")
 		cards := Shuffle(makeDeck())
 		players[0].setHand(sortSuit("", cards[:10]))
 		players[1].setHand(sortSuit("", cards[10:20]))
 		players[2].setHand(sortSuit("", cards[20:30]))
 		copy(skatL, cards[30:32])
-	// 	if canWin(players[0].getHand()) == "GRAND" || canWin(players[1].getHand()) == "GRAND" || canWin(players[2].getHand()) == "GRAND" {
-	// 		break
-	// 	}
-	// }
+		// if canWin(players[0].getHand()) == "GRAND" || canWin(players[1].getHand()) == "GRAND" || canWin(players[2].getHand()) == "GRAND" {
+		// 	break
+		// }
+		if len(sevens(player1.getHand())) == 4 {
+			debugTacticsLog("FOUR 7\n")
+			break
+		}
+	}
 
 	for _, p := range players {
 		h := p.calculateHighestBid()
@@ -347,6 +381,9 @@ func game(players []PlayerI) int {
 		debugTacticsLog("TRUMPS IN PLAY %v\n", sortRank(state.trumpsInGame))
 		gameLog("\n")
 		players = round(&state, players)
+		if players == nil {
+			break
+		}
 	}
 	gameLog("\nSKAT: %v\n", state.skat)
 
@@ -362,8 +399,12 @@ func game(players []PlayerI) int {
 		if oficialScoring {
 			declarer.incTotalScore(50)
 		}
-		gameLog("VICTORY: %d - %d, SCORE: %d\n",
-			declarer.getScore(), opp1.getScore()+opp2.getScore(), gs)
+		if state.trump != NULL {
+			gameLog("VICTORY: %d - %d, SCORE: %d\n",
+				declarer.getScore(), opp1.getScore()+opp2.getScore(), gs)
+		} else {
+			gameLog("VICTORY: %d\n", gs)
+		}
 	} else {
 		if oficialScoring {
 			declarer.incTotalScore(-50)
@@ -372,8 +413,13 @@ func game(players []PlayerI) int {
 		}
 		opp1.wonAsDefenders()
 		opp2.wonAsDefenders()
-		gameLog("DEFEAT: %d - %d, SCORE: %d\n",
-			declarer.getScore(), opp1.getScore()+opp2.getScore(), gs)
+		if state.trump != NULL {
+			gameLog("DEFEAT: %d - %d, SCORE: %d\n",
+				declarer.getScore(), opp1.getScore()+opp2.getScore(), gs)
+		} else {
+			gameLog("DEFEAT: %d\n", gs)
+		}
+
 	}
 	return gs
 
@@ -388,10 +434,10 @@ func rotatePlayers(players []PlayerI) []PlayerI {
 }
 
 var gameIndex = 1
+var player1 PlayerI
 
 func main() {
 	auto := false
-	var player1 PlayerI
 	var randSeed int
 	flag.IntVar(&totalGames, "n", 21, "total number of games")
 	flag.IntVar(&randSeed, "r", 0, "Seed for random number generator. A value of 0 (default) uses the UNIX time as a seed.")
