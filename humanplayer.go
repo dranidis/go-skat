@@ -32,6 +32,8 @@ type PlayerI interface {
 	wonAsDefenders()
 	getWonAsDefenders() int
 	setDeclaredBid(int)
+
+	setPartner(p PlayerI)
 }
 
 type HumanPlayer struct {
@@ -41,6 +43,10 @@ type HumanPlayer struct {
 func makeHumanPlayer(hand []Card) HumanPlayer {
 	return HumanPlayer{
 		PlayerData: makePlayerData(hand)}
+}
+
+func (p *HumanPlayer) setPartner(partner PlayerI) {
+
 }
 
 func (p *HumanPlayer) accepts(bidIndex int) bool {
@@ -94,9 +100,10 @@ func (p *HumanPlayer) calculateHighestBid() int {
 
 func (p *HumanPlayer) discardInSkat(skat []Card) {
 	p.setHand(sortSuit("", p.getHand()))
+	sorting := true
 	for {
 		gameLog("Full Hand : %v\n", p.getHand())
-		gameLog("DISCARD CARDS? (1 to %d) (0 to change to NULL sorting)", len(p.getHand()))
+		gameLog("DISCARD CARDS? (1 to %d) [0 to toggle SUIT/NULL sorting]", len(p.getHand()))
 
 		var i1, i2 int
 		_, err := fmt.Scanf("%d", &i1)
@@ -105,8 +112,18 @@ func (p *HumanPlayer) discardInSkat(skat []Card) {
 			continue
 		}
 		if i1 == 0 {
-			p.setHand(sortSuit(NULL, p.getHand()))
-			continue
+			if sorting {
+				gameLog("Change to Null sorting\n")
+				p.setHand(sortSuit(NULL, p.getHand()))
+				sorting = false
+				continue				
+			} else {
+				gameLog("Change to Suit sorting\n")
+				p.setHand(sortSuit("", p.getHand()))
+				sorting = true
+				continue					
+			}
+
 		}
 		_, err = fmt.Scanf("%d", &i2)
 		if err != nil {

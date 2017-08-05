@@ -93,6 +93,7 @@ func getSuit(trump string, card Card) string {
 
 var suits = []string{CLUBS, SPADE, HEART, CARO}
 var ranks = []string{"J", "A", "10", "K", "D", "9", "8", "7"}
+var nullRanks = []string{"A", "K", "D", "J", "10", "9", "8", "7"}
 
 func sortRankSpecial(cs []Card, ranks []string) []Card {
 	cards := []Card{}
@@ -112,11 +113,11 @@ func singletons(cs []Card) []Card {
 	for _, s := range suits {
 		cards := filter(cs, func(c Card) bool {
 			return c.suit == s
-			})
+		})
 		if len(cards) == 1 {
 			singles = append(singles, cards[0])
 		}
-	}	
+	}
 	return singles
 }
 

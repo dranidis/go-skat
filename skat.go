@@ -57,13 +57,21 @@ type SuitState struct {
 	follow   string
 	trick    []Card
 	// not necessary for game but for tactics
-	skat         []Card
-	trumpsInGame []Card
-	cardsPlayed  []Card
+	skat             []Card
+	trumpsInGame     []Card
+	cardsPlayed      []Card
+	declarerVoidSuit map[string]bool
 }
 
 func makeSuitState() SuitState {
-	return SuitState{nil, nil, nil, nil, "", nil, "", []Card{}, []Card{}, []Card{}, []Card{}}
+	return SuitState{nil, nil, nil, nil, "", nil, "", []Card{}, []Card{}, []Card{}, []Card{},
+		map[string]bool{
+			CLUBS: false,
+			SPADE: false,
+			HEART: false,
+			CARO:  false,
+		},
+	}
 }
 
 func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
@@ -116,6 +124,9 @@ func round(s *SuitState, players []PlayerI) []PlayerI {
 }
 
 func play(s *SuitState, p PlayerI) Card {
+	if len(p.getHand()) == 0 {
+		log.Fatal("EMPTY HAND")
+	}
 	valid := sortSuit(s.trump, validCards(*s, p.getHand()))
 
 	p.setHand(sortSuit(s.trump, p.getHand()))
@@ -134,6 +145,14 @@ func play(s *SuitState, p PlayerI) Card {
 		gameLog("(%v) ", p.getName())
 	}
 	card := p.playerTactic(s, valid)
+
+	// Player VOID on suit
+	if p == s.declarer {
+		if s.follow != "" && card.suit != s.follow {
+			s.declarerVoidSuit[s.follow] = true
+		}
+	}
+
 	p.setHand(remove(p.getHand(), card))
 	s.trick = append(s.trick, card)
 	if getSuit(s.trump, card) == s.trump {
@@ -336,6 +355,7 @@ func game(players []PlayerI) int {
 	if declarer == players[2] {
 		opp1, opp2 = players[0], players[1]
 	}
+	opp1.setPartner(opp2)
 	forehand := players[0]
 	// HAND GAME?
 	handGame := true
@@ -366,6 +386,12 @@ func game(players []PlayerI) int {
 		skatL,
 		allTrumps,
 		[]Card{},
+		map[string]bool{
+			CLUBS: false,
+			SPADE: false,
+			HEART: false,
+			CARO:  false,
+		},
 	}
 	players[0].setHand(sortSuit(state.trump, players[0].getHand()))
 	players[1].setHand(sortSuit(state.trump, players[1].getHand()))

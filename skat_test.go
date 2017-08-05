@@ -1125,9 +1125,10 @@ func TestFindBlankCards(t *testing.T) {
 }
 
 func TestGame(t *testing.T) {
-	// declared globally
+	// player1 is declared globally
 	player := makePlayer([]Card{})
 	player1 = &player
+
 	player2 := makePlayer([]Card{})
 	player3 := makePlayer([]Card{})
 	player3.firstCardPlay = true
@@ -2646,12 +2647,83 @@ func TestOpponentTacticNULLBack(t *testing.T) {
 	}
 }
 
-func TestOpponentTacticNULLMID(t *testing.T) {
+
+// NOT SURE IF CORRECT
+// func TestOpponentTacticNULLMIDDeclFore(t *testing.T) {
+// 	otherPlayer := makePlayer([]Card{})
+// 	//teamMate := makePlayer([]Card{})
+// 	player := makePlayer([]Card{})
+// 	s := makeSuitState()
+
+// 	s.declarer = &otherPlayer
+// 	s.leader = &otherPlayer
+// 	//s.opp1 = &player
+
+// 	s.trump = NULL
+// 	s.follow = HEART
+// 	s.trick = []Card{Card{HEART, "10"}}
+
+// 	validCards := []Card{
+// 		Card{HEART, "J"},
+// 		Card{HEART, "D"},
+// 		Card{HEART, "A"},
+// 	}
+
+// 	card := player.playerTactic(&s, validCards)
+// 	exp := Card{HEART, "A"}
+// 	if !card.equals(exp) {
+// 		t.Errorf("NULL, In trick %v and valid %v, expected to play %v, played %v",
+// 			s.trick, validCards, exp, card)
+// 	}
+// }
+
+func TestOpponentTacticNULLMIDDeclBack2(t *testing.T) {
 	otherPlayer := makePlayer([]Card{})
-	//teamMate := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
 	player := makePlayer([]Card{})
 	s := makeSuitState()
+
 	s.declarer = &otherPlayer
+	s.leader = &teamMate
+	//s.opp1 = &player
+
+	s.cardsPlayed = []Card{}
+	s.trump = NULL
+	s.follow = HEART
+	s.trick = []Card{Card{HEART, "9"}}
+
+	validCards := []Card{
+		Card{HEART, "10"},
+		Card{HEART, "K"},
+	}
+	// declarer surely has 7 and 8, throw off the highest of the suit
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "K"}
+	if !card.equals(exp) {
+		t.Errorf("NULL, In trick %v and valid %v, cards played: %v expected to throw off %v, played %v",
+			s.trick, validCards, s.cardsPlayed, exp, card)
+	}
+
+	s.cardsPlayed = []Card{Card{HEART, "7"}, Card{HEART, "8"}}
+
+	card = player.playerTactic(&s, validCards)
+	exp = Card{HEART, "10"}
+	if !card.equals(exp) {
+		t.Errorf("NULL, In trick %v and valid %v, cards played: %v expected to play %v, played %v",
+			s.trick, validCards, s.cardsPlayed, exp, card)
+	}
+}
+
+func TestOpponentTacticNULLMIDDeclBack(t *testing.T) {
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+
+	s.opp2 = &player
+	s.declarer = &otherPlayer
+	s.leader = &teamMate
 	s.trump = NULL
 	s.follow = HEART
 	s.trick = []Card{Card{HEART, "10"}}
@@ -2661,33 +2733,170 @@ func TestOpponentTacticNULLMID(t *testing.T) {
 		Card{HEART, "D"},
 		Card{HEART, "A"},
 	}
+	s.cardsPlayed = []Card{}
 
 	card := player.playerTactic(&s, validCards)
 	exp := Card{HEART, "A"}
 	if !card.equals(exp) {
-		t.Errorf("NULL, In trick %v and valid %v, expected to play %v, played %v",
+		t.Errorf("NULL MID, Decl at Back, In trick %v and valid %v, with cards played: %v, expected to play %v, played %v",
+			s.trick, validCards, s.cardsPlayed, exp, card)
+	}
+}
+
+func TestOpponentTacticNULLMIDDeclBack1(t *testing.T) {
+	otherPlayer := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+
+	s.opp2 = &player
+	s.declarer = &otherPlayer
+	s.leader = &otherPlayer
+	s.trump = NULL
+	s.follow = HEART
+	s.trick = []Card{Card{HEART, "K"}, Card{HEART, "8"}}
+
+	validCards := []Card{
+		Card{HEART, "9"},
+		Card{HEART, "A"},
+	}
+	s.cardsPlayed = []Card{}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "9"}
+	if !card.equals(exp) {
+		t.Errorf("NULL BACK, Decl at Fore, In trick %v and valid %v, expected to play %v, played %v",
 			s.trick, validCards, exp, card)
+	}
+}
+
+func TestOpponentTacticNULLMIDDeclBack3(t *testing.T) {
+	teamMate := makePlayer([]Card{})
+	otherPlayer := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+
+	s.declarer = &otherPlayer
+	s.leader = &teamMate
+	s.trump = NULL
+	s.follow = HEART
+	s.trick = []Card{Card{HEART, "D"}, Card{HEART, "9"}}
+
+	validCards := []Card{
+		Card{HEART, "8"},
+		Card{HEART, "10"},
+		Card{HEART, "A"},
+	}
+	s.cardsPlayed = []Card{}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("NULL BACK, Decl at MID, In trick %v and valid %v, expected to play %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
+func TestOpponentTacticNULLFORE(t *testing.T) {
+	teamMate := makePlayer([]Card{})
+	otherPlayer := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.declarer = &otherPlayer
+	s.opp1 = &teamMate
+	s.opp2 = &player
+	s.trump = NULL
+
+	validCards := []Card{
+		Card{CLUBS, "A"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "10"},
+		Card{SPADE, "A"},
+		Card{HEART, "A"},
+		Card{HEART, "10"},
+		Card{HEART, "8"},
+		Card{CARO, "9"},
+	}
+
+	teamMate.previousSuit = "HEART"
+	s.trick = []Card{}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "8"}
+	if !card.equals(exp) {
+		t.Errorf("NULL, VOID: %v, In trick %v and valid %v, expected to follow previous trick and play %v, played %v",
+			s.declarerVoidSuit, s.trick, validCards, exp, card)
+	}
+
+	s.declarerVoidSuit[HEART] = true
+	card = player.playerTactic(&s, validCards)
+	exp = Card{SPADE, "A"}
+	if !card.equals(exp) {
+		t.Errorf("NULL, VOID: %v,In trick %v and valid %v, decl HEART void, expected to play SINGLETON %v, played %v",
+			s.declarerVoidSuit, s.trick, validCards, exp, card)
 	}
 }
 
 func TestSingletons(t *testing.T) {
 	cs := []Card{
 		Card{CLUBS, "A"},
-		Card{CLUBS, "8"}, 
+		Card{CLUBS, "8"},
 		Card{CLUBS, "10"},
-		Card{SPADE, "9"}, 
+		Card{SPADE, "9"},
 		Card{HEART, "A"},
 		Card{HEART, "10"},
 		Card{HEART, "K"},
-		Card{CARO, "9"}, 
+		Card{CARO, "9"},
 	}
 
-	s := singletons(cs)	
+	s := singletons(cs)
 	if len(s) != 2 {
 		t.Errorf("Singleton error, found: %v", s)
 	}
 
 	if !in(s, Card{CARO, "9"}, Card{SPADE, "9"}) {
 		t.Errorf("Singleton error, found: %v", s)
-	}	
+	}
+}
+
+func TestDeclarerVoidSuits(t *testing.T) {
+	cs := []Card{
+		Card{CLUBS, "A"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "10"},
+		Card{SPADE, "9"},
+		Card{CARO, "9"},
+	}
+	player := makePlayer(cs)
+	s := makeSuitState()
+	s.declarer = &player
+	s.trump = NULL
+	s.follow = HEART
+	s.trick = []Card{Card{HEART, "10"}}
+
+	play(&s, &player)
+
+	if !s.declarerVoidSuit[HEART] {
+		t.Errorf("declarerVoidSuits %v", s.declarerVoidSuit)
+	}
+}
+
+func TestSmallerCardsInPlay(t *testing.T) {
+	s := makeSuitState()
+	trick := Card{HEART, "J"}
+	s.cardsPlayed = []Card{Card{HEART, "8"}, Card{HEART, "10"}}
+	cs := []Card{Card{HEART, "K"}, Card{HEART, "9"}}
+	// {8, 10} J  {K,9} ===> 7 in play
+	act := smallerCardsInPlay(&s, trick, cs)
+
+	if !act {
+		t.Errorf("Error in smallerCardsInPlay")
+	}
+
+	s.cardsPlayed = []Card{Card{HEART, "7"}, Card{HEART, "8"}, Card{HEART, "10"}}
+	act = smallerCardsInPlay(&s, trick, cs)
+
+	if act {
+		t.Errorf("Error in smallerCardsInPlay")
+	}
+
 }

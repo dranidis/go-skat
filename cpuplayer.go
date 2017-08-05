@@ -63,6 +63,10 @@ func highestValueWinnerORlowestValueLoser(s *SuitState, c []Card) Card {
 	return sortedValue[len(sortedValue)-1]
 }
 
+func (p *Player) setPartner(partner PlayerI) {
+
+}
+
 func (p Player) otherPlayersHaveJs(s *SuitState) bool {
 	for _, suit := range suits {
 		card := Card{suit, "J"}
@@ -356,18 +360,95 @@ func (p *Player) FindPreviousSuit(s *SuitState) string {
 	return ""
 }
 
+// {8, 10} J  {K,9} ===> 7 in play
+func smallerCardsInPlay(s *SuitState, trick Card, c []Card) bool {
+	suit := trick.suit
+	for i := len(nullRanks) - 1; i >= 0; i-- {
+		if trick.rank == nullRanks[i] {
+			break
+		}
+		cardsNotInPlay := append(s.cardsPlayed, c...)
+		if in(cardsNotInPlay, Card{suit, nullRanks[i]}) {
+			continue
+		}
+		return true
+	}
+	return false
+}
+
 func (p *Player) opponentTacticNull(s *SuitState, c []Card) Card {
 	revValue := sortValueNull(c)
 	debugTacticsLog("NULL: %v\n", revValue)
-	if len(s.trick) == 1 {
-		if s.greater(revValue[0], s.trick[0]) {
+
+	if len(s.trick) == 0 {
+		debugTacticsLog("NULL FOREHAND..")
+		prevSuit := p.FindPreviousSuit(s)
+		if !s.declarerVoidSuit[prevSuit] {
+			var prevSuitCards []Card
+			if prevSuit != "" {
+				prevSuitCards = filter(revValue, func(c Card) bool {
+					return c.suit == prevSuit
+				})
+			}
+			if len(prevSuitCards) > 0 {
+				debugTacticsLog("Following previous suit: cards %v %v..", prevSuitCards, prevSuitCards[0])
+				return prevSuitCards[0]
+			}
+
+		}
+
+		singles := singletons(c)
+		if len(singles) > 0 {
+			s := singles[0]
+			debugTacticsLog("PLAYING singleton %v..", s)
+			p.previousSuit = s.suit
+			return s
+		}
+	}
+
+	if len(s.trick) > 0 {
+		if len(filter(c, func(card Card) bool {
+			return card.suit == s.trick[0].suit
+		})) == 0 {
+			debugTacticsLog("THROWING OFF..")
 			return revValue[len(revValue)-1]
 		}
 	}
-	if len(s.trick) == 2 {
-		if s.greater(revValue[0], s.trick[0]) || s.greater(revValue[0], s.trick[1]) {
+
+	if len(s.trick) == 1 {
+		debugTacticsLog("NULL MIDHAND..")
+
+		if s.leader == s.declarer {
+			debugTacticsLog("Declarer opened..")
+			// if s.greater(revValue[0], s.trick[0]) {
+			// 	return revValue[len(revValue)-1]
+			// }
+			return revValue[0]
+		}
+		debugTacticsLog("Declarer at Back..")
+		if smallerCardsInPlay(s, s.trick[0], c) {
+			debugTacticsLog("Smaller still in play, throwing off ...")
 			return revValue[len(revValue)-1]
 		}
+		return revValue[0]
+	}
+	if len(s.trick) == 2 {
+		debugTacticsLog("NULL BACKHAND..")
+		debugTacticsLog("RevVal %v..", revValue)
+		if s.leader == s.declarer {
+			debugTacticsLog("Declarer leads..")
+			if s.greater(revValue[0], s.trick[0]) || s.greater(s.trick[1], s.trick[0]) {
+				debugTacticsLog("Returning last %v...", revValue[len(revValue)-1])
+				return revValue[len(revValue)-1]				
+			}
+			return revValue[0]
+		}
+		debugTacticsLog("Teammate leads..")
+		if s.greater(revValue[0], s.trick[1]) || s.greater(s.trick[0], s.trick[1]) {
+			debugTacticsLog("Returning last %v...", revValue[len(revValue)-1])
+			return revValue[len(revValue)-1]
+		}
+		return revValue[0]
 	}
 
 	return revValue[0]
