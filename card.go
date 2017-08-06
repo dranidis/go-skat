@@ -108,6 +108,18 @@ func sortRankSpecial(cs []Card, ranks []string) []Card {
 	return cards
 }
 
+func previousNull(c Card) Card {
+	for i := len(nullRanks) - 1; i >=0 ; i-- {
+		if c.rank != nullRanks[i] {
+			continue
+		}
+		if i > 0 {
+			return Card{c.suit, nullRanks[i-1]}
+		}
+	}
+	return Card{"", ""}
+}
+
 func singletons(cs []Card) []Card {
 	singles := []Card{}
 	for _, s := range suits {

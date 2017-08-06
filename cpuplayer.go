@@ -449,9 +449,20 @@ func (p *Player) opponentTacticNull(s *SuitState, c []Card) Card {
 			return revValue[0]
 		}
 		debugTacticsLog("Declarer at Back..")
+		//NOT SURE ABOUT THIS::
 		if smallerCardsInPlay(s, s.trick[0], c) {
 			debugTacticsLog("Smaller still in play, throwing off ...")
-			return revValue[len(revValue)-1]
+			pr := previousNull(s.trick[0])
+			debugTacticsLog("Previous %v..", pr)
+			for in(s.cardsPlayed, pr) {
+				pr = previousNull(pr)
+				debugTacticsLog("Previous %v..", pr)
+			}
+			if in(c, pr) {
+				debugTacticsLog("Returninhg Previous %v..", pr)
+				return pr
+			}
+		//	return revValue[len(revValue)-1]
 		}
 		return revValue[0]
 	}

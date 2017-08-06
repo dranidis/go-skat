@@ -2676,6 +2676,34 @@ func TestOpponentTacticNULLBack(t *testing.T) {
 // 	}
 // }
 
+func TestOpponentTacticNULLMIDDeclBack4(t *testing.T) {
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+
+	s.declarer = &otherPlayer
+	s.leader = &teamMate
+
+	s.trump = NULL
+	s.follow = HEART
+	s.trick = []Card{Card{HEART, "J"}}
+
+	validCards := []Card{
+		Card{HEART, "8"},
+		Card{HEART, "9"},
+		Card{HEART, "D"},
+		Card{HEART, "A"},
+	}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "D"}
+	if !card.equals(exp) {
+		t.Errorf("NULL, In trick %v and valid %v, expected to play (next) %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
 func TestOpponentTacticNULLMIDDeclBack2(t *testing.T) {
 	otherPlayer := makePlayer([]Card{})
 	teamMate := makePlayer([]Card{})
@@ -2695,10 +2723,14 @@ func TestOpponentTacticNULLMIDDeclBack2(t *testing.T) {
 		Card{HEART, "10"},
 		Card{HEART, "K"},
 	}
+
+	// Changed:
 	// declarer surely has 7 and 8, throw off the highest of the suit
 
+	// throw previous card same value
+
 	card := player.playerTactic(&s, validCards)
-	exp := Card{HEART, "K"}
+	exp := Card{HEART, "10"}
 	if !card.equals(exp) {
 		t.Errorf("NULL, In trick %v and valid %v, cards played: %v expected to throw off %v, played %v",
 			s.trick, validCards, s.cardsPlayed, exp, card)
@@ -2735,7 +2767,7 @@ func TestOpponentTacticNULLMIDDeclBack(t *testing.T) {
 	s.cardsPlayed = []Card{}
 
 	card := player.playerTactic(&s, validCards)
-	exp := Card{HEART, "A"}
+	exp := Card{HEART, "J"}
 	if !card.equals(exp) {
 		t.Errorf("NULL MID, Decl at Back, In trick %v and valid %v, with cards played: %v, expected to play %v, played %v",
 			s.trick, validCards, s.cardsPlayed, exp, card)
