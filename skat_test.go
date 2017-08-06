@@ -2647,7 +2647,6 @@ func TestOpponentTacticNULLBack(t *testing.T) {
 	}
 }
 
-
 // NOT SURE IF CORRECT
 // func TestOpponentTacticNULLMIDDeclFore(t *testing.T) {
 // 	otherPlayer := makePlayer([]Card{})
@@ -2834,6 +2833,49 @@ func TestOpponentTacticNULLFORE(t *testing.T) {
 		t.Errorf("NULL, VOID: %v,In trick %v and valid %v, decl HEART void, expected to play SINGLETON %v, played %v",
 			s.declarerVoidSuit, s.trick, validCards, exp, card)
 	}
+}
+
+func TestOpponentTacticNULLFORE1(t *testing.T) {
+	teamMate := makePlayer([]Card{})
+	otherPlayer := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.declarer = &otherPlayer
+	s.leader = &player
+	s.opp1 = &teamMate
+	s.opp2 = &player
+	s.trump = NULL
+
+	validCards := []Card{
+		Card{HEART, "A"},
+		Card{HEART, "10"},
+		Card{HEART, "8"},
+		Card{CARO, "9"},
+		Card{CARO, "J"},
+	}
+
+	teamMate.previousSuit = "SPADE"
+	s.trick = []Card{}
+
+	s.cardsPlayed = []Card{
+		Card{HEART, "A"},
+		Card{HEART, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "B"},
+		Card{HEART, "7"},
+	}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "9"}
+	if !card.equals(exp) {
+		t.Errorf("NULL, In trick %v, played %v and valid %v, expected play %v, played %v",
+			s.trick, s.cardsPlayed, validCards, exp, card)
+	}
+
+	if !isVoid(&s, validCards, HEART) {
+		t.Errorf("Heart IS void")
+	}
+
 }
 
 func TestSingletons(t *testing.T) {

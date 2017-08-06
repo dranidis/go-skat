@@ -116,12 +116,12 @@ func (p *HumanPlayer) discardInSkat(skat []Card) {
 				gameLog("Change to Null sorting\n")
 				p.setHand(sortSuit(NULL, p.getHand()))
 				sorting = false
-				continue				
+				continue
 			} else {
 				gameLog("Change to Suit sorting\n")
 				p.setHand(sortSuit("", p.getHand()))
 				sorting = true
-				continue					
+				continue
 			}
 
 		}

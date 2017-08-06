@@ -376,17 +376,35 @@ func smallerCardsInPlay(s *SuitState, trick Card, c []Card) bool {
 	return false
 }
 
+func isVoid(s *SuitState, cs []Card, suit string) bool {
+	cardsPlayed := filter(append(s.cardsPlayed, cs...), func(c Card) bool {
+		return c.suit == suit
+	})
+
+	if len(cardsPlayed) == 8 {
+		return true
+	}
+
+	return false
+}
+
 func (p *Player) opponentTacticNull(s *SuitState, c []Card) Card {
 	revValue := sortValueNull(c)
-	debugTacticsLog("NULL: %v\n", revValue)
+	debugTacticsLog("NULL: rev value %v\n", revValue)
+
+	notExhausted := sortValueNull(filter(c, func(card Card) bool {
+		return !isVoid(s, c, card.suit)
+	}))
+	debugTacticsLog("NULL: not exhausted %v\n", notExhausted)
 
 	if len(s.trick) == 0 {
 		debugTacticsLog("NULL FOREHAND..")
 		prevSuit := p.FindPreviousSuit(s)
-		if !s.declarerVoidSuit[prevSuit] {
+		debugTacticsLog("Prev suit: %v..", prevSuit)
+		if prevSuit != "" && !s.declarerVoidSuit[prevSuit] {
 			var prevSuitCards []Card
 			if prevSuit != "" {
-				prevSuitCards = filter(revValue, func(c Card) bool {
+				prevSuitCards = filter(notExhausted, func(c Card) bool {
 					return c.suit == prevSuit
 				})
 			}
@@ -394,16 +412,21 @@ func (p *Player) opponentTacticNull(s *SuitState, c []Card) Card {
 				debugTacticsLog("Following previous suit: cards %v %v..", prevSuitCards, prevSuitCards[0])
 				return prevSuitCards[0]
 			}
-
 		}
 
-		singles := singletons(c)
+		singles := singletons(notExhausted)
+		debugTacticsLog("Singles %v..", singles)
 		if len(singles) > 0 {
 			s := singles[0]
 			debugTacticsLog("PLAYING singleton %v..", s)
 			p.previousSuit = s.suit
 			return s
 		}
+
+		if len(notExhausted) > 0 {
+			return notExhausted[0]
+		}
+
 	}
 
 	if len(s.trick) > 0 {
@@ -439,7 +462,7 @@ func (p *Player) opponentTacticNull(s *SuitState, c []Card) Card {
 			debugTacticsLog("Declarer leads..")
 			if s.greater(revValue[0], s.trick[0]) || s.greater(s.trick[1], s.trick[0]) {
 				debugTacticsLog("Returning last %v...", revValue[len(revValue)-1])
-				return revValue[len(revValue)-1]				
+				return revValue[len(revValue)-1]
 			}
 			return revValue[0]
 		}
