@@ -313,7 +313,7 @@ func game(players []PlayerI) int {
 	state := makeSuitState()
 	skatL := make([]Card, 2)
 	// DEALING
-	for {
+	// for {
 		debugTacticsLog("SHUFFLING..")
 		cards := Shuffle(makeDeck())
 		players[0].setHand(sortSuit("", cards[:10]))
@@ -323,11 +323,11 @@ func game(players []PlayerI) int {
 		// if canWin(players[0].getHand()) == "GRAND" || canWin(players[1].getHand()) == "GRAND" || canWin(players[2].getHand()) == "GRAND" {
 		// 	break
 		// }
-		if len(sevens(player1.getHand())) == 4 {
-			debugTacticsLog("FOUR 7\n")
-			break
-		}
-	}
+	// 	if len(sevens(player1.getHand())) == 4 {
+	// 		debugTacticsLog("FOUR 7\n")
+	// 		break
+	// 	}
+	// }
 
 	for _, p := range players {
 		h := p.calculateHighestBid()

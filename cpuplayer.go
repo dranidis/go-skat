@@ -377,6 +377,9 @@ func smallerCardsInPlay(s *SuitState, trick Card, c []Card) bool {
 }
 
 func isVoid(s *SuitState, cs []Card, suit string) bool {
+	if s.declarerVoidSuit[suit] {
+		return true
+	}
 	cardsPlayed := filter(append(s.cardsPlayed, cs...), func(c Card) bool {
 		return c.suit == suit
 	})
@@ -402,6 +405,7 @@ func (p *Player) opponentTacticNull(s *SuitState, c []Card) Card {
 		prevSuit := p.FindPreviousSuit(s)
 		debugTacticsLog("Prev suit: %v..", prevSuit)
 		if prevSuit != "" && !s.declarerVoidSuit[prevSuit] {
+			debugTacticsLog("VOID suits: %v", s.declarerVoidSuit)
 			var prevSuitCards []Card
 			if prevSuit != "" {
 				prevSuitCards = filter(notExhausted, func(c Card) bool {
@@ -424,8 +428,11 @@ func (p *Player) opponentTacticNull(s *SuitState, c []Card) Card {
 		}
 
 		if len(notExhausted) > 0 {
+			p.previousSuit = notExhausted[0].suit
 			return notExhausted[0]
 		}
+		p.previousSuit = revValue[0].suit
+		return revValue[0]
 
 	}
 

@@ -38,6 +38,8 @@ type PlayerI interface {
 
 type HumanPlayer struct {
 	PlayerData
+
+	handGame bool
 }
 
 func makeHumanPlayer(hand []Card) HumanPlayer {
@@ -85,6 +87,16 @@ func (p *HumanPlayer) declareTrump() string {
 		case 'g':
 			return GRAND
 		case 'n':
+			if p.declaredBid > 23 {
+				if p.handGame {
+					if p.declaredBid > 35 {
+						gameLog("Your bid %s is higher than Null Hand 35\n", p.declaredBid)
+						continue
+					}
+				}
+				gameLog("Your bid %s is higher than Null 23\n", p.declaredBid)
+				continue
+			}
 			return NULL
 		default:
 			continue
@@ -180,6 +192,7 @@ func (p *HumanPlayer) pickUpSkat(skat []Card) bool {
 	gameLog("HAND: %v", p.getHand())
 
 	if !getYes(" Pick up SKAT? (y/n/q) ") {
+		p.handGame = true
 		return false
 	}
 
@@ -191,6 +204,7 @@ func (p *HumanPlayer) pickUpSkat(skat []Card) bool {
 
 	p.discardInSkat(skat)
 
+	p.handGame = false
 	return true
 }
 
