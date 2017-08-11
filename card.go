@@ -18,31 +18,31 @@ var red = color.New(color.Bold, color.FgRed).SprintFunc()
 var yellow = color.New(color.Bold, color.FgYellow).SprintFunc()
 
 type Card struct {
-	suit string
-	rank string
+	Suit string
+	Rank string
 }
 
 func (c Card) equals(o Card) bool {
-	return c.suit == o.suit && c.rank == o.rank
+	return c.Suit == o.Suit && c.Rank == o.Rank
 }
 
 func (c Card) String() string {
 
-	switch c.suit {
+	switch c.Suit {
 	case CLUBS:
-		return black(c.rank)
+		return black(c.Rank)
 	case SPADE:
-		return green(c.rank)
+		return green(c.Rank)
 	case HEART:
-		return red(c.rank)
+		return red(c.Rank)
 	case CARO:
-		return yellow(c.rank)
+		return yellow(c.Rank)
 	}
 	return ""
 }
 
 func cardValue(c Card) int {
-	switch c.rank {
+	switch c.Rank {
 	case "J":
 		return 2
 	case "A":
@@ -77,18 +77,18 @@ func trumpBaseValue(s string) int {
 
 func sevens(cs []Card) []Card {
 	return filter(cs, func(c Card) bool {
-		return c.rank == "7"
+		return c.Rank == "7"
 	})
 }
 
 func getSuit(trump string, card Card) string {
 	if trump == NULL {
-		return card.suit
+		return card.Suit
 	}
-	if card.rank == "J" {
+	if card.Rank == "J" {
 		return trump
 	}
-	return card.suit
+	return card.Suit
 }
 
 var suits = []string{CLUBS, SPADE, HEART, CARO}
@@ -109,12 +109,12 @@ func sortRankSpecial(cs []Card, ranks []string) []Card {
 }
 
 func previousNull(c Card) Card {
-	for i := len(nullRanks) - 1; i >=0 ; i-- {
-		if c.rank != nullRanks[i] {
+	for i := len(nullRanks) - 1; i >= 0; i-- {
+		if c.Rank != nullRanks[i] {
 			continue
 		}
 		if i > 0 {
-			return Card{c.suit, nullRanks[i-1]}
+			return Card{c.Suit, nullRanks[i-1]}
 		}
 	}
 	return Card{"", ""}
@@ -124,7 +124,7 @@ func singletons(cs []Card) []Card {
 	singles := []Card{}
 	for _, s := range suits {
 		cards := filter(cs, func(c Card) bool {
-			return c.suit == s
+			return c.Suit == s
 		})
 		if len(cards) == 1 {
 			singles = append(singles, cards[0])
@@ -136,12 +136,12 @@ func singletons(cs []Card) []Card {
 func nextCard(c Card) Card {
 	i, r := -1, ""
 	for i, r = range ranks {
-		if c.rank == r {
+		if c.Rank == r {
 			break
 		}
 	}
 	if i+1 < len(ranks) {
-		return Card{c.suit, ranks[i+1]}
+		return Card{c.Suit, ranks[i+1]}
 	}
 	return Card{"", ""}
 }
@@ -347,13 +347,13 @@ func matadors(trump string, cs []Card) int {
 
 func trumpCards(trump string, cards []Card) []Card {
 	return filter(cards, func(c Card) bool {
-		return c.suit == trump || c.rank == "J"
+		return c.Suit == trump || c.Rank == "J"
 	})
 }
 
 func nonTrumpCards(suit string, cards []Card) []Card {
 	return filter(cards, func(c Card) bool {
-		return c.suit == suit && c.rank != "J"
+		return c.Suit == suit && c.Rank != "J"
 	})
 }
 
@@ -470,18 +470,18 @@ func (s SuitState) nullGreater(card1, card2 Card) bool {
 		"8":  7,
 		"7":  6,
 	}
-	if card1.suit == s.follow {
-		if card2.suit == s.follow {
-			return rank[card1.rank] > rank[card2.rank]
+	if card1.Suit == s.follow {
+		if card2.Suit == s.follow {
+			return rank[card1.Rank] > rank[card2.Rank]
 		}
 		return true
 	}
 
-	if card2.suit == s.follow {
+	if card2.Suit == s.follow {
 		return false
 	}
 
-	return rank[card1.rank] > rank[card2.rank]
+	return rank[card1.Rank] > rank[card2.Rank]
 }
 
 func (s SuitState) greater(card1, card2 Card) bool {
@@ -505,38 +505,38 @@ func (s SuitState) greater(card1, card2 Card) bool {
 		CARO:  1,
 	}
 
-	if card1.rank == "J" {
-		if card2.rank == "J" {
-			return JRank[card1.suit] > JRank[card2.suit]
+	if card1.Rank == "J" {
+		if card2.Rank == "J" {
+			return JRank[card1.Suit] > JRank[card2.Suit]
 		}
 		return true
 	}
 
-	if card2.rank == "J" {
+	if card2.Rank == "J" {
 		return false
 	}
 
-	if card1.suit == s.trump {
-		if card2.suit == s.trump {
-			return rank[card1.rank] > rank[card2.rank]
+	if card1.Suit == s.trump {
+		if card2.Suit == s.trump {
+			return rank[card1.Rank] > rank[card2.Rank]
 		}
 		return true
 	}
 
-	if card2.suit == s.trump {
+	if card2.Suit == s.trump {
 		return false
 	}
 
-	if card1.suit == s.follow {
-		if card2.suit == s.follow {
-			return rank[card1.rank] > rank[card2.rank]
+	if card1.Suit == s.follow {
+		if card2.Suit == s.follow {
+			return rank[card1.Rank] > rank[card2.Rank]
 		}
 		return true
 	}
 
-	if card2.suit == s.follow {
+	if card2.Suit == s.follow {
 		return false
 	}
 
-	return rank[card1.rank] > rank[card2.rank]
+	return rank[card1.Rank] > rank[card2.Rank]
 }

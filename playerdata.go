@@ -17,6 +17,9 @@ type PlayerData struct {
 func (p *PlayerData) setDeclaredBid(b int) {
 	p.declaredBid = b
 }
+func (p *PlayerData) getDeclaredBid() int {
+	return p.declaredBid
+}
 
 func (p *PlayerData) wonAsDefenders() {
 	p.defWon++

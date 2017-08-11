@@ -6,52 +6,22 @@ import (
 	"os"
 )
 
-type PlayerI interface {
-	playerTactic(s *SuitState, c []Card) Card
-	accepts(bidIndex int) bool
-	declareTrump() string
-	discardInSkat(skat []Card)
-	pickUpSkat(skat []Card) bool
-	calculateHighestBid() int
-	//
-
-	incTotalScore(s int)
-	setHand(cs []Card)
-	setScore(s int)
-	setSchwarz(b bool)
-	setPreviousSuit(s string)
-	getScore() int
-	getPreviousSuit() string
-	getTotalScore() int
-	setName(n string)
-	getName() string
-	getHand() []Card
-	isSchwarz() bool
-	getWon() int
-	getLost() int
-	wonAsDefenders()
-	getWonAsDefenders() int
-	setDeclaredBid(int)
-	getDeclaredBid() int 
-	setPartner(p PlayerI)
-}
-
-type HumanPlayer struct {
+type HtmlPlayer struct {
 	PlayerData
 
 	handGame bool
 }
 
-func makeHumanPlayer(hand []Card) HumanPlayer {
-	return HumanPlayer{
+func makeHtmlPlayer(hand []Card) HtmlPlayer {
+	return HtmlPlayer{
 		PlayerData: makePlayerData(hand)}
 }
 
-func (p *HumanPlayer) setPartner(partner PlayerI) {
+func (p *HtmlPlayer) setPartner(partner PlayerI) {
 
 }
 
-func (p *HumanPlayer) accepts(bidIndex int) bool {
+func (p *HtmlPlayer) accepts(bidIndex int) bool {
 
 	fmt.Printf("HAND: %v", p.getHand())
 
@@ -61,7 +31,7 @@ func (p *HumanPlayer) accepts(bidIndex int) bool {
 	return true
 }
 
-func (p *HumanPlayer) declareTrump() string {
+func (p *HtmlPlayer) declareTrump() string {
 	fmt.Printf("HAND: %v\n", p.getHand())
 	for {
 		fmt.Printf("TRUMP? (1 for CLUBS, 2 for SPADE, 3 for HEART, 4 for CARO, g for GRAND, n for NULL) ")
@@ -106,11 +76,11 @@ func (p *HumanPlayer) declareTrump() string {
 	return mostCardsSuit(p.getHand())
 }
 
-func (p *HumanPlayer) calculateHighestBid() int {
+func (p *HtmlPlayer) calculateHighestBid() int {
 	return 0
 }
 
-func (p *HumanPlayer) discardInSkat(skat []Card) {
+func (p *HtmlPlayer) discardInSkat(skat []Card) {
 	p.setHand(sortSuit("", p.getHand()))
 	sorting := true
 	for {
@@ -162,33 +132,7 @@ func (p *HumanPlayer) discardInSkat(skat []Card) {
 	}
 }
 
-func getYes(format string, a ...interface{}) bool {
-	for {
-		gameLog(format, a...)
-		reader := bufio.NewReader(os.Stdin)
-		char, _, err := reader.ReadRune()
-
-		if err != nil {
-			gameLog("%v", err)
-			continue
-		}
-
-		switch char {
-		case 'y':
-			return true
-		case 'n':
-			return false
-		case 'q':
-			os.Exit(0)
-		default:
-			gameLog("... don't understand! ")
-			continue
-		}
-	}
-	return false
-}
-
-func (p *HumanPlayer) pickUpSkat(skat []Card) bool {
+func (p *HtmlPlayer) pickUpSkat(skat []Card) bool {
 	gameLog("HAND: %v", p.getHand())
 
 	if !getYes(" Pick up SKAT? (y/n/q) ") {
@@ -208,25 +152,12 @@ func (p *HumanPlayer) pickUpSkat(skat []Card) bool {
 	return true
 }
 
-func (p *HumanPlayer) playerTactic(s *SuitState, c []Card) Card {
+func (p *HtmlPlayer) playerTactic(s *SuitState, c []Card) Card {
 
 	gameLog("Your Hand : %v\n", p.getHand())
 	gameLog("Valid: %v\n", c)
-	for {
-		fmt.Printf("CARD? (1 to %d) ", len(c))
-		var i int
-		_, err := fmt.Scanf("%d", &i)
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-		if i > len(c) {
-			continue
-		}
-		card := c[i-1]
-		if len(s.trick) == 0 {
-			p.setPreviousSuit(card.Suit)
-		}
-		return c[i-1]
-	}
+
+	gameLog("Waiting card at trickChannel\n")
+	card := <- trickChannel
+	return card
 }

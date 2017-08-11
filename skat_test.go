@@ -43,10 +43,10 @@ func TestGreater(t *testing.T) {
 
 func greaterAux(t *testing.T, s SuitState, card1, card2 Card) {
 	if !s.greater(card1, card2) {
-		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + card1.suit + " " + card1.rank + " should be greater than " + card2.suit + " " + card2.rank)
+		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + card1.Suit + " " + card1.Rank + " should be greater than " + card2.Suit + " " + card2.Rank)
 	}
 	if s.greater(card2, card1) {
-		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + card2.suit + " " + card2.rank + " should NOT be greater than " + card1.suit + " " + card1.rank)
+		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + card2.Suit + " " + card2.Rank + " should NOT be greater than " + card1.Suit + " " + card1.Rank)
 	}
 }
 
@@ -108,7 +108,7 @@ func compareLists(t *testing.T, returned, expected []Card) {
 		t.Errorf("Expected: " + fmt.Sprintf("%v", expected) + " found: " + fmt.Sprintf("%v", returned))
 	}
 	for i, c := range expected {
-		if c.suit != returned[i].suit || c.rank != returned[i].rank {
+		if c.Suit != returned[i].Suit || c.Rank != returned[i].Rank {
 			t.Errorf("Expected: " + fmt.Sprintf("%v", expected) + " found: " + fmt.Sprintf("%v", returned))
 		}
 	}
@@ -675,8 +675,8 @@ func TestPickUpSkat(t *testing.T) {
 
 	player.pickUpSkat(skat)
 
-	cc1 := skat[1].suit != SPADE || skat[1].rank != "8"
-	cc2 := skat[0].suit != HEART || skat[0].rank != "D"
+	cc1 := skat[1].Suit != SPADE || skat[1].Rank != "8"
+	cc2 := skat[0].Suit != HEART || skat[0].Rank != "D"
 	if cc1 || cc2 {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
 	}
@@ -707,8 +707,8 @@ func TestPickUpSkat1(t *testing.T) {
 	// fmt.Println(player.hand)
 	// fmt.Println(skat)
 	player.pickUpSkat(skat)
-	cc1 := skat[0].suit != CLUBS || skat[0].rank != "7"
-	cc2 := skat[1].suit != HEART || skat[1].rank != "K"
+	cc1 := skat[0].Suit != CLUBS || skat[0].Rank != "7"
+	cc2 := skat[1].Suit != HEART || skat[1].Rank != "K"
 	if cc1 || cc2 {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
 	}
@@ -745,8 +745,8 @@ func TestPickUpSkat2(t *testing.T) {
 	player.pickUpSkat(skat)
 	// fmt.Println(sort(player.hand))
 	// fmt.Println(skat)
-	cc1 := skat[0].suit != HEART || skat[0].rank != "D"
-	cc2 := skat[1].suit != HEART || skat[1].rank != "7"
+	cc1 := skat[0].Suit != HEART || skat[0].Rank != "D"
+	cc2 := skat[1].Suit != HEART || skat[1].Rank != "7"
 	if cc1 || cc2 {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
 	}
@@ -783,8 +783,8 @@ func TestPickUpSkat3(t *testing.T) {
 	player.pickUpSkat(skat)
 	// fmt.Println(sort(player.hand))
 	// fmt.Println(skat)
-	cc1 := skat[1].suit != CLUBS || skat[1].rank != "9"
-	cc2 := skat[0].suit != CARO || skat[0].rank != "D"
+	cc1 := skat[1].Suit != CLUBS || skat[1].Rank != "9"
+	cc2 := skat[0].Suit != CARO || skat[0].Rank != "D"
 	if cc1 || cc2 {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
 	}
@@ -822,8 +822,8 @@ func TestPickUpSkat4(t *testing.T) {
 	player.pickUpSkat(skat)
 	// fmt.Println(sort(player.hand))
 	// fmt.Println(skat)
-	cc1 := skat[1].suit != HEART || skat[1].rank != "K"
-	cc2 := skat[0].suit != CARO || skat[0].rank != "K"
+	cc1 := skat[1].Suit != HEART || skat[1].Rank != "K"
+	cc2 := skat[0].Suit != CARO || skat[0].Rank != "K"
 	if cc1 || cc2 {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
 	}
@@ -862,8 +862,8 @@ func TestPickUpSkat5(t *testing.T) {
 	player.pickUpSkat(skat)
 	// fmt.Println(sort(player.hand))
 	// fmt.Println(skat)
-	cc1 := skat[1].suit != SPADE || skat[1].rank != "9"
-	cc2 := skat[0].suit != HEART || skat[0].rank != "9"
+	cc1 := skat[1].Suit != SPADE || skat[1].Rank != "9"
+	cc2 := skat[0].Suit != HEART || skat[0].Rank != "9"
 	if cc1 || cc2 {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
 	}
@@ -901,8 +901,8 @@ func TestPickUpSkat6(t *testing.T) {
 	player.pickUpSkat(skat)
 	// fmt.Println(sortSuit("", player.hand))
 	// fmt.Println(skat)
-	cc1 := skat[1].suit != HEART || skat[1].rank != "A"
-	cc2 := skat[0].suit != SPADE || skat[0].rank != "9"
+	cc1 := skat[1].Suit != HEART || skat[1].Rank != "A"
+	cc2 := skat[0].Suit != SPADE || skat[0].Rank != "9"
 	if cc1 || cc2 {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
 	}
@@ -937,8 +937,8 @@ func TestPickUpSkat7(t *testing.T) {
 	player.pickUpSkat(skat)
 	// fmt.Println(sortSuit("", player.hand))
 	// fmt.Println(skat)
-	cc1 := skat[1].suit != SPADE || skat[1].rank != "A"
-	cc2 := skat[0].suit != HEART || skat[0].rank != "A"
+	cc1 := skat[1].Suit != SPADE || skat[1].Rank != "A"
+	cc2 := skat[0].Suit != HEART || skat[0].Rank != "A"
 	if cc1 || cc2 {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
 	}
@@ -1104,7 +1104,7 @@ func TestFindBlankCards(t *testing.T) {
 		t.Errorf("Expected 1. Found blank cards: %d", len(cards))
 	} else {
 		c := cards[0]
-		if c.suit != SPADE && c.rank != "10" {
+		if c.Suit != SPADE && c.Rank != "10" {
 			t.Errorf("Found wrong blank card %v", c)
 		}
 	}
@@ -1118,7 +1118,7 @@ func TestFindBlankCards(t *testing.T) {
 	} else {
 		c1 := cards[0]
 		c2 := cards[1]
-		if c1.suit != SPADE && c1.rank != "10" {
+		if c1.Suit != SPADE && c1.Rank != "10" {
 			t.Errorf("Blank Cards in wrong order %v, %v", c1, c2)
 		}
 	}

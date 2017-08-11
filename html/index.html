@@ -1,0 +1,671 @@
+<html>
+<head>
+		<style>
+			.name{
+				color: blue;
+    			font-style: italic;
+			}
+			.dealer {
+    			border: black;
+    			border-style: solid;				
+			}
+			#bidn1 {
+			    position: absolute;
+			    top: 50px;
+			    left: 50px;
+			    background: yellow;
+			    font-size: xx-large;
+			    width: 150px;
+			    height: auto;
+			    text-align: center;
+				border-radius: 200px;
+			}
+			#bidn2 {
+			    position: absolute;
+			    top: 50px;
+			    left: 450px;
+			    background: yellow;
+			    font-size: xx-large;
+			    width: 150px;
+			    height: auto;
+			    text-align: center;
+				border-radius: 200px;
+			}
+			#bidn3 {
+			    position: absolute;
+			    top: 150px;
+			    left: 250px;
+			    background: yellow;
+			    font-size: xx-large;
+			    width: 150px;
+			    height: auto;
+			    text-align: center;
+				border-radius: 200px;
+			}			
+			#bidding {
+			    position: absolute;
+			    top: 500px;
+			    left: 150px;
+			    /*background: green;*/
+			    font-size: xx-large;
+			    width: 300px;
+			    height: auto;
+			    text-align: center;
+			}			
+			.card {
+				width: 100px;
+				height: auto;
+				transition: 0.3s ease-in-out;
+				border-radius: 0px;
+			}
+			.card:hover {
+				transform:translate(0,-1em) scale(1.2);
+			}
+			#cards {
+				position: relative;
+				top: 250px;
+				left:10px;
+				background: none;
+			}
+			#discard1 {
+				position: absolute;
+				top: 30px;
+				left:250px;
+				background: red;
+			}		
+			#discard2 {
+				position: absolute;
+				top: 30px;
+				left:400px;
+				background: green;
+			}
+			.btn {
+			    font-size: xx-large;
+    			border-radius: 10px;					
+			}		
+			#played {
+				position: absolute;
+				top: 50px;
+				left:240px;
+			}
+
+			#played1 {
+				position:absolute;
+				top: 0px;
+				left: 0px;
+				transform: rotate(-15deg);
+			}
+			#played3 {
+				position:absolute;
+				top: 40px;
+				left: 40px;
+			}			
+			#played2 {
+				position:absolute;
+				top: -5px;
+				left: 80px;
+				transform: rotate(15deg);
+			}			
+
+		</style>
+</head>
+<body>
+
+		<form id="search-form" onsubmit="return false">
+			<input type="submit" value="Get Cards" onclick="getCards()" />
+		</form>
+
+		<div id="bidding" style="display: none;">
+			<button id="bidBtn" class="btn">XX</button>
+			<button id="passBtn" class="btn">Pass</button>
+		</div>
+<div id="bidn1" class="bidn">
+	<div class="name">Bob</div>
+	<div id="bid1"></div>
+</div>
+
+<div id="bidn2">
+	<div class="name">Ana</div>
+	<div id="bid2"></div>
+</div>
+
+<div id="bidn3">	
+	<div class="name">You</div>
+	<div id="bid3"></div>
+</div>
+
+<div id="played">
+<!-- 		<img id="played3" class="card" src="/html/img/SPADEA.png"/>
+		<img id="played1" class="card" src="/html/img/SPADE10.png"/>
+		<img id="played2" class="card" src="/html/img/SPADE9.png"/> -->
+</div>
+
+<div id="discard1"></div>
+
+<div id="discard2"></div>
+
+<div id="played"></div>
+<div id="cards">
+<!-- <img id="card_1" src="marianna.jpg" onclick="cc(0)" onmouseover="mo(0)" onmouseleave="mv(0)" />
+<img id="card_2" src="marianna.jpg" onclick="cc(1)" onmouseover="mo(1)" onmouseleave="mv(1)"  />
+<img id="card_3" src="marianna.jpg" onclick="cc(2)" onmouseover="mo(2)" onmouseleave="mv(2)" />
+<img id="card_4" src="marianna.jpg" onclick="cc(3)" onmouseover="mo(3)" onmouseleave="mv(3)" />
+<img id="card_5" src="marianna.jpg" onclick="cc(4)" onmouseover="mo(4)" onmouseleave="mv(4)" />
+<img id="card_6" src="marianna.jpg" onclick="cc(5)" onmouseover="mo(5)" onmouseleave="mv(5)" />
+<img id="card_7" src="marianna.jpg" onclick="cc(6)" onmouseover="mo(6)" onmouseleave="mv(6)" />
+<img id="card_8" src="marianna.jpg" onclick="cc(7)" onmouseover="mo(7)" onmouseleave="mv(7)" />
+<img id="card_9" src="marianna.jpg" onclick="cc(8)" onmouseover="mo(8)" onmouseleave="mv(8)" />
+<img id="card_10" src="marianna.jpg" onclick="cc(9)" onmouseover="mo(9)" onmouseleave="mv(9)" />
+<img id="card_11" src="marianna.jpg" onclick="cc(10)" onmouseover="mo(10)" onmouseleave="mv(10)" />
+<img id="card_12" src="marianna.jpg" onclick="cc(11)" onmouseover="mo(11)" onmouseleave="mv(11)" /> -->
+</div>
+
+<script type="text/javascript" src="/html/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+
+	function getCards() {
+		$("#bid1").empty();
+		$("#bid2").empty();
+		$("#bid3").empty();
+				
+		$.ajax({
+			url: "/start",
+			method: "GET",
+			success: handleInitData,
+		});
+		return false;
+	}
+
+// FORE = 0, MID=1, BACK=2
+	var passed = [false, false, false]
+	var biddiv = ["#bid1", "#bid2", "#bid3"]
+	var playerIndex= [1,2,3]
+
+	var gamePosition = -1
+	var secondRound = false;
+	var parsedBid = ""
+	var acceptedBid = ""
+	var playerHand= []
+
+	function handleInitData(rawData) {
+		var parsed = JSON.parse(rawData);
+		if (!parsed) return;
+		createImgCards(parsed.Hand);
+		gamePosition = parsed.Position
+		console.log("Position "+ gamePosition);
+		if (gamePosition == 0) {
+			biddiv = ["#bid3", "#bid1", "#bid2"]
+			playerIndex = [3, 1, 2]
+			$("#bidn1").removeClass("dealer");
+			$("#bidn2").addClass("dealer");
+			$("#bidn3").removeClass("dealer");
+		}
+		if (gamePosition == 1) {
+			biddiv = ["#bid2", "#bid3", "#bid1"]
+			playerIndex = [2, 3, 1]
+
+			$("#bidn1").addClass("dealer");
+			$("#bidn2").removeClass("dealer");
+			$("#bidn3").removeClass("dealer");
+		}
+		if (gamePosition == 2) {
+			biddiv = ["#bid1", "#bid2", "#bid3"]
+			playerIndex = [1, 2, 3]
+			$("#bidn1").removeClass("dealer");
+			$("#bidn2").removeClass("dealer");
+			$("#bidn3").addClass("dealer");
+		}				
+		passed = [false, false, false]
+		secondRound = false;
+		parsedBid = ""
+		acceptedBid = ""
+		for (var i=1; i <=3 ; i++) {
+			var d = document.getElementById("bidn" + i)
+			d.style["background"] = "yellow"			
+		}
+		MidVsFore();
+	}
+
+	function pickUpSkat() {
+		console.log("PICKING UP...")
+
+		cardsPlayed = 0;
+		//for (var i = 0;i < 10; i++) {
+			$("#played").empty();
+			trick();
+		//}
+	}
+
+	var playerPlaysCard = new Promise(function(resolve, reject) {
+		console.log("playerPlaysCard promise")
+		resolve("RESOLVED")
+	})
+
+	var cardsPlayed = 0
+	function trick() {
+			console.log("Sending getCardPlayed to server, cardsPlayed:" + cardsPlayed)
+			Promise.resolve($.ajax({
+				url: "/getCardPlayed",
+				method: "GET",
+				success: playCard,
+			})).then(nextTrick);
+	}
+
+	function nextTrick(response) {
+			cardsPlayed++;
+			if (cardsPlayed < 3 ) {
+				trick();
+			} else {
+				getTrickWinner().then(function (response, reject) {
+					$("#played").empty();
+					cardsPlayed = 0;
+					trick();
+				})
+			} 
+					
+	}
+
+	function getTrickWinner() {
+		return Promise.resolve($.ajax({
+				url: "/getTrickWinner",
+				method: "GET",
+				success: function(rawdata) {
+					var parsed = JSON.parse(rawdata);
+					if (!parsed) return;	
+					var winner = parsed	
+					console.log("WINNER: " + parsed)
+					if (winner == "Bob") 
+						playerIndex = [1, 2, 3];
+					else if (winner == "Ana") 
+						playerIndex = [2, 3, 1];
+					else playerIndex = [3, 1, 2];	
+				}
+			}))		
+	}
+
+	function playCard(rawdata) {
+		var parsed = JSON.parse(rawdata);
+		if (!parsed) return;					
+
+		var played = $("#played");
+		var name = parsed.C.Suit +parsed.C.Rank;
+		var pi = playerIndex[parsed.Pi];
+		console.log("getCardPlayed: " + name+ "player:" + parsed.Pi)
+
+		var img = $("<img id='played" + pi + "' class='card' src='/html/img/" + name + ".png' />");
+		played.append(img)				
+	}
+
+
+
+//
+// BIDING
+//
+	function MidVsFore() {
+		console.log("calling MIDBID")
+		getBid(1).then(function(response) {
+			console.log("MIDBID responded")
+			if (!passed[1]) {
+				console.log("Mid Not passed")
+				console.log("calling FOREBID")
+				getBid(0).then(function(response) {
+					console.log("FOREBID responded")
+					if (!passed[0]) {
+						console.log("Fore Not passed")
+						MidVsFore()	
+					} else {
+						console.log("Fore passed")
+						secondRound = true;
+						BackVsMid();						
+					}
+				});
+			} else {
+				console.log("Mid Passed")
+				secondRound = true;
+				BackVsFore();				
+			}
+			console.log("END OF MIDVSFORE");
+		});
+	}
+
+	function BackVsFore() {
+		console.log("calling BACKBID")
+		getBid(2).then(function(response) {
+			console.log("BACKBID responded")
+			if (!passed[2]) {
+				console.log("Back NOT passed")
+				console.log("calling FOREBID")
+				getBid(0).then(function(response) {
+					console.log("FOREBID responded")
+					if (!passed[0]) {
+						console.log("Fore NOT passed")
+						BackVsFore();
+					} else {
+						console.log("Fore passed")
+						console.log("BACK WON")
+						setDeclarer(2);			
+					}		
+				});
+			} else {
+				console.log("Back passed")
+				// TODO: if mid and back passed immediately
+				// check that FORE accepts the 18 bid.
+				if (acceptedBid == "") {
+					getBid(0).then(function(response) {
+						if (passed[0]) {
+							console.log("ALL PASSED")
+							emptyBidDivsExcept(-1);
+							return
+						} else {
+								console.log("FORE WON" + acceptedBid);
+								setDeclarer(0);	
+								return								
+						}
+					})
+				} else {
+					console.log("FORE WON" + acceptedBid);
+					setDeclarer(0);	
+					return						
+				}
+			}
+		});
+	}
+
+	function BackVsMid() {
+		console.log("calling BACKBID")
+		getBid(2).then(function(response) {
+			console.log("BACKBID responded")
+			if (!passed[2]) {
+				console.log("calling MIDBID")
+				getBid(1).then(function(response) {
+					console.log("MIDBID responded")
+					if (!passed[1]) {
+						console.log("MID NOT passed")
+						BackVsMid();
+					} else {
+						console.log("MID passed")
+						console.log("BACK WON")
+						setDeclarer(2);			
+					}
+				});
+			} else {
+				console.log("Back passed")
+				if (acceptedBid == "") {
+					getBid(1).then(function(response) {
+						if (!passed[1]) {
+							console.log("ALL PASSED")
+							emptyBidDivsExcept(-1);
+							return
+						} else {
+							console.log("MID WON" + acceptedBid);
+							setDeclarer(1);	
+							return								
+						}
+					})
+				} else {
+					console.log("MID WON" + acceptedBid);
+					setDeclarer(1);	
+				}									
+			}
+		});
+	}
+
+	function setDeclarer(player) {
+		($.ajax({
+				url: "/declarer/" + player + "/" + acceptedBid,
+				method: "GET",
+				success: function(rawdata) {
+					console.log("Declarer set:" + player + " BID: " + acceptedBid)
+					var d = document.getElementById("bidn" + playerIndex[player])
+					d.style["background"] = "orange"
+					var bid = document.getElementById("bid" + playerIndex[player])
+					console.log("Setting: element: " + "bid" + playerIndex[player])
+					emptyBidDivsExcept(-1);
+					var bid = $(biddiv[player]);
+					console.log("APPENDING accepted bid: "+acceptedBid)
+					bid.append($("<span>Bid: " + acceptedBid + "</span>"));
+					//
+					// continue with pick up skat
+					//
+					pickUpSkat();
+				},
+			}));
+	}
+
+	function emptyBidDivsExcept(p) {
+		for (var i = 0; i <= 2; i++) {
+			if (i != p) {
+				console.log("EMptying div: " + biddiv[i])
+				$(biddiv[i]).empty();
+			}
+		}
+	}
+
+	function inputPromise(player) {
+		return new Promise(function(resolve, reject) {
+			Promise.resolve($.ajax({
+				url: "/getbidvalue/" + player,
+				method: "GET",
+				success: function(rawdata) {
+						var parsed = JSON.parse(rawdata);
+						if (!parsed) return;
+						parsedBid = parsed.Bid;
+					},
+			})).then(function(response) {
+				console.log("jsPromise returned. Bid: " + parsedBid);
+				$("#bidding").show();
+
+				var bidBtn = document.getElementById("bidBtn")
+				var passBtn = document.getElementById("passBtn")
+				if (player == 0 || (player == 1 && secondRound)) {
+					text = "Yes (" + parsedBid + ")"
+				} else {
+					text = parsedBid
+				}					
+				bidBtn.innerHTML = text;
+				bidBtn.addEventListener('click', function() {
+					console.log("BTN ACCEPTED")
+					acceptedBid = parsedBid
+					$("#bidding").hide();
+					setTimeout(function() {
+						for (i = 0; i < 2; i++) {
+							if (i != player) {
+								$(biddiv[i]).empty();
+							}
+						}
+					}, 500)	
+					resolve("OK")
+				}) 
+				passBtn.addEventListener('click', function() {
+					passed[player] = true
+					$("#bidding").hide();
+					setTimeout(function() {
+						for (i = 0; i < 2; i++) {
+							if (i != player) {
+								$(biddiv[i]).empty();
+							}
+						}
+					}, 500)	
+					resolve("PASS")
+				}) 	
+			})
+		});
+	}
+
+	function getBid(player) {
+		if (gamePosition == player) {
+			return inputPromise(player);
+		} else {		
+			return Promise.resolve($.ajax({
+				url: "/bid/" + player,
+				method: "GET",
+				success: function(rawdata) {
+					handleBidData(rawdata, player)
+				},
+			}));		
+		}
+	}
+	function handleGetBidData(rawData, player) {
+		var parsed = JSON.parse(rawData);
+		if (!parsed) return;
+		parsedBid = parsed.Bid
+	}
+		
+	function handleBidData(rawData, player) {
+		var parsed = JSON.parse(rawData);
+		if (!parsed) return;
+		console.log("player " + player + ": Bid "+ parsed.Bid + " Accepted " + parsed.Accepted);
+		var bid = $(biddiv[player]);
+		bid.empty();
+
+		parsedBid = parsed.Bid
+		if (parsed.Accepted) {
+			passed[player] = false
+			console.log("...ACCEPTED")
+			if (player == 0 || (player == 1 && secondRound)) {
+				text = "YES (" + parsed.Bid + ")"
+			} else {
+				text = parsed.Bid
+			}
+			acceptedBid = parsed.Bid
+			setTimeout(function() {
+				for (i = 0; i < 2; i++) {
+					if (i != player) {
+						$(biddiv[i]).empty();
+					}
+				}
+			}, 500);	
+		} else {
+			console.log("...PASS")
+
+			text = 'PASS'
+			passed[player] = true
+		}
+		bid.append($("<span>" + text + " </span>"));
+	}
+
+//
+// CARDS
+//
+	function createImgCards(hand) {
+		hand.forEach(function(result) {
+			playerHand.push({suit: result.Suit, rank: result.Rank})
+		});
+		createPlayerHand(playerHand)
+		console.log(playerHand);
+	}
+
+	function createPlayerHand(playerHand) {
+		var i = 0
+		var cards = $("#cards");
+		cards.empty();
+		playerHand.forEach(function(result) {
+			var name = result.suit + result.rank
+			var img = $("<img id='card_" + (i+1) + "' class='card' src='/html/img/" + name + ".png' onclick='cc(" + i + ")' onmouseover='mo(" + i + ")' onmouseleave='mv(" + i + ")' />"
+						);
+			cards.append(img)
+			placeCard(i)
+			i++
+		});		
+	}
+	// function cc(n) {
+	// 	alert('cc ' + n)
+	// }
+
+	var card_left = []
+	var card_top = []
+	var card_rotate = []
+
+	var initRotate = -15
+	var initTop = -10
+
+	for(var i=0; i < 12; i++) {
+		card_left[i] = 0 + i * 50
+		card_top[i] = 0 + i * initTop
+		card_rotate[i] = "rotate("+ initRotate +"deg)"
+		initRotate += 3
+		initTop += 1
+	}
+
+	function mo(id) {
+	//alert("Mouse over" + id)
+		var el = document.getElementById("card_" + (id+1));
+		el.style["WebkitTransform"] = card_rotate[id] + " translate(0,-1em) scale(1.1)";
+	}
+
+	function mv(id) {
+	//alert("Mouse leave " + id)
+		var el = document.getElementById("card_" + (id+1));
+		el.style["WebkitTransform"] = card_rotate[id];
+	}
+
+	function placeCard(id) {
+		var el = document.getElementById("card_" + (id+1));
+	//	el.style["zIndex"] = 1000;
+		el.className = 'card'
+		el.style["left"] = card_left[id] + "px";
+		el.style["top"] = card_top[id] + "px";
+		if (id == 0) {
+			el.style["position"] = "relative"
+		} else {
+			el.style["position"] = "absolute";
+		}
+		el.style["WebkitTransform"] = card_rotate[id];
+		el.style["transform"] = card_rotate[id];
+	//	el.style["zIndex"] = 0;
+	}
+
+	var discarded = 0
+
+	function cc(n) {
+		var el = document.getElementById("card_" + (n+1));
+		console.log(playerHand[n].suit + " " + playerHand[n].rank)
+		$.ajax({
+				url: "/playCard/" + playerHand[n].suit + "/" + playerHand[n].rank,
+				method: "GET",
+				success: function(rawdata) {
+						console.log("PLAYeD");
+					},
+			});	
+
+		playerHand.splice(n, 1);
+		createPlayerHand(playerHand)
+	}
+
+	// function cc(n) {
+	// 	if (discarded == 2) {
+	// 		return
+	// 	}
+	// 	var el = document.getElementById("card_" + (n+1));
+	// 	//el.style["zIndex"] = 1000
+	// 	el.style["position"] = "relative";
+
+	// 	el.style["left"] = "0px";
+	// 	el.style["top"] = "0px";
+	// 	//el.style["transform"] = "scale(1.5)";
+
+	// 	el.style["WebkitTransform"] = "scale(1.5)";
+	// 	el.style["transform"] = "scale(1.5)";
+
+	// 	if (discarded === 0) {
+	// 		var discard1 = document.getElementById("discard1");
+	// 		discard1.appendChild(el)
+	// 		discarded = 1
+	// 		return
+	// 	}
+
+	// 	if (discarded === 1) {
+	// 		var discard2 = document.getElementById("discard2");
+	// 		discard2.appendChild(el)
+	// 		discarded = 2
+	// 		return
+	// 	}		
+	// //	var parent = document.getElementById("cards");
+	// //	parent.removeChild(el)
+	// }
+
+	//getCards();
+
+</script>
+</body>
+</html>
