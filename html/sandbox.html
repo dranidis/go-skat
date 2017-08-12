@@ -1,0 +1,42 @@
+<html>
+<head></head>
+<body></body>
+<script type="text/javascript">
+	function delay(t) {
+		return new Promise(function(resolve) {
+			console.log("Starting timer");
+			setTimeout(function() {
+				console.log("TIMED OUT")
+				resolve("OVER")
+			}, t);
+		});
+	}
+
+	function delayfn(t) {
+		// code that it is not within the function is executed immediately. Not after THEN
+		console.log("delayfn Called " + t) 
+		return function() {
+			return delay(t);
+		}
+	}
+
+	function messagefn(message) {
+		console.log("messagefn Called: " + message)
+		return function() {
+			console.log(message);
+		}
+	}
+
+	function main() {
+		console.log("MAIN")
+		delayfn(1000)()// calling the function to return the promise
+		.then(messagefn("START"))
+		.then(delayfn(2000)) 
+		.then(messagefn("MID"))
+		.then(delayfn(3000)) // passing the function to be called BY then
+		.then(messagefn("END"))
+	}
+
+	main()
+</script>
+</html>

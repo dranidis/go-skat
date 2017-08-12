@@ -33,7 +33,7 @@
 			}
 			#bidn3 {
 			    position: absolute;
-			    top: 150px;
+			    top: 250px;
 			    left: 250px;
 			    background: yellow;
 			    font-size: xx-large;
@@ -44,8 +44,8 @@
 			}			
 			#bidding {
 			    position: absolute;
-			    top: 500px;
-			    left: 150px;
+			    top: 340px;
+			    left: 180px;
 			    /*background: green;*/
 			    font-size: xx-large;
 			    width: 300px;
@@ -63,8 +63,8 @@
 			}
 			#cards {
 				position: relative;
-				top: 250px;
-				left:10px;
+				top: 350px;
+				left:50px;
 				background: none;
 			}
 			#discard1 {
@@ -87,6 +87,7 @@
 				position: absolute;
 				top: 50px;
 				left:240px;
+				transition: 1s ease-in-out;
 			}
 
 			#played1 {
@@ -99,74 +100,69 @@
 				position:absolute;
 				top: 40px;
 				left: 40px;
+				transform: rotate(2deg);
 			}			
 			#played2 {
 				position:absolute;
-				top: -5px;
+				top: -3px;
 				left: 80px;
-				transform: rotate(15deg);
+				transform: rotate(11deg);
 			}			
-
+			#score {
+			    position: absolute;
+			    top: 140px;
+			    left: 200px;
+			    font-size: xx-large;
+			    font-weight: bolder;
+			    color: white;
+			    background-color: gray;
+			    border-radius: 10px;
+			    padding: 20px;
+			    visibility: hidden;
+			}
 		</style>
 </head>
 <body>
+	<form id="search-form" onsubmit="return false">
+		<input type="submit" value="Start" onclick="start()" />
+	</form>
 
-		<form id="search-form" onsubmit="return false">
-			<input type="submit" value="Get Cards" onclick="getCards()" />
-		</form>
+	<div id="bidding" style="display: none;">
+		<button id="bidBtn" class="btn">XX</button>
+		<button id="passBtn" class="btn">Pass</button>
+	</div>
+	<div id="bidn1" class="bidn">
+		<div class="name">Bob</div>
+		<div id="bid1"></div>
+	</div>
 
-		<div id="bidding" style="display: none;">
-			<button id="bidBtn" class="btn">XX</button>
-			<button id="passBtn" class="btn">Pass</button>
-		</div>
-<div id="bidn1" class="bidn">
-	<div class="name">Bob</div>
-	<div id="bid1"></div>
-</div>
+	<div id="bidn2">
+		<div class="name">Ana</div>
+		<div id="bid2"></div>
+	</div>
 
-<div id="bidn2">
-	<div class="name">Ana</div>
-	<div id="bid2"></div>
-</div>
+	<div id="bidn3">	
+		<div class="name">You</div>
+		<div id="bid3"></div>
+	</div>
 
-<div id="bidn3">	
-	<div class="name">You</div>
-	<div id="bid3"></div>
-</div>
-
-<div id="played">
-<!-- 		<img id="played3" class="card" src="/html/img/SPADEA.png"/>
-		<img id="played1" class="card" src="/html/img/SPADE10.png"/>
-		<img id="played2" class="card" src="/html/img/SPADE9.png"/> -->
-</div>
-
-<div id="discard1"></div>
-
-<div id="discard2"></div>
-
-<div id="played"></div>
-<div id="cards">
-<!-- <img id="card_1" src="marianna.jpg" onclick="cc(0)" onmouseover="mo(0)" onmouseleave="mv(0)" />
-<img id="card_2" src="marianna.jpg" onclick="cc(1)" onmouseover="mo(1)" onmouseleave="mv(1)"  />
-<img id="card_3" src="marianna.jpg" onclick="cc(2)" onmouseover="mo(2)" onmouseleave="mv(2)" />
-<img id="card_4" src="marianna.jpg" onclick="cc(3)" onmouseover="mo(3)" onmouseleave="mv(3)" />
-<img id="card_5" src="marianna.jpg" onclick="cc(4)" onmouseover="mo(4)" onmouseleave="mv(4)" />
-<img id="card_6" src="marianna.jpg" onclick="cc(5)" onmouseover="mo(5)" onmouseleave="mv(5)" />
-<img id="card_7" src="marianna.jpg" onclick="cc(6)" onmouseover="mo(6)" onmouseleave="mv(6)" />
-<img id="card_8" src="marianna.jpg" onclick="cc(7)" onmouseover="mo(7)" onmouseleave="mv(7)" />
-<img id="card_9" src="marianna.jpg" onclick="cc(8)" onmouseover="mo(8)" onmouseleave="mv(8)" />
-<img id="card_10" src="marianna.jpg" onclick="cc(9)" onmouseover="mo(9)" onmouseleave="mv(9)" />
-<img id="card_11" src="marianna.jpg" onclick="cc(10)" onmouseover="mo(10)" onmouseleave="mv(10)" />
-<img id="card_12" src="marianna.jpg" onclick="cc(11)" onmouseover="mo(11)" onmouseleave="mv(11)" /> -->
-</div>
-
+	<div id="played"></div>
+	<div id="discard1"></div>
+	<div id="discard2"></div>
+	<div id="played"></div>
+	<div id="cards"></div>
+	<div id="score"></div>
 <script type="text/javascript" src="/html/jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
 
-	function getCards() {
+	function start() {
+		var score = document.getElementById("score")
+		score.style["visibility"] = "hidden";
+
 		$("#bid1").empty();
 		$("#bid2").empty();
 		$("#bid3").empty();
+		$("#cards").empty();
 				
 		$.ajax({
 			url: "/start",
@@ -186,11 +182,13 @@
 	var parsedBid = ""
 	var acceptedBid = ""
 	var playerHand= []
+	var declarer =  -1
 
 	function handleInitData(rawData) {
 		var parsed = JSON.parse(rawData);
 		if (!parsed) return;
 		createImgCards(parsed.Hand);
+
 		gamePosition = parsed.Position
 		console.log("Position "+ gamePosition);
 		if (gamePosition == 0) {
@@ -219,6 +217,8 @@
 		secondRound = false;
 		parsedBid = ""
 		acceptedBid = ""
+		trickRound = 0
+		declarer = -1
 		for (var i=1; i <=3 ; i++) {
 			var d = document.getElementById("bidn" + i)
 			d.style["background"] = "yellow"			
@@ -226,44 +226,130 @@
 		MidVsFore();
 	}
 
-	function pickUpSkat() {
+	function pickUpSkat(player) {
 		console.log("PICKING UP...")
+		Promise.resolve($.ajax({
+				url: "/getTrump",
+				method: "GET",
+				success: function(rawdata) {
+					var parsed = JSON.parse(rawdata);
+					if (!parsed) return;	
+					var trump = parsed	
+					console.log("TRUMP: " + trump)
+					$(biddiv[player]).append($("<div>" + trump + "</div>"));					
+				}
+		})).then(function(response) {
+			Promise.resolve($.ajax({
+				url: "/getHand/" + gamePosition,
+				method: "GET",
+				success: function(rawdata) {
+					var parsed = JSON.parse(rawdata);
+					if (!parsed) return;	
+					console.log("Hand :" + parsed)
+					createImgCards(parsed);
+				}
+			})).then(function(response) {
+				cardsPlayed = 0;
+				$("#played").empty();
+				trick();				
+			})
 
-		cardsPlayed = 0;
-		//for (var i = 0;i < 10; i++) {
-			$("#played").empty();
-			trick();
-		//}
+		})	
 	}
 
-	var playerPlaysCard = new Promise(function(resolve, reject) {
-		console.log("playerPlaysCard promise")
-		resolve("RESOLVED")
-	})
-
 	var cardsPlayed = 0
+	var trickRound = 0
+
+	function gameFinished() {
+		return trickRound > 30
+	}
+
+	function getScore() {
+		$.ajax({
+			url: "/getScore",
+			method: "GET",
+			success: function(rawdata) {
+				var parsed = JSON.parse(rawdata);
+				if (!parsed) return;
+				var score = document.getElementById("score")
+				score.style["visibility"] = "visible"
+				score.innerHTML = parsed.DeclarerPoints + " - " + parsed.DefenderPoints + ", Score: " + parsed.GameScore;
+			},
+		})	
+	}
+
 	function trick() {
+			trickRound++
+			if (gameFinished()) {
+				console.log("Game finished");
+				getScore();
+				trickRound = 0;
+				return
+			}
 			console.log("Sending getCardPlayed to server, cardsPlayed:" + cardsPlayed)
 			Promise.resolve($.ajax({
 				url: "/getCardPlayed",
 				method: "GET",
-				success: playCard,
-			})).then(nextTrick);
+				success: function(data) {
+					playCard(data);
+				},
+			}))
+			.then(nextTrick);
 	}
 
 	function nextTrick(response) {
 			cardsPlayed++;
 			if (cardsPlayed < 3 ) {
+				var el = document.getElementById("played");
+				el.style["transition"] = "1s ease-in-out";
 				trick();
 			} else {
-				getTrickWinner().then(function (response, reject) {
+				getTrickWinner()
+				//.then(animate)
+				.then(delayfn(2000))
+				.then(function() {
+				//	console.log("TimeOut ended")
+					var el = document.getElementById("played");
+					el.style["visibility"] = "hidden";
+					el.style["transition"] = "0s";
+				})
+				.then(delayfn(2000))
+				.then(function (response) {
+				//	console.log("AFTER TIMEOUT")
 					$("#played").empty();
+					showPlayed()
 					cardsPlayed = 0;
 					trick();
 				})
 			} 
 					
 	}
+
+	function delay(t) {
+		return new Promise(function(resolve) {
+			// console.log("Starting timer");
+			setTimeout(function() {
+				// console.log("TIMED OUT")
+				resolve("OVER")
+			}, t);
+		});
+	}
+
+	function delayfn(t) {
+		// code that it is not within the function is executed immediately. Not after THEN
+		// console.log("delayfn Called " + t) 
+		return function() {
+			return delay(t);
+		}
+	}
+
+	function animate() {
+		// var el = document.getElementById("played");
+		// el.style["transform"] = "rotate(0deg) translate(-150px,30px) scale(0.4)";	
+		// el.style["transform"] = "rotate(0deg) translate(150px,30px) scale(0.4)";	
+		// el.style["transform"] = "rotate(0deg) translate(0px,150px) scale(0.4)";	
+	}
+
 
 	function getTrickWinner() {
 		return Promise.resolve($.ajax({
@@ -274,11 +360,21 @@
 					if (!parsed) return;	
 					var winner = parsed	
 					console.log("WINNER: " + parsed)
-					if (winner == "Bob") 
+
+					var el = document.getElementById("played");
+
+					if (winner == "Bob") {
 						playerIndex = [1, 2, 3];
-					else if (winner == "Ana") 
+						el.style["transform"] = "rotate(0deg) translate(-150px,30px) scale(0.4)";	
+					}
+					else if (winner == "Ana") {
 						playerIndex = [2, 3, 1];
-					else playerIndex = [3, 1, 2];	
+						el.style["transform"] = "rotate(0deg) translate(150px,30px) scale(0.4)";	
+					}
+					else {
+						playerIndex = [3, 1, 2];	
+						el.style["transform"] = "rotate(0deg) translate(0px,150px) scale(0.4)";	
+					}
 				}
 			}))		
 	}
@@ -291,12 +387,18 @@
 		var name = parsed.C.Suit +parsed.C.Rank;
 		var pi = playerIndex[parsed.Pi];
 		console.log("getCardPlayed: " + name+ "player:" + parsed.Pi)
-
 		var img = $("<img id='played" + pi + "' class='card' src='/html/img/" + name + ".png' />");
 		played.append(img)				
 	}
 
-
+	function showPlayed() {
+		var el = document.getElementById("played");
+		el.style["transition"] = "0s";
+		el.style["WebkitTransform"] = "";					
+		el.style["transform"] = "";					
+		el.style["visibility"]= "visible"
+		el.style["transition"] = "0s ease-in-out";
+	}
 
 //
 // BIDING
@@ -324,7 +426,6 @@
 				secondRound = true;
 				BackVsFore();				
 			}
-			console.log("END OF MIDVSFORE");
 		});
 	}
 
@@ -420,25 +521,38 @@
 					d.style["background"] = "orange"
 					var bid = document.getElementById("bid" + playerIndex[player])
 					console.log("Setting: element: " + "bid" + playerIndex[player])
-					emptyBidDivsExcept(-1);
+					emptyBidDivsExcept(player);
+					$(biddiv[player]).empty();
 					var bid = $(biddiv[player]);
 					console.log("APPENDING accepted bid: "+acceptedBid)
 					bid.append($("<span>Bid: " + acceptedBid + "</span>"));
 					//
 					// continue with pick up skat
 					//
-					pickUpSkat();
+					declarer = player
+					pickUpSkat(player);
 				},
 			}));
 	}
 
-	function emptyBidDivsExcept(p) {
-		for (var i = 0; i <= 2; i++) {
-			if (i != p) {
-				console.log("EMptying div: " + biddiv[i])
-				$(biddiv[i]).empty();
+	// function emptyBidDivsExcept(p) {
+	// 	for (var i = 0; i <= 2; i++) {
+	// 		if (i != p) {
+	// 			console.log("EMptying div: " + biddiv[i])
+	// 			$(biddiv[i]).empty();
+	// 		}
+	// 	}
+	// }
+
+	function emptyBidDivsExcept(p, t) {
+		setTimeout(function() {
+			for (i = 0; i < 3; i++) {
+				if (i != p && i != declarer) {
+					$(biddiv[i]).empty();
+	 				// console.log("EMptying div: " + biddiv[i] + "declarer: " + declarer)
+				}
 			}
-		}
+		}, t);	
 	}
 
 	function inputPromise(player) {
@@ -467,25 +581,13 @@
 					console.log("BTN ACCEPTED")
 					acceptedBid = parsedBid
 					$("#bidding").hide();
-					setTimeout(function() {
-						for (i = 0; i < 2; i++) {
-							if (i != player) {
-								$(biddiv[i]).empty();
-							}
-						}
-					}, 500)	
+					emptyBidDivsExcept(player, 500);
 					resolve("OK")
 				}) 
 				passBtn.addEventListener('click', function() {
 					passed[player] = true
 					$("#bidding").hide();
-					setTimeout(function() {
-						for (i = 0; i < 2; i++) {
-							if (i != player) {
-								$(biddiv[i]).empty();
-							}
-						}
-					}, 500)	
+					emptyBidDivsExcept(player, 500);
 					resolve("PASS")
 				}) 	
 			})
@@ -528,13 +630,7 @@
 				text = parsed.Bid
 			}
 			acceptedBid = parsed.Bid
-			setTimeout(function() {
-				for (i = 0; i < 2; i++) {
-					if (i != player) {
-						$(biddiv[i]).empty();
-					}
-				}
-			}, 500);	
+			emptyBidDivsExcept(player, 500);	
 		} else {
 			console.log("...PASS")
 
@@ -548,33 +644,34 @@
 // CARDS
 //
 	function createImgCards(hand) {
+		playerHand = []
 		hand.forEach(function(result) {
 			playerHand.push({suit: result.Suit, rank: result.Rank})
 		});
 		createPlayerHand(playerHand)
-		console.log(playerHand);
 	}
 
 	function createPlayerHand(playerHand) {
 		var i = 0
 		var cards = $("#cards");
 		cards.empty();
+		noOfCards = playerHand.length;
+		offset = 6 - Math.floor(noOfCards/2)
+		console.log("OFFSET: "+ offset)
 		playerHand.forEach(function(result) {
 			var name = result.suit + result.rank
 			var img = $("<img id='card_" + (i+1) + "' class='card' src='/html/img/" + name + ".png' onclick='cc(" + i + ")' onmouseover='mo(" + i + ")' onmouseleave='mv(" + i + ")' />"
 						);
 			cards.append(img)
-			placeCard(i)
+			placeCard(i, offset)
 			i++
 		});		
 	}
-	// function cc(n) {
-	// 	alert('cc ' + n)
-	// }
 
 	var card_left = []
 	var card_top = []
 	var card_rotate = []
+	var offset = 1
 
 	var initRotate = -15
 	var initTop = -10
@@ -587,31 +684,44 @@
 		initTop += 1
 	}
 
+
+	for(var i=0; i < 6; i++) {
+		middleLeft = 200
+		leftStep = 35
+		middleTop = 0
+		topStep = 1
+		rotateStep = 4
+		card_left[5-i] = middleLeft - i * leftStep
+		card_left[6+i] = middleLeft + (i+1) * leftStep
+		card_top[5-i] = middleTop + i * topStep
+		card_top[6+i] = middleTop + i * topStep
+		card_rotate[5-i] = "rotate("+ (-rotateStep - i *rotateStep) +"deg)"
+		card_rotate[6+i] = "rotate("+ ( i * rotateStep) +"deg)"
+	}
+
 	function mo(id) {
-	//alert("Mouse over" + id)
 		var el = document.getElementById("card_" + (id+1));
-		el.style["WebkitTransform"] = card_rotate[id] + " translate(0,-1em) scale(1.1)";
+		el.style["WebkitTransform"] = card_rotate[offset + id] + " translate(0,-1em) scale(1.1)";
 	}
 
 	function mv(id) {
-	//alert("Mouse leave " + id)
 		var el = document.getElementById("card_" + (id+1));
-		el.style["WebkitTransform"] = card_rotate[id];
+		el.style["WebkitTransform"] = card_rotate[offset + id];
 	}
 
-	function placeCard(id) {
+	function placeCard(id, offset) {
 		var el = document.getElementById("card_" + (id+1));
 	//	el.style["zIndex"] = 1000;
 		el.className = 'card'
-		el.style["left"] = card_left[id] + "px";
-		el.style["top"] = card_top[id] + "px";
-		if (id == 0) {
+		el.style["left"] = card_left[offset + id] + "px";
+		el.style["top"] = card_top[offset + id] + "px";
+		if (id == offset) {
 			el.style["position"] = "relative"
 		} else {
 			el.style["position"] = "absolute";
 		}
-		el.style["WebkitTransform"] = card_rotate[id];
-		el.style["transform"] = card_rotate[id];
+		el.style["WebkitTransform"] = card_rotate[offset + id];
+		el.style["transform"] = card_rotate[offset + id];
 	//	el.style["zIndex"] = 0;
 	}
 
@@ -619,17 +729,18 @@
 
 	function cc(n) {
 		var el = document.getElementById("card_" + (n+1));
-		console.log(playerHand[n].suit + " " + playerHand[n].rank)
+		// console.log(playerHand[n].suit + " " + playerHand[n].rank)
 		$.ajax({
-				url: "/playCard/" + playerHand[n].suit + "/" + playerHand[n].rank,
+				url: "/playCard/" + gamePosition + "/" + playerHand[n].suit + "/" + playerHand[n].rank,
 				method: "GET",
 				success: function(rawdata) {
-						console.log("PLAYeD");
-					},
+					console.log("Success from server: " + playerHand[n].suit + " " + playerHand[n].rank);
+					playerHand.splice(n, 1);
+					createPlayerHand(playerHand);					
+				},
 			});	
 
-		playerHand.splice(n, 1);
-		createPlayerHand(playerHand)
+
 	}
 
 	// function cc(n) {

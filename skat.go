@@ -30,6 +30,8 @@ var oficialScoring = false
 var playChannel chan CardPlayed
 var trickChannel chan Card
 var winnerChannel chan string
+var trumpChannel chan string
+var scoreChannel chan Score
 
 func logToFile(format string, a ...interface{}) {
 	if fileLogFlag && logFile != nil {
@@ -129,20 +131,21 @@ type CardPlayed struct {
 func round(s *SuitState, players []PlayerI) []PlayerI {
 	card1 := play(s, players[0])
 	if html {
-		gameLog("Sending to channel...\n")
+		gameLog("Sending to channel...%v \n", card1)
 		playChannel <- CardPlayed{card1, 0}
 	}
 	time.Sleep(time.Duration(delayMs) * time.Millisecond)
 	s.follow = getSuit(s.trump, s.trick[0])
 	card2 := play(s, players[1])
 	if html {
-		gameLog("Sending to channel...")
+		gameLog("Sending to channel...%v \n", card2)
 
 		playChannel <- CardPlayed{card2, 1}
 	}
 	time.Sleep(time.Duration(delayMs) * time.Millisecond)
 	card3 := play(s, players[2])
 	if html {
+		gameLog("Sending to channel...%v \n", card3)
 		playChannel <- CardPlayed{card3, 2}
 	}
 	time.Sleep(time.Duration(delayMs) * time.Millisecond)
@@ -339,7 +342,6 @@ var grandGames = 0
 var state SuitState
 
 func initGame(players []PlayerI) {
-
 	for _, p := range players {
 		p.setScore(0)
 		p.setSchwarz(true)
@@ -386,6 +388,12 @@ func declareAndPlay(players []PlayerI) int {
 	}
 
 	state.trump = state.declarer.declareTrump()
+
+	if html {
+		gameLog("Sending trump %v", state.trump)
+		trumpChannel <- state.trump
+	}
+
 	if state.trump == GRAND {
 		fmt.Println(GRAND)
 		grandGames++
@@ -396,23 +404,7 @@ func declareAndPlay(players []PlayerI) int {
 
 	state.leader = players[0]
 	state.follow = ""
-	// DECLARE
-	// state = SuitState{
-	// 	declarer, opp1, opp2,
-	// 	trump,
-	// 	players[0],
-	// 	"",
-	// 	[]Card{},
-	// 	state.skat,
-	// 	allTrumps,
-	// 	[]Card{},
-	// 	map[string]bool{
-	// 		CLUBS: false,
-	// 		SPADE: false,
-	// 		HEART: false,
-	// 		CARO:  false,
-	// 	},
-	// }
+
 	players[0].setHand(sortSuit(state.trump, players[0].getHand()))
 	players[1].setHand(sortSuit(state.trump, players[1].getHand()))
 	players[2].setHand(sortSuit(state.trump, players[2].getHand()))
@@ -467,8 +459,20 @@ func declareAndPlay(players []PlayerI) int {
 		}
 
 	}
+	if html {
+		scoreChannel <- Score{
+			state.declarer.getScore(),
+			state.opp1.getScore() + state.opp2.getScore(),
+			gs,
+		}
+	}
 	return gs
+}
 
+type Score struct {
+	DeclarerPoints	int
+	DefenderPoints	int
+	GameScore	int
 }
 
 func game(players []PlayerI) int {
@@ -511,6 +515,8 @@ func rotatePlayers(players []PlayerI) []PlayerI {
 
 var gameIndex = 1
 var player1 PlayerI
+var player2 Player
+var player3 Player
 var html = false
 
 type V struct {
@@ -518,25 +524,15 @@ type V struct {
 
 var players []PlayerI
 
-func main() {
+func makeChannels() {
 	playChannel = make(chan CardPlayed)
 	trickChannel = make(chan Card)
 	winnerChannel = make(chan string)
-	auto := false
-	var randSeed int
-	flag.IntVar(&totalGames, "n", 21, "total number of games")
-	flag.IntVar(&randSeed, "r", 0, "Seed for random number generator. A value of 0 (default) uses the UNIX time as a seed.")
-	flag.BoolVar(&auto, "auto", false, "Runs with CPU players only")
-	flag.BoolVar(&fileLogFlag, "log", true, "Saves log in a file")
-	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:8080")
-	flag.Parse()
+	trumpChannel = make(chan string)
+	scoreChannel = make(chan Score)	
+}
 
-	if randSeed == 0 {
-		r = rand.New(rand.NewSource(time.Now().Unix()))
-	} else {
-		r = rand.New(rand.NewSource(int64(randSeed)))
-	}
-
+func makePlayers(auto, html bool) {
 	if auto {
 		player := makePlayer([]Card{})
 		player1 = &player
@@ -552,12 +548,34 @@ func main() {
 		gameLogFlag = true
 		delayMs = 500
 	}
-	player2 := makePlayer([]Card{})
-	player3 := makePlayer([]Card{})
+	player2 = makePlayer([]Card{})
+	player3 = makePlayer([]Card{})
 	player1.setName("You")
 	player2.setName("Bob")
 	player3.setName("Ana")
 	players = []PlayerI{player1, &player2, &player3}
+}
+
+func main() {
+
+	// COMMAND LINE FLAGS
+	auto := false
+	var randSeed int
+	flag.IntVar(&totalGames, "n", 21, "total number of games")
+	flag.IntVar(&randSeed, "r", 0, "Seed for random number generator. A value of 0 (default) uses the UNIX time as a seed.")
+	flag.BoolVar(&auto, "auto", false, "Runs with CPU players only")
+	flag.BoolVar(&fileLogFlag, "log", true, "Saves log in a file")
+	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:8080")
+	flag.Parse()
+
+	if randSeed == 0 {
+		r = rand.New(rand.NewSource(time.Now().Unix()))
+	} else {
+		r = rand.New(rand.NewSource(int64(randSeed)))
+	}
+
+	makePlayers(auto, html) 
+
 	rotateTimes := r.Intn(5)
 	for i := 0; i < rotateTimes; i++ {
 		players = rotatePlayers(players)
@@ -573,7 +591,10 @@ func main() {
 	}
 
 	if html {
-		htmlServe()
+		rt := startServer()
+		port := ":3000"
+		fmt.Println("Starting server at", port)
+		http.ListenAndServe(port, rt)		
 	}
 
 	passed := 0
@@ -620,7 +641,7 @@ func main() {
 	fmt.Printf("Grand games %d, perc: %5.2f", grandGames, 100*float64(grandGames)/float64(totalGames))
 }
 
-func htmlServe() {
+func startServer() *mux.Router {
 	rt := mux.NewRouter()
 	// Static route for CSS and JS files
 	rt.PathPrefix("/html/").Handler(http.StripPrefix("/html/", http.FileServer(http.Dir("html"))))
@@ -638,9 +659,14 @@ func htmlServe() {
 		gameLog("Starting a game\n")
 		currentBidIndex = -1
 		secondBidRound = false
+		makeChannels()
 
+// DELETE FOR
+		for i:=0; i<4; i++ {
 		players = rotatePlayers(players)
-		initGame(players)
+		initGame(players)			
+		}
+
 
 		position := 0
 		for i, p := range players {
@@ -653,14 +679,32 @@ func htmlServe() {
 		sendJson(w, data)
 	})
 
+	rt.HandleFunc("/getHand/{pl}", func(w http.ResponseWriter, r *http.Request) {
+		pl, err := strconv.ParseInt(mux.Vars(r)["pl"], 10, 64)
+		if err != nil {
+			gameLog("Invalid index")
+			http.Error(w, "Invalid index", http.StatusInternalServerError)			
+		}
+		pi := int(pl)
+		if pi >= 0 && pi < len(players) {
+			data := players[pi].getHand()
+			sendJson(w, data)		
+		} else {
+			gameLog("Invalid index")
+			http.Error(w, "Invalid index", http.StatusInternalServerError)
+		}
+	})
+
 	rt.HandleFunc("/bid/{pl}", func(w http.ResponseWriter, r *http.Request) {
 		pl, _ := strconv.ParseInt(mux.Vars(r)["pl"], 10, 64)
+		gameLog("currentBidIndex %d\n", currentBidIndex)
 
 		if pl == 2 {
 			secondBidRound = true
 		}
 		var data BidData
 		if (pl == 1 && !secondBidRound) || pl == 2 { // SPEAKER
+			gameLog("SPEAKER\n")
 			if players[pl].accepts(currentBidIndex + 1) {
 				currentBidIndex++
 				debugTacticsLog("Player %s: %d\n", players[pl].getName(), bids[currentBidIndex])
@@ -670,6 +714,8 @@ func htmlServe() {
 				data = BidData{bids[currentBidIndex+1], false}
 			}
 		} else { // LISTENER
+			gameLog("LISTENER\n")
+
 			if currentBidIndex == -1 {
 				currentBidIndex++
 			}
@@ -681,24 +727,32 @@ func htmlServe() {
 				data = BidData{bids[currentBidIndex], false}
 			}
 		}
-		time.Sleep(time.Duration(delayMs) * time.Millisecond)
-		time.Sleep(time.Duration(delayMs) * time.Millisecond)
+		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
+		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
 
 		sendJson(w, data)
 	})
 
 	rt.HandleFunc("/getbidvalue/{pl}", func(w http.ResponseWriter, r *http.Request) {
 		pl, _ := strconv.ParseInt(mux.Vars(r)["pl"], 10, 64)
+		
+		if pl == 2 {
+			secondBidRound = true
+		}
+
 		bidvalue := currentBidIndex
 		if pl == 2 || (pl == 1 && !secondBidRound) {
 			bidvalue = currentBidIndex + 1
+			currentBidIndex++
 		}
 		if currentBidIndex == -1 {
 			bidvalue = currentBidIndex + 1
+			currentBidIndex++
 		}
+		gameLog("BIDVALUE: %v\n", bids[bidvalue])
 		data := BidData{bids[bidvalue], true} // boolean value is ignored
-		time.Sleep(time.Duration(delayMs) * time.Millisecond)
-		time.Sleep(time.Duration(delayMs) * time.Millisecond)
+		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
+		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
 
 		sendJson(w, data)
 	})
@@ -723,8 +777,6 @@ func htmlServe() {
 		players[pl].setDeclaredBid(int(bid))
 		gameLog("Declarer: %s with Bid %d\n", players[pl].getName(), bid)
 
-
-
 		if state.declarer == players[0] {
 			state.opp1, state.opp2 = players[1], players[2]
 		}
@@ -737,16 +789,12 @@ func htmlServe() {
 		state.opp1.setPartner(state.opp2)
 
 		go declareAndPlay(players) // end of goroutine
-
-		// END NEED CHANGES
-
 	})
 
 	rt.HandleFunc("/getCardPlayed", func(w http.ResponseWriter, r *http.Request) {
-		gameLog("Wating for card...")
-
+		gameLog("Waiting for card...")
 		cp := <-playChannel
-		gameLog("Sending Card-Player %v", cp)
+		gameLog("sending Card-Player %v\n", cp)
 
 		//time.Sleep(time.Duration(delayMs) * time.Millisecond)
 		//time.Sleep(time.Duration(delayMs) * time.Millisecond)
@@ -754,12 +802,23 @@ func htmlServe() {
 		sendJson(w, cp)
 	})
 
-	rt.HandleFunc("/playCard/{suit}/{rank}", func(w http.ResponseWriter, r *http.Request) {
+	rt.HandleFunc("/playCard/{pl}/{suit}/{rank}", func(w http.ResponseWriter, r *http.Request) {
+		pl, err := strconv.ParseInt(mux.Vars(r)["pl"], 10, 64)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}		
 		suit := mux.Vars(r)["suit"]
 		rank := mux.Vars(r)["rank"]
 		card := Card{suit, rank}
-		gameLog("Sending %v to trickChannel\n", card)
-		trickChannel <- card
+		gameLog("Player %d played card %v \n", pl, card)
+		if state.valid(players[pl].getHand(), card) {
+			gameLog("Sending %v to trickChannel\n", card)
+			trickChannel <- card
+		} else {
+			gameLog("Invalid card")
+			http.Error(w, "Invalid Card", http.StatusInternalServerError)
+		}
 	})	
 
 	rt.HandleFunc("/getTrickWinner", func(w http.ResponseWriter, r *http.Request) {
@@ -768,16 +827,25 @@ func htmlServe() {
 		winnerName := <-winnerChannel
 		gameLog("Sending winner %v", winnerName)
 
-		time.Sleep(time.Duration(delayMs) * time.Millisecond)
-		time.Sleep(time.Duration(delayMs) * time.Millisecond)
-		time.Sleep(time.Duration(delayMs) * time.Millisecond)
+		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
+		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
+		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
 
 		sendJson(w, winnerName)
 	})
 
-	port := ":3000"
-	fmt.Println("Starting server at", port)
-	http.ListenAndServe(port, rt)
+	rt.HandleFunc("/getTrump", func(w http.ResponseWriter, r *http.Request) {
+		gameLog("Getting trump...")
+		sendJson(w, <-trumpChannel)
+	})
+
+	rt.HandleFunc("/getScore", func(w http.ResponseWriter, r *http.Request) {
+		gameLog("Getting score...")
+		sendJson(w, <-scoreChannel)
+	})
+
+	return rt
+
 }
 
 func sendJson(w http.ResponseWriter, data interface{}) {
