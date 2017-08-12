@@ -53,7 +53,7 @@
 			    text-align: center;
 			}			
 			.card {
-				width: 100px;
+				width: 130px;
 				height: auto;
 				transition: 0.3s ease-in-out;
 				border-radius: 0px;
@@ -88,6 +88,7 @@
 				top: 50px;
 				left:240px;
 				transition: 1s ease-in-out;
+				transform: scale(0.8);
 			}
 
 			#played1 {
@@ -120,6 +121,28 @@
 			    padding: 20px;
 			    visibility: hidden;
 			}
+			#picking {
+				margin: auto;
+    			top: 80px;
+    			position: absolute;
+    			left: 120px;
+			}
+			#pickBtn {
+			    position: relative;
+			    left: 110px;
+			    top: 50px;
+			}
+			#handBtn {
+    			position: relative;
+    			left: -120px;
+    			top: 100px;
+			}
+			#declare {
+			    position: absolute;
+			    top: 140px;
+			}			
+
+
 		</style>
 </head>
 <body>
@@ -152,6 +175,20 @@
 	<div id="played"></div>
 	<div id="cards"></div>
 	<div id="score"></div>
+
+	<div id="picking" style="display: none;">
+		<button id="pickBtn" class="btn">Pick up skat</button>
+		<button id="handBtn" class="btn">Play Hand Game</button>
+	</div>
+	<div id="declare" style="display: none;">
+		<button id="clubs" class="btn">CLUBS</button>
+		<button id="spade" class="btn">SPADES</button>
+		<button id="heart" class="btn">HEARTS</button>
+		<button id="caro" class="btn">DIAMONDS</button>
+		<button id="grand" class="btn">Grand</button>
+		<button id="null" class="btn">Null</button>
+	</div>
+
 <script type="text/javascript" src="/html/jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
 
@@ -177,12 +214,14 @@
 	var biddiv = ["#bid1", "#bid2", "#bid3"]
 	var playerIndex= [1,2,3]
 
-	var gamePosition = -1
+	var gamePosition = -1;
 	var secondRound = false;
-	var parsedBid = ""
-	var acceptedBid = ""
-	var playerHand= []
-	var declarer =  -1
+	var parsedBid = "";
+	var acceptedBid = "";
+	var playerHand= [];
+	var declarer =  -1;
+	var lostNull = false;
+	var trump = "";
 
 	function handleInitData(rawData) {
 		var parsed = JSON.parse(rawData);
@@ -213,12 +252,15 @@
 			$("#bidn2").removeClass("dealer");
 			$("#bidn3").addClass("dealer");
 		}				
-		passed = [false, false, false]
+		passed = [false, false, false];
 		secondRound = false;
-		parsedBid = ""
-		acceptedBid = ""
-		trickRound = 0
-		declarer = -1
+		parsedBid = "";
+		acceptedBid = "";
+		trickRound = 0;
+		declarer = -1;
+		lostNull = false;
+		trump = "";		
+
 		for (var i=1; i <=3 ; i++) {
 			var d = document.getElementById("bidn" + i)
 			d.style["background"] = "yellow"			
@@ -226,15 +268,105 @@
 		MidVsFore();
 	}
 
+	function getPickUp() {
+		return new Promise(function(resolve) {
+			$("#picking").show();
+			var pickBtn = document.getElementById("pickBtn")
+			var handBtn = document.getElementById("handBtn")
+			pickBtn.addEventListener('click', function() {
+				$("#picking").hide();
+				resolve("pick")
+			}) 
+			handBtn.addEventListener('click', function() {
+				$("#picking").hide();
+				resolve("hand")
+			}) 	
+		});
+	}
+
+	function getDeclare() {
+		return new Promise(function(resolve) {
+			$("#declare").show();
+			var clubs = document.getElementById("clubs")
+			var spade = document.getElementById("spade")
+			var heart = document.getElementById("heart")
+			var caro = document.getElementById("caro")
+			var grand = document.getElementById("grand")
+			var nullGame = document.getElementById("null")
+			clubs.addEventListener('click', function() {
+				$("#declare").hide();
+				resolve("CLUBS")
+			}) 
+			spade.addEventListener('click', function() {
+				$("#declare").hide();
+				resolve("SPADE")
+			}) 	
+			heart.addEventListener('click', function() {
+				$("#declare").hide();
+				resolve("HEART")
+			}) 
+			caro.addEventListener('click', function() {
+				$("#declare").hide();
+				resolve("CARO")
+			}) 							
+			grand.addEventListener('click', function() {
+				$("#declare").hide();
+				resolve("Grand")
+			}) 							
+			nullGame.addEventListener('click', function() {
+				$("#declare").hide();
+				resolve("Null")
+			}) 							
+		});
+	}
+
+	function pickUpAndDeclare(player) {
+		getPickUp()
+		.then(function(response) {
+			console.log(response);
+			$.ajax({
+				url: "/pickUp/" + response,
+				method: "GET",
+				success: function(rawdata) {
+					console.log("Success")
+				},
+			})
+		})
+		.then(getDeclare)
+		.then(function(response) {
+			console.log(response);
+			$.ajax({
+				url: "/declare/" + response,
+				method: "GET",
+				success: function(rawdata) {
+					console.log("Success")
+				},
+			})
+		})		
+		.then(function(response) {
+			continueWithTrump(player)
+		});
+	}
+
 	function pickUpSkat(player) {
-		console.log("PICKING UP...")
+		console.log("PICKING UP...");
+		if (player != gamePosition) {
+			console.log("Other player")
+			continueWithTrump(player)
+		} else {
+			pickUpAndDeclare(player)
+		}
+	}
+
+	function continueWithTrump(player) {
+		console.log("Declare game")
 		Promise.resolve($.ajax({
 				url: "/getTrump",
 				method: "GET",
 				success: function(rawdata) {
 					var parsed = JSON.parse(rawdata);
 					if (!parsed) return;	
-					var trump = parsed	
+					trump = parsed	
 					console.log("TRUMP: " + trump)
 					$(biddiv[player]).append($("<div>" + trump + "</div>"));					
 				}
@@ -253,7 +385,6 @@
 				$("#played").empty();
 				trick();				
 			})
-
 		})	
 	}
 
@@ -261,7 +392,7 @@
 	var trickRound = 0
 
 	function gameFinished() {
-		return trickRound > 30
+		return trickRound > 30 || lostNull
 	}
 
 	function getScore() {
@@ -273,7 +404,12 @@
 				if (!parsed) return;
 				var score = document.getElementById("score")
 				score.style["visibility"] = "visible"
-				score.innerHTML = parsed.DeclarerPoints + " - " + parsed.DefenderPoints + ", Score: " + parsed.GameScore;
+				if (lostNull) {
+					score.innerHTML = "Score: " + parsed.GameScore;
+
+				} else {
+					score.innerHTML = parsed.DeclarerPoints + " - " + parsed.DefenderPoints + ", Score: " + parsed.GameScore;
+				}
 			},
 		})	
 	}
@@ -372,6 +508,9 @@
 						el.style["transform"] = "rotate(0deg) translate(150px,30px) scale(0.4)";	
 					}
 					else {
+						if (trump == "Null") {
+							lostNull = true;
+						}
 						playerIndex = [3, 1, 2];	
 						el.style["transform"] = "rotate(0deg) translate(0px,150px) scale(0.4)";	
 					}
@@ -676,27 +815,26 @@
 	var initRotate = -15
 	var initTop = -10
 
-	for(var i=0; i < 12; i++) {
-		card_left[i] = 0 + i * 50
-		card_top[i] = 0 + i * initTop
-		card_rotate[i] = "rotate("+ initRotate +"deg)"
-		initRotate += 3
-		initTop += 1
-	}
-
+	// for(var i=0; i < 12; i++) {
+	// 	card_left[i] = 0 + i * 50
+	// 	card_top[i] = 0 + i * initTop
+	// 	card_rotate[i] = "rotate("+ initRotate +"deg)"
+	// 	initRotate += 3
+	// 	initTop += 1
+	// }
 
 	for(var i=0; i < 6; i++) {
 		middleLeft = 200
 		leftStep = 35
 		middleTop = 0
-		topStep = 1
+		topStep = 3
 		rotateStep = 4
 		card_left[5-i] = middleLeft - i * leftStep
 		card_left[6+i] = middleLeft + (i+1) * leftStep
-		card_top[5-i] = middleTop + i * topStep
-		card_top[6+i] = middleTop + i * topStep
-		card_rotate[5-i] = "rotate("+ (-rotateStep - i *rotateStep) +"deg)"
-		card_rotate[6+i] = "rotate("+ ( i * rotateStep) +"deg)"
+		card_top[5-i] = Math.floor(middleTop + i * (topStep + i/2))
+		card_top[6+i] = Math.floor(middleTop + i * (topStep + i/2))
+		card_rotate[5-i] = "rotate("+ (-rotateStep/2 - i *rotateStep) +"deg)"
+		card_rotate[6+i] = "rotate("+ (rotateStep/2 + i * rotateStep) +"deg)"
 	}
 
 	function mo(id) {

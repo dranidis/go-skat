@@ -1,9 +1,7 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 )
 
 type HtmlPlayer struct {
@@ -32,48 +30,7 @@ func (p *HtmlPlayer) accepts(bidIndex int) bool {
 }
 
 func (p *HtmlPlayer) declareTrump() string {
-	fmt.Printf("HAND: %v\n", p.getHand())
-	for {
-		fmt.Printf("TRUMP? (1 for CLUBS, 2 for SPADE, 3 for HEART, 4 for CARO, g for GRAND, n for NULL) ")
-		reader := bufio.NewReader(os.Stdin)
-		char, _, err := reader.ReadRune()
-
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-
-		switch char {
-		case '1':
-			return CLUBS
-		case '2':
-			return SPADE
-		case '3':
-			return HEART
-		case '4':
-			return CARO
-		case 'G':
-			return GRAND
-		case 'g':
-			return GRAND
-		case 'n':
-			if p.declaredBid > 23 {
-				if p.handGame {
-					if p.declaredBid > 35 {
-						gameLog("Your bid %s is higher than Null Hand 35\n", p.declaredBid)
-						continue
-					}
-				}
-				gameLog("Your bid %s is higher than Null 23\n", p.declaredBid)
-				continue
-			}
-			return NULL
-		default:
-			continue
-		}
-	}
-
-	return mostCardsSuit(p.getHand())
+	return <- declareChannel
 }
 
 func (p *HtmlPlayer) calculateHighestBid() int {
@@ -135,7 +92,9 @@ func (p *HtmlPlayer) discardInSkat(skat []Card) {
 func (p *HtmlPlayer) pickUpSkat(skat []Card) bool {
 	gameLog("HAND: %v", p.getHand())
 
-	if !getYes(" Pick up SKAT? (y/n/q) ") {
+	pickUp := <- pickUpChannel
+	if pickUp == "hand" {
+		gameLog("HAND game\n")
 		p.handGame = true
 		return false
 	}

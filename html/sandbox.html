@@ -1,7 +1,36 @@
 <html>
 <head></head>
-<body></body>
+<body>
+	
+	<div id="picking" style="display: none;">
+		<button id="pickBtn" class="btn">Pick up skat</button>
+		<button id="handBtn" class="btn">Play Hand Game</button>
+	</div>
+
+</body>
+
+<script type="text/javascript" src="/html/jquery-3.2.1.min.js"></script>
+
 <script type="text/javascript">
+
+	function getInput() {
+		return new Promise(function(resolve) {
+			$("#picking").show();
+			var pickBtn = document.getElementById("pickBtn")
+			var handBtn = document.getElementById("handBtn")
+			pickBtn.innerHTML = "Pick up skat";
+			handBtn.innerHTML = "Play Hand Game";
+			pickBtn.addEventListener('click', function() {
+				$("#picking").hide();
+				resolve("PICK")
+			}) 
+			handBtn.addEventListener('click', function() {
+				$("#picking").hide();
+				resolve("HAND")
+			}) 	
+		});
+	}
+
 	function delay(t) {
 		return new Promise(function(resolve) {
 			console.log("Starting timer");
@@ -27,7 +56,7 @@
 		}
 	}
 
-	function main() {
+	function mainDelay() {
 		console.log("MAIN")
 		delayfn(1000)()// calling the function to return the promise
 		.then(messagefn("START"))
@@ -35,6 +64,18 @@
 		.then(messagefn("MID"))
 		.then(delayfn(3000)) // passing the function to be called BY then
 		.then(messagefn("END"))
+	}
+
+	function main() {
+		getInput()
+		.then(function(response) {
+			console.log(response);
+		})
+		.then(delayfn(2000))
+		.then(getInput)
+		.then(function(response) {
+			console.log(response);
+		})
 	}
 
 	main()

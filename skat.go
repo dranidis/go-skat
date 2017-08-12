@@ -32,6 +32,8 @@ var trickChannel chan Card
 var winnerChannel chan string
 var trumpChannel chan string
 var scoreChannel chan Score
+var pickUpChannel chan string
+var declareChannel chan string
 
 func logToFile(format string, a ...interface{}) {
 	if fileLogFlag && logFile != nil {
@@ -530,6 +532,8 @@ func makeChannels() {
 	winnerChannel = make(chan string)
 	trumpChannel = make(chan string)
 	scoreChannel = make(chan Score)	
+	pickUpChannel = make(chan string)
+	declareChannel = make(chan string)
 }
 
 func makePlayers(auto, html bool) {
@@ -661,12 +665,8 @@ func startServer() *mux.Router {
 		secondBidRound = false
 		makeChannels()
 
-// DELETE FOR
-		for i:=0; i<4; i++ {
 		players = rotatePlayers(players)
 		initGame(players)			
-		}
-
 
 		position := 0
 		for i, p := range players {
@@ -843,6 +843,20 @@ func startServer() *mux.Router {
 		gameLog("Getting score...")
 		sendJson(w, <-scoreChannel)
 	})
+
+	rt.HandleFunc("/pickUp/{b}", func(w http.ResponseWriter, r *http.Request) {
+		b := mux.Vars(r)["b"]
+		if b != "pick" && b != "hand" {
+			http.Error(w, "Expected skat/hand", http.StatusInternalServerError)
+			return
+		}
+		pickUpChannel <- b	
+	})
+
+	rt.HandleFunc("/declare/{b}", func(w http.ResponseWriter, r *http.Request) {
+		b := mux.Vars(r)["b"]
+		declareChannel <- b	
+	})	
 
 	return rt
 
