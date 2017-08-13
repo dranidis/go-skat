@@ -32,7 +32,7 @@ type PlayerI interface {
 	wonAsDefenders()
 	getWonAsDefenders() int
 	setDeclaredBid(int)
-	getDeclaredBid() int 
+	getDeclaredBid() int
 	setPartner(p PlayerI)
 }
 

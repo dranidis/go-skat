@@ -1,12 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"os"
-	"testing"
 	"net/http"
 	"net/http/httptest"
-	"encoding/json"
+	"os"
+	"testing"
 )
 
 func TestMain(m *testing.M) {
@@ -2997,22 +2997,22 @@ func TestHTMLBid1(t *testing.T) {
 
 	// req, _ := http.NewRequest("GET", "/start", nil)
 	rr := httptest.NewRecorder()
-	// router.ServeHTTP(rr, req)	
+	// router.ServeHTTP(rr, req)
 
-// MIDDLEHAND 18
+	// MIDDLEHAND 18
 	req, _ := http.NewRequest("GET", "/getbidvalue/1", nil)
 	rr = httptest.NewRecorder()
-	router.ServeHTTP(rr, req)	
+	router.ServeHTTP(rr, req)
 	json.Unmarshal(rr.Body.Bytes(), &m)
 	exp := 18
 	act := m.Bid
 	if act != exp {
 		t.Errorf("Error bid, exp: %v, found %v", exp, act)
 	}
-//FOREHAND Yes
+	//FOREHAND Yes
 	req, _ = http.NewRequest("GET", "/bid/0", nil)
 	rr = httptest.NewRecorder()
-	router.ServeHTTP(rr, req)	
+	router.ServeHTTP(rr, req)
 	json.Unmarshal(rr.Body.Bytes(), &m)
 	exp = 18
 	act = m.Bid
@@ -3025,10 +3025,10 @@ func TestHTMLBid1(t *testing.T) {
 		t.Errorf("Error bid, exp: %v, found %v", expB, actB)
 	}
 
-// MIDDLEHAND 20
+	// MIDDLEHAND 20
 	req, _ = http.NewRequest("GET", "/getbidvalue/1", nil)
 	rr = httptest.NewRecorder()
-	router.ServeHTTP(rr, req)	
+	router.ServeHTTP(rr, req)
 	json.Unmarshal(rr.Body.Bytes(), &m)
 	exp = 20
 	act = m.Bid
@@ -3036,10 +3036,10 @@ func TestHTMLBid1(t *testing.T) {
 		t.Errorf("Error bid, exp: %v, found %v", exp, act)
 	}
 
-// FOREHAND (20) Yes
+	// FOREHAND (20) Yes
 	req, _ = http.NewRequest("GET", "/bid/0", nil)
 	rr = httptest.NewRecorder()
-	router.ServeHTTP(rr, req)	
+	router.ServeHTTP(rr, req)
 	json.Unmarshal(rr.Body.Bytes(), &m)
 	exp = 20
 	act = m.Bid
@@ -3052,7 +3052,6 @@ func TestHTMLBid1(t *testing.T) {
 		t.Errorf("Error bid, exp: %v, found %v", expB, actB)
 	}
 }
-
 
 func TestHTMLBid2(t *testing.T) {
 	router := startServer()
@@ -3076,12 +3075,12 @@ func TestHTMLBid2(t *testing.T) {
 
 	// req, _ := http.NewRequest("GET", "/start", nil)
 	rr := httptest.NewRecorder()
-	// router.ServeHTTP(rr, req)	
+	// router.ServeHTTP(rr, req)
 
-// MIDDLEHAND 18
+	// MIDDLEHAND 18
 	req, _ := http.NewRequest("GET", "/bid/1", nil)
 	rr = httptest.NewRecorder()
-	router.ServeHTTP(rr, req)	
+	router.ServeHTTP(rr, req)
 	json.Unmarshal(rr.Body.Bytes(), &m)
 	exp := 18
 	act := m.Bid
@@ -3093,10 +3092,10 @@ func TestHTMLBid2(t *testing.T) {
 	if actB != expB {
 		t.Errorf("Error bid, exp: %v, found %v", expB, actB)
 	}
-//FOREHAND No
+	//FOREHAND No
 	req, _ = http.NewRequest("GET", "/bid/0", nil)
 	rr = httptest.NewRecorder()
-	router.ServeHTTP(rr, req)	
+	router.ServeHTTP(rr, req)
 	json.Unmarshal(rr.Body.Bytes(), &m)
 	exp = 18
 	act = m.Bid
@@ -3109,10 +3108,10 @@ func TestHTMLBid2(t *testing.T) {
 		t.Errorf("Error bid, exp: %v, found %v", expB, actB)
 	}
 
-// BACKHAND 20
+	// BACKHAND 20
 	req, _ = http.NewRequest("GET", "/getbidvalue/2", nil)
 	rr = httptest.NewRecorder()
-	router.ServeHTTP(rr, req)	
+	router.ServeHTTP(rr, req)
 	json.Unmarshal(rr.Body.Bytes(), &m)
 	exp = 20
 	act = m.Bid
@@ -3120,10 +3119,10 @@ func TestHTMLBid2(t *testing.T) {
 		t.Errorf("Error bid, exp: %v, found %v", exp, act)
 	}
 
-// MIDDLEHAND (20) Yes
+	// MIDDLEHAND (20) Yes
 	req, _ = http.NewRequest("GET", "/bid/1", nil)
 	rr = httptest.NewRecorder()
-	router.ServeHTTP(rr, req)	
+	router.ServeHTTP(rr, req)
 	json.Unmarshal(rr.Body.Bytes(), &m)
 	exp = 20
 	act = m.Bid

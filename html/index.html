@@ -18,7 +18,8 @@
 			    width: 150px;
 			    height: auto;
 			    text-align: center;
-				border-radius: 200px;
+			    border-radius: 40px;
+			    padding: 10px;			
 			}
 			#bidn2 {
 			    position: absolute;
@@ -29,7 +30,8 @@
 			    width: 150px;
 			    height: auto;
 			    text-align: center;
-				border-radius: 200px;
+			    border-radius: 40px;
+			    padding: 10px;			
 			}
 			#bidn3 {
 			    position: absolute;
@@ -40,8 +42,9 @@
 			    width: 150px;
 			    height: auto;
 			    text-align: center;
-				border-radius: 200px;
-			}			
+			    border-radius: 40px;
+			    padding: 10px;
+    			}			
 			#bidding {
 			    position: absolute;
 			    top: 340px;
@@ -110,9 +113,9 @@
 				transform: rotate(11deg);
 			}			
 			#score {
-			    position: absolute;
+			    position: relative;
 			    top: 140px;
-			    left: 200px;
+			    /*left: 200px;*/
 			    font-size: xx-large;
 			    font-weight: bolder;
 			    color: white;
@@ -120,6 +123,7 @@
 			    border-radius: 10px;
 			    padding: 20px;
 			    visibility: hidden;
+    			text-align: center;		    
 			}
 			#picking {
 				margin: auto;
@@ -141,7 +145,11 @@
 			    position: absolute;
 			    top: 140px;
 			}			
-
+			#discardBtn {
+				position: absolute;
+    			top: 600px;
+    			left: 200px;
+    		}
 
 		</style>
 </head>
@@ -155,17 +163,17 @@
 		<button id="passBtn" class="btn">Pass</button>
 	</div>
 	<div id="bidn1" class="bidn">
-		<div class="name">Bob</div>
+		<div id="name1" class="name">Bob</div>
 		<div id="bid1"></div>
 	</div>
 
 	<div id="bidn2">
-		<div class="name">Ana</div>
+		<div id="name2" class="name">Ana</div>
 		<div id="bid2"></div>
 	</div>
 
 	<div id="bidn3">	
-		<div class="name">You</div>
+		<div id="name3" class="name">You</div>
 		<div id="bid3"></div>
 	</div>
 
@@ -187,6 +195,9 @@
 		<button id="caro" class="btn">DIAMONDS</button>
 		<button id="grand" class="btn">Grand</button>
 		<button id="null" class="btn">Null</button>
+	</div>
+	<div id="discard" style="display: none;">
+		<button id="discardBtn" class="btn">Discard to skat</button>
 	</div>
 
 <script type="text/javascript" src="/html/jquery-3.2.1.min.js"></script>
@@ -226,7 +237,10 @@
 	function handleInitData(rawData) {
 		var parsed = JSON.parse(rawData);
 		if (!parsed) return;
-		createImgCards(parsed.Hand);
+		setPlayerHandFromServer(parsed.Hand);
+		$("#name1").html("Bob (" + parsed.Score2 + ")");
+		$("#name2").html("Ana (" + parsed.Score3 + ")")
+		$("#name3").html("You (" + parsed.Score1 + ")")
 
 		gamePosition = parsed.Position
 		console.log("Position "+ gamePosition);
@@ -260,6 +274,7 @@
 		declarer = -1;
 		lostNull = false;
 		trump = "";		
+		selectedToDiscard = []
 
 		for (var i=1; i <=3 ; i++) {
 			var d = document.getElementById("bidn" + i)
@@ -284,7 +299,19 @@
 		});
 	}
 
-	function getDeclare() {
+	function getHandFromServer() {
+		return Promise.resolve($.ajax({
+			url: "/getHand/" + gamePosition,
+			method: "GET",
+			success: function(rawdata) {
+				var parsed = JSON.parse(rawdata);
+				if (!parsed) return;	
+				setPlayerHandFromServer(parsed);
+			}
+		}));		
+	}
+
+	function chooseGame() {
 		return new Promise(function(resolve) {
 			$("#declare").show();
 			var clubs = document.getElementById("clubs")
@@ -320,9 +347,50 @@
 		});
 	}
 
+	function chooseCardsToDiscard() {
+		return new Promise(function(resolve) {
+			$("#discard").show();
+
+			discardCardsAddEventListeners();
+
+			var discardBtn = document.getElementById("discardBtn")
+			discardBtn.addEventListener('click', function() {
+				if (selectedToDiscard.length != 2) 
+					return;
+				$("#discard").hide();
+				var cardsToDiscard = [];
+				cardsToDiscard.push(selectedToDiscard[0]);
+				cardsToDiscard.push(selectedToDiscard[1]);
+
+				youDiscardCard(selectedToDiscard[0])
+				.then(function() {
+					youDiscardCard(selectedToDiscard[1])
+				})
+				.then(function() {
+					resolve(cardsToDiscard);
+				})
+			}) 
+		});
+	}
+
+	function youDiscardCard(card) {
+		return Promise.resolve(
+			$.ajax({
+				url: "/discardCard/" + gamePosition + "/" + card.suit + "/" + card.rank,
+				method: "GET",
+				success: function(rawdata) {},
+			})
+		)		
+	}
+
 	function discardInSkat(player) {
 		console.log("DISCARD IN SKAT");
-		declareGame(player);
+		getHandFromServer()
+		.then(chooseCardsToDiscard)
+		.then(getHandFromServer)
+		.then(function(response) {
+			declareGame(player)
+		});
 	}
 
 	function pickUpAndDeclare(player) {
@@ -347,7 +415,7 @@
 
 	function declareGame(player) {	
 		console.log("DECLARE GAME...")
-		getDeclare()
+		chooseGame()
 		.then(function(response) {
 			console.log(response);
 			$.ajax({
@@ -386,16 +454,8 @@
 					$(biddiv[player]).append($("<div>" + trump + "</div>"));					
 				}
 		})).then(function(response) {
-			Promise.resolve($.ajax({
-				url: "/getHand/" + gamePosition,
-				method: "GET",
-				success: function(rawdata) {
-					var parsed = JSON.parse(rawdata);
-					if (!parsed) return;	
-					console.log("Hand :" + parsed)
-					createImgCards(parsed);
-				}
-			})).then(function(response) {
+			getHandFromServer()
+			.then(function(response) {
 				cardsPlayed = 0;
 				$("#played").empty();
 				trick();				
@@ -406,10 +466,6 @@
 	var cardsPlayed = 0
 	var trickRound = 0
 
-	function gameFinished() {
-		return trickRound > 30 || lostNull
-	}
-
 	function getScore() {
 		$.ajax({
 			url: "/getScore",
@@ -419,76 +475,74 @@
 				if (!parsed) return;
 				var score = document.getElementById("score")
 				score.style["visibility"] = "visible"
-				if (lostNull) {
-					score.innerHTML = "Score: " + parsed.GameScore;
-
-				} else {
-					score.innerHTML = parsed.DeclarerPoints + " - " + parsed.DefenderPoints + ", Score: " + parsed.GameScore;
-				}
+				var text = parsed.Declarer;
+				if (parsed.GameScore < 0) 
+					text += " lost!"
+				else 
+					text += " won!"
+				text += "<br/>"
+				if (trump != "Null") 
+					text += parsed.DeclarerPoints + " - " + parsed.DefenderPoints + "<br/>"
+				text += "Score: " + parsed.GameScore;
+				score.innerHTML = text;
 			},
 		})	
 	}
 
-	function trick() {
-			trickRound++
-			if (gameFinished()) {
-				console.log("Game finished");
-				getScore();
-				trickRound = 0;
-				return
-			}
-			console.log("Sending getCardPlayed to server, cardsPlayed:" + cardsPlayed)
-			Promise.resolve($.ajax({
-				url: "/getCardPlayed",
-				method: "GET",
-				success: function(data) {
-					playCard(data);
-				},
-			}))
-			.then(nextTrick);
+	function gameFinished() {
+		return trickRound > 10 || lostNull
 	}
 
-	function nextTrick(response) {
-			cardsPlayed++;
-			if (cardsPlayed < 3 ) {
-				var el = document.getElementById("played");
-				el.style["transition"] = "1s ease-in-out";
-				trick();
-			} else {
-				getTrickWinner()
-				//.then(animate)
-				.then(delayfn(2000))
-				.then(function() {
-				//	console.log("TimeOut ended")
-					var el = document.getElementById("played");
-					el.style["visibility"] = "hidden";
-					el.style["transition"] = "0s";
-				})
-				.then(delayfn(2000))
-				.then(function (response) {
-				//	console.log("AFTER TIMEOUT")
-					$("#played").empty();
-					showPlayed()
-					cardsPlayed = 0;
-					trick();
-				})
-			} 
-					
+	function getCardFromServer() {
+		return Promise.resolve($.ajax({
+			url: "/getCardPlayed",
+			method: "GET",
+			success: function(data) {
+				playCard(data);
+			},
+		}))
+	}
+
+	function trick() {
+		trickRound++
+		if (gameFinished()) {
+			console.log("Game finished");
+			getScore();
+			trickRound = 0;
+			return
+		}
+		getCardFromServer()
+		.then(function () {
+			var el = document.getElementById("played");
+			el.style["transition"] = "1s ease-in-out";
+		})
+		.then(getCardFromServer)
+		.then(getCardFromServer)
+		.then(getTrickWinner)
+		.then(delayfn(1000))
+		.then(function() {
+			var el = document.getElementById("played");
+			el.style["visibility"] = "hidden";
+			el.style["transition"] = "0s";
+		})
+		.then(delayfn(1000))
+		.then(function (response) {
+			$("#played").empty();
+			showPlayed();
+			trick();
+		});
 	}
 
 	function delay(t) {
 		return new Promise(function(resolve) {
-			// console.log("Starting timer");
 			setTimeout(function() {
-				// console.log("TIMED OUT")
 				resolve("OVER")
 			}, t);
 		});
 	}
 
+	// to be used after a then.
 	function delayfn(t) {
-		// code that it is not within the function is executed immediately. Not after THEN
-		// console.log("delayfn Called " + t) 
 		return function() {
 			return delay(t);
 		}
@@ -520,14 +574,14 @@
 					}
 					else if (winner == "Ana") {
 						playerIndex = [2, 3, 1];
-						el.style["transform"] = "rotate(0deg) translate(150px,30px) scale(0.4)";	
+						el.style["transform"] = "rotate(0deg) translate(250px,30px) scale(0.4)";	
 					}
 					else {
 						if (trump == "Null") {
 							lostNull = true;
 						}
 						playerIndex = [3, 1, 2];	
-						el.style["transform"] = "rotate(0deg) translate(0px,150px) scale(0.4)";	
+						el.style["transform"] = "rotate(0deg) translate(40px,150px) scale(0.4)";	
 					}
 				}
 			}))		
@@ -797,15 +851,106 @@
 //
 // CARDS
 //
-	function createImgCards(hand) {
+
+
+	var selectedToDiscard = [];
+
+	function discardCardsAddEventListeners() {
+		createImgElements(playerHand);
+
+		var cards = document.getElementById("cards").children;
+		for (i = 0; i < cards.length; i++) {
+			var element = cards[i]
+			cards[i].addEventListener('click', (function(i) {
+				return function() {
+					console.log("Index: " + i);
+					console.log("discardCardClickListener DISCARD : " + cardString(playerHand[i]));
+					var index = selectedToDiscard.indexOf(playerHand[i])
+					console.log("FOUND index: " + index);
+					if (index == -1) {
+						selectedToDiscard.push(playerHand[i]);
+						this.style["top"] = "-50px";
+					}
+					else {
+					 	selectedToDiscard.splice(index, 1);
+						this.style["top"] = card_top[offset + i] ;
+					}
+					console.log(cardListString(selectedToDiscard));
+				}				
+			})(i) ); 
+		} 
+	}
+
+	function cardString(c) {
+		return c.suit + "_" + c.rank;
+	}
+
+	function cardListString(cs) {
+		s = "--> / ";
+		cs.forEach(function(c) {
+			s = s + cardString(c) + " / "; 
+		})
+		return s
+	}
+
+	function cardsAddEventListeners() {
+		var cards = document.getElementById("cards").children;
+		for (i = 0; i < cards.length; i++) {
+			cards[i].addEventListener('click', cardClickListener(i)); 
+		} 
+	}
+
+	function cardClickListener(i) {
+		return function() {
+			console.log("cardClickListener: " + playerHand[i].suit + " " + playerHand[i].rank)
+			youPlayCard(i);			
+		}
+	}
+
+	function youPlayCard(n) {
+		console.log(playerHand[n].suit + " " + playerHand[n].rank)
+		$.ajax({
+				url: "/playCard/" + gamePosition + "/" + playerHand[n].suit + "/" + playerHand[n].rank,
+				method: "GET",
+				success: function(rawdata) {
+					console.log("Success from server: " + playerHand[n].suit + " " + playerHand[n].rank);
+					playerHand.splice(n, 1);
+					//createImgElements(playerHand);
+					// copy playerHand to a new array to pass by value to setPlayerHand
+					var l = playerHand.length;	
+					var hand = Array(l);
+					while(l--) hand[l] = playerHand[l];
+					console.log("HAND " + cardListString(hand));
+					setPlayerHand(hand);				
+				},
+			});			
+	}
+
+	function setPlayerHand(hand) {
+		console.log("HAND " + cardListString(hand));
+		playerHand = []
+		hand.forEach(function(result) {
+			playerHand.push(result)
+		});
+		console.log("PLAYER HAND " + cardListString(playerHand));
+
+		createImgElements(playerHand);
+		cardsAddEventListeners();
+	}
+
+
+	function setPlayerHandFromServer(hand) {
 		playerHand = []
 		hand.forEach(function(result) {
 			playerHand.push({suit: result.Suit, rank: result.Rank})
 		});
-		createPlayerHand(playerHand)
-	}
+		console.log("PLAYER HAND " + cardListString(playerHand));
 
-	function createPlayerHand(playerHand) {
+		createImgElements(playerHand);
+		cardsAddEventListeners();
+	}	
+
+	function createImgElements(playerHand) {
 		var i = 0
 		var cards = $("#cards");
 		cards.empty();
@@ -814,12 +959,12 @@
 		console.log("OFFSET: "+ offset)
 		playerHand.forEach(function(result) {
 			var name = result.suit + result.rank
-			var img = $("<img id='card_" + (i+1) + "' class='card' src='/html/img/" + name + ".png' onclick='cc(" + i + ")' onmouseover='mo(" + i + ")' onmouseleave='mv(" + i + ")' />"
+			var img = $("<img id='card_" + (i+1) + "' class='card' src='/html/img/" + name + ".png' onmouseover='mo(" + i + ")' onmouseleave='mv(" + i + ")' />"
 						);
 			cards.append(img)
 			placeCard(i, offset)
 			i++
-		});		
+		});	
 	}
 
 	var card_left = []
@@ -830,17 +975,9 @@
 	var initRotate = -15
 	var initTop = -10
 
-	// for(var i=0; i < 12; i++) {
-	// 	card_left[i] = 0 + i * 50
-	// 	card_top[i] = 0 + i * initTop
-	// 	card_rotate[i] = "rotate("+ initRotate +"deg)"
-	// 	initRotate += 3
-	// 	initTop += 1
-	// }
-
 	for(var i=0; i < 6; i++) {
 		middleLeft = 200
-		leftStep = 35
+		leftStep = 45
 		middleTop = 0
 		topStep = 3
 		rotateStep = 4
@@ -864,7 +1001,6 @@
 
 	function placeCard(id, offset) {
 		var el = document.getElementById("card_" + (id+1));
-	//	el.style["zIndex"] = 1000;
 		el.className = 'card'
 		el.style["left"] = card_left[offset + id] + "px";
 		el.style["top"] = card_top[offset + id] + "px";
@@ -875,60 +1011,7 @@
 		}
 		el.style["WebkitTransform"] = card_rotate[offset + id];
 		el.style["transform"] = card_rotate[offset + id];
-	//	el.style["zIndex"] = 0;
 	}
-
-	var discarded = 0
-
-	function cc(n) {
-		var el = document.getElementById("card_" + (n+1));
-		// console.log(playerHand[n].suit + " " + playerHand[n].rank)
-		$.ajax({
-				url: "/playCard/" + gamePosition + "/" + playerHand[n].suit + "/" + playerHand[n].rank,
-				method: "GET",
-				success: function(rawdata) {
-					console.log("Success from server: " + playerHand[n].suit + " " + playerHand[n].rank);
-					playerHand.splice(n, 1);
-					createPlayerHand(playerHand);					
-				},
-			});	
-
-
-	}
-
-	// function cc(n) {
-	// 	if (discarded == 2) {
-	// 		return
-	// 	}
-	// 	var el = document.getElementById("card_" + (n+1));
-	// 	//el.style["zIndex"] = 1000
-	// 	el.style["position"] = "relative";
-
-	// 	el.style["left"] = "0px";
-	// 	el.style["top"] = "0px";
-	// 	//el.style["transform"] = "scale(1.5)";
-
-	// 	el.style["WebkitTransform"] = "scale(1.5)";
-	// 	el.style["transform"] = "scale(1.5)";
-
-	// 	if (discarded === 0) {
-	// 		var discard1 = document.getElementById("discard1");
-	// 		discard1.appendChild(el)
-	// 		discarded = 1
-	// 		return
-	// 	}
-
-	// 	if (discarded === 1) {
-	// 		var discard2 = document.getElementById("discard2");
-	// 		discard2.appendChild(el)
-	// 		discarded = 2
-	// 		return
-	// 	}		
-	// //	var parent = document.getElementById("cards");
-	// //	parent.removeChild(el)
-	// }
-
-	//getCards();
 
 </script>
 </body>

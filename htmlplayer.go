@@ -30,7 +30,7 @@ func (p *HtmlPlayer) accepts(bidIndex int) bool {
 }
 
 func (p *HtmlPlayer) declareTrump() string {
-	return <- declareChannel
+	return <-declareChannel
 }
 
 func (p *HtmlPlayer) calculateHighestBid() int {
@@ -38,61 +38,19 @@ func (p *HtmlPlayer) calculateHighestBid() int {
 }
 
 func (p *HtmlPlayer) discardInSkat(skat []Card) {
-	p.setHand(sortSuit("", p.getHand()))
-	sorting := true
-	for {
-		gameLog("Full Hand : %v\n", p.getHand())
-		gameLog("DISCARD CARDS? (1 to %d) [0 to toggle SUIT/NULL sorting]", len(p.getHand()))
+	card1 := <- discardChannel	
+	card2 := <- discardChannel	
 
-		var i1, i2 int
-		_, err := fmt.Scanf("%d", &i1)
-		if err != nil {
-			gameLog("%v", err)
-			continue
-		}
-		if i1 == 0 {
-			if sorting {
-				gameLog("Change to Null sorting\n")
-				p.setHand(sortSuit(NULL, p.getHand()))
-				sorting = false
-				continue
-			} else {
-				gameLog("Change to Suit sorting\n")
-				p.setHand(sortSuit("", p.getHand()))
-				sorting = true
-				continue
-			}
-
-		}
-		_, err = fmt.Scanf("%d", &i2)
-		if err != nil {
-			gameLog("%v", err)
-			continue
-		}
-		//fmt.Println(i1, i2)
-		if i1 > len(p.getHand()) || i2 > len(p.getHand()) || i1 == i2 {
-			continue
-		}
-
-		card1 := p.getHand()[i1-1]
-		card2 := p.getHand()[i2-1]
-
-		if !getYes("Discard %v and %v (y/n/q) ", card1, card2) {
-			continue
-		}
-
-		p.setHand(remove(p.getHand(), card1))
-		p.setHand(remove(p.getHand(), card2))
-		skat[0] = card1
-		skat[1] = card2
-		return
-	}
+	p.setHand(remove(p.getHand(), card1))
+	p.setHand(remove(p.getHand(), card2))
+	skat[0] = card1
+	skat[1] = card2
 }
 
 func (p *HtmlPlayer) pickUpSkat(skat []Card) bool {
 	gameLog("HAND: %v", p.getHand())
 
-	pickUp := <- pickUpChannel
+	pickUp := <-pickUpChannel
 	if pickUp == "hand" {
 		gameLog("HAND game\n")
 		p.handGame = true
@@ -103,7 +61,9 @@ func (p *HtmlPlayer) pickUpSkat(skat []Card) bool {
 	hand := make([]Card, 10)
 	copy(hand, p.getHand())
 	hand = append(hand, skat...)
-	p.setHand(hand)
+	p.setHand(sortSuit("", hand))
+
+	// SEND HAND TO SERVER
 
 	p.discardInSkat(skat)
 
@@ -117,6 +77,6 @@ func (p *HtmlPlayer) playerTactic(s *SuitState, c []Card) Card {
 	gameLog("Valid: %v\n", c)
 
 	gameLog("Waiting card at trickChannel\n")
-	card := <- trickChannel
+	card := <-trickChannel
 	return card
 }
