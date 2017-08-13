@@ -320,19 +320,34 @@
 		});
 	}
 
+	function discardInSkat(player) {
+		console.log("DISCARD IN SKAT");
+		declareGame(player);
+	}
+
 	function pickUpAndDeclare(player) {
 		getPickUp()
 		.then(function(response) {
-			console.log(response);
+			console.log("SENDING: " + response);
 			$.ajax({
 				url: "/pickUp/" + response,
 				method: "GET",
 				success: function(rawdata) {
-					console.log("Success")
+					console.log(response + " Successfully sent");
+					if (response == "hand") {
+						declareGame(player);
+					} else {
+						discardInSkat(player);
+					}					
 				},
 			})
 		})
-		.then(getDeclare)
+	}
+
+
+	function declareGame(player) {	
+		console.log("DECLARE GAME...")
+		getDeclare()
 		.then(function(response) {
 			console.log(response);
 			$.ajax({
@@ -342,7 +357,7 @@
 					console.log("Success")
 				},
 			})
-		})		
+		})	
 		.then(function(response) {
 			continueWithTrump(player)
 		});
