@@ -55,6 +55,13 @@ func gameLog(format string, a ...interface{}) {
 	logToFile(format, a...)
 }
 
+
+func htmlLog(format string, a ...interface{}) {
+	red := color.New(color.Bold, color.FgYellow).SprintFunc()
+	s := fmt.Sprintf(format, a...)
+	fmt.Printf(red(s))
+}
+
 func debugTacticsLog(format string, a ...interface{}) {
 	if debugTacticsLogFlag {
 		fmt.Printf(format, a...)
@@ -134,21 +141,21 @@ type CardPlayed struct {
 func round(s *SuitState, players []PlayerI) []PlayerI {
 	card1 := play(s, players[0])
 	if html {
-		gameLog("Sending to channel...%v \n", card1)
+		htmlLog("Sending to channel...%v \n", card1)
 		playChannel <- CardPlayed{card1, 0}
 	}
 	time.Sleep(time.Duration(delayMs) * time.Millisecond)
 	s.follow = getSuit(s.trump, s.trick[0])
 	card2 := play(s, players[1])
 	if html {
-		gameLog("Sending to channel...%v \n", card2)
+		htmlLog("Sending to channel...%v \n", card2)
 
 		playChannel <- CardPlayed{card2, 1}
 	}
 	time.Sleep(time.Duration(delayMs) * time.Millisecond)
 	card3 := play(s, players[2])
 	if html {
-		gameLog("Sending to channel...%v \n", card3)
+		htmlLog("Sending to channel...%v \n", card3)
 		playChannel <- CardPlayed{card3, 2}
 	}
 	time.Sleep(time.Duration(delayMs) * time.Millisecond)
@@ -267,78 +274,101 @@ func bid(players []PlayerI) (int, PlayerI) {
 	return bids[bidIndex], p
 }
 
-func gameScore(trump string, cs []Card, score, bid int,
-	decSchwarz, oppSchwarz, handGame bool) int {
+func gameScore(state SuitState, cs []Card, handGame bool) Score {
+	withMatadors := 99
+	schneider := false
+	schwarz := false
+	overbid := false
+	ouvert := false
+	gs := 0
 
-	if trump == NULL {
-		gs := 0
+	if state.trump == NULL {
 		gameLog("\nSCORING\n\tNULL ")
 		if handGame {
 			gameLog("HAND \n")
-			if decSchwarz {
+			if state.declarer.isSchwarz() {
 				gs = 35
 			} else {
 				gs = -70
 			}
 		} else {
-			if decSchwarz {
+			if state.declarer.isSchwarz() {
 				gs = 23
 			} else {
 				gs = -46
 			}
 		}
 		gameLog("SCORE %d\n", gs)
-		return gs
-	}
-
-	mat := matadors(trump, cs)
-	mat1 := mat
-	if mat < 0 {
-		mat = mat * -1
-	}
-	multiplier := mat + 1
-
-	if mat1 > 0 {
-		gameLog("\nSCORING\n\t%s, With %d ", trump, mat)
 	} else {
-		gameLog("\nSCORING\n\t%s, Without %d ", trump, mat)
-	}
-
-	base := trumpBaseValue(trump)
-
-	if handGame {
-		multiplier++
-		gameLog("Hand ")
-	}
-	// Schneider?
-	if score > 89 || score < 31 {
-		multiplier++
-		gameLog("Schneider ")
-	}
-
-	if decSchwarz || oppSchwarz {
-		multiplier++
-		gameLog("Schwarz ")
-	}
-	//gameLog("\n\n")
-	gs := multiplier * base
-
-	// OVERBID?
-	if gs < bid {
-		gameLog(" --OVERBID!!! Game Value: %d < Bid: %d-- ", gs, bid)
-		leastMult := 0
-		for leastMult*base < bid {
-			leastMult++
+		mat := matadors(state.trump, cs)
+		withMatadors = mat
+		if mat < 0 {
+			mat = mat * -1
 		}
-		score = -2 * leastMult * base
-	} else if score > 60 {
-		score = gs
-	} else {
-		score = -2 * gs
-	}
-	gameLog("SCORE %d\n", score)
+		multiplier := mat + 1
 
-	return score
+		if withMatadors > 0 {
+			gameLog("\nSCORING\n\t%s, With %d ", state.trump, mat)
+		} else {
+			gameLog("\nSCORING\n\t%s, Without %d ", state.trump, mat)
+		}
+
+		base := trumpBaseValue(state.trump)
+
+		if handGame {
+			multiplier++
+			gameLog("Hand ")
+		}
+		// Schneider?
+		if state.declarer.getScore() > 89 || state.declarer.getScore() < 31 {
+			multiplier++
+			schneider = true
+			gameLog("Schneider ")
+		}
+
+		if state.declarer.isSchwarz() || (state.opp1.isSchwarz() && state.opp2.isSchwarz()) {
+			multiplier++
+			schwarz = true
+			gameLog("Schwarz ")
+		}
+		//gameLog("\n\n")
+		gs = multiplier * base
+
+		// OVERBID?
+		if gs < state.declarer.getDeclaredBid() {
+			gameLog(" --OVERBID!!! Game Value: %d < Bid: %d-- ", gs, state.declarer.getDeclaredBid())
+			overbid = true
+			leastMult := 0
+			for leastMult*base < state.declarer.getDeclaredBid() {
+				leastMult++
+			}
+			//score = -2 * leastMult * base
+			gs = -2 * leastMult * base
+		} else if state.declarer.getScore() > 60 {
+			//score = gs
+		} else {
+			gs = -2 * gs
+		}
+		gameLog("SCORE %d\n", gs)
+	}
+
+	scoreStruct := Score{
+		state.declarer.getName(),
+		state.declarer.getScore(),
+		state.opp1.getScore() + state.opp2.getScore(),
+		gs,
+		state.trump,
+		withMatadors, 
+		handGame,
+		schneider, 
+		schwarz, 
+		ouvert, 
+		overbid,
+	}
+
+
+
+	return scoreStruct
 }
 
 var grandGames = 0
@@ -393,7 +423,7 @@ func declareAndPlay(players []PlayerI) int {
 	state.trump = state.declarer.declareTrump()
 
 	if html {
-		gameLog("Sending trump %v", state.trump)
+		htmlLog("Sending trump %v", state.trump)
 		trumpChannel <- state.trump
 	}
 
@@ -431,8 +461,9 @@ func declareAndPlay(players []PlayerI) int {
 	// gameLog("SKAT: %v, %d\n", skat, sum(skat))
 	state.declarer.setScore(state.declarer.getScore() + sum(state.skat))
 
-	gs := gameScore(state.trump, declarerCards, state.declarer.getScore(), state.declarer.getDeclaredBid(),
-		state.declarer.isSchwarz(), state.opp1.isSchwarz() && state.opp2.isSchwarz(), handGame)
+	gameSc := gameScore(state, declarerCards, handGame)
+
+	gs := gameSc.GameScore
 
 	state.declarer.incTotalScore(gs)
 
@@ -463,12 +494,7 @@ func declareAndPlay(players []PlayerI) int {
 
 	}
 	if html {
-		scoreChannel <- Score{
-			state.declarer.getName(),
-			state.declarer.getScore(),
-			state.opp1.getScore() + state.opp2.getScore(),
-			gs,
-		}
+		scoreChannel <- gameSc
 	}
 	return gs
 }
@@ -478,6 +504,13 @@ type Score struct {
 	DeclarerPoints int
 	DefenderPoints int
 	GameScore      int
+	GameDeclared string
+	With int
+	Hand bool
+	Schneider bool
+	Schwarz bool
+	Ouvert bool
+	Overbid bool
 }
 
 func game(players []PlayerI) int {
@@ -601,7 +634,7 @@ func main() {
 	if html {
 		rt := startServer()
 		port := ":3000"
-		fmt.Println("Starting server at", port)
+		htmlLog("Starting server at %s\n", port)
 		http.ListenAndServe(port, rt)
 	}
 
@@ -662,9 +695,11 @@ func startServer() *mux.Router {
 	// })
 	var currentBidIndex = -1
 	var secondBidRound = false
+	var currentGame = 0
 
 	rt.HandleFunc("/start", func(w http.ResponseWriter, r *http.Request) {
-		gameLog("Starting a game\n")
+		currentGame++
+		htmlLog("Starting Game: %d\n", currentGame)
 		currentBidIndex = -1
 		secondBidRound = false
 		makeChannels()
@@ -685,6 +720,7 @@ func startServer() *mux.Router {
 			player1.getTotalScore(),
 			player2.getTotalScore(),
 			player3.getTotalScore(),
+			currentGame,
 		}
 		sendJson(w, data)
 	})
@@ -692,7 +728,7 @@ func startServer() *mux.Router {
 	rt.HandleFunc("/getHand/{pl}", func(w http.ResponseWriter, r *http.Request) {
 		pl, err := strconv.ParseInt(mux.Vars(r)["pl"], 10, 64)
 		if err != nil {
-			gameLog("Invalid index")
+			htmlLog("Invalid index")
 			http.Error(w, "Invalid index", http.StatusInternalServerError)
 		}
 		pi := int(pl)
@@ -700,21 +736,21 @@ func startServer() *mux.Router {
 			data := players[pi].getHand()
 			sendJson(w, data)
 		} else {
-			gameLog("Invalid index")
+			htmlLog("Invalid index")
 			http.Error(w, "Invalid index", http.StatusInternalServerError)
 		}
 	})
 
 	rt.HandleFunc("/bid/{pl}", func(w http.ResponseWriter, r *http.Request) {
 		pl, _ := strconv.ParseInt(mux.Vars(r)["pl"], 10, 64)
-		gameLog("currentBidIndex %d\n", currentBidIndex)
+		// htmlLog("currentBidIndex %d\n", currentBidIndex)
 
 		if pl == 2 {
 			secondBidRound = true
 		}
 		var data BidData
 		if (pl == 1 && !secondBidRound) || pl == 2 { // SPEAKER
-			gameLog("SPEAKER\n")
+			htmlLog("SPEAKER\n")
 			if players[pl].accepts(currentBidIndex + 1) {
 				currentBidIndex++
 				debugTacticsLog("Player %s: %d\n", players[pl].getName(), bids[currentBidIndex])
@@ -724,7 +760,7 @@ func startServer() *mux.Router {
 				data = BidData{bids[currentBidIndex+1], false}
 			}
 		} else { // LISTENER
-			gameLog("LISTENER\n")
+			htmlLog("LISTENER\n")
 
 			if currentBidIndex == -1 {
 				currentBidIndex++
@@ -759,7 +795,7 @@ func startServer() *mux.Router {
 			bidvalue = currentBidIndex + 1
 			currentBidIndex++
 		}
-		gameLog("BIDVALUE: %v\n", bids[bidvalue])
+		htmlLog("BIDVALUE: %v\n", bids[bidvalue])
 		data := BidData{bids[bidvalue], true} // boolean value is ignored
 		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
 		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
@@ -785,7 +821,7 @@ func startServer() *mux.Router {
 		}
 		state.declarer = players[pl]
 		players[pl].setDeclaredBid(int(bid))
-		gameLog("Declarer: %s with Bid %d\n", players[pl].getName(), bid)
+		htmlLog("Declarer: %s with Bid %d\n", players[pl].getName(), bid)
 
 		if state.declarer == players[0] {
 			state.opp1, state.opp2 = players[1], players[2]
@@ -802,9 +838,9 @@ func startServer() *mux.Router {
 	})
 
 	rt.HandleFunc("/getCardPlayed", func(w http.ResponseWriter, r *http.Request) {
-		gameLog("Waiting for card...")
+		htmlLog("Received /getCardPlayed, reading from playChannel...")
 		cp := <-playChannel
-		gameLog("sending Card-Player %v\n", cp)
+		htmlLog("read %v\n", cp)
 
 		//time.Sleep(time.Duration(delayMs) * time.Millisecond)
 		//time.Sleep(time.Duration(delayMs) * time.Millisecond)
@@ -821,40 +857,46 @@ func startServer() *mux.Router {
 		suit := mux.Vars(r)["suit"]
 		rank := mux.Vars(r)["rank"]
 		card := Card{suit, rank}
-		gameLog("Player %d played card %v \n", pl, card)
+		htmlLog("Received /playCard/%d/ %v \n", pl, card)
 		if state.valid(players[pl].getHand(), card) {
-			gameLog("Sending %v to trickChannel\n", card)
+			htmlLog("Sending %v to trickChannel...", card)
 			trickChannel <- card
+			htmlLog("sent\n", card)
 		} else {
-			gameLog("Invalid card")
+			htmlLog("Invalid card")
 			http.Error(w, "Invalid Card", http.StatusInternalServerError)
 		}
 	})
 
-	rt.HandleFunc("/discardCard/{pl}/{suit}/{rank}", func(w http.ResponseWriter, r *http.Request) {
+	rt.HandleFunc("/discardCard/{pl}/{suit1}/{rank1}/{suit2}/{rank2}", func(w http.ResponseWriter, r *http.Request) {
 		pl, err := strconv.ParseInt(mux.Vars(r)["pl"], 10, 64)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		suit := mux.Vars(r)["suit"]
-		rank := mux.Vars(r)["rank"]
-		card := Card{suit, rank}
-		gameLog("Player %d discarded card %v \n", pl, card)
-		if in(players[pl].getHand(), card) {
-			gameLog("Sending %v to discardChannel\n", card)
-			discardChannel <- card
+		suit1 := mux.Vars(r)["suit1"]
+		rank1 := mux.Vars(r)["rank1"]
+		suit2 := mux.Vars(r)["suit2"]
+		rank2 := mux.Vars(r)["rank2"]
+		card1 := Card{suit1, rank1}
+		card2 := Card{suit2, rank2}
+		htmlLog("Received /discardCard from Player %d, %v %v\n", pl, card1, card2)
+		if in(players[pl].getHand(), card1, card2) {
+			htmlLog("Sending %v %v to discardChannel...", card1, card2)
+			discardChannel <- card1
+			discardChannel <- card2
+			htmlLog("sent\n")
 		} else {
-			gameLog("Card not in hand")
-			http.Error(w, "Invalid Card", http.StatusInternalServerError)
+			htmlLog("Cards not in hand")
+			http.Error(w, "Cards not in hand", http.StatusInternalServerError)
 		}
 	})
 
 	rt.HandleFunc("/getTrickWinner", func(w http.ResponseWriter, r *http.Request) {
-		gameLog("Wating for card...")
+		htmlLog("Wating for card...")
 
 		winnerName := <-winnerChannel
-		gameLog("Sending winner %v", winnerName)
+		htmlLog("Sending winner %v", winnerName)
 
 		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
 		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
@@ -864,12 +906,12 @@ func startServer() *mux.Router {
 	})
 
 	rt.HandleFunc("/getTrump", func(w http.ResponseWriter, r *http.Request) {
-		gameLog("Getting trump...")
+		htmlLog("Getting trump...")
 		sendJson(w, <-trumpChannel)
 	})
 
 	rt.HandleFunc("/getScore", func(w http.ResponseWriter, r *http.Request) {
-		gameLog("Getting score...")
+		htmlLog("Getting score...")
 		sendJson(w, <-scoreChannel)
 	})
 
@@ -904,6 +946,7 @@ type initData struct {
 	Score1 int
 	Score2 int
 	Score3 int
+	Game int
 }
 
 type BidData struct {

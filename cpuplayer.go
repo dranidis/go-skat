@@ -176,10 +176,12 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 			}
 
 			if p.otherPlayersHaveJs(s) {
+				debugTacticsLog("... other players have Js..")
 				validCards := make([]Card, len(c))
 				copy(validCards, c)
 				first := firstCardTactic(validCards)
-				for len(validCards) > 1 && (first.equals(Card{s.trump, "A"}) || first.equals(Card{s.trump, "10"})) {
+				for len(validCards) > 1 && (first.equals(Card{s.trump, "A"}) || first.equals(Card{s.trump, "10"})  || first.equals(Card{s.trump, "K"})  || first.equals(Card{s.trump, "D"})) {
+					debugTacticsLog("... not playing A or 10 or figures ..")
 					validCards = remove(validCards, first)
 					first = firstCardTactic(validCards)
 				}

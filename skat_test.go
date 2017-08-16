@@ -553,6 +553,28 @@ func TestMostCardsSuit1(t *testing.T) {
 	}
 }
 
+func gameScore1(trump string, cs []Card, s int, bid int, decS, oppS bool, hg bool) int {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+	d.setScore(s)
+	d.setSchwarz(decS)
+	o1.setSchwarz(oppS)
+	o2.setSchwarz(oppS)
+	testState = makeSuitState()
+	testState.trump = trump
+	testState.declarer = &d
+	testState.opp1 = &o1
+	testState.opp2 = &o2
+	testState.declarer.setDeclaredBid(bid)
+
+
+	gs := gameScore(testState, cs, hg)
+	return gs.GameScore
+}
+
+var testState SuitState
+
 func TestGameScore(t *testing.T) {
 	declarerCards := []Card{
 		Card{CLUBS, "J"},
@@ -567,44 +589,44 @@ func TestGameScore(t *testing.T) {
 		Card{SPADE, "8"},
 	}
 
-	act := gameScore(CARO, declarerCards, 61, 63, false, false, false)
+	act := gameScore1(CARO, declarerCards, 61, 63, false, false, false)
 	exp := 63
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(CARO, declarerCards, 60, 63, false, false, false)
+	act = gameScore1(CARO, declarerCards, 60, 63, false, false, false)
 	exp = -126
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(HEART, declarerCards, 61, 50, false, false, false)
+	act = gameScore1(HEART, declarerCards, 61, 50, false, false, false)
 	exp = 50
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(CLUBS, declarerCards, 61, 50, false, false, false)
+	act = gameScore1(CLUBS, declarerCards, 61, 50, false, false, false)
 	exp = 60
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(SPADE, declarerCards, 61, 50, false, false, false)
+	act = gameScore1(SPADE, declarerCards, 61, 50, false, false, false)
 	exp = 55
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
-	act = gameScore(SPADE, declarerCards, 61, 50, false, false, true)
+	act = gameScore1(SPADE, declarerCards, 61, 50, false, false, true)
 	exp = 66
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
 	// hand is 50, OVERBID
-	act = gameScore(HEART, declarerCards, 61, 51, false, false, false)
+	act = gameScore1(HEART, declarerCards, 61, 51, false, false, false)
 	exp = -120
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
@@ -622,34 +644,34 @@ func TestGameScore(t *testing.T) {
 		Card{HEART, "9"},
 		Card{SPADE, "8"},
 	}
-	act = gameScore(CARO, declarerCards, 61, 18, false, false, false)
+	act = gameScore1(CARO, declarerCards, 61, 18, false, false, false)
 	exp = 18
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
 	// schneider winner
-	act = gameScore(CARO, declarerCards, 90, 18, false, false, false)
+	act = gameScore1(CARO, declarerCards, 90, 18, false, false, false)
 	exp = 27
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 	// schneider loss
-	act = gameScore(CARO, declarerCards, 30, 18, false, false, false)
+	act = gameScore1(CARO, declarerCards, 30, 18, false, false, false)
 	exp = -54
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
 	// schwarz winner
-	act = gameScore(CARO, declarerCards, 120, 18, false, true, false)
+	act = gameScore1(CARO, declarerCards, 120, 18, false, true, false)
 	exp = 36
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
 	}
 
 	// schwarz loss
-	act = gameScore(CARO, declarerCards, 0, 18, true, false, false)
+	act = gameScore1(CARO, declarerCards, 0, 18, true, false, false)
 	exp = -72
 	if act != exp {
 		t.Errorf("Expected GAME SCORE %d, got %d", exp, act)
@@ -1403,6 +1425,38 @@ func TestOpponentTacticMIDTrump6(t *testing.T) {
 	}
 }
 
+func TestOpponentTacticMIDPlayerLeadsLosingCard_Smear(t *testing.T) {
+	// MIDDLEHAND
+
+	// if declarer leads a losing card (there are higher cards in game), SMEAR
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{HEART, "D"}}
+
+	validCards := []Card{
+		Card{SPADE, "A"},
+		Card{SPADE, "K"},
+		Card{SPADE, "9"},
+	}
+	//
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{SPADE, "A"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v, with cards played %v and valid %v, expected to smear %v, played %v",
+			s.trick, s.cardsPlayed, validCards, exp, card)
+	}
+}
+
 func TestOpponentTacticMIDTrump7(t *testing.T) {
 	// MIDDLEHAND
 
@@ -1757,7 +1811,7 @@ func TestHighestShort(t *testing.T) {
 	}
 }
 
-func TestDeclarerTactic1(t *testing.T) {
+func TestDeclarerTacticFORE1(t *testing.T) {
 	// don't play your A-10 trumps if Js still there
 
 	player := makePlayer([]Card{})
@@ -1780,6 +1834,39 @@ func TestDeclarerTactic1(t *testing.T) {
 	unexp1 := Card{CLUBS, "A"}
 	unexp2 := Card{CLUBS, "10"}
 	if card.equals(unexp1) || card.equals(unexp2) {
+		t.Errorf("Trump: CLUBS, In trick %v and valid %v, not expected to play %v since still in game are: %v",
+			s.trick, validCards, card, s.trumpsInGame)
+	}
+}
+
+func TestDeclarerTacticFORE2(t *testing.T) {
+	// don't play a value trump if higher trumps
+	// in game
+
+	validCards := []Card{
+		Card{CLUBS, "D"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "7"},
+		Card{SPADE, "A"},
+		Card{SPADE, "9"},
+		Card{HEART, "A"},
+		Card{HEART, "K"},
+		Card{HEART, "7"},
+	}
+	player := makePlayer(validCards)
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &player
+
+	s.trump = CLUBS
+	s.trick = []Card{}
+
+
+	s.trumpsInGame = []Card{Card{SPADE, "J"}}
+
+	card := player.playerTactic(&s, validCards)
+	unexp1 := Card{CLUBS, "D"}
+	if card.equals(unexp1) {
 		t.Errorf("Trump: CLUBS, In trick %v and valid %v, not expected to play %v since still in game are: %v",
 			s.trick, validCards, card, s.trumpsInGame)
 	}

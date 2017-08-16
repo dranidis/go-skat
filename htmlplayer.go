@@ -76,7 +76,8 @@ func (p *HtmlPlayer) playerTactic(s *SuitState, c []Card) Card {
 	gameLog("Your Hand : %v\n", p.getHand())
 	gameLog("Valid: %v\n", c)
 
-	gameLog("Waiting card at trickChannel\n")
+	htmlLog("Reading card at trickChannel...\n")
 	card := <-trickChannel
+	htmlLog("read %v\n", card)
 	return card
 }

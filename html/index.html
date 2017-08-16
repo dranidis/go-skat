@@ -1,205 +1,242 @@
 <html>
 <head>
-		<style>
-			.name{
-				color: blue;
-    			font-style: italic;
-			}
-			.dealer {
-    			border: black;
-    			border-style: solid;				
-			}
-			#bidn1 {
-			    position: absolute;
-			    top: 50px;
-			    left: 50px;
-			    background: yellow;
-			    font-size: xx-large;
-			    width: 150px;
-			    height: auto;
-			    text-align: center;
-			    border-radius: 40px;
-			    padding: 10px;			
-			}
-			#bidn2 {
-			    position: absolute;
-			    top: 50px;
-			    left: 450px;
-			    background: yellow;
-			    font-size: xx-large;
-			    width: 150px;
-			    height: auto;
-			    text-align: center;
-			    border-radius: 40px;
-			    padding: 10px;			
-			}
-			#bidn3 {
-			    position: absolute;
-			    top: 250px;
-			    left: 250px;
-			    background: yellow;
-			    font-size: xx-large;
-			    width: 150px;
-			    height: auto;
-			    text-align: center;
-			    border-radius: 40px;
-			    padding: 10px;
-    			}			
-			#bidding {
-			    position: absolute;
-			    top: 340px;
-			    left: 180px;
-			    /*background: green;*/
-			    font-size: xx-large;
-			    width: 300px;
-			    height: auto;
-			    text-align: center;
+	<style>
+		#header{
+			background-color: black;
+			color: white; 
+			text-align: center;
+			width: 100%;
+			font-size: x-large;
+		}
+		#content{
+    		margin: auto;
+   	 		max-width: 600px;
+    		position: relative;
+    		/*background-color: darkgray;*/
+		}
+		.name{
+			color: blue;
+			font-style: italic;
+		}
+		.dealer {
+			border: black;
+			border-style: solid;				
+		}
+		#bidn1 {
+		    position: absolute;
+		    top: 60px;
+		    /* left: 50px; */
+		    background: yellow;
+		    font-size: xx-large;
+		    width: 150px;
+		    height: auto;
+		    text-align: center;
+		    border-radius: 40px;
+		    padding: 10px;		
+		}
+		#bidn2 {
+			position: absolute;
+		    top: 60px;
+		    right: 0px;
+		    background: yellow;
+		    font-size: xx-large;
+		    width: 150px;
+		    height: auto;
+		    text-align: center;
+		    border-radius: 40px;
+		    padding: 10px;		
+		}
+		#bidn3 {
+		    position: relative;
+		    top: 180px;
+		    /* left: 250px; */
+		    background: yellow;
+		    font-size: xx-large;
+		    width: 150px;
+		    height: auto;
+		    text-align: center;
+		    border-radius: 40px;
+		    padding: 10px;
+		    margin: auto;
 			}			
-			.card {
-				width: 130px;
-				height: auto;
-				transition: 0.3s ease-in-out;
-				border-radius: 0px;
-			}
-			.card:hover {
-				transform:translate(0,-1em) scale(1.2);
-			}
-			#cards {
-				position: relative;
-				top: 350px;
-				left:50px;
-				background: none;
-			}
-			#discard1 {
-				position: absolute;
-				top: 30px;
-				left:250px;
-				background: red;
-			}		
-			#discard2 {
-				position: absolute;
-				top: 30px;
-				left:400px;
-				background: green;
-			}
-			.btn {
-			    font-size: xx-large;
-    			border-radius: 10px;					
-			}		
-			#played {
-				position: absolute;
-				top: 50px;
-				left:240px;
-				transition: 1s ease-in-out;
-				transform: scale(0.8);
-			}
+		#bidding, #picking{
+		    position: absolute;
+		    top: 340px;
+		    /* left: 180px; */
+		    /* background: green; */
+		    font-size: xx-large;
+		    width: 100%;
+		    height: auto;
+		    text-align: center;
+		}	
+		#bidBtn {
+			width: 30%;
+		}		
+		#passBtn {
+			width: 30%;
+		}				
+		.card {
+			width: 130px;
+			height: auto;
+			transition: 0.3s ease-in-out;
+			border-radius: 0px;
+		}
+		.card:hover {
+			transform:translate(0,-1em) scale(1.2);
+		}
+		#cards {
+			position: absolute;
+			top: 410px;
+			left:0px;
+			background: none;
+			/*background-color: green;*/
+			width: 100%;
+		}
+		.btn {
+			font-size: xx-large;
+			border-radius: 10px;
+			padding: 5px;
+			margin: 1px;
+			background-color: orange;					
+		}		
+		#played {
+			position: relative;
+			top: 10px;
+			/*left:240px;*/
+			transition: 1s ease-in-out;
+			transform: scale(0.8);
+			width: 100px;
+			height: 0px;
+			margin: auto;
+			z-index: 10	;
+		}
 
-			#played1 {
-				position:absolute;
-				top: 0px;
-				left: 0px;
-				transform: rotate(-15deg);
-			}
-			#played3 {
-				position:absolute;
-				top: 40px;
-				left: 40px;
-				transform: rotate(2deg);
-			}			
-			#played2 {
-				position:absolute;
-				top: -3px;
-				left: 80px;
-				transform: rotate(11deg);
-			}			
-			#score {
-			    position: relative;
-			    top: 140px;
-			    /*left: 200px;*/
-			    font-size: xx-large;
-			    font-weight: bolder;
-			    color: white;
-			    background-color: gray;
-			    border-radius: 10px;
-			    padding: 20px;
-			    visibility: hidden;
-    			text-align: center;		    
-			}
-			#picking {
-				margin: auto;
-    			top: 80px;
-    			position: absolute;
-    			left: 120px;
-			}
-			#pickBtn {
-			    position: relative;
-			    left: 110px;
-			    top: 50px;
-			}
-			#handBtn {
-    			position: relative;
-    			left: -120px;
-    			top: 100px;
-			}
-			#declare {
-			    position: absolute;
-			    top: 140px;
-			}			
-			#discardBtn {
-				position: absolute;
-    			top: 600px;
-    			left: 200px;
-    		}
+		#played1 {
+			position:absolute;
+			top: 0px;
+			left: -40px;
+			transform: rotate(-15deg);
+		}
+		#played3 {
+			position:absolute;
+			top: 40px;
+			left: 0px;
+			transform: rotate(2deg);
+		}			
+		#played2 {
+			position:absolute;
+			top: -3px;
+			left: 40px;
+			transform: rotate(11deg);
+		}			
+		#score {
+		    position: relative;
+		    top: 200px;
+		    /*left: 200px;*/
+		    font-size: xx-large;
+		    font-weight: bolder;
+		    color: white;
+		    background-color: gray;
+		    border-radius: 10px;
+		    padding: 20px;
+		    visibility: hidden;
+			text-align: center;		    
+		}
+/*		#picking {
+			margin: auto;
+		    top: 180px;
+		    position: absolute;
+		    text-align: center;
+		    width: 100%;
+		}*/
+		#pickBtn {
 
-		</style>
+		}
+		#handBtn {
+
+		}
+
+		#declare {
+			margin: auto;
+		    top: 150px;
+		    position: relative;
+		    text-align: center;	
+		}
+    	#discard {
+			position: absolute;
+		    top: 550px;
+		    /* left: 0; */
+		    width: 100%;
+		    margin: auto;
+		    text-align: center;
+    	}			
+		#discardBtn {
+			width: 270px;
+		}
+		#message {
+			font-size: xx-large;
+		    background-color: gray;
+		    color: white;
+		    opacity: 0.75;
+		    border-radius: 20px;
+		    padding: 20;
+		    text-align: center;
+		    max-width: 300px;
+		    margin: auto; 	
+		    z-index: 999;		
+		}
+
+	</style>
 </head>
 <body>
-	<form id="search-form" onsubmit="return false">
-		<input type="submit" value="Start" onclick="start()" />
-	</form>
+	<div id="header">Press start to start a new game</div>
+	<div id="content">
+		<div id="main"style="width: 400px; margin: auto;">
+			<button class="btn" onclick="start()" style="width: inherit;">Start a new game</button>
+		</div>
+		<div id="players">
+			<div id="played"></div>
 
-	<div id="bidding" style="display: none;">
-		<button id="bidBtn" class="btn">XX</button>
-		<button id="passBtn" class="btn">Pass</button>
-	</div>
-	<div id="bidn1" class="bidn">
-		<div id="name1" class="name">Bob</div>
-		<div id="bid1"></div>
-	</div>
+			<div id="bidn1" class="bidn">
+				<div id="name1" class="name">Bob</div>
+				<div id="bid1"></div>
+			</div>
 
-	<div id="bidn2">
-		<div id="name2" class="name">Ana</div>
-		<div id="bid2"></div>
-	</div>
+			<div id="bidn2">
+				<div id="name2" class="name">Ana</div>
+				<div id="bid2"></div>
+			</div>
 
-	<div id="bidn3">	
-		<div id="name3" class="name">You</div>
-		<div id="bid3"></div>
-	</div>
+			<div id="bidn3">	
+				<div id="name3" class="name">You</div>
+				<div id="bid3"></div>
+			</div>	
 
-	<div id="played"></div>
-	<div id="discard1"></div>
-	<div id="discard2"></div>
-	<div id="played"></div>
-	<div id="cards"></div>
-	<div id="score"></div>
+		</div>
 
-	<div id="picking" style="display: none;">
-		<button id="pickBtn" class="btn">Pick up skat</button>
-		<button id="handBtn" class="btn">Play Hand Game</button>
-	</div>
-	<div id="declare" style="display: none;">
-		<button id="clubs" class="btn">CLUBS</button>
-		<button id="spade" class="btn">SPADES</button>
-		<button id="heart" class="btn">HEARTS</button>
-		<button id="caro" class="btn">DIAMONDS</button>
-		<button id="grand" class="btn">Grand</button>
-		<button id="null" class="btn">Null</button>
-	</div>
-	<div id="discard" style="display: none;">
-		<button id="discardBtn" class="btn">Discard to skat</button>
-	</div>
+			<div id="bidding" style="display: none;">
+				<button id="bidBtn" class="btn">XX</button>
+				<button id="passBtn" class="btn">Pass</button>
+			</div>
 
+		<div id="cards"></div>
+		<div id="score"></div>
+
+		<div id="picking" style="display: none;">
+			<button id="pickBtn" class="btn">Pick up the skat</button>
+			<button id="handBtn" class="btn">Play Hand Game</button>
+		</div>
+		<div id="declare" style="display: none;">
+			<button id="clubs" class="btn">CLUBS</button>
+			<button id="spade" class="btn">SPADES</button>
+			<button id="heart" class="btn">HEARTS</button>
+			<button id="caro" class="btn">DIAMONDS</button>
+			<button id="grand" class="btn">Grand</button>
+			<button id="null" class="btn">Null</button>
+		</div>
+		<div id="discard" style="display: none;"></div>
+		<div id="message"style="display: none;">ALL PASSED</div>
+	</div>
 <script type="text/javascript" src="/html/jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
 
@@ -217,6 +254,7 @@
 			method: "GET",
 			success: handleInitData,
 		});
+
 		return false;
 	}
 
@@ -241,7 +279,7 @@
 		$("#name1").html("Bob (" + parsed.Score2 + ")");
 		$("#name2").html("Ana (" + parsed.Score3 + ")")
 		$("#name3").html("You (" + parsed.Score1 + ")")
-
+		var headerText = "Game " + parsed.Game;
 		gamePosition = parsed.Position
 		console.log("Position "+ gamePosition);
 		if (gamePosition == 0) {
@@ -250,14 +288,15 @@
 			$("#bidn1").removeClass("dealer");
 			$("#bidn2").addClass("dealer");
 			$("#bidn3").removeClass("dealer");
+			headerText += " You are forehand"
 		}
 		if (gamePosition == 1) {
 			biddiv = ["#bid2", "#bid3", "#bid1"]
 			playerIndex = [2, 3, 1]
-
 			$("#bidn1").addClass("dealer");
 			$("#bidn2").removeClass("dealer");
 			$("#bidn3").removeClass("dealer");
+			headerText += " You are middlehand"
 		}
 		if (gamePosition == 2) {
 			biddiv = ["#bid1", "#bid2", "#bid3"]
@@ -265,6 +304,8 @@
 			$("#bidn1").removeClass("dealer");
 			$("#bidn2").removeClass("dealer");
 			$("#bidn3").addClass("dealer");
+			headerText += " You are backhand"
+			toastMsg("You deal the cards")
 		}				
 		passed = [false, false, false];
 		secondRound = false;
@@ -276,16 +317,22 @@
 		trump = "";		
 		selectedToDiscard = []
 
-		for (var i=1; i <=3 ; i++) {
-			var d = document.getElementById("bidn" + i)
-			d.style["background"] = "yellow"			
-		}
+		for (var i=1; i <=3 ; i++) 
+			document.getElementById("bidn" + i).style["background"] = "yellow"			
+
+		$("#header").text(headerText);
+
 		MidVsFore();
 	}
 
 	function getPickUp() {
 		return new Promise(function(resolve) {
+
+			$("#picking").empty()
+			$("#picking").append($('<button id="pickBtn" class="btn">Pick up skat</button>'))
+			$("#picking").append($('<button id="handBtn" class="btn">Play Hand Game</button>'))
 			$("#picking").show();
+
 			var pickBtn = document.getElementById("pickBtn")
 			var handBtn = document.getElementById("handBtn")
 			pickBtn.addEventListener('click', function() {
@@ -313,7 +360,21 @@
 
 	function chooseGame() {
 		return new Promise(function(resolve) {
+	
+			$("#declare").empty()
+			$("#declare").append($('<button id="clubs" class="btn">CLUBS</button>'))
+			$("#declare").append($('<button id="spade" class="btn">SPADES</button>'))
+			$("#declare").append($('<button id="heart" class="btn">HEARTS</button>'))
+			$("#declare").append($('<button id="caro" class="btn">DIAMONDS</button>'))
+			$("#declare").append($('<button id="grand" class="btn">Grand</button>'))
+			$("#declare").append($('<button id="null" class="btn">Null</button>'))
 			$("#declare").show();
+
+			$("#clubs").html('<img src="/html/img/clubs.png" style="height: 30px;width: auto;position: relative;">'); 
+			$("#spade").html('<img src="/html/img/spades.png" style="height: 30px;width: auto;position: relative;">'); 
+			$("#heart").html('<img src="/html/img/hearts.png" style="height: 30px;width: auto;position: relative;">'); 
+			$("#caro").html('<img src="/html/img/diamonds.png" style="height: 30px;width: auto;position: relative;">'); 
+
 			var clubs = document.getElementById("clubs")
 			var spade = document.getElementById("spade")
 			var heart = document.getElementById("heart")
@@ -349,8 +410,9 @@
 
 	function chooseCardsToDiscard() {
 		return new Promise(function(resolve) {
+			$("#discard").empty()
+			$("#discard").append($('<button id="discardBtn" class="btn">Discard to skat</button>'))
 			$("#discard").show();
-
 			discardCardsAddEventListeners();
 
 			var discardBtn = document.getElementById("discardBtn")
@@ -362,29 +424,31 @@
 				cardsToDiscard.push(selectedToDiscard[0]);
 				cardsToDiscard.push(selectedToDiscard[1]);
 
-				youDiscardCard(selectedToDiscard[0])
-				.then(function() {
-					youDiscardCard(selectedToDiscard[1])
-				})
+				youDiscardCard(selectedToDiscard[0], selectedToDiscard[1])
 				.then(function() {
 					resolve(cardsToDiscard);
 				})
-			}) 
+			});
+
 		});
 	}
 
-	function youDiscardCard(card) {
+	function youDiscardCard(card1, card2) {
 		return Promise.resolve(
 			$.ajax({
-				url: "/discardCard/" + gamePosition + "/" + card.suit + "/" + card.rank,
+				url: "/discardCard/" + gamePosition + "/" + 
+					card1.suit + "/" + card1.rank + "/" + 
+					card2.suit + "/" + card2.rank,
 				method: "GET",
-				success: function(rawdata) {},
+				success: function(rawdata) {
+					console.log("Successfully discarded")
+				},
 			})
 		)		
 	}
 
 	function discardInSkat(player) {
-		console.log("DISCARD IN SKAT");
+		// console.log("DISCARD IN SKAT");
 		getHandFromServer()
 		.then(chooseCardsToDiscard)
 		.then(getHandFromServer)
@@ -412,12 +476,11 @@
 		})
 	}
 
-
 	function declareGame(player) {	
-		console.log("DECLARE GAME...")
+		// console.log("DECLARE GAME...")
 		chooseGame()
 		.then(function(response) {
-			console.log(response);
+			// console.log(response);
 			$.ajax({
 				url: "/declare/" + response,
 				method: "GET",
@@ -476,14 +539,30 @@
 				var score = document.getElementById("score")
 				score.style["visibility"] = "visible"
 				var text = parsed.Declarer;
-				if (parsed.GameScore < 0) 
+				if (parsed.GameScore < 0)
 					text += " lost!"
 				else 
 					text += " won!"
 				text += "<br/>"
-				if (trump != "Null") 
+				if (trump != "Null") {
 					text += parsed.DeclarerPoints + " - " + parsed.DefenderPoints + "<br/>"
-				text += "Score: " + parsed.GameScore;
+					if (parsed.With > 0) {
+						text += "With "
+					} else {
+						text += "Without "
+					}
+					text += Math.abs(parsed.With) 
+					if (parsed.Schneider) {
+						text += ", Schneider"
+					}				
+					if (parsed.Schwarz) {
+						text += ", Schwarz"
+					}
+				}
+				if (parsed.Overbid) {
+					text += "<br/>Overbid!"
+				}
+				text += "<br/>Score: " + parsed.GameScore;
 				score.innerHTML = text;
 			},
 		})	
@@ -493,27 +572,42 @@
 		return trickRound > 10 || lostNull
 	}
 
+	function yourTurnMessage(played) {
+		setTimeout(function() {
+			if (!played[0]) {
+				toastMsg("Your turn!");
+				yourTurnMessage(played);
+			}
+		}, 5000);
+	}
+
 	function getCardFromServer() {
+		var played = [false];
+		// console.log("STARTING YOUR TURN timer")
+		setTimeout(function() {
+			yourTurnMessage(played); 
+		}, 2000);
 		return Promise.resolve($.ajax({
 			url: "/getCardPlayed",
 			method: "GET",
 			success: function(data) {
+				played[0] = true;
 				playCard(data);
 			},
 		}))
 	}
 
 	function trick() {
+		var el = document.getElementById("played");
 		trickRound++
 		if (gameFinished()) {
-			console.log("Game finished");
+			// console.log("Game finished");
 			getScore();
 			trickRound = 0;
 			return
 		}
 		getCardFromServer()
 		.then(function () {
-			var el = document.getElementById("played");
 			el.style["transition"] = "1s ease-in-out";
 		})
 		.then(getCardFromServer)
@@ -521,7 +615,6 @@
 		.then(getTrickWinner)
 		.then(delayfn(1000))
 		.then(function() {
-			var el = document.getElementById("played");
 			el.style["visibility"] = "hidden";
 			el.style["transition"] = "0s";
 		})
@@ -548,43 +641,35 @@
 		}
 	}
 
-	function animate() {
-		// var el = document.getElementById("played");
-		// el.style["transform"] = "rotate(0deg) translate(-150px,30px) scale(0.4)";	
-		// el.style["transform"] = "rotate(0deg) translate(150px,30px) scale(0.4)";	
-		// el.style["transform"] = "rotate(0deg) translate(0px,150px) scale(0.4)";	
-	}
-
-
 	function getTrickWinner() {
 		return Promise.resolve($.ajax({
-				url: "/getTrickWinner",
-				method: "GET",
-				success: function(rawdata) {
-					var parsed = JSON.parse(rawdata);
-					if (!parsed) return;	
-					var winner = parsed	
-					console.log("WINNER: " + parsed)
+			url: "/getTrickWinner",
+			method: "GET",
+			success: function(rawdata) {
+				var parsed = JSON.parse(rawdata);
+				if (!parsed) return;	
+				var winner = parsed	
+				// console.log("WINNER: " + parsed)
 
-					var el = document.getElementById("played");
+				var el = document.getElementById("played");
 
-					if (winner == "Bob") {
-						playerIndex = [1, 2, 3];
-						el.style["transform"] = "rotate(0deg) translate(-150px,30px) scale(0.4)";	
-					}
-					else if (winner == "Ana") {
-						playerIndex = [2, 3, 1];
-						el.style["transform"] = "rotate(0deg) translate(250px,30px) scale(0.4)";	
-					}
-					else {
-						if (trump == "Null") {
-							lostNull = true;
-						}
-						playerIndex = [3, 1, 2];	
-						el.style["transform"] = "rotate(0deg) translate(40px,150px) scale(0.4)";	
-					}
+				if (winner == "Bob") {
+					playerIndex = [1, 2, 3];
+					el.style["transform"] = "rotate(0deg) translate(-210px,30px) scale(0.4)";	
 				}
-			}))		
+				else if (winner == "Ana") {
+					playerIndex = [2, 3, 1];
+					el.style["transform"] = "rotate(0deg) translate(210px,30px) scale(0.4)";	
+				}
+				else {
+					if (trump == "Null") {
+						lostNull = true;
+					}
+					playerIndex = [3, 1, 2];	
+					el.style["transform"] = "rotate(0deg) translate(0px,150px) scale(0.4)";	
+				}
+			}
+		}))		
 	}
 
 	function playCard(rawdata) {
@@ -594,9 +679,14 @@
 		var played = $("#played");
 		var name = parsed.C.Suit +parsed.C.Rank;
 		var pi = playerIndex[parsed.Pi];
-		console.log("getCardPlayed: " + name+ "player:" + parsed.Pi)
+		console.log("getCardPlayed: " + name+ "player:" + parsed.Pi + " : " + pi);
 		var img = $("<img id='played" + pi + "' class='card' src='/html/img/" + name + ".png' />");
-		played.append(img)				
+		if (pi == 3) {
+			// console.log("HIDING...")
+			img = $("<img id='played" + pi + "' class='card' src='/html/img/" + name + ".png' style='display: none;'/>");
+		}		
+		played.append(img);	
+
 	}
 
 	function showPlayed() {
@@ -612,25 +702,25 @@
 // BIDING
 //
 	function MidVsFore() {
-		console.log("calling MIDBID")
+		// console.log("calling MIDBID")
 		getBid(1).then(function(response) {
-			console.log("MIDBID responded")
+			// console.log("MIDBID responded")
 			if (!passed[1]) {
-				console.log("Mid Not passed")
-				console.log("calling FOREBID")
+				// console.log("Mid Not passed")
+				// console.log("calling FOREBID")
 				getBid(0).then(function(response) {
-					console.log("FOREBID responded")
+					// console.log("FOREBID responded")
 					if (!passed[0]) {
-						console.log("Fore Not passed")
+						// console.log("Fore Not passed")
 						MidVsFore()	
 					} else {
-						console.log("Fore passed")
+						// console.log("Fore passed")
 						secondRound = true;
 						BackVsMid();						
 					}
 				});
 			} else {
-				console.log("Mid Passed")
+				// console.log("Mid Passed")
 				secondRound = true;
 				BackVsFore();				
 			}
@@ -638,41 +728,38 @@
 	}
 
 	function BackVsFore() {
-		console.log("calling BACKBID")
+		// console.log("calling BACKBID")
 		getBid(2).then(function(response) {
-			console.log("BACKBID responded")
+			// console.log("BACKBID responded")
 			if (!passed[2]) {
-				console.log("Back NOT passed")
-				console.log("calling FOREBID")
+				// console.log("Back NOT passed")
+				// console.log("calling FOREBID")
 				getBid(0).then(function(response) {
-					console.log("FOREBID responded")
+					// console.log("FOREBID responded")
 					if (!passed[0]) {
-						console.log("Fore NOT passed")
+						// console.log("Fore NOT passed")
 						BackVsFore();
 					} else {
-						console.log("Fore passed")
-						console.log("BACK WON")
+						// console.log("Fore passed")
+						// console.log("BACK WON")
 						setDeclarer(2);			
 					}		
 				});
 			} else {
-				console.log("Back passed")
-				// TODO: if mid and back passed immediately
-				// check that FORE accepts the 18 bid.
+				// console.log("Back passed")
 				if (acceptedBid == "") {
 					getBid(0).then(function(response) {
 						if (passed[0]) {
-							console.log("ALL PASSED")
-							emptyBidDivsExcept(-1);
+							toastMsg("All passed");
 							return
 						} else {
-								console.log("FORE WON" + acceptedBid);
+								// console.log("FORE WON" + acceptedBid);
 								setDeclarer(0);	
 								return								
 						}
 					})
 				} else {
-					console.log("FORE WON" + acceptedBid);
+					// console.log("FORE WON" + acceptedBid);
 					setDeclarer(0);	
 					return						
 				}
@@ -681,42 +768,52 @@
 	}
 
 	function BackVsMid() {
-		console.log("calling BACKBID")
+		// console.log("calling BACKBID")
 		getBid(2).then(function(response) {
-			console.log("BACKBID responded")
+			// console.log("BACKBID responded")
 			if (!passed[2]) {
-				console.log("calling MIDBID")
+				// console.log("calling MIDBID")
 				getBid(1).then(function(response) {
-					console.log("MIDBID responded")
+					// console.log("MIDBID responded")
 					if (!passed[1]) {
-						console.log("MID NOT passed")
+						// console.log("MID NOT passed")
 						BackVsMid();
 					} else {
-						console.log("MID passed")
-						console.log("BACK WON")
+						// console.log("MID passed")
+						// console.log("BACK WON")
 						setDeclarer(2);			
 					}
 				});
 			} else {
-				console.log("Back passed")
+				// console.log("Back passed")
 				if (acceptedBid == "") {
 					getBid(1).then(function(response) {
 						if (!passed[1]) {
-							console.log("ALL PASSED")
-							emptyBidDivsExcept(-1);
+							toastMsg("All passed");
 							return
 						} else {
-							console.log("MID WON" + acceptedBid);
+							// console.log("MID WON" + acceptedBid);
 							setDeclarer(1);	
 							return								
 						}
 					})
 				} else {
-					console.log("MID WON" + acceptedBid);
+					// console.log("MID WON" + acceptedBid);
 					setDeclarer(1);	
 				}									
 			}
 		});
+	}
+
+	function toastMsg(text) {
+		var message = document.getElementById("message");
+		message.innerHTML = text;
+		//console.log(text)
+		emptyBidDivsExcept(-1);
+		$("#message").show();
+		setTimeout(function() {
+			$("#message").hide();
+		}, 2000);
 	}
 
 	function setDeclarer(player) {
@@ -728,11 +825,11 @@
 					var d = document.getElementById("bidn" + playerIndex[player])
 					d.style["background"] = "orange"
 					var bid = document.getElementById("bid" + playerIndex[player])
-					console.log("Setting: element: " + "bid" + playerIndex[player])
+					// console.log("Setting: element: " + "bid" + playerIndex[player])
 					emptyBidDivsExcept(player);
 					$(biddiv[player]).empty();
 					var bid = $(biddiv[player]);
-					console.log("APPENDING accepted bid: "+acceptedBid)
+					// console.log("APPENDING accepted bid: "+acceptedBid)
 					bid.append($("<span>Bid: " + acceptedBid + "</span>"));
 					//
 					// continue with pick up skat
@@ -742,15 +839,6 @@
 				},
 			}));
 	}
-
-	// function emptyBidDivsExcept(p) {
-	// 	for (var i = 0; i <= 2; i++) {
-	// 		if (i != p) {
-	// 			console.log("EMptying div: " + biddiv[i])
-	// 			$(biddiv[i]).empty();
-	// 		}
-	// 	}
-	// }
 
 	function emptyBidDivsExcept(p, t) {
 		setTimeout(function() {
@@ -774,7 +862,11 @@
 						parsedBid = parsed.Bid;
 					},
 			})).then(function(response) {
-				console.log("jsPromise returned. Bid: " + parsedBid);
+				// console.log("jsPromise returned. Bid: " + parsedBid);
+
+				$("#bidding").empty()
+				$("#bidding").append($('<button id="bidBtn" class="btn">XX</button>'))
+				$("#bidding").append($('<button id="passBtn" class="btn">Pass</button>'))
 				$("#bidding").show();
 
 				var bidBtn = document.getElementById("bidBtn")
@@ -786,7 +878,7 @@
 				}					
 				bidBtn.innerHTML = text;
 				bidBtn.addEventListener('click', function() {
-					console.log("BTN ACCEPTED")
+					// console.log("BTN ACCEPTED")
 					acceptedBid = parsedBid
 					$("#bidding").hide();
 					emptyBidDivsExcept(player, 500);
@@ -863,19 +955,19 @@
 			var element = cards[i]
 			cards[i].addEventListener('click', (function(i) {
 				return function() {
-					console.log("Index: " + i);
-					console.log("discardCardClickListener DISCARD : " + cardString(playerHand[i]));
+					// console.log("Index: " + i);
+					// console.log("discardCardClickListener DISCARD : " + cardString(playerHand[i]));
 					var index = selectedToDiscard.indexOf(playerHand[i])
-					console.log("FOUND index: " + index);
+					// console.log("FOUND index: " + index);
 					if (index == -1) {
 						selectedToDiscard.push(playerHand[i]);
 						this.style["top"] = "-50px";
 					}
 					else {
 					 	selectedToDiscard.splice(index, 1);
-						this.style["top"] = card_top[offset + i] ;
+						this.style["top"] = card_top[i] ;
 					}
-					console.log(cardListString(selectedToDiscard));
+					// console.log(cardListString(selectedToDiscard));
 				}				
 			})(i) ); 
 		} 
@@ -902,37 +994,52 @@
 
 	function cardClickListener(i) {
 		return function() {
-			console.log("cardClickListener: " + playerHand[i].suit + " " + playerHand[i].rank)
+			// console.log("cardClickListener: " + playerHand[i].suit + " " + playerHand[i].rank)
 			youPlayCard(i);			
 		}
 	}
 
 	function youPlayCard(n) {
-		console.log(playerHand[n].suit + " " + playerHand[n].rank)
+		// console.log(playerHand[n].suit + " " + playerHand[n].rank)
 		$.ajax({
 				url: "/playCard/" + gamePosition + "/" + playerHand[n].suit + "/" + playerHand[n].rank,
 				method: "GET",
 				success: function(rawdata) {
 					console.log("Success from server: " + playerHand[n].suit + " " + playerHand[n].rank);
+
+		var el = document.getElementById("card_" + (n+1));
+		el.style["position"] = "absolute";
+		el.style["left"] = "248px";
+		el.style["top"] = "-334px";
+		el.style["width"] = "130px";
+		el.style["transform"] = "rotate(2deg) scale(0.8)";
+		el.style["z-index"] = "100";
+
+		delay(300).then(function() {
+					$("#played3").show(); // hidden on creation
 					playerHand.splice(n, 1);
-					//createImgElements(playerHand);
 					// copy playerHand to a new array to pass by value to setPlayerHand
 					var l = playerHand.length;	
 					var hand = Array(l);
 					while(l--) hand[l] = playerHand[l];
-					console.log("HAND " + cardListString(hand));
-					setPlayerHand(hand);				
+					setPlayerHand(hand);			
+				});
+			
+			
 				},
+				error: function(errValue) {
+					toastMsg("You must follow suit!");
+				}
 			});			
 	}
 
 	function setPlayerHand(hand) {
-		console.log("HAND " + cardListString(hand));
+		// console.log("HAND " + cardListString(hand));
 		playerHand = []
 		hand.forEach(function(result) {
 			playerHand.push(result)
 		});
-		console.log("PLAYER HAND " + cardListString(playerHand));
+		// console.log("PLAYER HAND " + cardListString(playerHand));
 
 		createImgElements(playerHand);
 		cardsAddEventListeners();
@@ -944,25 +1051,24 @@
 		hand.forEach(function(result) {
 			playerHand.push({suit: result.Suit, rank: result.Rank})
 		});
-		console.log("PLAYER HAND " + cardListString(playerHand));
+		// console.log("PLAYER HAND " + cardListString(playerHand));
 
 		createImgElements(playerHand);
 		cardsAddEventListeners();
 	}	
 
 	function createImgElements(playerHand) {
+		setImgParams(playerHand);
 		var i = 0
 		var cards = $("#cards");
 		cards.empty();
 		noOfCards = playerHand.length;
-		offset = 6 - Math.floor(noOfCards/2)
-		console.log("OFFSET: "+ offset)
 		playerHand.forEach(function(result) {
 			var name = result.suit + result.rank
 			var img = $("<img id='card_" + (i+1) + "' class='card' src='/html/img/" + name + ".png' onmouseover='mo(" + i + ")' onmouseleave='mv(" + i + ")' />"
 						);
-			cards.append(img)
-			placeCard(i, offset)
+			cards.append(img);
+			placeCard(i);
 			i++
 		});	
 	}
@@ -970,47 +1076,82 @@
 	var card_left = []
 	var card_top = []
 	var card_rotate = []
-	var offset = 1
 
 	var initRotate = -15
 	var initTop = -10
 
-	for(var i=0; i < 6; i++) {
-		middleLeft = 200
-		leftStep = 45
+	function setImgParams(playerHand) {
+		var len = playerHand.length;
+		// console.log("len: " + len);
+
+		middleLeft = 235;
+		cardwidth = 130;
+		var maxWidth = 600;
+		leftStep = Math.floor((maxWidth - cardwidth - 20) / playerHand.length)
+		if (leftStep > 60) 
+			leftStep = 60;
+		// console.log("leftStep" + leftStep);
 		middleTop = 0
 		topStep = 3
 		rotateStep = 4
-		card_left[5-i] = middleLeft - i * leftStep
-		card_left[6+i] = middleLeft + (i+1) * leftStep
-		card_top[5-i] = Math.floor(middleTop + i * (topStep + i/2))
-		card_top[6+i] = Math.floor(middleTop + i * (topStep + i/2))
-		card_rotate[5-i] = "rotate("+ (-rotateStep/2 - i *rotateStep) +"deg)"
-		card_rotate[6+i] = "rotate("+ (rotateStep/2 + i * rotateStep) +"deg)"
+		if (len % 2 == 0) {
+			var half = len / 2;
+			midLeft = half - 1;
+			midRight = half
+			for(var i=0; i < half; i++) {
+
+				card_left[midLeft-i] = middleLeft - i * leftStep - leftStep/2
+				card_left[midRight+i] = middleLeft + (i+1) * leftStep - leftStep/2
+				card_top[midLeft-i] = Math.floor(middleTop + i * (topStep + i/2))
+				card_top[midRight+i] = Math.floor(middleTop + i * (topStep + i/2))
+				card_rotate[midLeft-i] = "rotate("+ (-rotateStep/2 - i *rotateStep) +"deg)"
+				card_rotate[midRight+i] = "rotate("+ (rotateStep/2 + i * rotateStep) +"deg)"
+			}				
+		} else {
+			var half = Math.floor(len / 2);
+			middle = half;
+			midLeft = half - 1;
+			midRight = half + 1;
+			// console.log("Setting: " + (middle));
+			// console.log("position: " + (middleLeft))  
+			card_left[middle] = middleLeft
+			card_top[middle] = middleTop
+			card_rotate[middle] = "rotate(0deg)"
+			for(var i=0; i < half; i++) {
+				card_left[midLeft-i] = middleLeft - (i+1) * leftStep
+				card_left[midRight+i] = middleLeft + (i+1) * leftStep
+				card_top[midLeft-i] = Math.floor(middleTop + i * (topStep + i/2))
+				card_top[midRight+i] = Math.floor(middleTop + i * (topStep + i/2))
+				card_rotate[midLeft-i] = "rotate("+ (- (i+1) *rotateStep) +"deg)"
+				card_rotate[midRight+i] = "rotate("+ ((i+1) * rotateStep) +"deg)"
+			}				
+		}
+	
 	}
+
 
 	function mo(id) {
 		var el = document.getElementById("card_" + (id+1));
-		el.style["WebkitTransform"] = card_rotate[offset + id] + " translate(0,-1em) scale(1.1)";
+		el.style["WebkitTransform"] = card_rotate[id] + " translate(0,-1em) scale(1.1)";
 	}
 
 	function mv(id) {
 		var el = document.getElementById("card_" + (id+1));
-		el.style["WebkitTransform"] = card_rotate[offset + id];
+		el.style["WebkitTransform"] = card_rotate[id];
 	}
 
-	function placeCard(id, offset) {
+	function placeCard(id) {
 		var el = document.getElementById("card_" + (id+1));
 		el.className = 'card'
-		el.style["left"] = card_left[offset + id] + "px";
-		el.style["top"] = card_top[offset + id] + "px";
-		if (id == offset) {
+		el.style["left"] = card_left[id] + "px";
+		el.style["top"] = card_top[id] + "px";
+		if (id == 0) {
 			el.style["position"] = "relative"
 		} else {
 			el.style["position"] = "absolute";
 		}
-		el.style["WebkitTransform"] = card_rotate[offset + id];
-		el.style["transform"] = card_rotate[offset + id];
+		el.style["WebkitTransform"] = card_rotate[id];
+		el.style["transform"] = card_rotate[id];
 	}
 
 </script>
