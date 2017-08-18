@@ -1,6 +1,10 @@
 <html>
 <head>
 	<style>
+		body {
+			margin: 0px;
+    background-color: burlywood;
+		}
 		#header{
 			background-color: black;
 			color: white; 
@@ -15,48 +19,39 @@
     		/*background-color: darkgray;*/
 		}
 		.name{
-			color: blue;
-			font-style: italic;
+    color: white;
+    font-weight: bolder;
+    font-family: sans-serif;
 		}
 		.dealer {
 			border: black;
 			border-style: solid;				
 		}
-		#bidn1 {
-		    position: absolute;
-		    top: 60px;
-		    /* left: 50px; */
-		    background: yellow;
+		.bidn {
+			background: firebrick;
 		    font-size: xx-large;
-		    width: 150px;
+		    width: 180px;
 		    height: auto;
 		    text-align: center;
 		    border-radius: 40px;
 		    padding: 10px;		
+		    color: lightgrey;	
+		}
+		.bid {
+			color: white;
+		}
+		#bidn1 {
+		    position: absolute;
+		    top: 60px;
 		}
 		#bidn2 {
 			position: absolute;
 		    top: 60px;
 		    right: 0px;
-		    background: yellow;
-		    font-size: xx-large;
-		    width: 150px;
-		    height: auto;
-		    text-align: center;
-		    border-radius: 40px;
-		    padding: 10px;		
 		}
 		#bidn3 {
 		    position: relative;
 		    top: 180px;
-		    /* left: 250px; */
-		    background: yellow;
-		    font-size: xx-large;
-		    width: 150px;
-		    height: auto;
-		    text-align: center;
-		    border-radius: 40px;
-		    padding: 10px;
 		    margin: auto;
 			}			
 		#bidding, #picking{
@@ -192,24 +187,24 @@
 	<div id="header">Press start to start a new game</div>
 	<div id="content">
 		<div id="main"style="width: 400px; margin: auto;">
-			<button class="btn" onclick="start()" style="width: inherit;">Start a new game</button>
+			<button id="startBtn" class="btn" onclick="start()" style="width: inherit;">Start a new game</button>
 		</div>
 		<div id="players">
 			<div id="played"></div>
 
 			<div id="bidn1" class="bidn">
 				<div id="name1" class="name">Bob</div>
-				<div id="bid1"></div>
+				<div id="bid1" class="bid"></div>
 			</div>
 
-			<div id="bidn2">
+			<div id="bidn2" class="bidn">
 				<div id="name2" class="name">Ana</div>
-				<div id="bid2"></div>
+				<div id="bid2" class="bid"></div>
 			</div>
 
-			<div id="bidn3">	
+			<div id="bidn3" class="bidn">	
 				<div id="name3" class="name">You</div>
-				<div id="bid3"></div>
+				<div id="bid3" class="bid"></div>
 			</div>	
 
 		</div>
@@ -241,8 +236,8 @@
 <script type="text/javascript">
 
 	function start() {
-		var score = document.getElementById("score")
-		score.style["visibility"] = "hidden";
+		// document.getElementById("startBtn").style["visibility"] = "hidden";
+		document.getElementById("score").style["visibility"] = "hidden";
 
 		$("#bid1").empty();
 		$("#bid2").empty();
@@ -271,14 +266,19 @@
 	var declarer =  -1;
 	var lostNull = false;
 	var trump = "";
+	var handGame = true;
+
+	function showNameScores(s1, s2, s3) {
+		$("#name1").html("Bob (" + s2 + ")");
+		$("#name2").html("Ana (" + s3 + ")")
+		$("#name3").html("You (" + s1 + ")")
+	}
 
 	function handleInitData(rawData) {
 		var parsed = JSON.parse(rawData);
 		if (!parsed) return;
 		setPlayerHandFromServer(parsed.Hand);
-		$("#name1").html("Bob (" + parsed.Score2 + ")");
-		$("#name2").html("Ana (" + parsed.Score3 + ")")
-		$("#name3").html("You (" + parsed.Score1 + ")")
+		showNameScores(parsed.Score1, parsed.Score2, parsed.Score3);
 		var headerText = "Game " + parsed.Game;
 		gamePosition = parsed.Position
 		console.log("Position "+ gamePosition);
@@ -317,8 +317,8 @@
 		trump = "";		
 		selectedToDiscard = []
 
-		for (var i=1; i <=3 ; i++) 
-			document.getElementById("bidn" + i).style["background"] = "yellow"			
+		// for (var i=1; i <=3 ; i++) 
+		// 	document.getElementById("bidn" + i).style["background"] = "yellow"			
 
 		$("#header").text(headerText);
 
@@ -367,7 +367,8 @@
 			$("#declare").append($('<button id="heart" class="btn">HEARTS</button>'))
 			$("#declare").append($('<button id="caro" class="btn">DIAMONDS</button>'))
 			$("#declare").append($('<button id="grand" class="btn">Grand</button>'))
-			$("#declare").append($('<button id="null" class="btn">Null</button>'))
+			if ( !handGame && acceptedBid <= 23 || handGame && acceptedBid <= 35)
+				$("#declare").append($('<button id="null" class="btn">Null</button>'))
 			$("#declare").show();
 
 			$("#clubs").html('<img src="/html/img/clubs.png" style="height: 30px;width: auto;position: relative;">'); 
@@ -467,8 +468,10 @@
 				success: function(rawdata) {
 					console.log(response + " Successfully sent");
 					if (response == "hand") {
+						handGame = true;
 						declareGame(player);
 					} else {
+						handGame = false;
 						discardInSkat(player);
 					}					
 				},
@@ -533,39 +536,45 @@
 		$.ajax({
 			url: "/getScore",
 			method: "GET",
-			success: function(rawdata) {
-				var parsed = JSON.parse(rawdata);
-				if (!parsed) return;
-				var score = document.getElementById("score")
-				score.style["visibility"] = "visible"
-				var text = parsed.Declarer;
-				if (parsed.GameScore < 0)
-					text += " lost!"
-				else 
-					text += " won!"
-				text += "<br/>"
-				if (trump != "Null") {
-					text += parsed.DeclarerPoints + " - " + parsed.DefenderPoints + "<br/>"
-					if (parsed.With > 0) {
-						text += "With "
-					} else {
-						text += "Without "
-					}
-					text += Math.abs(parsed.With) 
-					if (parsed.Schneider) {
-						text += ", Schneider"
-					}				
-					if (parsed.Schwarz) {
-						text += ", Schwarz"
-					}
-				}
-				if (parsed.Overbid) {
-					text += "<br/>Overbid!"
-				}
-				text += "<br/>Score: " + parsed.GameScore;
-				score.innerHTML = text;
-			},
+			success: showScore,
 		})	
+	}
+
+	function showScore(rawdata) {
+		console.log("name"+playerIndex[declarer]);
+		var parsed = JSON.parse(rawdata);
+		if (!parsed) return;
+		var score = document.getElementById("score")
+		score.style["visibility"] = "visible"
+		var text = parsed.Declarer;
+		if (parsed.GameScore < 0)
+			text += " lost!"
+		else 
+			text += " won!"
+		text += "<br/>"
+		if (trump != "Null") {
+			text += parsed.DeclarerPoints + " - " + parsed.DefenderPoints + "<br/>"
+			if (parsed.With > 0) {
+				text += "With "
+			} else {
+				text += "Without "
+			}
+			text += Math.abs(parsed.With) 
+			if (parsed.Schneider) {
+				text += ", Schneider"
+			}				
+			if (parsed.Schwarz) {
+				text += ", Schwarz"
+			}
+		}
+		if (parsed.Overbid) {
+			text += "<br/>Overbid!"
+		}
+		text += "<br/>Score: " + parsed.GameScore;
+		score.innerHTML = text;
+		document.getElementById("startBtn").style["visibility"] = "visible";
+		console.log("TOTALS: " + parsed.Total1 + " " + parsed.Total2 + " " + parsed.Total3 )
+		showNameScores(parsed.Total1, parsed.Total2, parsed.Total3);
 	}
 
 	function gameFinished() {
@@ -818,26 +827,25 @@
 
 	function setDeclarer(player) {
 		($.ajax({
-				url: "/declarer/" + player + "/" + acceptedBid,
-				method: "GET",
-				success: function(rawdata) {
-					console.log("Declarer set:" + player + " BID: " + acceptedBid)
-					var d = document.getElementById("bidn" + playerIndex[player])
-					d.style["background"] = "orange"
-					var bid = document.getElementById("bid" + playerIndex[player])
-					// console.log("Setting: element: " + "bid" + playerIndex[player])
-					emptyBidDivsExcept(player);
-					$(biddiv[player]).empty();
-					var bid = $(biddiv[player]);
-					// console.log("APPENDING accepted bid: "+acceptedBid)
-					bid.append($("<span>Bid: " + acceptedBid + "</span>"));
-					//
-					// continue with pick up skat
-					//
-					declarer = player
-					pickUpSkat(player);
-				},
-			}));
+			url: "/declarer/" + player + "/" + acceptedBid,
+			method: "GET",
+			success: function(rawdata) {
+				console.log("Declarer set:" + player + " BID: " + acceptedBid)
+
+				var bid = document.getElementById("bid" + playerIndex[player])
+				// console.log("Setting: element: " + "bid" + playerIndex[player])
+				emptyBidDivsExcept(player);
+				$(biddiv[player]).empty();
+				var bid = $(biddiv[player]);
+				// console.log("APPENDING accepted bid: "+acceptedBid)
+				bid.append($("<span>Bid: " + acceptedBid + "</span>"));
+				//
+				// continue with pick up skat
+				//
+				declarer = player;
+				pickUpSkat(player);
+			},
+		}));
 	}
 
 	function emptyBidDivsExcept(p, t) {
@@ -1068,9 +1076,20 @@
 			var img = $("<img id='card_" + (i+1) + "' class='card' src='/html/img/" + name + ".png' onmouseover='mo(" + i + ")' onmouseleave='mv(" + i + ")' />"
 						);
 			cards.append(img);
-			placeCard(i);
+			if (declarer == -1) 
+				stackCard(i);
+			else
+				placeCard(i);
 			i++
 		});	
+		if (declarer == -1) {
+		delay(500).then(function() {
+				for (i = 0; i < playerHand.length; i++) {
+					placeCard(i);
+				}	
+			});
+		}
+
 	}
 
 	var card_left = []
@@ -1141,6 +1160,7 @@
 	}
 
 	function placeCard(id) {
+		// console.log("Placing card " + id);
 		var el = document.getElementById("card_" + (id+1));
 		el.className = 'card'
 		el.style["left"] = card_left[id] + "px";
@@ -1152,6 +1172,22 @@
 		}
 		el.style["WebkitTransform"] = card_rotate[id];
 		el.style["transform"] = card_rotate[id];
+	}
+
+	function stackCard(id) {
+		// console.log("Stacking card " + id);
+
+		var el = document.getElementById("card_" + (id+1));
+		el.className = 'card'
+		el.style["left"] = "235px";
+		el.style["top"] = "-10px";
+		if (id == 0) {
+			el.style["position"] = "relative"
+		} else {
+			el.style["position"] = "absolute";
+		}
+		el.style["WebkitTransform"] = "rotate(0deg)";
+		el.style["transform"] = "rotate(0deg)";
 	}
 
 </script>

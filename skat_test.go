@@ -24,6 +24,7 @@ func mState(trump, follow string) SuitState {
 	s.follow = follow
 	return s
 }
+
 func TestGreater(t *testing.T) {
 	clubsHeart := mState(CLUBS, HEART)
 	greaterAux(t, clubsHeart, Card{HEART, "A"}, Card{HEART, "10"})
@@ -983,14 +984,14 @@ func TestCalculateHighestBid(t *testing.T) {
 		Card{CARO, "A"},
 		Card{CARO, "10"},
 		Card{CARO, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{SPADE, "8"},
+		Card{HEART, "D"},// loser
+		Card{HEART, "9"},// loser
+		Card{SPADE, "8"},// loser
 	})
 	player.calculateHighestBid()
 
 	act := player.highestBid
-	exp := 72
+	exp := 5 * 24
 	if act != exp {
 		t.Errorf("Expected high bid %d, got %d", exp, act)
 	}
@@ -1457,6 +1458,40 @@ func TestOpponentTacticMIDPlayerLeadsLosingCard_Smear(t *testing.T) {
 	}
 }
 
+func TestOpponentTacticMIDPlayerLeadsLosingCard_Smear1(t *testing.T) {
+	// MIDDLEHAND
+
+	// if declarer leads a losing card (there are higher cards in game), SMEAR
+
+	validCards := []Card{
+		Card{HEART, "D"},
+		Card{HEART, "K"},
+		Card{HEART, "9"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{CARO, "8"},
+	}
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer(validCards)
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{SPADE, "7"}}
+
+	//
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "10"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v, with cards played %v and valid %v, expected to smear %v, played %v",
+			s.trick, s.cardsPlayed, validCards, exp, card)
+	}
+}
+
 func TestOpponentTacticMIDTrump7(t *testing.T) {
 	// MIDDLEHAND
 
@@ -1476,6 +1511,14 @@ func TestOpponentTacticMIDTrump7(t *testing.T) {
 	s.trick = []Card{Card{CLUBS, "D"}}
 	s.trumpsInGame = []Card{
 		Card{CLUBS, "9"},
+	}
+	s.cardsPlayed = []Card{
+		Card{CLUBS, "A"},		
+		Card{CLUBS, "10"},	
+		Card{CLUBS, "K"},		
+		Card{CLUBS, "D"},		
+		Card{CLUBS, "8"},		
+		Card{CLUBS, "7"},		
 	}
 
 	validCards := []Card{
@@ -2549,7 +2592,7 @@ func TestNextLowestCardsStillInPlay(t *testing.T) {
 	}
 }
 
-func TestCanWin(t *testing.T) {
+func TestCanWinGRAND(t *testing.T) {
 	cards := []Card{
 		Card{CLUBS, "J"},
 		Card{SPADE, "J"},
@@ -2562,6 +2605,29 @@ func TestCanWin(t *testing.T) {
 		Card{CLUBS, "7"}, // LOSER
 		Card{SPADE, "A"},
 		Card{SPADE, "10"},
+	}
+	p := makePlayer(cards)
+
+	canWin := canWin(p.hand)
+	if canWin != "GRAND" {
+		t.Errorf("Hand %v can win GRAND. Got: %v", p.hand, canWin)
+	}
+}
+
+func TestCanWinGRAND2(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "K"},
+
+		Card{CLUBS, "8"}, // LOSER
+		Card{CLUBS, "7"}, // LOSER
+		Card{SPADE, "10"},
+		Card{SPADE, "9"}, // LOSER
+		Card{SPADE, "D"}, // LOSER
 	}
 	p := makePlayer(cards)
 
@@ -3220,5 +3286,26 @@ func TestHTMLBid2(t *testing.T) {
 	actB = m.Accepted
 	if actB != expB {
 		t.Errorf("Error bid, exp: %v, found %v", expB, actB)
+	}
+}
+
+func TestWinnerCards(t *testing.T) {
+	cards := []Card{
+		Card{HEART, "D"},
+		Card{HEART, "K"},
+		Card{HEART, "9"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{CARO, "8"},
+	}
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.follow = SPADE
+	s.trick = []Card{Card{SPADE, "7"}}
+
+	winners := winnerCards(&s, cards)
+
+	if len(winners) > 0 {
+		t.Errorf("Expected 0 winners, got %v", winners)
 	}
 }

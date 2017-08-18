@@ -364,6 +364,7 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 		schwarz, 
 		ouvert, 
 		overbid,
+		0,0,0,
 	}
 
 
@@ -493,6 +494,10 @@ func declareAndPlay(players []PlayerI) int {
 		}
 
 	}
+	gameSc.Total1 = player1.getTotalScore()
+	gameSc.Total2 = player2.getTotalScore()
+	gameSc.Total3 = player3.getTotalScore()
+	//fmt.Println("%v\n", gameSc)
 	if html {
 		scoreChannel <- gameSc
 	}
@@ -511,6 +516,9 @@ type Score struct {
 	Schwarz bool
 	Ouvert bool
 	Overbid bool
+	Total1 int
+	Total2 int
+	Total3 int
 }
 
 func game(players []PlayerI) int {
@@ -575,9 +583,11 @@ func makeChannels() {
 
 func makePlayers(auto, html bool) {
 	if auto {
+		gameLog("Creating CPU players only\n")
 		player := makePlayer([]Card{})
 		player1 = &player
 		player.risky = true
+		delayMs = 0
 	} else {
 		if html {
 			player := makeHtmlPlayer([]Card{})
@@ -586,7 +596,6 @@ func makePlayers(auto, html bool) {
 			player := makeHumanPlayer([]Card{})
 			player1 = &player
 		}
-		gameLogFlag = true
 		delayMs = 500
 	}
 	player2 = makePlayer([]Card{})
@@ -609,6 +618,8 @@ func main() {
 	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:8080")
 	flag.Parse()
 
+	gameLog("AUTO: %v\n", auto)
+	fmt.Println(fileLogFlag)
 	if randSeed == 0 {
 		r = rand.New(rand.NewSource(time.Now().Unix()))
 	} else {
@@ -896,7 +907,7 @@ func startServer() *mux.Router {
 		htmlLog("Wating for card...")
 
 		winnerName := <-winnerChannel
-		htmlLog("Sending winner %v", winnerName)
+		htmlLog("Sending winner %v\n", winnerName)
 
 		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
 		// time.Sleep(time.Duration(delayMs) * time.Millisecond)

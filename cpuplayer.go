@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "fmt"
+	"log"
 )
 
 type Player struct {
@@ -21,6 +22,9 @@ func makePlayer(hand []Card) Player {
 }
 
 func winnerCards(s *SuitState, cs []Card) []Card {
+	if len(s.trick) > 0 {
+		s.follow = getSuit(s.trump, s.trick[0])
+	}
 	return filter(cs, func(c Card) bool {
 		wins := true
 		for _, t := range s.trick {
@@ -551,6 +555,10 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 					return sortValue(c)[0]
 				}
 			}
+			if len(winnerCards(s, c)) == 0 && !noHigherCard(s, false, s.trick[0]){
+				debugTacticsLog("... higher cards in play ... SMEAR...")
+				return sortValue(c)[0]
+			}
 			return highestValueWinnerORlowestValueLoser(s, c)
 		} else {
 			debugTacticsLog("Teammate leads...")
@@ -839,6 +847,8 @@ func canWin(cs []Card) string {
 					// 	asses++
 					// }
 				}
+			} else if in(cs, Card{s, "10"}) && tenIsSupported(cs, Card{s, "10"}) {
+				asses++
 			}
 		}
 		return asses
@@ -848,7 +858,7 @@ func canWin(cs []Card) string {
 	losers := len(grandLosers(cs)) + jackLosers(cs)
 	debugTacticsLog("\nLosers: %v, %d jacks\n", grandLosers(cs), jackLosers(cs))
 	debugTacticsLog("\nConsidering GRAND in Hand: %v, Full ones: %v, Losers: %v\n", cs, fullOnes, losers)
-	if fullOnes > losers {
+	if fullOnes + 1>= losers {
 		asuits := 0
 		for _, s := range suits {
 			if in(cs, Card{s, "A"}) {
@@ -1000,6 +1010,21 @@ func (p *Player) declareTrump() string {
 // AVG  18.6, passed 10760, won 73096, lost 16144 / 100000 games
 // Grand games 1351, perc:  1.35
 
+func tenIsSupported(cs []Card, ten Card) bool {
+	if ten.Rank != "10" {
+		log.Fatal("ten argument is not a 10 card")
+	}
+	s := ten.Suit
+	suitCards := filter(cs, func (c Card) bool {
+		return c.Suit == s && c.Rank != "J"
+		})
+	if len(suitCards) > 1 {
+		debugTacticsLog("..Supported 10 in %v..", suitCards)
+		return true
+	}	
+	return false
+}
+
 func grandSuitLosers(cs []Card) []Card {
 	if len(cs) == 0 {
 		return cs
@@ -1019,6 +1044,8 @@ func grandSuitLosers(cs []Card) []Card {
 			return cs
 		}
 		return cs
+	} else if in(cs, Card{s, "10"}) && tenIsSupported(cs, Card{s, "10"}) {
+		cs = remove(cs, Card{s, "10"})
 	}
 	return cs
 }
