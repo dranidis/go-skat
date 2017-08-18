@@ -49,6 +49,108 @@ func (p Player) otherPlayersTrumps(s *SuitState) []Card {
 	})
 }
 
+var TRYING = false
+func (p Player) canWin() string {
+	cs := p.getHand()
+	assOtherThan := func(suit string) int {
+		asses := 0
+		for _, s := range suits {
+			if s == suit {
+				continue
+			}
+			if in(cs, Card{s, "A"}) {
+				//	debugTacticsLog("(A %s) ", s)
+				asses++
+				if in(cs, Card{s, "10"}) {
+					//		debugTacticsLog("(10 %s) ", s)
+					asses++
+					// if in(p.getHand(), Card{s, "K"}) {
+					// 	debugTacticsLog("(K %s) ", s)
+					// 	asses++
+					// }
+				}
+			} else if in(cs, Card{s, "10"}) && tenIsSupported(cs, Card{s, "10"}) {
+				asses++
+			}
+		}
+		return asses
+	}
+
+	fullOnes := assOtherThan("")
+	losers := len(grandLosers(cs)) + jackLosers(cs)
+	debugTacticsLog("\nLosers: %v, %d jacks\n", grandLosers(cs), jackLosers(cs))
+	debugTacticsLog("\nConsidering GRAND in Hand: %v, Full ones: %v, Losers: %v\n", cs, fullOnes, losers)
+	if fullOnes >= losers  || (p.risky && fullOnes + 1 >= losers) {
+		if fullOnes < losers {
+			TRYING = true
+		}
+	// if fullOnes >= losers  {
+		asuits := 0
+		for _, s := range suits {
+			if in(cs, Card{s, "A"}) {
+				asuits++
+			}
+		}
+		Js := filter(cs, func(c Card) bool {
+			return c.Rank == "J"
+		})
+		debugTacticsLog("Js %v, Asuits %d\n", Js, asuits)
+		if len(Js) > 1 {
+			debugTacticsLog("WILL PLAY GRAND with Jacks: %v\n", Js)
+			TRYING = false
+			return "GRAND"
+		}
+		if len(Js) == 1 {
+			if asuits >= 4 {
+				debugTacticsLog("WILL PLAY GRAND with 1 Jack and 4 suits covered with A: %v\n", Js)
+				return "GRAND"
+			}
+		}
+		//return "GRAND"
+
+	}
+	// if len(filter(p.hand, func (c Card) bool {
+	// 	return c.Rank == "J"
+	// })) > 1 {
+	// 	asses := assOtherThan("")
+	// 	if asses > 3 {
+	// 		debugTacticsLog(" - Can win GRAND - ")
+	// 		return "GRAND"
+	// 	}
+	// }
+
+	suit := mostCardsSuit(cs)
+	largest := len(trumpCards(suit, cs))
+	debugTacticsLog("Longest suit %s, %d cards\n", suit, largest)
+	asses := assOtherThan(suit)
+	debugTacticsLog("Extra suits: %d\n", asses)
+	prob := 0
+
+	if largest > 4 && asses > 0 {
+		prob = 80
+	}
+
+	if largest > 5 {
+		prob = 85
+	}
+	if largest > 6 {
+		prob = 99
+	}
+
+	est := handEstimation(cs)
+	debugTacticsLog("Hand: %v, Estimation: %d\n", cs, est)
+	if prob < 80 {
+		if est < 50 {
+			return ""
+		}
+	}
+	//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
+
+	// fmt.Printf("HIGH %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
+	return "SUIT"
+}
+
+
 func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	debugTacticsLog("DECLARER ")
 	if len(s.trick) == 0 {
@@ -93,7 +195,23 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				})
 				if len(tens) > 0 {
 					return tens[0]
+				}					
+				Ks := filter(suits, func(card Card) bool {
+					cardsPlayed := append(s.cardsPlayed, s.skat...)
+					return card.Rank == "K" && in(cardsPlayed, Card{card.Suit, "A"}, Card{card.Suit, "10"})
+				})
+				if len(Ks) > 0 {
+					return Ks[0]
+				}					
+				Ds := filter(suits, func(card Card) bool {
+					cardsPlayed := append(s.cardsPlayed, s.skat...)
+					return card.Rank == "D" && in(cardsPlayed, Card{card.Suit, "A"}, Card{card.Suit, "10"}, Card{card.Suit, "K"})
+				})								
+				if len(Ds) > 0 {
+					return Ds[0]
 				}
+				sortedValue := sortValue(c)
+				return sortedValue[len(sortedValue)-1]
 			}
 
 			if p.otherPlayersHaveJs(s) {
@@ -527,7 +645,7 @@ func (p *Player) getGamevalue(suit string) int {
 func (p *Player) calculateHighestBid() int {
 	p.highestBid = 0
 
-	switch canWin(p.hand) {
+	switch p.canWin() {
 	case "":
 		return 0
 	case "SUIT":

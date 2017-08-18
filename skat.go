@@ -387,19 +387,25 @@ func initGame(players []PlayerI) {
 	state.skat = make([]Card, 2)
 	// DEALING
 	// for {
+	// 		TRYING = false
+
 	debugTacticsLog("SHUFFLING..")
 	cards := Shuffle(makeDeck())
 	players[0].setHand(sortSuit("", cards[:10]))
 	players[1].setHand(sortSuit("", cards[10:20]))
 	players[2].setHand(sortSuit("", cards[20:30]))
 	copy(state.skat, cards[30:32])
-	// if canWin(players[0].getHand()) == "GRAND" || canWin(players[1].getHand()) == "GRAND" || canWin(players[2].getHand()) == "GRAND" {
+	// // if player1.canWin() == "GRAND" || player2.canWin() == "GRAND" || player3.canWin() == "GRAND" {
+	// // 	break
+	// // }
+	// if player2.canWin() == "GRAND" && TRYING{
 	// 	break
-	// }
-	// 	if len(sevens(player1.getHand())) == 4 {
-	// 		debugTacticsLog("FOUR 7\n")
-	// 		break
-	// 	}
+	// }	
+
+	// // 	if len(sevens(player1.getHand())) == 4 {
+	// // 		debugTacticsLog("FOUR 7\n")
+	// // 		break
+	// // 	}
 	// }
 	for _, p := range players {
 		h := p.calculateHighestBid()
@@ -429,7 +435,7 @@ func declareAndPlay(players []PlayerI) int {
 	}
 
 	if state.trump == GRAND {
-		fmt.Println(GRAND)
+		//fmt.Println(GRAND)
 		grandGames++
 	}
 	state.trumpsInGame = filter(makeDeck(), func(c Card) bool {
@@ -603,6 +609,8 @@ func makePlayers(auto, html bool) {
 	player1.setName("You")
 	player2.setName("Bob")
 	player3.setName("Ana")
+	player2.risky = true
+	player3.risky = false
 	players = []PlayerI{player1, &player2, &player3}
 }
 
@@ -619,7 +627,7 @@ func main() {
 	flag.Parse()
 
 	gameLog("AUTO: %v\n", auto)
-	fmt.Println(fileLogFlag)
+	//fmt.Println(fileLogFlag)
 	if randSeed == 0 {
 		r = rand.New(rand.NewSource(time.Now().Unix()))
 	} else {
@@ -663,7 +671,9 @@ func main() {
 		} else if score < 0 {
 			lost++
 		}
-		fmt.Printf("\nGAME: %6d (%s) %5d     (%s) %5d     (%s) %5d\n", gameIndex, player1.getName(), player1.getTotalScore(), player2.getName(), player2.getTotalScore(), player3.getName(), player3.getTotalScore())
+		if !auto {
+			fmt.Printf("\nGAME: %6d (%s) %5d     (%s) %5d     (%s) %5d\n", gameIndex, player1.getName(), player1.getTotalScore(), player2.getName(), player2.getTotalScore(), player3.getName(), player3.getTotalScore())
+		}
 		//time.Sleep(1000 * time.Millisecond)
 		players = rotatePlayers(players)
 	}

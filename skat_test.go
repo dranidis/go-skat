@@ -988,6 +988,7 @@ func TestCalculateHighestBid(t *testing.T) {
 		Card{HEART, "9"},// loser
 		Card{SPADE, "8"},// loser
 	})
+	player.risky = true
 	player.calculateHighestBid()
 
 	act := player.highestBid
@@ -1915,23 +1916,28 @@ func TestDeclarerTacticFORE2(t *testing.T) {
 	}
 }
 
-func TestDeclarerTactic2(t *testing.T) {
+func TestDeclarerTacticFORE3(t *testing.T) {
 	// BUT play your A-10 trumps if Js ARE NOT still there
 
-	player := makePlayer([]Card{})
+	validCards := []Card{
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "7"},
+	}
+	player := makePlayer(validCards)
 	s := makeSuitState()
 	s.leader = &player
 	s.declarer = &player
 
 	s.trump = CLUBS
 	s.trick = []Card{}
-	validCards := []Card{
+
+	s.trumpsInGame = []Card{
 		Card{CLUBS, "A"},
 		Card{CLUBS, "10"},
 		Card{CLUBS, "7"},
+		Card{CLUBS, "K"},
 	}
-
-	s.trumpsInGame = []Card{Card{CLUBS, "K"}}
 
 	card := player.playerTactic(&s, validCards)
 	exp := Card{CLUBS, "A"}
@@ -1941,7 +1947,7 @@ func TestDeclarerTactic2(t *testing.T) {
 	}
 }
 
-func TestDeclarerTactic3(t *testing.T) {
+func TestDeclarerTacticFORE4(t *testing.T) {
 	// BUT play your A-10 trumps if Js ARE NOT still there
 
 	player := makePlayer([]Card{})
@@ -1969,6 +1975,40 @@ func TestDeclarerTactic3(t *testing.T) {
 	if !card.equals(exp) {
 		t.Errorf("Trump: CLUBS, In trick %v and valid %v, was expected to play %v since still in game are: %v. Played %v",
 			s.trick, validCards, exp, s.trumpsInGame, card)
+	}
+}
+
+
+func TestDeclarerTacticFORE5(t *testing.T) {
+	// don't play a trump if opponents have many
+
+	validCards := []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "8"},
+		Card{SPADE, "7"},
+		Card{HEART, "8"},
+		Card{CARO, "D"},
+	}
+	player := makePlayer(validCards)
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &player
+
+	s.trump = GRAND
+	s.trick = []Card{}
+
+	s.trumpsInGame = []Card{
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+	}
+
+	card := player.playerTactic(&s, validCards)
+	notexp := Card{CLUBS, "J"}
+	if card.equals(notexp) {
+		t.Errorf("Trump: CLUBS, In trick %v and valid %v, was NOT expected to play %v since still in game are: %v. Played %v",
+			s.trick, validCards, notexp, s.trumpsInGame, card)
 	}
 }
 
@@ -2608,7 +2648,7 @@ func TestCanWinGRAND(t *testing.T) {
 	}
 	p := makePlayer(cards)
 
-	canWin := canWin(p.hand)
+	canWin := p.canWin()
 	if canWin != "GRAND" {
 		t.Errorf("Hand %v can win GRAND. Got: %v", p.hand, canWin)
 	}
@@ -2630,8 +2670,9 @@ func TestCanWinGRAND2(t *testing.T) {
 		Card{SPADE, "D"}, // LOSER
 	}
 	p := makePlayer(cards)
+	p.risky = true
 
-	canWin := canWin(p.hand)
+	canWin := p.canWin()
 	if canWin != "GRAND" {
 		t.Errorf("Hand %v can win GRAND. Got: %v", p.hand, canWin)
 	}
