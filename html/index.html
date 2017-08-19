@@ -264,6 +264,9 @@
 	var youIndex = -1;
 	var trickIndex = -1;
 	var enableClick = false;
+	var skatPos1 = -1;
+	var skatPos2 = -1;
+
 
 	function showNameScores(s1, s2, s3) {
 		$("#name1").html("Bob (" + s2 + ")");
@@ -356,6 +359,22 @@
 		}));		
 	}
 
+
+	function getHandAndSkatFromServer() {
+		return Promise.resolve($.ajax({
+			url: "/getHandAndSkat/" + gamePosition,
+			method: "GET",
+			success: function(rawdata) {
+				var parsed = JSON.parse(rawdata);
+				if (!parsed) return;	
+				setPlayerHandFromServer(parsed.Hand);
+				skatPos1 = parsed.SkatPos1;
+				skatPos2 = parsed.SkatPos2;
+				console.log("" + skatPos1 + " " + skatPos2)
+			}
+		}));		
+	}
+
 	function chooseGame() {
 		return new Promise(function(resolve) {
 	
@@ -428,7 +447,8 @@
 					resolve(cardsToDiscard);
 				})
 			});
-
+			document.getElementById('card_' + (skatPos1+1)).click();
+			document.getElementById('card_' + (skatPos2+1)).click();
 		});
 	}
 
@@ -448,7 +468,7 @@
 
 	function discardInSkat(player) {
 		// console.log("DISCARD IN SKAT");
-		getHandFromServer()
+		getHandAndSkatFromServer()
 		.then(chooseCardsToDiscard)
 		.then(getHandFromServer)
 		.then(function(response) {
@@ -625,15 +645,18 @@
 		.then(function () {
 			el.style["transition"] = "1s ease-in-out";
 		})
+		.then(delayfn(200))
 		.then(getCardFromServer)
+		.then(delayfn(200))
 		.then(getCardFromServer)
+		.then(delayfn(200))
 		.then(getTrickWinner)
-		.then(delayfn(1000))
+		.then(delayfn(500))
 		.then(function() {
 			el.style["visibility"] = "hidden";
 			el.style["transition"] = "0s";
 		})
-		.then(delayfn(1000))
+		.then(delayfn(500))
 		.then(function (response) {
 			$("#played").empty();
 			showPlayed();

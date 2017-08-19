@@ -63,6 +63,15 @@ func (p *HtmlPlayer) pickUpSkat(skat []Card) bool {
 	hand = append(hand, skat...)
 	p.setHand(sortSuit("", hand))
 
+	// find indices of skat cards in hand
+	for i, c := range(p.hand) {
+		if c.equals(skat[0]) {
+			skatPositionChannel <- i
+		} 
+		if c.equals(skat[1]) {
+			skatPositionChannel <- i
+		} 		
+	}
 	// SEND HAND TO SERVER
 
 	p.discardInSkat(skat)

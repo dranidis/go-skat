@@ -35,6 +35,7 @@ var scoreChannel chan Score
 var pickUpChannel chan string
 var declareChannel chan string
 var discardChannel chan Card
+var skatPositionChannel chan int
 
 func logToFile(format string, a ...interface{}) {
 	if fileLogFlag && logFile != nil {
@@ -585,6 +586,7 @@ func makeChannels() {
 	pickUpChannel = make(chan string)
 	declareChannel = make(chan string)
 	discardChannel = make(chan Card)
+	skatPositionChannel = make(chan int)
 }
 
 func makePlayers(auto, html bool) {
@@ -755,6 +757,34 @@ func startServer() *mux.Router {
 		pi := int(pl)
 		if pi >= 0 && pi < len(players) {
 			data := players[pi].getHand()
+			sendJson(w, data)
+		} else {
+			htmlLog("Invalid index")
+			http.Error(w, "Invalid index", http.StatusInternalServerError)
+		}
+	})
+
+	rt.HandleFunc("/getHandAndSkat/{pl}", func(w http.ResponseWriter, r *http.Request) {
+		pl, err := strconv.ParseInt(mux.Vars(r)["pl"], 10, 64)
+		if err != nil {
+			htmlLog("Invalid index")
+			http.Error(w, "Invalid index", http.StatusInternalServerError)
+		}
+		pi := int(pl)
+
+		
+		// var player *HtmlPlayer
+		// player, _ = players[pi].(* HtmlPlayer)
+
+		skat1 := <-skatPositionChannel 
+		skat2 := <-skatPositionChannel 
+
+		if pi >= 0 && pi < len(players) {
+			data := SkatData{
+				players[pi].getHand(),
+				skat1,
+				skat2,
+			}
 			sendJson(w, data)
 		} else {
 			htmlLog("Invalid index")
@@ -973,4 +1003,10 @@ type initData struct {
 type BidData struct {
 	Bid      int
 	Accepted bool
+}
+
+type SkatData struct {
+	Hand     []Card
+	SkatPos1	int
+	SkatPos2	int
 }
