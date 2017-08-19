@@ -3,7 +3,7 @@
 	<style>
 		body {
 			margin: 0px;
-    background-color: burlywood;
+    		background-color: burlywood;
 		}
 		#header{
 			background-color: black;
@@ -19,9 +19,9 @@
     		/*background-color: darkgray;*/
 		}
 		.name{
-    color: white;
-    font-weight: bolder;
-    font-family: sans-serif;
+		    color: white;
+		    font-weight: bolder;
+		    font-family: sans-serif;
 		}
 		.dealer {
 			border: black;
@@ -137,13 +137,6 @@
 		    visibility: hidden;
 			text-align: center;		    
 		}
-/*		#picking {
-			margin: auto;
-		    top: 180px;
-		    position: absolute;
-		    text-align: center;
-		    width: 100%;
-		}*/
 		#pickBtn {
 
 		}
@@ -209,10 +202,10 @@
 
 		</div>
 
-			<div id="bidding" style="display: none;">
-				<button id="bidBtn" class="btn">XX</button>
-				<button id="passBtn" class="btn">Pass</button>
-			</div>
+		<div id="bidding" style="display: none;">
+			<button id="bidBtn" class="btn">XX</button>
+			<button id="passBtn" class="btn">Pass</button>
+		</div>
 
 		<div id="cards"></div>
 		<div id="score"></div>
@@ -236,6 +229,7 @@
 <script type="text/javascript">
 
 	function start() {
+		// UNCOMMENT FOR REAL GAME
 		// document.getElementById("startBtn").style["visibility"] = "hidden";
 		document.getElementById("score").style["visibility"] = "hidden";
 
@@ -267,6 +261,9 @@
 	var lostNull = false;
 	var trump = "";
 	var handGame = true;
+	var youIndex = -1;
+	var trickIndex = -1;
+	var enableClick = false;
 
 	function showNameScores(s1, s2, s3) {
 		$("#name1").html("Bob (" + s2 + ")");
@@ -281,6 +278,7 @@
 		showNameScores(parsed.Score1, parsed.Score2, parsed.Score3);
 		var headerText = "Game " + parsed.Game;
 		gamePosition = parsed.Position
+		youIndex = gamePosition
 		console.log("Position "+ gamePosition);
 		if (gamePosition == 0) {
 			biddiv = ["#bid3", "#bid1", "#bid2"]
@@ -592,10 +590,18 @@
 
 	function getCardFromServer() {
 		var played = [false];
+		trickIndex++;
+		if (trickIndex > 2) trickIndex = 0;
+		if (trickIndex == youIndex) {
+			enableClick = true;
+			setTimeout(function() {
+				yourTurnMessage(played); 
+			}, 2000);		
+		}
+		console.log("Getting card from server. " + gamePosition)
+		console.log("YouIndex, trickIndex: " + youIndex + " " + trickIndex)
 		// console.log("STARTING YOUR TURN timer")
-		setTimeout(function() {
-			yourTurnMessage(played); 
-		}, 2000);
+
 		return Promise.resolve($.ajax({
 			url: "/getCardPlayed",
 			method: "GET",
@@ -664,10 +670,12 @@
 
 				if (winner == "Bob") {
 					playerIndex = [1, 2, 3];
+					youIndex = 2;
 					el.style["transform"] = "rotate(0deg) translate(-210px,30px) scale(0.4)";	
 				}
 				else if (winner == "Ana") {
 					playerIndex = [2, 3, 1];
+					youIndex = 1;
 					el.style["transform"] = "rotate(0deg) translate(210px,30px) scale(0.4)";	
 				}
 				else {
@@ -675,6 +683,7 @@
 						lostNull = true;
 					}
 					playerIndex = [3, 1, 2];	
+					youIndex = 0;
 					el.style["transform"] = "rotate(0deg) translate(0px,150px) scale(0.4)";	
 				}
 			}
@@ -1003,7 +1012,10 @@
 	function cardClickListener(i) {
 		return function() {
 			// console.log("cardClickListener: " + playerHand[i].suit + " " + playerHand[i].rank)
-			youPlayCard(i);			
+			if (enableClick) {
+				enableClick = false;
+				youPlayCard(i);			
+			}
 		}
 	}
 
@@ -1037,6 +1049,7 @@
 				},
 				error: function(errValue) {
 					toastMsg("You must follow suit!");
+					enableClick = true;
 				}
 			});			
 	}
