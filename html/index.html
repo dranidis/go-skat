@@ -21,7 +21,7 @@
    	 		max-width: 600px;
     		position: relative;
     		/*background-color: darkgray;*/
-    		transform: scale(0.9);
+    		transform: scale(0.95);
 		}
 		.name{
 		    color: white;
@@ -47,11 +47,11 @@
 		}
 		#bidn1 {
 		    position: absolute;
-		    top: 60px;
+		    top: 0px;
 		}
 		#bidn2 {
 			position: absolute;
-		    top: 60px;
+		    top: 0px;
 		    right: 0px;
 		}
 		#bidn3 {
@@ -101,7 +101,7 @@
 		}		
 		#played {
 			position: relative;
-			top: 10px;
+			top: 0px;
 			/*left:240px;*/
 			transition: 1s ease-in-out;
 			transform: scale(0.9);
@@ -183,19 +183,23 @@
 		    border-radius: 20px;
 		    padding: 20;
 		    text-align: center;
-		    max-width: 150px;
+		    max-width: 350px;
+		    min-width: 150px;
 		}
 		#main {
 			width: 400px; 
 			margin: auto;
 			position:relative;
-			height: 150px;
+			height: 60px;
+		}
+		#players {
+			position: relative;
 		}
 
 	</style>
 </head>
 <body>
-	<div id="header">Press start to start a new game</div>
+	<div id="header">Hi! Ola! Ciao!</div>
 	<div id="content">
 		<div id="main">
 			<button id="startBtn" class="btn" onclick="start()" style="width: inherit;">Start a new game</button>
@@ -309,7 +313,7 @@
 			$("#bidn1").removeClass("dealer");
 			$("#bidn2").addClass("dealer");
 			$("#bidn3").removeClass("dealer");
-			headerText += " You are forehand"
+			headerText += "Ana deals the cards. You are forehand"
 		}
 		if (gamePosition == 1) {
 			biddiv = ["#bid2", "#bid3", "#bid1"]
@@ -317,7 +321,7 @@
 			$("#bidn1").addClass("dealer");
 			$("#bidn2").removeClass("dealer");
 			$("#bidn3").removeClass("dealer");
-			headerText += " You are middlehand"
+			headerText += "Bob deals the cards. You are middlehand"
 		}
 		if (gamePosition == 2) {
 			biddiv = ["#bid1", "#bid2", "#bid3"]
@@ -325,7 +329,7 @@
 			$("#bidn1").removeClass("dealer");
 			$("#bidn2").removeClass("dealer");
 			$("#bidn3").addClass("dealer");
-			headerText += " You are backhand"
+			headerText += "You deal the cards, you are backhand"
 			toastMsg("You deal the cards")
 		}				
 		passed = [false, false, false];
@@ -825,6 +829,7 @@
 					getBid(0).then(function(response) {
 						if (passed[0]) {
 							toastMsg("All passed");
+							document.getElementById("startBtn").style["visibility"] = "visible";
 							return
 						} else {
 								// console.log("FORE WON" + acceptedBid);
@@ -864,6 +869,7 @@
 					getBid(1).then(function(response) {
 						if (!passed[1]) {
 							toastMsg("All passed");
+							document.getElementById("startBtn").style["visibility"] = "visible";
 							return
 						} else {
 							// console.log("MID WON" + acceptedBid);

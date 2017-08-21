@@ -1634,7 +1634,7 @@ func TestOpponentTacticMIDFollow(t *testing.T) {
 	}
 }
 
-func TestOpponentTacticFORE(t *testing.T) {
+func TestOpponentTacticFORE_short_long(t *testing.T) {
 	// FOREHAND
 
 	// if declarer BACK short
