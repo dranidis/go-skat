@@ -5,6 +5,10 @@
 			margin: 0px;
     		background-color: burlywood;
 		}
+		.declareBtn {
+		    /*background-color: darkblue;*/
+		    min-width: 80px;
+		}
 		#header{
 			background-color: black;
 			color: white; 
@@ -17,6 +21,7 @@
    	 		max-width: 600px;
     		position: relative;
     		/*background-color: darkgray;*/
+    		transform: scale(0.9);
 		}
 		.name{
 		    color: white;
@@ -99,7 +104,7 @@
 			top: 10px;
 			/*left:240px;*/
 			transition: 1s ease-in-out;
-			transform: scale(0.8);
+			transform: scale(0.9);
 			width: 100px;
 			height: 0px;
 			margin: auto;
@@ -152,7 +157,7 @@
 		}
     	#discard {
 			position: absolute;
-		    top: 550px;
+		    top: 530px;
 		    /* left: 0; */
 		    width: 100%;
 		    margin: auto;
@@ -161,7 +166,16 @@
 		#discardBtn {
 			width: 270px;
 		}
+		#messageDiv {
+
+		    width: 100%;
+		    z-index: 999;
+		    position: absolute;	
+		    top: 530px;		
+		}
 		#message {
+		    position: relative;	
+		    margin: auto; 	
 			font-size: xx-large;
 		    background-color: gray;
 		    color: white;
@@ -169,9 +183,13 @@
 		    border-radius: 20px;
 		    padding: 20;
 		    text-align: center;
-		    max-width: 300px;
-		    margin: auto; 	
-		    z-index: 999;		
+		    max-width: 150px;
+		}
+		#main {
+			width: 400px; 
+			margin: auto;
+			position:relative;
+			height: 150px;
 		}
 
 	</style>
@@ -179,7 +197,7 @@
 <body>
 	<div id="header">Press start to start a new game</div>
 	<div id="content">
-		<div id="main"style="width: 400px; margin: auto;">
+		<div id="main">
 			<button id="startBtn" class="btn" onclick="start()" style="width: inherit;">Start a new game</button>
 		</div>
 		<div id="players">
@@ -223,14 +241,16 @@
 			<button id="null" class="btn">Null</button>
 		</div>
 		<div id="discard" style="display: none;"></div>
-		<div id="message"style="display: none;">ALL PASSED</div>
+		<div id="messageDiv">
+			<div id="message"style="display: none;">ALL PASSED</div>
+		</div>
 	</div>
 <script type="text/javascript" src="/html/jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
 
 	function start() {
 		// UNCOMMENT FOR REAL GAME
-		// document.getElementById("startBtn").style["visibility"] = "hidden";
+		document.getElementById("startBtn").style["visibility"] = "hidden";
 		document.getElementById("score").style["visibility"] = "hidden";
 
 		$("#bid1").empty();
@@ -379,13 +399,20 @@
 		return new Promise(function(resolve) {
 	
 			$("#declare").empty()
-			$("#declare").append($('<button id="clubs" class="btn">CLUBS</button>'))
-			$("#declare").append($('<button id="spade" class="btn">SPADES</button>'))
-			$("#declare").append($('<button id="heart" class="btn">HEARTS</button>'))
-			$("#declare").append($('<button id="caro" class="btn">DIAMONDS</button>'))
-			$("#declare").append($('<button id="grand" class="btn">Grand</button>'))
-			if ( !handGame && acceptedBid <= 23 || handGame && acceptedBid <= 35)
-				$("#declare").append($('<button id="null" class="btn">Null</button>'))
+			$("#declare").append($('<button id="clubs" class="declareBtn btn">CLUBS</button>'))
+			$("#declare").append($('<button id="spade" class="btn declareBtn">SPADES</button>'))
+			$("#declare").append($('<button id="heart" class="btn declareBtn">HEARTS</button>'))
+			$("#declare").append($('<button id="caro" class="btn declareBtn">DIAMONDS</button>'))
+			$("#declare").append($('<button id="grand" class="btn declareBtn">Grand</button>'))
+			if ( !handGame && acceptedBid <= 23 || handGame && acceptedBid <= 35) {
+				$("#declare").append($('<button id="null" class="btn declareBtn">Null</button>'))
+				var nullGame = document.getElementById("null")
+				nullGame.addEventListener('click', function() {
+					$("#declare").hide();
+					resolve("Null")
+				}) 							
+			}
+
 			$("#declare").show();
 
 			$("#clubs").html('<img src="/html/img/clubs.png" style="height: 30px;width: auto;position: relative;">'); 
@@ -398,7 +425,6 @@
 			var heart = document.getElementById("heart")
 			var caro = document.getElementById("caro")
 			var grand = document.getElementById("grand")
-			var nullGame = document.getElementById("null")
 			clubs.addEventListener('click', function() {
 				$("#declare").hide();
 				resolve("CLUBS")
@@ -418,10 +444,6 @@
 			grand.addEventListener('click', function() {
 				$("#declare").hide();
 				resolve("Grand")
-			}) 							
-			nullGame.addEventListener('click', function() {
-				$("#declare").hide();
-				resolve("Null")
 			}) 							
 		});
 	}
@@ -560,6 +582,8 @@
 
 	function showScore(rawdata) {
 		console.log("name"+playerIndex[declarer]);
+		$("#message").hide();
+
 		var parsed = JSON.parse(rawdata);
 		if (!parsed) return;
 		var score = document.getElementById("score")
@@ -577,12 +601,17 @@
 			} else {
 				text += "Without "
 			}
-			text += Math.abs(parsed.With) 
+			val = Math.abs(parsed.With) 
+			text += "" + val + ", Game "
+			val++;
+			text += val; 
 			if (parsed.Schneider) {
-				text += ", Schneider"
+				val++;
+				text += ", Schneider " + val
 			}				
 			if (parsed.Schwarz) {
-				text += ", Schwarz"
+				val++;
+				text += ", Schwarz " + val
 			}
 		}
 		if (parsed.Overbid) {
@@ -600,12 +629,17 @@
 	}
 
 	function yourTurnMessage(played) {
-		setTimeout(function() {
-			if (!played[0]) {
-				toastMsg("Your turn!");
-				yourTurnMessage(played);
-			}
-		}, 5000);
+		if (!played[0]) {
+			var message = document.getElementById("message");
+			message.innerHTML = "Your turn!";
+			$("#message").show();
+		}
+		// setTimeout(function() {
+		// 	if (!played[0]) {
+		// 		toastMsg("Your turn!");
+		// 		yourTurnMessage(played);
+		// 	}
+		// }, 5000);
 	}
 
 	function getCardFromServer() {
@@ -616,7 +650,7 @@
 			enableClick = true;
 			setTimeout(function() {
 				yourTurnMessage(played); 
-			}, 2000);		
+			}, 5000);		
 		}
 		console.log("Getting card from server. " + gamePosition)
 		console.log("YouIndex, trickIndex: " + youIndex + " " + trickIndex)
@@ -645,11 +679,11 @@
 		.then(function () {
 			el.style["transition"] = "1s ease-in-out";
 		})
-		.then(delayfn(200))
+		.then(delayfn(1000))
 		.then(getCardFromServer)
-		.then(delayfn(200))
+		.then(delayfn(600))
 		.then(getCardFromServer)
-		.then(delayfn(200))
+		// .then(delayfn(200))
 		.then(getTrickWinner)
 		.then(delayfn(500))
 		.then(function() {
@@ -725,9 +759,8 @@
 		if (pi == 3) {
 			// console.log("HIDING...")
 			img = $("<img id='played" + pi + "' class='card' src='/html/img/" + name + ".png' style='display: none;'/>");
-		}		
+		}	
 		played.append(img);	
-
 	}
 
 	function showPlayed() {
@@ -1002,10 +1035,12 @@
 					if (index == -1) {
 						selectedToDiscard.push(playerHand[i]);
 						this.style["top"] = "-50px";
+						this.style["left"] = card_left[i] + (i-6) * 5 + "px";
 					}
 					else {
 					 	selectedToDiscard.splice(index, 1);
 						this.style["top"] = card_top[i] ;
+						this.style["left"] = card_left[i] ;
 					}
 					// console.log(cardListString(selectedToDiscard));
 				}				
@@ -1050,25 +1085,25 @@
 				success: function(rawdata) {
 					console.log("Success from server: " + playerHand[n].suit + " " + playerHand[n].rank);
 
-		var el = document.getElementById("card_" + (n+1));
-		el.style["position"] = "absolute";
-		el.style["left"] = "248px";
-		el.style["top"] = "-334px";
-		el.style["width"] = "130px";
-		el.style["transform"] = "rotate(2deg) scale(0.8)";
-		el.style["z-index"] = "100";
+					$("#message").hide();
 
-		delay(300).then(function() {
-					$("#played3").show(); // hidden on creation
-					playerHand.splice(n, 1);
-					// copy playerHand to a new array to pass by value to setPlayerHand
-					var l = playerHand.length;	
-					var hand = Array(l);
-					while(l--) hand[l] = playerHand[l];
-					setPlayerHand(hand);			
-				});
-			
-			
+					var el = document.getElementById("card_" + (n+1));
+					el.style["position"] = "absolute";
+					el.style["left"] = "248px";
+					el.style["top"] = "-324px";
+					el.style["width"] = "130px";
+					el.style["transform"] = "rotate(2deg) scale(0.9)";
+					el.style["z-index"] = "100";
+
+					delay(300).then(function() {
+						$("#played3").show(); // hidden on creation
+						playerHand.splice(n, 1);
+						// copy playerHand to a new array to pass by value to setPlayerHand
+						var l = playerHand.length;	
+						var hand = Array(l);
+						while(l--) hand[l] = playerHand[l];
+						setPlayerHand(hand);			
+					});
 				},
 				error: function(errValue) {
 					toastMsg("You must follow suit!");
@@ -1147,7 +1182,7 @@
 			leftStep = 60;
 		// console.log("leftStep" + leftStep);
 		middleTop = 0
-		topStep = 3
+		topStep = 1
 		rotateStep = 4
 		if (len % 2 == 0) {
 			var half = len / 2;
