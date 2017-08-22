@@ -313,7 +313,7 @@
 			$("#bidn1").removeClass("dealer");
 			$("#bidn2").addClass("dealer");
 			$("#bidn3").removeClass("dealer");
-			headerText += "Ana deals the cards. You are forehand"
+			headerText += ". Ana deals the cards. You are forehand"
 		}
 		if (gamePosition == 1) {
 			biddiv = ["#bid2", "#bid3", "#bid1"]
@@ -321,7 +321,7 @@
 			$("#bidn1").addClass("dealer");
 			$("#bidn2").removeClass("dealer");
 			$("#bidn3").removeClass("dealer");
-			headerText += "Bob deals the cards. You are middlehand"
+			headerText += ". Bob deals the cards. You are middlehand"
 		}
 		if (gamePosition == 2) {
 			biddiv = ["#bid1", "#bid2", "#bid3"]
@@ -329,7 +329,7 @@
 			$("#bidn1").removeClass("dealer");
 			$("#bidn2").removeClass("dealer");
 			$("#bidn3").addClass("dealer");
-			headerText += "You deal the cards, you are backhand"
+			headerText += ". You deal the cards, you are backhand"
 			toastMsg("You deal the cards")
 		}				
 		passed = [false, false, false];

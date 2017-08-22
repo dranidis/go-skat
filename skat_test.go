@@ -1855,6 +1855,48 @@ func TestHighestShort(t *testing.T) {
 	}
 }
 
+func TestDeclarerTacticFORE0(t *testing.T) {
+	// don't play your A-10 trumps if Js still there
+	validCards := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CLUBS, "K"},
+		Card{CLUBS, "D"},
+	}
+
+	player := makePlayer(validCards)
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &player
+
+	s.trump = CLUBS
+	s.trick = []Card{}
+
+
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "K"},
+		Card{CLUBS, "D"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "7"},
+	}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "J"}
+	if !card.equals(exp) {
+		t.Errorf("Trump: CLUBS, In trick %v and valid %v, expected to play %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
 func TestDeclarerTacticFORE1(t *testing.T) {
 	// don't play your A-10 trumps if Js still there
 
@@ -3348,5 +3390,128 @@ func TestWinnerCards(t *testing.T) {
 
 	if len(winners) > 0 {
 		t.Errorf("Expected 0 winners, got %v", winners)
+	}
+}
+
+func TestStrongestLowest1(t *testing.T) {
+	s := makeSuitState()
+	s.trump = CLUBS
+
+	cs := []Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "J"},
+		Card{CLUBS, "10"},
+		Card{SPADE, "9"},
+		Card{CARO, "9"},
+	}
+	p := makePlayer(cs)
+
+	act := p.strongestLowestNotAor10(&s, cs) 
+	exp := Card{CLUBS, "J"}
+	if act != exp {
+		t.Errorf("Error strongestLowest, exp: %v, found %v", exp, act)
+	}
+}
+
+func TestStrongestLowest2(t *testing.T) {
+	s := makeSuitState()
+	s.trump = CLUBS
+
+	cs := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{CARO, "J"},
+		Card{SPADE, "9"},
+		Card{CARO, "9"},
+	}
+	p := makePlayer(cs)
+
+	act := p.strongestLowestNotAor10(&s, cs) 
+	exp := Card{SPADE, "J"}
+	if act != exp {
+		t.Errorf("Error strongestLowest, exp: %v, found %v", exp, act)
+	}
+}
+
+func TestStrongestLowestNotA(t *testing.T) {
+	s := makeSuitState()
+	s.trump = CLUBS
+
+	cs := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "K"},
+	}
+	p := makePlayer(cs)
+
+	act := p.strongestLowestNotAor10(&s, cs) 
+	exp := Card{CARO, "J"}
+	if act != exp {
+		t.Errorf("Error strongestLowest, exp: %v, found %v", exp, act)
+	}
+}
+
+func TestStrongestLowestNot10(t *testing.T) {
+	s := makeSuitState()
+	s.trump = CLUBS
+
+	cs := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "D"},
+	}
+	p := makePlayer(cs)
+
+	act := p.strongestLowestNotAor10(&s, cs) 
+	exp := Card{CARO, "J"}
+	if act != exp {
+		t.Errorf("Error strongestLowest, exp: %v, found %v", exp, act)
+	}
+}
+
+func TestStrongestLowestA_IfOnly(t *testing.T) {
+	s := makeSuitState()
+	s.trump = CLUBS
+
+	cs := []Card{
+		Card{CLUBS, "A"},
+		Card{CLUBS, "D"},
+	}
+	p := makePlayer(cs)
+
+	act := p.strongestLowestNotAor10(&s, cs) 
+	exp := Card{CLUBS, "A"}
+	if act != exp {
+		t.Errorf("Error strongestLowest, exp: %v, found %v", exp, act)
+	}
+}
+
+func TestStrongestLowestinSkat(t *testing.T) {
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.skat = []Card{Card{CLUBS, "10"}}
+
+	cs := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "K"},
+		Card{CLUBS, "9"},
+	}
+	p := makePlayer(cs)
+
+	act := p.strongestLowestNotAor10(&s, cs) 
+	exp := Card{CLUBS, "K"}
+	if act != exp {
+		t.Errorf("Error strongestLowest, exp: %v, found %v", exp, act)
 	}
 }

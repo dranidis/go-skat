@@ -150,6 +150,29 @@ func (p Player) canWin() string {
 	return "SUIT"
 }
 
+func (p Player) strongestLowestNotAor10(s *SuitState, cs []Card) Card {
+	strongest := []Card{}
+	n := firstCardTactic(cs)
+	strongest = append(strongest, n)
+	next := nextCard(s.trump, n)
+	for in(s.cardsPlayed, next) || in(s.skat, next) || in(p.hand, next) {
+		if in(p.hand, next) {
+			strongest = append(strongest, next)
+		}
+		next = nextCard(s.trump, next)
+	}
+	debugTacticsLog("..Strongest lowest: %v ..", strongest)
+	l := len(strongest) - 1
+	for strongest[l].equals(Card{s.trump, "A"}) || strongest[l].equals(Card{s.trump, "10"}) {
+		debugTacticsLog("..not playing a %v..", strongest[l])
+		if l > 0 {
+			l--
+		} else {
+			break
+		}
+	}
+	return strongest[l]
+}
 
 func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	debugTacticsLog("DECLARER ")
@@ -226,7 +249,9 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				}
 				return first
 			} else {
-				return firstCardTactic(c)
+				debugTacticsLog("Playing strongest lowest\n")
+				return p.strongestLowestNotAor10(s, c)
+				// return firstCardTactic(c)
 			}
 		}
 		// TRUMP MONOPOLY

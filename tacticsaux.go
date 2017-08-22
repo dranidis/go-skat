@@ -78,9 +78,9 @@ func noHigherCard(s *SuitState, viewSkat bool, c Card) bool {
 	return true
 }
 
-func nextLowestCardsStillInPlay(s *SuitState, w Card, followCards []Card) bool {
-	next := nextCard(w)
-	// debugTacticsLog("Next of %v is %v...", w, next)
+func nextLowestCardsStillInPlay(s *SuitState, c Card, followCards []Card) bool {
+	next := nextCard(s.trump, c)
+	// debugTacticsLog("Next of %v is %v...", c, next)
 	// ONLY the declarer knows that. Use a flag if opp uses it.
 	if in(s.skat, next) || in(followCards, next) || in(s.cardsPlayed, next) {
 		return false

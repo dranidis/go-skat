@@ -133,7 +133,19 @@ func singletons(cs []Card) []Card {
 	return singles
 }
 
-func nextCard(c Card) Card {
+func nextCard(trump string, c Card) Card {
+	if c.equals(Card{CLUBS, "J"}) {
+		return Card{SPADE, "J"}
+	}
+	if c.equals(Card{SPADE, "J"}) {
+		return Card{HEART, "J"}
+	}
+	if c.equals(Card{HEART, "J"}) {
+		return Card{CARO, "J"}
+	}
+	if c.equals(Card{CARO, "J"}) {
+		return Card{trump, "A"} // returnin {"", A} in Grand
+	}
 	i, r := -1, ""
 	for i, r = range ranks {
 		if c.Rank == r {
