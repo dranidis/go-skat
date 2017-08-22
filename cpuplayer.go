@@ -512,10 +512,31 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 		var card Card
 		if s.opp2 == p {
 			debugTacticsLog("Declarer at MIDDLEHAND, playing LONG...")
+			// TODO TODO
+			debugTacticsLog("not full ones if trumps in play...")
+			// END TO DO
 			card = HighestLong(s.trump, c)
 		} else {
 			debugTacticsLog("Declarer at BACKHAND, playing SHORT...")
+			debugTacticsLog("Avoiding 2 numbers and D-number suits...")
+			copyValid := make([]Card, len(c))
+			copy(copyValid, c)
+			candidates := []Card{}
 			card = HighestShort(s.trump, c)
+			candidates = append(candidates, card)
+			for len(copyValid) > 0 && (twoNumbersSuit(copyValid, card.Suit) || DNumberSuit(copyValid, card.Suit)) {
+				copyValid = filter(copyValid, func (crd Card) bool {
+					return crd.Suit != card.Suit
+					})
+				card = HighestShort(s.trump, copyValid)
+				if card.Suit != "" && card.Rank != "" {
+					candidates = append(candidates, card)				
+				}
+			}
+			debugTacticsLog("..Candidates %v, returning last..", candidates)
+			if len(candidates) > 0 {
+				return candidates[len(candidates) - 1]
+			}
 		}
 		suit := getSuit(s.trump, card)
 		if suit != s.trump {

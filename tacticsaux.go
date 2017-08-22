@@ -118,8 +118,12 @@ func HighestShort(trump string, c []Card) Card {
 		return cards[0]
 	}
 	// last card?
-	debugTacticsLog("... DEBUG ... VALID: %v no HighestShort. Returning: %v\n", c, c[0])
-	return c[0]
+	if len(c) > 0 {
+		debugTacticsLog("... DEBUG ... VALID: %v no HighestShort. Returning: %v\n", c, c[0])
+		return c[0]		
+	}
+	debugTacticsLog(".. NO CARDS..")
+	return Card{"",""}
 }
 
 func HighestLong(trump string, c []Card) Card {
@@ -410,4 +414,28 @@ func grandLosers(cs []Card) []Card {
 		losers = append(losers, grandSuitLosers(cards)...)
 	}
 	return losers
+}
+
+func twoNumbersSuit(cs []Card, suit string) bool {
+	debugTacticsLog("..Checking cards %v for 2 number suit %s..", cs, suit)
+	suitCards := filter(cs, func (c Card) bool {
+		return c.Suit == suit && c.Rank != "J"
+		})
+	if len(suitCards) == 2 && sum(suitCards) == 0 {
+		debugTacticsLog("FOUND..")
+		return true
+	}
+	return false
+}
+
+func DNumberSuit(cs []Card, suit string) bool {
+	debugTacticsLog("..Checking cards %v for D number suit %s..", cs, suit)
+	suitCards := filter(cs, func (c Card) bool {
+		return c.Suit == suit && c.Rank != "J"
+		})
+	if len(suitCards) == 2 && sum(suitCards) == 3 {
+		debugTacticsLog("FOUND..")
+		return true
+	}
+	return false
 }
