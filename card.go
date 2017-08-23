@@ -398,6 +398,7 @@ func nonTrumpCards(suit string, cards []Card) []Card {
 	})
 }
 
+
 // TACTICS aux functions
 
 func ShortestNonTrumpSuit(trump string, cards []Card) string {

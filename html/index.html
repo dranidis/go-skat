@@ -250,6 +250,7 @@
 		</div>
 	</div>
 <script type="text/javascript" src="/html/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/html/jquery-ui.min.js"></script>
 <script type="text/javascript">
 
 	function start() {
@@ -609,6 +610,10 @@
 			text += "" + val + ", Game "
 			val++;
 			text += val; 
+			if (parsed.Hand) {
+				val++;
+				text += ", Hand " + val
+			}
 			if (parsed.Schneider) {
 				val++;
 				text += ", Schneider " + val

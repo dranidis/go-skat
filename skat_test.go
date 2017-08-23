@@ -1323,7 +1323,7 @@ func TestOpponentTacticMIDTrump1(t *testing.T) {
 	s.leader = &teamMate
 	card = player.playerTactic(&s, validCards)
 
-	exp = Card{CLUBS, "A"}
+	exp = Card{CARO, "J"}
 	if !card.equals(exp) {
 		t.Errorf("In trick %v, expected to play %v, played %v", s.trick, exp, card)
 	}
@@ -2247,7 +2247,6 @@ func TestDeclarerTacticFORE4(t *testing.T) {
 	}
 }
 
-
 func TestDeclarerTacticFORE5(t *testing.T) {
 	// don't play a trump if opponents have many
 
@@ -2278,6 +2277,38 @@ func TestDeclarerTacticFORE5(t *testing.T) {
 	if card.equals(notexp) {
 		t.Errorf("Trump: CLUBS, In trick %v and valid %v, was NOT expected to play %v since still in game are: %v. Played %v",
 			s.trick, validCards, notexp, s.trumpsInGame, card)
+	}
+}
+
+func TestDeclarerTacticFORE_LowTrump(t *testing.T) {
+	// don't play a high trump if you are not strong
+
+	validCards := []Card{
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{SPADE, "10"},
+		Card{SPADE, "8"},
+		Card{SPADE, "7"},
+		Card{HEART, "A"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "D"},
+	}
+	player := makePlayer(validCards)
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &player
+
+	s.trump = SPADE
+	s.trick = []Card{}
+
+	s.trumpsInGame = makeTrumpDeck(SPADE)
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{SPADE, "7"}
+	if !card.equals(exp) {
+		t.Errorf("Trump: CLUBS, In trick %v and valid %v, was expected to play %v. Played %v",
+			s.trick, validCards, exp, card)
 	}
 }
 

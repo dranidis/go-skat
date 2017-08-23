@@ -89,6 +89,22 @@ func noHigherCard(s *SuitState, viewSkat bool, hand []Card, c Card) bool {
 	return true
 }
 
+func noSecondHigherCard(s *SuitState, viewSkat bool, hand []Card, c Card) bool {
+	firstFound := false
+	scip := suitCardsInPlay(s, viewSkat, hand, getSuit(s.trump, c))
+	// debugTacticsLog("Cards of suit %s still in play: %v", c.Suit, scip)
+	for _, card := range scip {
+		if !firstFound && s.greater(card, c) {
+			firstFound = true
+			continue
+		}
+		if s.greater(card, c) {
+			return false
+		}		
+	}
+	return true
+}
+
 func suitCardsInPlay(s *SuitState, viewSkat bool, hand []Card, suit string) []Card {
 	allCards := []Card{}
 	if s.trump == suit {
@@ -471,17 +487,10 @@ func DNumberSuit(cs []Card, suit string) bool {
 	return false
 }
 
-func followCards(s *SuitState, c []Card) []Card {
-	return filter(c, func (card Card) bool {
-		if s.follow != s.trump {
-			if card.Suit == s.follow && card.Rank != "J" {
-				return true
-			}
-			return false
-		}
-		if card.Suit == s.follow || card.Rank != "J" {
-			return true
-		}
-		return false				
-	})
+// Returns the cards that follow the suit argument
+func followCards(s *SuitState, suit string, cards []Card)  []Card  {
+	if suit == s.trump {
+		return trumpCards(suit, cards)
+	}
+	return nonTrumpCards(suit, cards)
 }
