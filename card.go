@@ -269,6 +269,35 @@ func makeSuitDeck(suit string) []Card {
 	}
 }
 
+func makeTrumpDeck(suit string) []Card {
+	return []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{suit, "A"},
+		Card{suit, "10"},
+		Card{suit, "K"},
+		Card{suit, "D"},
+		Card{suit, "9"},
+		Card{suit, "8"},
+		Card{suit, "7"},
+	}
+}
+
+
+func makeNoTrumpDeck(suit string) []Card {
+	return []Card{
+		Card{suit, "A"},
+		Card{suit, "10"},
+		Card{suit, "K"},
+		Card{suit, "D"},
+		Card{suit, "9"},
+		Card{suit, "8"},
+		Card{suit, "7"},
+	}
+}
+
 func makeDeck() []Card {
 
 	cards := []Card{}

@@ -679,6 +679,7 @@ func main() {
 		//time.Sleep(1000 * time.Millisecond)
 		players = rotatePlayers(players)
 	}
+
 	avg := float64(player1.getTotalScore()+player2.getTotalScore()+player3.getTotalScore()) / float64(totalGames-passed)
 
 	money1 := float64(2.0*player1.getTotalScore()-player2.getTotalScore()-player3.getTotalScore()) / 100.0

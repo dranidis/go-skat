@@ -56,26 +56,57 @@ func firstCardTactic(c []Card) Card {
 	return c[0]
 }
 
-func noHigherCard(s *SuitState, viewSkat bool, c Card) bool {
-	allCards := makeSuitDeck(c.Suit)
-	allCardsPlayed := []Card{}
-	if viewSkat {
-		allCardsPlayed = append(allCardsPlayed, s.skat...)
-	}
-	allCardsPlayed = append(allCardsPlayed, s.cardsPlayed...)
-	for _, cardPlayed := range allCardsPlayed {
-		allCards = remove(allCards, cardPlayed)
-	}
-	allCards = filter(allCards, func(card Card) bool {
-		return card.Rank != "J"
-	})
-	debugTacticsLog("Cards of suit %s still in play: %v", c.Suit, allCards)
-	for _, card := range allCards {
+// func noHigherCard(s *SuitState, viewSkat bool, c Card) bool {
+// 	allCards := makeSuitDeck(c.Suit)
+// 	allCardsPlayed := []Card{}
+// 	if viewSkat {
+// 		allCardsPlayed = append(allCardsPlayed, s.skat...)
+// 	}
+// 	allCardsPlayed = append(allCardsPlayed, s.cardsPlayed...)
+// 	allCardsPlayed = append(allCardsPlayed, s.trick...)
+// 	for _, cardPlayed := range allCardsPlayed {
+// 		allCards = remove(allCards, cardPlayed)
+// 	}
+// 	allCards = filter(allCards, func(card Card) bool {
+// 		return card.Rank != "J"
+// 	})
+// 	debugTacticsLog("Cards of suit %s still in play: %v", c.Suit, allCards)
+// 	for _, card := range allCards {
+// 		if s.greater(card, c) {
+// 			return false
+// 		}
+// 	}
+// 	return true
+// }
+func noHigherCard(s *SuitState, viewSkat bool, hand []Card, c Card) bool {
+	scip := suitCardsInPlay(s, viewSkat, hand, getSuit(s.trump, c))
+	debugTacticsLog("Cards of suit %s still in play: %v", c.Suit, scip)
+	for _, card := range scip {
 		if s.greater(card, c) {
 			return false
 		}
 	}
 	return true
+}
+
+func suitCardsInPlay(s *SuitState, viewSkat bool, hand []Card, suit string) []Card {
+	allCards := []Card{}
+	if s.trump == suit {
+		allCards = makeTrumpDeck(suit)
+	} else {
+		allCards = makeNoTrumpDeck(suit)
+	}
+	allCardsPlayed := []Card{}
+	if viewSkat {
+		allCardsPlayed = append(allCardsPlayed, s.skat...)
+	}
+	allCardsPlayed = append(allCardsPlayed, s.cardsPlayed...)
+	allCardsPlayed = append(allCardsPlayed, s.trick...)
+	allCardsPlayed = append(allCardsPlayed, hand...)
+	for _, cardPlayed := range allCardsPlayed {
+		allCards = remove(allCards, cardPlayed)
+	}
+	return allCards
 }
 
 func nextLowestCardsStillInPlay(s *SuitState, c Card, followCards []Card) bool {
@@ -438,4 +469,19 @@ func DNumberSuit(cs []Card, suit string) bool {
 		return true
 	}
 	return false
+}
+
+func followCards(s *SuitState, c []Card) []Card {
+	return filter(c, func (card Card) bool {
+		if s.follow != s.trump {
+			if card.Suit == s.follow && card.Rank != "J" {
+				return true
+			}
+			return false
+		}
+		if card.Suit == s.follow || card.Rank != "J" {
+			return true
+		}
+		return false				
+	})
 }

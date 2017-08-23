@@ -176,6 +176,11 @@ func (p Player) strongestLowestNotAor10(s *SuitState, cs []Card) Card {
 
 func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	debugTacticsLog("DECLARER ")
+	if len(c) == 1 {
+		debugTacticsLog("..FORCED MOVE.. ")
+		return c[0]
+	}	
+
 	if len(s.trick) == 0 {
 		debugTacticsLog("FOREHAND ")
 		// count your own trumps and other players trump
@@ -187,6 +192,15 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 			otherTrumps := p.otherPlayersTrumps(s)
 			debugTacticsLog("..other TRUMPS in game: %v", otherTrumps)
 			debugTacticsLog("..own TRUMPS: %v", ownTrumps)
+
+			sureWinners := []Card{}
+			for _,t := range ownTrumps {
+				if noHigherCard(s, true, p.hand, t) {
+					sureWinners = append(sureWinners, t)
+				}
+			}
+			debugTacticsLog("..sure winners: %v", sureWinners)
+
 
 			// 5, 2 => 10 < 4
 			// 2, 4 => 4 < 6
@@ -283,7 +297,7 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				if len(cs) == 0 {
 					continue
 				}
-				if noHigherCard(s, true, cs[0]) {
+				if noHigherCard(s, true, p.hand, cs[0]) {
 					debugTacticsLog(" Sure winner card %v", cs[0])
 					return cs[0]
 				}
@@ -485,6 +499,11 @@ func (p *Player) opponentTacticNull(s *SuitState, c []Card) Card {
 }
 
 func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
+	if len(c) == 1 {
+		debugTacticsLog("..FORCED MOVE.. ")
+		return c[0]
+	}		
+
 	if s.trump == NULL {
 		return p.opponentTacticNull(s, c)
 	}
@@ -548,7 +567,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	if len(s.trick) == 1 {
 		debugTacticsLog("OPP MIDDLEHAND\n")
 		if s.leader == s.declarer {
-			debugTacticsLog("Declarer leads...")
+			debugTacticsLog("Declarer leads %v...", s.trick[0])
 			// if declarer leads a low trump, and there are still HIGHER trumps
 			// smear the trick with a high value
 			if getSuit(s.trump, s.trick[0]) == s.trump && len(winnerCards(s, c)) == 0 {
@@ -559,13 +578,45 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 					return sortValue(c)[0]
 				}
 			}
-			if len(winnerCards(s, c)) == 0 && !noHigherCard(s, false, s.trick[0]){
+			if len(winnerCards(s, c)) == 0 && !noHigherCard(s, false, p.hand, s.trick[0]){
 				debugTacticsLog("... higher cards in play ... SMEAR...")
 				return sortValue(c)[0]
 			}
 			return highestValueWinnerORlowestValueLoser(s, c)
 		} else {
-			debugTacticsLog("Teammate leads...")
+			debugTacticsLog("Teammate leads %v...", s.trick[0])
+
+			// if void at card played, and there are still cards in play
+			// trump it to smear a trump and to put declarer at middlehand.
+			if len(followCards(s, c)) == 0 {
+				debugTacticsLog("..VOID on %s..", s.follow)
+				inPlay := suitCardsInPlay(s, false, p.hand, s.follow)
+				if len(inPlay) > 0 {
+					debugTacticsLog(".. %s still in play %v..", s.follow, inPlay)
+					sortedValueTrumps := filter(sortValue(c), func(card Card) bool {
+						return card.Suit == s.trump || card.Rank == "J"
+					})
+					if len(sortedValueTrumps) > 0 {
+						debugTacticsLog("..Playing a trump from %v..", sortedValueTrumps)
+						i := 0
+						for i < len(sortedValueTrumps) && cardValue(sortedValueTrumps[i]) < 3  && cardValue(sortedValueTrumps[i]) > 0 {
+							i++
+						}
+						if i < len(sortedValueTrumps) {
+							debugTacticsLog("..Playing %v..", sortedValueTrumps[i])
+							return sortedValueTrumps[i]
+						}
+						i--
+						debugTacticsLog("..Playing %v..", sortedValueTrumps[i])
+						return sortedValueTrumps[i]
+					}
+					debugTacticsLog(".. No trump to play..")
+				}
+				debugTacticsLog(".. No %s in play..", s.follow)
+			}
+
+
+
 			sortedValueNoTrumps := filter(sortValue(c), func(card Card) bool {
 				return card.Suit != s.trump && card.Rank != "J"
 			})
@@ -577,7 +628,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			if len(cardsSuit) > 0 {
 				cards := sortValue(cardsSuit)
 				debugTacticsLog("FOLLOW ")
-				if noHigherCard(s, false, cards[0]) {
+				if noHigherCard(s, false, p.hand, cards[0]) {
 					return cards[0]
 				}
 				debugTacticsLog("HIGH CARD still out\n")
