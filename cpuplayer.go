@@ -230,6 +230,19 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 			}
 			if len(ownTrumps)*2 < len(otherTrumps)+2 {
 				debugTacticsLog("Not enough trumps.  Playing suits")
+
+				// Checking if card will not be trumped did not improve results !!???!!!
+				ifMoreThanOne := func (cs []Card) bool {
+					if len(cs) > 0 {
+						// inPlay := suitCardsInPlay(s, true, p.hand, cs[0].Suit)
+						// debugTacticsLog("..Cards in play of suit %s, %v..", cs[0].Suit, inPlay)						
+						// if len(inPlay) > 1 {
+							return true
+						// }
+					}
+					return false
+				}	
+
 				suits := filter(c, func(card Card) bool {
 					return card.Suit != s.trump && card.Rank != "J"
 				})
@@ -237,31 +250,37 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				asses := filter(suits, func(card Card) bool {
 					return card.Rank == "A"
 				})
-				if len(asses) > 0 {
+				if ifMoreThanOne(asses){
 					return asses[0]
 				}
 				tens := filter(suits, func(card Card) bool {
 					cardsPlayed := append(s.cardsPlayed, s.skat...)
 					return card.Rank == "10" && in(cardsPlayed, Card{card.Suit, "A"})
 				})
-				if len(tens) > 0 {
+				if ifMoreThanOne(tens) {
 					return tens[0]
 				}					
 				Ks := filter(suits, func(card Card) bool {
 					cardsPlayed := append(s.cardsPlayed, s.skat...)
 					return card.Rank == "K" && in(cardsPlayed, Card{card.Suit, "A"}, Card{card.Suit, "10"})
 				})
-				if len(Ks) > 0 {
+				if ifMoreThanOne(Ks) {
 					return Ks[0]
 				}					
 				Ds := filter(suits, func(card Card) bool {
 					cardsPlayed := append(s.cardsPlayed, s.skat...)
 					return card.Rank == "D" && in(cardsPlayed, Card{card.Suit, "A"}, Card{card.Suit, "10"}, Card{card.Suit, "K"})
 				})								
-				if len(Ds) > 0 {
+				if ifMoreThanOne(Ds) {
 					return Ds[0]
 				}
 				sortedValue := sortValue(c)
+				// PLay a card with value
+				// for i := len(sortedValue)-1; i >=0 ; i-- {
+				// 	if cardValue(sortedValue[i]) > 0 {
+				// 		return sortedValue[i]
+				// 	}
+				// }
 				return sortedValue[len(sortedValue)-1]
 			}
 

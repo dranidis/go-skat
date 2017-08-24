@@ -2415,6 +2415,43 @@ func TestDeclarerTacticKXLessValuableLoser(t *testing.T) {
 	}
 }
 
+// DOES NOT IMPROVE ???!!!!
+
+// func TestDeclarerTacticLosingTrickLow(t *testing.T) {
+
+// 	player := makePlayer([]Card{})
+// 	s := makeSuitState()
+// 	s.leader = &player
+// 	s.declarer = &player
+
+// 	s.trump = CLUBS
+// 	s.trick = []Card{}
+// 	player.hand = []Card{
+// 		Card{CLUBS, "K"},
+// 		Card{SPADE, "10"},
+// 		Card{SPADE, "D"},
+// 	}
+
+// 	s.trumpsInGame = []Card{
+// 		Card{CARO, "J"},
+// 	}
+
+// 	suit := SPADE
+// 	s.cardsPlayed = []Card{
+// 		Card{suit, "A"},
+// 		Card{suit, "K"},
+// 		Card{suit, "8"},
+// 		Card{suit, "7"},
+// 	}
+
+// 	card := player.playerTactic(&s, player.hand)
+// 	exp := Card{SPADE, "D"}
+// 	if !card.equals(exp) {
+// 		t.Errorf("In trick %v and hand %v, was expected to play %v. Played %v",
+// 			s.trick, player.hand, exp, card)
+// 	}
+// }
+
 func TestDeclarerTacticDoNotTrumpZeroValueTricks(t *testing.T) {
 	// BUT play your A-10 trumps if Js ARE NOT still there
 
