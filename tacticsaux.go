@@ -424,8 +424,9 @@ func grandSuitLosers(cs []Card) []Card {
 			return cs
 		}
 		return cs
-	} else if in(cs, Card{s, "10"}) && tenIsSupported(cs, Card{s, "10"}) {
-		cs = remove(cs, Card{s, "10"})
+	} else if in(cs, Card{s, "10"}) {
+	// && tenIsSupported(cs, Card{s, "10"}) {
+		cs = remove(cs, Card{s, "10"}) // will be discarded
 	}
 	return cs
 }

@@ -557,6 +557,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	if s.trump == NULL {
 		return p.opponentTacticNull(s, c)
 	}
+
 	// OPPONENTS TACTIC
 	if len(s.trick) == 0 {
 		debugTacticsLog("OPP FOREHAND\n")
@@ -576,6 +577,12 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			// should I play the highest even if in the previous trick
 			// declarer has taken with trump?
 			// He will take it again.
+			if (prevSuitCards[0].Rank == "10") && in(s.cardsPlayed, Card{prevSuit, "A"}) {
+				debugTacticsLog("..A and 10 seen resetting previous suit..")
+				s.opp1.setPreviousSuit("")
+				s.opp2.setPreviousSuit("")
+				return p.opponentTactic(s, c)
+			}
 			return prevSuitCards[0]
 		}
 		debugTacticsLog("No cards in previous suit '%v' ...", prevSuit)
@@ -912,6 +919,61 @@ func (p *Player) discardInSkat(skat []Card) {
 
 	if p.trumpToDeclare == GRAND {
 		debugTacticsLog("..GRAND..")
+
+
+
+// 	You	Bob	Ana
+// EURO 124.48	29.77	-154.25
+// WON   2664	 2614	 2501
+// LOST   569	  564	  562	
+// bidp    34	   34	   32	
+// pcw     82	   82	   82	
+// pcwd    18	   18	   18	
+// AVG  21.4, passed 526, won 7779, lost 1695 / 10000 games
+// Grand games 996, perc:  9.96
+
+// 	You	Bob	Ana
+// EURO 98.80	47.29	-146.09
+// WON   2662	 2613	 2501
+// LOST   571	  565	  562	
+// bidp    34	   34	   32	
+// pcw     82	   82	   82	
+// pcwd    18	   18	   18	
+// AVG  21.2, passed 526, won 7776, lost 1698 / 10000 games
+// Grand games 996, perc:  9.96
+
+		tenSuits := []string{}
+		counts := []int{}
+		for _, s := range suits {
+			if in(p.hand, Card{s, "A"}) {
+				continue
+			}
+			if in(p.hand, Card{s, "10"}) {
+				tenSuits = append(tenSuits, s)
+				count := len(nonTrumpCards(s, p.hand))
+				counts = append(counts, count)
+			}
+		}
+		//debugTacticsLog("..10s: %v, counts %v..", tenSuits, counts)
+		nTenSuits := []string{}
+		for i := 1; i < 4; i++ {
+			for j, s := range tenSuits {
+				if counts[j] == i {
+					nTenSuits = append(nTenSuits, s)
+				}
+			}
+		}
+		debugTacticsLog("..10s: %v..", nTenSuits)
+
+		for i := 0; removed < 2 && i < len(nTenSuits); removed++ {
+			s := nTenSuits[i]
+			card := Card{s, "10"}
+			debugTacticsLog("REMOVING %v..", card)
+			skat[removed] = card
+			p.hand = remove(p.hand, card)
+			i++
+		}	
+
 		losers := sortValue(grandLosers(p.hand))
 		debugTacticsLog("..GRAND..losers %v..", losers)
 		for ; removed < 2 && len(losers) > 0 && cardValue(losers[0]) > 0; removed++ {

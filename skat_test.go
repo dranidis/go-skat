@@ -2875,6 +2875,31 @@ func TestDiscardInSkatGRAND(t *testing.T) {
 	}
 }
 
+func TestDiscardInSkatGRAND_10s(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},  
+		Card{HEART, "J"}, 
+		Card{CARO, "J"},  
+		Card{CLUBS, "10"},  // DISCARD
+		Card{CLUBS, "D"},  
+		Card{SPADE, "A"},  
+		Card{SPADE, "D"},  
+		Card{HEART, "A"},  
+		Card{HEART, "10"}, 
+		Card{CARO, "10"}, // DISCARD
+		Card{CARO, "D"}, 
+		Card{CARO, "7"}, 
+	}
+	skat := []Card{Card{SPADE, "9"}, Card{HEART, "9"}}
+	p := makePlayer(cards)
+	p.trumpToDeclare = GRAND
+	p.discardInSkat(skat)
+
+	if !in(skat, Card{CLUBS, "10"}) || !in(skat, Card{CARO, "10"}){
+		t.Errorf("From hand: %v discarded in SKAT: %v instead of 2 10s", p.hand, skat)
+	}
+}
+
 func TestDiscardInSkatGRANDBlank(t *testing.T) {
 	cards := []Card{
 		Card{SPADE, "J"}, //LOSER
@@ -3029,7 +3054,8 @@ func TestGrandLosers(t *testing.T) {
 	}
 
 	losers := grandLosers(cards)
-	if !in(losers, Card{CLUBS, "9"}, Card{SPADE, "K"}, Card{HEART, "10"}) {
+	if !in(losers, Card{CLUBS, "9"}, Card{SPADE, "K"}) {
+		// , Card{HEART, "10"}) {
 		t.Errorf("Losers: %v", losers)
 	}
 }
