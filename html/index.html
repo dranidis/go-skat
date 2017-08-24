@@ -111,6 +111,13 @@
 			z-index: 10	;
 		}
 
+		#previous {
+position: absolute;
+    top: 200px;
+    left: 0px;
+    transform: scale(0.5);
+		}
+
 		#played1 {
 			position:absolute;
 			top: 0px;
@@ -206,6 +213,7 @@
 		</div>
 		<div id="players">
 			<div id="played"></div>
+			<div id="previous"></div>
 
 			<div id="bidn1" class="bidn">
 				<div id="name1" class="name">Bob</div>
@@ -250,7 +258,7 @@
 		</div>
 	</div>
 <script type="text/javascript" src="/html/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="/html/jquery-ui.min.js"></script>
+<!-- <script type="text/javascript" src="/html/jquery-ui.min.js"></script> -->
 <script type="text/javascript">
 
 	function start() {
@@ -680,6 +688,8 @@
 		trickRound++
 		if (gameFinished()) {
 			// console.log("Game finished");
+			$("#previous").empty();
+			
 			getScore();
 			trickRound = 0;
 			return
@@ -701,6 +711,18 @@
 		})
 		.then(delayfn(500))
 		.then(function (response) {
+			$("#previous").empty();
+			// var cards = document.getElementById("played").children;
+			// for (i = 0; i < cards.length; i++) {
+			// 	var element = cards[i]
+			// 	$("#previous").append(cards[i])
+			// }
+			$("#previous").append($("#played1"))
+			$("#previous").append($("#played2"))
+			$("#previous").append($("#played3"))
+
+
+			// jQuery("#NodesToMove").detach().appendTo('#DestinationContainerNode')
 			$("#played").empty();
 			showPlayed();
 			trick();
