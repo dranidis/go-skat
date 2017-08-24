@@ -656,6 +656,7 @@ func main() {
 		rt := startServer()
 		port := ":3000"
 		htmlLog("Starting server at %s\n", port)
+		htmlLog("Open page :3000/html/\n")
 		http.ListenAndServe(port, rt)
 	}
 

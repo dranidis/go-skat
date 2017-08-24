@@ -582,10 +582,46 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 		var card Card
 		if s.opp2 == p {
 			debugTacticsLog("Declarer at MIDDLEHAND, playing LONG...")
-			// TODO TODO
 			debugTacticsLog("not full ones if trumps in play...")
-			// END TO DO
-			card = HighestLong(s.trump, c)
+// HIGHEST
+// 	You	Bob	Ana
+// EURO 107.49	38.91	-146.40
+// WON   2676	 2637	 2519
+// LOST   555	  538	  549	
+// bidp    34	   34	   32	
+// pcw     83	   83	   82	
+// pcwd    17	   18	   17	
+// AVG  21.6, passed 526, won 7832, lost 1642 / 10000 games
+
+// HIGHESTNOFULL
+// 	You	Bob	Ana
+// EURO 136.14	39.06	-175.20
+// WON   2674	 2622	 2505
+// LOST   557	  553	  563	
+// bidp    34	   34	   32	
+// pcw     83	   83	   82	
+// pcwd    18	   18	   17	
+// AVG  21.5, passed 526, won 7801, lost 1673 / 10000 games
+
+//CONDITIONAL ON TRUMPS			
+// You	Bob	Ana
+// EURO 134.53	28.00	-162.53
+// WON   2672	 2617	 2506
+// LOST   559	  558	  562	
+// bidp    34	   34	   32	
+// pcw     83	   82	   82	
+// pcwd    18	   18	   17	
+// AVG  21.4, passed 526, won 7795, lost 1679 / 10000 games
+			if len(p.otherPlayersTrumps(s)) == 0 {
+				debugTacticsLog("..No trumps in play..")
+				card = HighestLong(s.trump, c)
+			} else {
+				debugTacticsLog("..trumps still in play..")
+				card = HighestLongNoFull(s.trump, c)
+			}
+
+
+
 		} else {
 			debugTacticsLog("Declarer at BACKHAND, playing SHORT...")
 			debugTacticsLog("Avoiding 2 numbers and D-number suits...")

@@ -186,6 +186,25 @@ func HighestLong(trump string, c []Card) Card {
 	return c[0]
 }
 
+func HighestLongNoFull(trump string, c []Card) Card {
+	s := LongestNonTrumpSuit(trump, c)
+	debugTacticsLog("LongestNonTrumpSuit %v\n", s)
+	cards := sortRank(nonTrumpCards(s, c))
+	debugTacticsLog("%v", cards)
+	for i := 0; i < len(cards); i++ {
+		if cardValue(cards[i]) > 4 {
+			continue
+		}
+		return cards[i]
+	}
+	if len(cards) > 0 {
+		return cards[len(cards)-1]
+	}
+	// last card?
+	debugTacticsLog("... DEBUG ... VALID: %v no highest long. Returning: %v\n", c, c[0])
+	return c[0]
+}
+
 // {8, 10} J  {K,9} ===> 7 in play
 func smallerCardsInPlay(s *SuitState, trick Card, c []Card) bool {
 	suit := trick.Suit

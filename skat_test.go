@@ -1733,44 +1733,46 @@ func TestOpponentTacticFORE_short_long(t *testing.T) {
 	}
 }
 
-// TODO
-// func TestOpponentTacticFORE_long_Not_Full(t *testing.T) {
-// 	// FOREHAND
+//TODO
+func TestOpponentTacticFORE_long_Not_Full_if_trumps_in_play(t *testing.T) {
+	// FOREHAND
 
-// 	otherPlayer := makePlayer([]Card{})
-// 	teamMate := makePlayer([]Card{})
-// 	player := makePlayer([]Card{})
-// 	s := makeSuitState()
-// 	s.leader = &player
-// 	s.declarer = &otherPlayer
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &otherPlayer
 
-// 	teamMate.previousSuit = ""
-// 	player.previousSuit = ""
-// 	s.trump = CLUBS
-// 	s.trick = []Card{}
-// 	_ = teamMate
+	teamMate.previousSuit = ""
+	player.previousSuit = ""
+	s.trump = CLUBS
+	s.trick = []Card{}
+	_ = teamMate
 
-// 	validCards := []Card{
-// 		Card{CLUBS, "J"},
-// 		Card{CLUBS, "8"},
-// 		Card{CLUBS, "7"},
-// 		Card{HEART, "A"},
-// 		Card{CARO, "8"},
-// 		Card{CARO, "K"},
-// 		Card{CARO, "D"},
-// 		Card{CARO, "A"},
-// 	}
-// 	// declarer MID
-// 	s.opp2 = &player
-// 	s.opp1 = &teamMate
+	validCards := []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "7"},
+		Card{HEART, "A"},
+		Card{CARO, "8"},
+		Card{CARO, "K"},
+		Card{CARO, "D"},
+		Card{CARO, "A"},
+	}
+	s.trumpsInGame = []Card{Card{CARO, "J"}}
+	// declarer MID
+	s.opp2 = &player
+	s.opp1 = &teamMate
 
-// 	card := player.playerTactic(&s, validCards)
-// 	exp := Card{CARO, "K"}
-// 	if !card.equals(exp) {
-// 		t.Errorf("FOREHAND, DECLARER MID, valid %v, expected: %v, played a full one %v",
-// 			validCards, exp, card)
-// 	}
-// }
+	card := player.playerTactic(&s, validCards)
+	exp1 := Card{CARO, "K"}
+	exp2 := Card{CARO, "D"}
+	if !card.equals(exp1) && !card.equals(exp1) {
+		t.Errorf("FOREHAND, DECLARER MID, valid %v, expected: %v or %v, played a full one %v",
+			validCards, exp1, exp2, card)
+	}
+}
 
 func TestOpponentTacticFORE_short_TOD_SUENDE_1_1(t *testing.T) {
 	// FOREHAND
