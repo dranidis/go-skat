@@ -43,8 +43,14 @@
 		    color: lightgrey;	
 		}
 		.bid {
-			color: white;
-		}
+		    color: black;
+		    background-color: white;
+		    border-color: black;
+		    border-style: solid;
+		    border-radius: 50px;
+		    position: absolute;
+		    padding: 15px;
+    		}
 		#bidn1 {
 		    position: absolute;
 		    top: 0px;
@@ -59,16 +65,27 @@
 		    top: 180px;
 		    margin: auto;
 			}			
-		#bidding, #picking{
+		#bidding{
 		    position: absolute;
-		    top: 340px;
+		    top: 600px;
 		    /* left: 180px; */
 		    /* background: green; */
 		    font-size: xx-large;
 		    width: 100%;
 		    height: auto;
 		    text-align: center;
+		    z-index: 999;
 		}	
+		#picking{
+		    position: absolute;
+		    top: 600px;
+		    /* left: 180px; */
+		    /* background: green; */
+		    font-size: xx-large;
+		    width: 100%;
+		    height: auto;
+		    text-align: center;
+		}			
 		#bidBtn {
 			width: 30%;
 		}		
@@ -112,10 +129,10 @@
 		}
 
 		#previous {
-position: absolute;
-    top: 200px;
-    left: 0px;
-    transform: scale(0.5);
+			position: absolute;
+		    top: 200px;
+		    left: 0px;
+		    transform: scale(0.5);
 		}
 
 		#played1 {
@@ -157,14 +174,15 @@ position: absolute;
 		}
 
 		#declare {
-			margin: auto;
-		    top: 150px;
-		    position: relative;
+			/*margin: auto;*/
+		    top: 600px;
+		    width:100%;
+		    position: absolute;
 		    text-align: center;	
 		}
     	#discard {
 			position: absolute;
-		    top: 530px;
+		    top: 600px;
 		    /* left: 0; */
 		    width: 100%;
 		    margin: auto;
@@ -261,6 +279,12 @@ position: absolute;
 <!-- <script type="text/javascript" src="/html/jquery-ui.min.js"></script> -->
 <script type="text/javascript">
 
+
+		$("#bid1").hide();
+		$("#bid2").hide();
+		$("#bid3").hide();	
+
+
 	function start() {
 		// UNCOMMENT FOR REAL GAME
 		document.getElementById("startBtn").style["visibility"] = "hidden";
@@ -269,6 +293,11 @@ position: absolute;
 		$("#bid1").empty();
 		$("#bid2").empty();
 		$("#bid3").empty();
+
+		$("#bid1").hide();
+		$("#bid2").hide();
+		$("#bid3").hide();		
+
 		$("#cards").empty();
 				
 		$.ajax({
@@ -284,6 +313,7 @@ position: absolute;
 	var passed = [false, false, false]
 	var biddiv = ["#bid1", "#bid2", "#bid3"]
 	var playerIndex= [1,2,3]
+	var prevPlayerIndex= []
 
 	var gamePosition = -1;
 	var secondRound = false;
@@ -570,7 +600,8 @@ position: absolute;
 					if (!parsed) return;	
 					trump = parsed	
 					console.log("TRUMP: " + trump)
-					$(biddiv[player]).append($("<div>" + trump + "</div>"));					
+					$(biddiv[player]).append($("<div>" + trump + "</div>"));	
+					$(biddiv[player]).show();				
 				}
 		})).then(function(response) {
 			getHandFromServer()
@@ -712,16 +743,10 @@ position: absolute;
 		.then(delayfn(500))
 		.then(function (response) {
 			$("#previous").empty();
-			// var cards = document.getElementById("played").children;
-			// for (i = 0; i < cards.length; i++) {
-			// 	var element = cards[i]
-			// 	$("#previous").append(cards[i])
-			// }
-			$("#previous").append($("#played1"))
-			$("#previous").append($("#played2"))
-			$("#previous").append($("#played3"))
-
-
+			$("#previous").append($("#played" + prevPlayerIndex[0]))
+			$("#previous").append($("#played" + prevPlayerIndex[1]))
+			$("#previous").append($("#played" + prevPlayerIndex[2]))
+			console.log("" + playerIndex[0] + " " + playerIndex[1] + " " + playerIndex[2] + " ")
 			// jQuery("#NodesToMove").detach().appendTo('#DestinationContainerNode')
 			$("#played").empty();
 			showPlayed();
@@ -755,6 +780,9 @@ position: absolute;
 				// console.log("WINNER: " + parsed)
 
 				var el = document.getElementById("played");
+				prevPlayerIndex[0] = playerIndex[0]
+				prevPlayerIndex[1] = playerIndex[1]
+				prevPlayerIndex[2] = playerIndex[2]
 
 				if (winner == "Bob") {
 					playerIndex = [1, 2, 3];
@@ -847,7 +875,11 @@ position: absolute;
 					} else {
 						// console.log("Fore passed")
 						// console.log("BACK WON")
-						setDeclarer(2);			
+						delay(1000).then(
+							function() {
+								setDeclarer(2);			
+							}
+						)
 					}		
 				});
 			} else {
@@ -860,14 +892,20 @@ position: absolute;
 							return
 						} else {
 								// console.log("FORE WON" + acceptedBid);
-								setDeclarer(0);	
-								return								
+							delay(1000).then(
+								function() {
+									setDeclarer(0);			
+								}
+							)																
 						}
 					})
 				} else {
 					// console.log("FORE WON" + acceptedBid);
-					setDeclarer(0);	
-					return						
+							delay(1000).then(
+								function() {
+									setDeclarer(0);			
+								}
+							)											
 				}
 			}
 		});
@@ -887,8 +925,11 @@ position: absolute;
 					} else {
 						// console.log("MID passed")
 						// console.log("BACK WON")
-						setDeclarer(2);			
-					}
+						delay(1000).then(
+							function() {
+								setDeclarer(2);			
+							}
+						)					}
 				});
 			} else {
 				// console.log("Back passed")
@@ -900,14 +941,21 @@ position: absolute;
 							return
 						} else {
 							// console.log("MID WON" + acceptedBid);
-							setDeclarer(1);	
-							return								
+							delay(1000).then(
+								function() {
+									setDeclarer(1);			
+								}
+							)																
+						
 						}
 					})
 				} else {
 					// console.log("MID WON" + acceptedBid);
-					setDeclarer(1);	
-				}									
+							delay(1000).then(
+								function() {
+									setDeclarer(1);			
+								}
+							)					}									
 			}
 		});
 	}
@@ -934,9 +982,11 @@ position: absolute;
 				// console.log("Setting: element: " + "bid" + playerIndex[player])
 				emptyBidDivsExcept(player);
 				$(biddiv[player]).empty();
+				$(biddiv[player]).hide();
 				var bid = $(biddiv[player]);
 				// console.log("APPENDING accepted bid: "+acceptedBid)
 				bid.append($("<span>Bid: " + acceptedBid + "</span>"));
+				bid.show()
 				//
 				// continue with pick up skat
 				//
@@ -951,6 +1001,7 @@ position: absolute;
 			for (i = 0; i < 3; i++) {
 				if (i != p && i != declarer) {
 					$(biddiv[i]).empty();
+					$(biddiv[i]).hide();
 	 				// console.log("EMptying div: " + biddiv[i] + "declarer: " + declarer)
 				}
 			}
@@ -1044,6 +1095,7 @@ position: absolute;
 			passed[player] = true
 		}
 		bid.append($("<span>" + text + " </span>"));
+		bid.show();
 	}
 
 //

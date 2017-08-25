@@ -23,6 +23,7 @@ var logFile io.Writer = nil
 var debugTacticsLogFlag = false
 var gameLogFlag = true
 var fileLogFlag = true
+var htmlLogFlag = false
 var delayMs = 1000
 var totalGames = 21
 var oficialScoring = false
@@ -58,9 +59,11 @@ func gameLog(format string, a ...interface{}) {
 
 
 func htmlLog(format string, a ...interface{}) {
-	red := color.New(color.Bold, color.FgYellow).SprintFunc()
-	s := fmt.Sprintf(format, a...)
-	fmt.Printf(red(s))
+	if htmlLogFlag {
+		red := color.New(color.Bold, color.FgYellow).SprintFunc()
+		s := fmt.Sprintf(format, a...)
+		fmt.Printf(red(s))
+	}
 }
 
 func debugTacticsLog(format string, a ...interface{}) {
@@ -591,7 +594,7 @@ func makeChannels() {
 
 func makePlayers(auto, html bool) {
 	if auto {
-		gameLog("Creating CPU players only\n")
+		debugTacticsLog("Creating CPU players only\n")
 		player := makePlayer([]Card{})
 		player1 = &player
 		player.risky = true
@@ -620,13 +623,16 @@ func main() {
 	// COMMAND LINE FLAGS
 	auto := false
 	var randSeed int
-	flag.IntVar(&totalGames, "n", 21, "total number of games")
-	flag.IntVar(&randSeed, "r", 0, "Seed for random number generator. A value of 0 (default) uses the UNIX time as a seed.")
+	flag.IntVar(&totalGames, "n", 36, "total number of games, default 36")
+	flag.IntVar(&randSeed, "r", 0, "Seed for random number generator. A value of 0 generates a random number to be used as a seed.")
 	flag.BoolVar(&auto, "auto", false, "Runs with CPU players only")
 	flag.BoolVar(&fileLogFlag, "log", true, "Saves log in a file")
-	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:8080")
+	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:3000")
 	flag.Parse()
 
+	if auto {
+		gameLogFlag = false
+	}
 	//fmt.Println(fileLogFlag)
 	if randSeed == 0 {
 		r = rand.New(rand.NewSource(time.Now().Unix()))
@@ -652,10 +658,11 @@ func main() {
 	}
 
 	if html {
+		gameLogFlag = false
 		rt := startServer()
 		port := ":3000"
-		htmlLog("Starting server at %s\n", port)
-		htmlLog("Open page :3000/html/\n")
+		fmt.Printf("Starting server at %s\n", port)
+		fmt.Printf("Open page :3000/html/\n")
 		http.ListenAndServe(port, rt)
 	}
 

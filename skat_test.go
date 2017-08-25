@@ -1918,7 +1918,7 @@ func TestOpponentTacticFORE_short_TOD_SUENDE_1_not_a_choice(t *testing.T) {
 	}
 }
 
-func TestOpponentTacticBACK1(t *testing.T) {
+func TestOpponentTacticBACK_MateLeads(t *testing.T) {
 
 	otherPlayer := makePlayer([]Card{})
 	teamMate := makePlayer([]Card{})
@@ -1948,6 +1948,32 @@ func TestOpponentTacticBACK1(t *testing.T) {
 			s.trick, validCards, card)
 	}
 }
+
+// Does not improve??
+// func TestOpponentTacticBACK_PlayerLeads_(t *testing.T) {
+// 	validCards := []Card{
+// 		Card{HEART, "J"},
+// 		Card{SPADE, "9"},
+// 		Card{HEART, "8"},
+// 	}
+// 	player := makePlayer(validCards)
+
+// 	otherPlayer := makePlayer([]Card{})
+// 	// teamMate := makePlayer([]Card{})
+// 	s := makeSuitState()
+// 	s.leader = &otherPlayer
+// 	s.declarer = &otherPlayer
+
+// 	s.trump = CLUBS
+// 	s.trick = []Card{Card{CARO, "9"}, Card{CARO, "K"}}
+// 	s.follow = CARO
+	
+// 	card := player.playerTactic(&s, validCards)
+// 	if getSuit(s.trump, card) == s.trump {
+// 		t.Errorf("In trick led by declarer %v, and valid %v, NOT expected a trump: %v",
+// 			s.trick, validCards, card)
+// 	}
+// }
 
 func TestOpponentTacticBACK2(t *testing.T) {
 

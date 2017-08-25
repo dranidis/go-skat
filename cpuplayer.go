@@ -790,20 +790,45 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 
 	if len(s.trick) == 2 {
 		debugTacticsLog("OPP BACKHAND\n")
+
+		sortedValue := sortValue(c)
+		noTrumps := filter(sortedValue, func(card Card) bool {
+			return card.Suit != s.trump && card.Rank != "J"
+		})
+		ownTrumps := sortRank(filter(p.hand, func(card Card) bool {
+			return card.Rank == "J" || card.Suit == s.trump
+		}))
+		sureWinners := []Card{}
+		for _,t := range ownTrumps {
+			if noHigherCard(s, true, p.hand, t) {
+				sureWinners = append(sureWinners, t)
+			}
+		}		
 		if s.leader == s.declarer {
-			debugTacticsLog(" -- declarer leads --\n")
+			// debugTacticsLog(" -- declarer leads --\n")
 			if s.greater(s.trick[0], s.trick[1]) {
 				return highestValueWinnerORlowestValueLoser(s, c)
 			}
-			return sortValue(c)[0]
+			debugTacticsLog(" largest non-trump")
+			candidates := []Card{}
+			candidates = sortedValue
+			for len(candidates) > 0 {
+				card := candidates[0]
+				if in(sureWinners, card) {
+					candidates = remove(candidates, card)
+					continue
+				}
+				return card 
+			}
+			// if len(noTrumps) > 0 {
+			// 	return noTrumps[0]
+			// }
+			return sortedValue[0]
 		}
 		debugTacticsLog(" -- teammate leads --\n")
 		if s.greater(s.trick[0], s.trick[1]) {
 			debugTacticsLog(" largest non-trump")
-			sortedValue := sortValue(c)
-			noTrumps := filter(sortedValue, func(card Card) bool {
-				return card.Suit != s.trump && card.Rank != "J"
-			})
+
 			if len(noTrumps) > 0 {
 				return noTrumps[0]
 			}
