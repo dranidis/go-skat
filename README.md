@@ -14,7 +14,7 @@ Usage of go-skat:
   -log
     	Saves log in a file (default true)
   -n int
-    	total number of games, default 36 (default 36)
+    	total number of games (default 36)
   -r int
     	Seed for random number generator. A value of 0 generates a random number to be used as a seed.
 ```
