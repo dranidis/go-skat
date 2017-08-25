@@ -632,10 +632,11 @@ func main() {
 	//fmt.Println(fileLogFlag)
 	if randSeed == 0 {
 		r = rand.New(rand.NewSource(time.Now().Unix()))
-	} else {
-		r = rand.New(rand.NewSource(int64(randSeed)))
+		randSeed = r.Intn(9999)
+		fmt.Printf("SEED: %d\n", randSeed)
 	}
-
+	r = rand.New(rand.NewSource(int64(randSeed)))
+	
 	makePlayers(auto, html)
 
 	rotateTimes := r.Intn(5)
