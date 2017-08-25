@@ -297,8 +297,17 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 			if len(sureWinners) > 1 {
 				debugTacticsLog("..more than one sure winner..")
 				return sureWinners[len(sureWinners)-1]
-			} else if len(sureWinners) == 1 && len(otherTrumps) == 1 {
-				return sureWinners[0]
+			} else if len(sureWinners) == 1 {
+				if len(otherTrumps) == 1 {
+					return sureWinners[0]
+				}
+				//
+				// does not improve score to HOLD the high winner for later
+				//
+				// if len(otherTrumps) > 2 {
+				// 	debugTacticsLog("Playing low in first tricks (more than 2 trumps)")
+				// 	return ownTrumps[len(ownTrumps) - 1]
+				// }
 			} else if len(sureWinners) == 0 {
 				debugTacticsLog("..No winner, playing low trump")
 				return ownTrumps[len(ownTrumps) - 1]
