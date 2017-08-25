@@ -21,7 +21,7 @@ var r = rand.New(rand.NewSource(1))
 var _ = rand.New(rand.NewSource(time.Now().Unix()))
 var logFile io.Writer = nil
 var debugTacticsLogFlag = false
-var gameLogFlag = false
+var gameLogFlag = true
 var fileLogFlag = true
 var delayMs = 1000
 var totalGames = 21
@@ -410,7 +410,7 @@ func initGame(players []PlayerI) {
 	// }
 	for _, p := range players {
 		h := p.calculateHighestBid()
-		gameLog("(%v) hand: %v Bid up to: %d\n", p.getName(), p.getHand(), h)
+		debugTacticsLog("(%v) hand: %v Bid up to: %d\n", p.getName(), p.getHand(), h)
 	}
 
 	gameLog("\nPLAYER ORDER: %s - %s - %s\n\n", players[0].getName(), players[1].getName(), players[2].getName())
@@ -617,7 +617,6 @@ func makePlayers(auto, html bool) {
 }
 
 func main() {
-
 	// COMMAND LINE FLAGS
 	auto := false
 	var randSeed int
@@ -628,7 +627,6 @@ func main() {
 	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:8080")
 	flag.Parse()
 
-	gameLog("AUTO: %v\n", auto)
 	//fmt.Println(fileLogFlag)
 	if randSeed == 0 {
 		r = rand.New(rand.NewSource(time.Now().Unix()))
