@@ -771,9 +771,11 @@ func TestPickUpSkat2(t *testing.T) {
 	player.pickUpSkat(skat)
 	// fmt.Println(sort(player.hand))
 	// fmt.Println(skat)
-	cc1 := skat[0].Suit != HEART || skat[0].Rank != "D"
-	cc2 := skat[1].Suit != HEART || skat[1].Rank != "7"
-	if cc1 || cc2 {
+	card1 := Card{CARO, "8"}
+	card2 := Card{SPADE, "8"}
+	// cc1 := skat[0].Suit != CARO || skat[0].Rank != "8"
+	// cc2 := skat[1].Suit != SPADE || skat[1].Rank != "8"
+	if !in(skat, card1, card2) {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
 	}
 
@@ -2902,7 +2904,8 @@ func TestDiscardInSkatGRAND_10s(t *testing.T) {
 
 func TestDiscardInSkatGRANDBlank(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "J"}, //LOSER
+		Card{CLUBS, "J"}, 
+		Card{CARO, "J"}, //LOSER
 		Card{CLUBS, "A"},
 		Card{CLUBS, "8"}, //LOSER
 		Card{CLUBS, "9"}, //LOSER
@@ -2912,12 +2915,12 @@ func TestDiscardInSkatGRANDBlank(t *testing.T) {
 		Card{SPADE, "9"}, //LOSER
 		Card{HEART, "A"},
 		Card{HEART, "10"},
-		Card{HEART, "K"},
 		Card{CARO, "9"}, //LOSER
 	}
 	skat := []Card{Card{CLUBS, "9"}, Card{SPADE, "D"}}
 	p := makePlayer(cards)
 	p.trumpToDeclare = GRAND
+	p.afterSkat = true
 	p.discardInSkat(skat)
 
 	if !in(skat, Card{SPADE, "D"}, Card{CARO, "9"}) {

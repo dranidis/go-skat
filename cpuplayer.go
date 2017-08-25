@@ -9,6 +9,7 @@ type Player struct {
 	firstCardPlay  bool
 	risky          bool
 	trumpToDeclare string
+	afterSkat bool
 }
 
 func makePlayer(hand []Card) Player {
@@ -17,6 +18,7 @@ func makePlayer(hand []Card) Player {
 		firstCardPlay:  false,
 		risky:          false,
 		trumpToDeclare: "",
+		afterSkat: false,
 	}
 }
 
@@ -50,6 +52,7 @@ func (p Player) otherPlayersTrumps(s *SuitState) []Card {
 }
 
 var TRYING = false
+
 func (p Player) canWin() string {
 	cs := p.getHand()
 	assOtherThan := func(suit string) int {
@@ -80,6 +83,13 @@ func (p Player) canWin() string {
 	losers := len(grandLosers(cs)) + jackLosers(cs)
 	debugTacticsLog("\nLosers: %v, %d jacks\n", grandLosers(cs), jackLosers(cs))
 	debugTacticsLog("\nConsidering GRAND in Hand: %v, Full ones: %v, Losers: %v\n", cs, fullOnes, losers)
+
+	if p.afterSkat {
+		debugTacticsLog("\nAFTER SKAT subtracting 2 losers\n")
+		losers -= 2
+	}
+	p.afterSkat = false
+
 	if fullOnes >= losers  || (p.risky && fullOnes + 1 >= losers) {
 		if fullOnes < losers {
 			TRYING = true
@@ -832,6 +842,7 @@ func (p *Player) getGamevalue(suit string) int {
 	return (mat + 1) * trumpBaseValue(suit)
 }
 
+
 func (p *Player) calculateHighestBid() int {
 	p.highestBid = 0
 
@@ -862,6 +873,7 @@ func (p *Player) declareTrump() string {
 	if p.trumpToDeclare == GRAND {
 		return GRAND
 	}
+
 	// TODO:
 	// if after SKAT pick up bid less than score use the next suit
 	trump := mostCardsSuit(p.getHand())
@@ -913,6 +925,10 @@ func (p *Player) declareTrump() string {
 
 func (p *Player) discardInSkat(skat []Card) {
 	debugTacticsLog("FULL HAND %v\n", sortSuit("", p.getHand()))
+
+	newHbid := p.calculateHighestBid()
+	debugTacticsLog("New high bid %d\n", newHbid)
+
 	most := mostCardsSuit(p.getHand())
 
 	removed := 0
@@ -922,25 +938,25 @@ func (p *Player) discardInSkat(skat []Card) {
 
 
 
-// 	You	Bob	Ana
-// EURO 124.48	29.77	-154.25
-// WON   2664	 2614	 2501
-// LOST   569	  564	  562	
-// bidp    34	   34	   32	
-// pcw     82	   82	   82	
-// pcwd    18	   18	   18	
-// AVG  21.4, passed 526, won 7779, lost 1695 / 10000 games
-// Grand games 996, perc:  9.96
+		// 	You	Bob	Ana
+		// EURO 124.48	29.77	-154.25
+		// WON   2664	 2614	 2501
+		// LOST   569	  564	  562	
+		// bidp    34	   34	   32	
+		// pcw     82	   82	   82	
+		// pcwd    18	   18	   18	
+		// AVG  21.4, passed 526, won 7779, lost 1695 / 10000 games
+		// Grand games 996, perc:  9.96
 
-// 	You	Bob	Ana
-// EURO 98.80	47.29	-146.09
-// WON   2662	 2613	 2501
-// LOST   571	  565	  562	
-// bidp    34	   34	   32	
-// pcw     82	   82	   82	
-// pcwd    18	   18	   18	
-// AVG  21.2, passed 526, won 7776, lost 1698 / 10000 games
-// Grand games 996, perc:  9.96
+		// 	You	Bob	Ana
+		// EURO 98.80	47.29	-146.09
+		// WON   2662	 2613	 2501
+		// LOST   571	  565	  562	
+		// bidp    34	   34	   32	
+		// pcw     82	   82	   82	
+		// pcwd    18	   18	   18	
+		// AVG  21.2, passed 526, won 7776, lost 1698 / 10000 games
+		// Grand games 996, perc:  9.96
 
 		tenSuits := []string{}
 		counts := []int{}
@@ -1095,5 +1111,7 @@ func (p *Player) pickUpSkat(skat []Card) bool {
 	p.discardInSkat(skat)
 	debugTacticsLog("SKAT AFT: %v\n", skat)
 	debugTacticsLog("(%s) Hand %v\n", p.name, sortSuit("", p.hand))
+
+	p.afterSkat = true
 	return true
 }
