@@ -154,8 +154,9 @@
 			transform: rotate(11deg);
 		}			
 		#score {
-		    position: relative;
-		    top: 200px;
+		    position: absolute;
+		    top: 400px;
+		    width: 100%;
 		    /*left: 200px;*/
 		    font-size: xx-large;
 		    font-weight: bolder;
@@ -212,10 +213,11 @@
 		    min-width: 150px;
 		}
 		#main {
-			width: 400px; 
-			margin: auto;
-			position:relative;
-			height: 60px;
+		    width: 100%;
+		    margin: auto;
+		    position: relative;
+		    height: 60px;
+		    text-align: center;
 		}
 		#players {
 			position: relative;
@@ -227,7 +229,8 @@
 	<div id="header">Hi! Ola! Ciao!</div>
 	<div id="content">
 		<div id="main">
-			<button id="startBtn" class="btn" onclick="start()" style="width: inherit;">Start a new game</button>
+			<button id="startBtn" class="btn" onclick="start()">New game</button>
+			<button id="repeatBtn" class="btn" onclick="repeat()">Replay</button>
 		</div>
 		<div id="players">
 			<div id="played"></div>
@@ -235,17 +238,17 @@
 
 			<div id="bidn1" class="bidn">
 				<div id="name1" class="name">Bob</div>
-				<div id="bid1" class="bid"></div>
+				<div id="bid1" style="display: none;" class="bid"></div>
 			</div>
 
 			<div id="bidn2" class="bidn">
 				<div id="name2" class="name">Ana</div>
-				<div id="bid2" class="bid"></div>
+				<div id="bid2" style="display: none;" class="bid"></div>
 			</div>
 
 			<div id="bidn3" class="bidn">	
 				<div id="name3" class="name">You</div>
-				<div id="bid3" class="bid"></div>
+				<div id="bid3" style="display: none;" class="bid"></div>
 			</div>	
 
 		</div>
@@ -283,11 +286,12 @@
 		$("#bid1").hide();
 		$("#bid2").hide();
 		$("#bid3").hide();	
-
+		$("#repeatBtn").hide();	
 
 	function start() {
 		// UNCOMMENT FOR REAL GAME
 		document.getElementById("startBtn").style["visibility"] = "hidden";
+		document.getElementById("repeatBtn").style["visibility"] = "hidden";
 		document.getElementById("score").style["visibility"] = "hidden";
 
 		$("#bid1").empty();
@@ -308,6 +312,31 @@
 
 		return false;
 	}
+
+	function repeat() {
+		// UNCOMMENT FOR REAL GAME
+		document.getElementById("startBtn").style["visibility"] = "hidden";
+		document.getElementById("repeatBtn").style["visibility"] = "hidden";
+		document.getElementById("score").style["visibility"] = "hidden";
+
+		$("#bid1").empty();
+		$("#bid2").empty();
+		$("#bid3").empty();
+
+		$("#bid1").hide();
+		$("#bid2").hide();
+		$("#bid3").hide();		
+
+		$("#cards").empty();
+				
+		$.ajax({
+			url: "/repeat",
+			method: "GET",
+			success: handleInitData,
+		});
+
+		return false;
+	}	
 
 // FORE = 0, MID=1, BACK=2
 	var passed = [false, false, false]
@@ -668,6 +697,8 @@
 		text += "<br/>Score: " + parsed.GameScore;
 		score.innerHTML = text;
 		document.getElementById("startBtn").style["visibility"] = "visible";
+		document.getElementById("repeatBtn").style["visibility"] = "visible";
+		$("#repeatBtn").show();
 		console.log("TOTALS: " + parsed.Total1 + " " + parsed.Total2 + " " + parsed.Total3 )
 		showNameScores(parsed.Total1, parsed.Total2, parsed.Total3);
 	}
@@ -889,6 +920,7 @@
 						if (passed[0]) {
 							toastMsg("All passed");
 							document.getElementById("startBtn").style["visibility"] = "visible";
+							document.getElementById("repeatBtn").style["visibility"] = "visible";
 							return
 						} else {
 								// console.log("FORE WON" + acceptedBid);
@@ -938,6 +970,7 @@
 						if (!passed[1]) {
 							toastMsg("All passed");
 							document.getElementById("startBtn").style["visibility"] = "visible";
+							document.getElementById("repeatBtn").style["visibility"] = "visible";
 							return
 						} else {
 							// console.log("MID WON" + acceptedBid);
@@ -1119,7 +1152,7 @@
 					// console.log("FOUND index: " + index);
 					if (index == -1) {
 						selectedToDiscard.push(playerHand[i]);
-						this.style["top"] = "-50px";
+						this.style["top"] = "" + (-50 + Math.abs(i-6) * 5) + "px";
 						this.style["left"] = card_left[i] + (i-6) * 5 + "px";
 					}
 					else {

@@ -43,6 +43,7 @@ func logToFile(format string, a ...interface{}) {
 		fmt.Fprintf(logFile, format, a...)
 	}
 }
+
 func bidLog(format string, a ...interface{}) {
 	if gameLogFlag {
 		fmt.Printf(format, a...)
@@ -56,7 +57,6 @@ func gameLog(format string, a ...interface{}) {
 	}
 	logToFile(format, a...)
 }
-
 
 func htmlLog(format string, a ...interface{}) {
 	if htmlLogFlag {
@@ -81,8 +81,8 @@ type SuitState struct {
 	leader   PlayerI
 	follow   string
 	trick    []Card
-	// not necessary for game but for tactics
 	skat             []Card
+	// not necessary for game but for tactics
 	trumpsInGame     []Card
 	cardsPlayed      []Card
 	declarerVoidSuit map[string]bool
@@ -170,6 +170,7 @@ func round(s *SuitState, players []PlayerI) []PlayerI {
 }
 
 func play(s *SuitState, p PlayerI) Card {
+	red := color.New(color.Bold, color.FgRed).SprintFunc()
 	if len(p.getHand()) == 0 {
 		log.Fatal("EMPTY HAND")
 	}
@@ -177,15 +178,18 @@ func play(s *SuitState, p PlayerI) Card {
 
 	p.setHand(sortSuit(s.trump, p.getHand()))
 	gameLog("Trick: %v\n", s.trick)
-	debugTacticsLog("(%v) HAND %v ", p.getName(), p.getHand())
+	pName := p.getName()
+	if s.declarer == p {
+		pName = red(pName)
+	}
+	debugTacticsLog("(%v) HAND %v ", pName, p.getHand())
 	debugTacticsLog("valid: %v\n", valid)
-	if s.opp1 != nil && s.opp2 != nil {
-		debugTacticsLog("Previous suit: %s:%v, %s:%v\n",
+	if s.declarer != p {
+		debugTacticsLog("\tPrevious suit: %s:%v, %s:%v\n",
 			s.opp1.getName(), s.opp1.getPreviousSuit(),
 			s.opp2.getName(), s.opp2.getPreviousSuit())
 	}
 	if s.declarer == p {
-		red := color.New(color.Bold, color.FgRed).SprintFunc()
 		gameLog("(%s) ", red(p.getName()))
 	} else {
 		gameLog("(%v) ", p.getName())
@@ -379,38 +383,42 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 var grandGames = 0
 var state SuitState
 
-func initGame(players []PlayerI) {
+var oldCards []Card
+
+func DealCards() {
+	debugTacticsLog("Dealing\n")
+	cards := Shuffle(makeDeck())
+
+	oldCards = make([]Card, len(cards))
+	copy(oldCards, cards)
+
+	fmt.Printf("%v\n", players)
+	gamePlayers[0].setHand(sortSuit("", cards[:10]))
+	gamePlayers[1].setHand(sortSuit("", cards[10:20]))
+	gamePlayers[2].setHand(sortSuit("", cards[20:30]))
+	copy(state.skat, cards[30:32])
+}
+
+func SameCards() {
+	gamePlayers[0].setHand(sortSuit("", oldCards[:10]))
+	gamePlayers[1].setHand(sortSuit("", oldCards[10:20]))
+	gamePlayers[2].setHand(sortSuit("", oldCards[20:30]))
+	copy(state.skat, oldCards[30:32])
+}
+
+func initState() {
+	state = makeSuitState()
+	state.skat = make([]Card, 2)
+}
+
+func initGame() {
+	players = []PlayerI{gamePlayers[0], gamePlayers[1], gamePlayers[2]}
 	for _, p := range players {
 		p.setScore(0)
 		p.setSchwarz(true)
 		p.setPreviousSuit("")
 		p.setDeclaredBid(0)
 	}
-
-	state = makeSuitState()
-	state.skat = make([]Card, 2)
-	// DEALING
-	// for {
-	// 		TRYING = false
-
-	debugTacticsLog("SHUFFLING..")
-	cards := Shuffle(makeDeck())
-	players[0].setHand(sortSuit("", cards[:10]))
-	players[1].setHand(sortSuit("", cards[10:20]))
-	players[2].setHand(sortSuit("", cards[20:30]))
-	copy(state.skat, cards[30:32])
-	// // if player1.canWin() == "GRAND" || player2.canWin() == "GRAND" || player3.canWin() == "GRAND" {
-	// // 	break
-	// // }
-	// if player2.canWin() == "GRAND" && TRYING{
-	// 	break
-	// }	
-
-	// // 	if len(sevens(player1.getHand())) == 4 {
-	// // 		debugTacticsLog("FOUR 7\n")
-	// // 		break
-	// // 	}
-	// }
 	for _, p := range players {
 		h := p.calculateHighestBid()
 		debugTacticsLog("(%v) hand: %v Bid up to: %d\n", p.getName(), p.getHand(), h)
@@ -504,9 +512,9 @@ func declareAndPlay(players []PlayerI) int {
 		}
 
 	}
-	gameSc.Total1 = player1.getTotalScore()
-	gameSc.Total2 = player2.getTotalScore()
-	gameSc.Total3 = player3.getTotalScore()
+	gameSc.Total1 = gamePlayers[0].getTotalScore()
+	gameSc.Total2 = gamePlayers[1].getTotalScore()
+	gameSc.Total3 = gamePlayers[2].getTotalScore()
 	//fmt.Println("%v\n", gameSc)
 	if html {
 		scoreChannel <- gameSc
@@ -531,10 +539,7 @@ type Score struct {
 	Total3 int
 }
 
-func game(players []PlayerI) int {
-	gameLog("\n\nGAME %d/%d\n", gameIndex, totalGames)
-	initGame(players)
-
+func bidPhase(players []PlayerI) int {
 	// BIDDING
 	bidDecl, declarer := bid(players)
 	if bidDecl == 0 {
@@ -555,8 +560,32 @@ func game(players []PlayerI) int {
 	if declarer == players[2] {
 		state.opp1, state.opp2 = players[0], players[1]
 	}
-	state.opp1.setPartner(state.opp2)
+	state.opp1.setPartner(state.opp2)	
 
+	return bidDecl
+}
+
+func game() int {
+	gameLog("\n\nGAME %d/%d\n", gameIndex, totalGames)
+	initState()
+	DealCards()
+	initGame()
+	if bidPhase(players) == 0 {
+		return 0
+	}
+	gs := declareAndPlay(players)
+	return gs
+}
+
+func repeatGame() int {
+	gameLog("\n\nGAME %d/%d\n", gameIndex, totalGames)
+	// players = rotatePlayers(players)
+	initState()
+	SameCards()
+	initGame()
+	if bidPhase(players) == 0 {
+		return 0
+	}
 	gs := declareAndPlay(players)
 	return gs
 }
@@ -579,6 +608,7 @@ type V struct {
 }
 
 var players []PlayerI
+var gamePlayers []PlayerI
 
 func makeChannels() {
 	playChannel = make(chan CardPlayed)
@@ -592,7 +622,44 @@ func makeChannels() {
 	skatPositionChannel = make(chan int)
 }
 
-func makePlayers(auto, html bool) {
+func makePlayers(auto, html, analysis bool, analysisPl int) {
+	if analysis {
+		fmt.Printf("Creating players for analysis. Player: %d\n", analysisPl)
+		switch analysisPl {
+		case 1:
+			player1 := makeAPlayer([]Card{})
+			player2 := makePlayer([]Card{})
+			player3 := makePlayer([]Card{})
+			gamePlayers = []PlayerI{&player1, &player2, &player3}
+			player1.risky = true
+			player2.risky = true
+			player3.risky = false
+		case 2:
+			player1 := makePlayer([]Card{})
+			player2 := makeAPlayer([]Card{})
+			player3 := makePlayer([]Card{})
+			gamePlayers = []PlayerI{&player1, &player2, &player3}
+			player1.risky = true
+			player2.risky = true
+			player3.risky = false
+		case 3:
+			player1 := makePlayer([]Card{})
+			player2 := makePlayer([]Card{})
+			player3 := makeAPlayer([]Card{})
+			gamePlayers = []PlayerI{&player1, &player2, &player3}
+			player1.risky = true
+			player2.risky = true
+			player3.risky = false
+		}
+		fmt.Printf("%v\n", players)
+		delayMs = 0
+
+		gamePlayers[0].setName("You")
+		gamePlayers[1].setName("Bob")
+		gamePlayers[2].setName("Ana")
+
+		return
+	}
 	if auto {
 		debugTacticsLog("Creating CPU players only\n")
 		player := makePlayer([]Card{})
@@ -616,16 +683,23 @@ func makePlayers(auto, html bool) {
 	player3.setName("Ana")
 	player2.risky = true
 	player3.risky = false
-	players = []PlayerI{player1, &player2, &player3}
+	gamePlayers = []PlayerI{player1, &player2, &player3}
 }
+
+var gameNr int
 
 func main() {
 	// COMMAND LINE FLAGS
 	auto := false
+	analysis := false
+	analysisPlayer := 1
 	var randSeed int
+	flag.IntVar(&gameNr, "g", 1, "Deal cards # times before you start. You can use this option to move to a specific game of a series of games.")
 	flag.IntVar(&totalGames, "n", 36, "total number of games, default 36")
 	flag.IntVar(&randSeed, "r", 0, "Seed for random number generator. A value of 0 generates a random number to be used as a seed.")
 	flag.BoolVar(&auto, "auto", false, "Runs with CPU players only")
+	flag.BoolVar(&analysis, "analysis", false, "Analyses all the moves of a player in a repeated game")
+	flag.IntVar(&analysisPlayer, "player", 1, "The player whose moves are being analysed")
 	flag.BoolVar(&fileLogFlag, "log", true, "Saves log in a file")
 	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:3000")
 	flag.Parse()
@@ -640,13 +714,6 @@ func main() {
 		fmt.Printf("SEED: %d\n", randSeed)
 	}
 	r = rand.New(rand.NewSource(int64(randSeed)))
-	
-	makePlayers(auto, html)
-
-	rotateTimes := r.Intn(5)
-	for i := 0; i < rotateTimes; i++ {
-		players = rotatePlayers(players)
-	}
 
 	if fileLogFlag {
 		file, err := os.Create("gameLog.txt")
@@ -657,6 +724,18 @@ func main() {
 		defer file.Close()
 	}
 
+	makePlayers(auto, html, analysis, analysisPlayer)
+
+	rotateTimes := r.Intn(5) + gameNr - 1
+	for i := 0; i < rotateTimes; i++ {
+		gamePlayers = rotatePlayers(gamePlayers)
+	}
+
+	debugTacticsLog("SHUFFLING %d time(s)\n", gameNr)
+	for i := 0; i < gameNr - 1; i++ {
+		DealCards()
+	}
+
 	if html {
 		gameLogFlag = false
 		rt := startServer()
@@ -664,14 +743,30 @@ func main() {
 		fmt.Printf("Starting server at %s\n", port)
 		fmt.Printf("Open page :3000/html/\n")
 		http.ListenAndServe(port, rt)
+		// does not return
+	}
+
+	if analysis {
+		fmt.Printf("Performing analysis for player %d\n", analysisPlayer)
+		gamePlayers = rotatePlayers(gamePlayers)
+		score := game()
+		s := score
+		printScore(gamePlayers)
+		//i := 0
+		for s < 0 && !analysisEnded {
+			nextGameForAnalysis()
+			s = repeatGame()			
+			printScore(gamePlayers)
+		}
+		return //exit
 	}
 
 	passed := 0
 	won := 0
 	lost := 0
 	for ; gameIndex <= totalGames; gameIndex++ {
-
-		score := game(players)
+		gamePlayers = rotatePlayers(gamePlayers)
+		score := game()
 		if score == 0 {
 			passed++
 		}
@@ -683,8 +778,6 @@ func main() {
 		if !auto {
 			fmt.Printf("\nGAME: %6d (%s) %5d     (%s) %5d     (%s) %5d\n", gameIndex, player1.getName(), player1.getTotalScore(), player2.getName(), player2.getTotalScore(), player3.getName(), player3.getTotalScore())
 		}
-		//time.Sleep(1000 * time.Millisecond)
-		players = rotatePlayers(players)
 	}
 
 	avg := float64(player1.getTotalScore()+player2.getTotalScore()+player3.getTotalScore()) / float64(totalGames-passed)
@@ -713,6 +806,10 @@ func main() {
 	fmt.Printf("Grand games %d, perc: %5.2f", grandGames, 100*float64(grandGames)/float64(totalGames))
 }
 
+func printScore(players []PlayerI) {
+	fmt.Printf("\nGAME: %6d (%s) %5d     (%s) %5d     (%s) %5d\n", gameIndex, players[0].getName(), players[0].getTotalScore(), players[1].getName(), players[1].getTotalScore(), players[2].getName(), players[2].getTotalScore())
+}
+
 func startServer() *mux.Router {
 	rt := mux.NewRouter()
 	// Static route for CSS and JS files
@@ -735,8 +832,39 @@ func startServer() *mux.Router {
 		secondBidRound = false
 		makeChannels()
 
-		players = rotatePlayers(players)
-		initGame(players)
+		gamePlayers = rotatePlayers(gamePlayers)
+		initState()
+		DealCards()
+		initGame()
+
+		position := 0
+		for i, p := range players {
+			if player1 == p {
+				position = i
+				break
+			}
+		}
+		data := initData{
+			player1.getHand(), 
+			position,
+			player1.getTotalScore(),
+			player2.getTotalScore(),
+			player3.getTotalScore(),
+			currentGame,
+		}
+		sendJson(w, data)
+	})
+
+	rt.HandleFunc("/repeat", func(w http.ResponseWriter, r *http.Request) {
+		// currentGame++
+		htmlLog("Repeating Game: %d\n", currentGame)
+		currentBidIndex = -1
+		secondBidRound = false
+		makeChannels()
+
+		initState()
+		SameCards()
+		initGame()
 
 		position := 0
 		for i, p := range players {

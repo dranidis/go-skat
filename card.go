@@ -544,7 +544,17 @@ func (s SuitState) nullGreater(card1, card2 Card) bool {
 	return rank[card1.Rank] > rank[card2.Rank]
 }
 
-func (s SuitState) greater(card1, card2 Card) bool {
+func (s SuitState) greater(card1 Card, cards ...Card) bool {
+	for _, card2 := range cards {
+		if s.greaterOne(card1, card2) {
+			continue
+		}
+		return false
+	}
+	return true
+}
+
+func (s SuitState) greaterOne(card1, card2 Card) bool {
 	if s.trump == NULL {
 		return s.nullGreater(card1, card2)
 	}

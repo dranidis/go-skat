@@ -23,11 +23,12 @@ func winnerCards(s *SuitState, cs []Card) []Card {
 func highestValueWinnerORlowestValueLoser(s *SuitState, c []Card) Card {
 	winners := winnerCards(s, c)
 	debugTacticsLog("Winners: %v\n", winners)
+	trumpWinnerRanks := []string{"A", "10", "K", "D", "9", "8", "7", "J"}
 	if s.trump == s.follow {
-		trumpWinnerRanks := []string{"A", "10", "K", "D", "9", "8", "7", "J"}
 		winners = sortRankSpecial(winners, trumpWinnerRanks)
 	} else {
-		winners = sortValue(winners)
+		// winners = sortValue(winners)
+		winners = sortRankSpecial(winners, trumpWinnerRanks)
 	}
 	if len(winners) > 0 {
 		return winners[0]
