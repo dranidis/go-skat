@@ -592,12 +592,39 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 		return p.opponentTacticNull(s, c)
 	}
 
+	sortedValue := sortValue(c)
+	noTrumps := filter(sortedValue, func(card Card) bool {
+		return card.Suit != s.trump && card.Rank != "J"
+	})
+	ownTrumps := sortRank(filter(p.hand, func(card Card) bool {
+		return card.Rank == "J" || card.Suit == s.trump
+	}))
+	sureWinners := []Card{}
+	for _,t := range ownTrumps {
+		if noHigherCard(s, true, p.hand, t) {
+			sureWinners = append(sureWinners, t)
+		}
+	}	
+	otherTrumps := p.otherPlayersTrumps(s)
+
 	sortedValueNoTrumps := filter(sortValue(c), func(card Card) bool {
 		return card.Suit != s.trump && card.Rank != "J"
 	})
 
 	if len(s.trick) == 0 {
 		debugTacticsLog("FOREHAND..")
+
+		if len(ownTrumps) >= len(otherTrumps) {
+			debugTacticsLog("Many trumps..")
+			if len(sureWinners) > 0 {
+				debugTacticsLog("sure winners %v..", sureWinners)
+				return sureWinners[0]
+			}
+			if len(ownTrumps) > len(otherTrumps) {
+				debugTacticsLog("more than others...highest trump %v..", ownTrumps)
+				return ownTrumps[0]
+			}
+		}
 		
 		// if you have a card with suit played in a previous trick
 		// started from you or your partner continue with it
@@ -777,19 +804,6 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	if len(s.trick) == 2 {
 		debugTacticsLog("OPP BACKHAND\n")
 
-		sortedValue := sortValue(c)
-		noTrumps := filter(sortedValue, func(card Card) bool {
-			return card.Suit != s.trump && card.Rank != "J"
-		})
-		ownTrumps := sortRank(filter(p.hand, func(card Card) bool {
-			return card.Rank == "J" || card.Suit == s.trump
-		}))
-		sureWinners := []Card{}
-		for _,t := range ownTrumps {
-			if noHigherCard(s, true, p.hand, t) {
-				sureWinners = append(sureWinners, t)
-			}
-		}		
 		if s.leader == s.declarer {
 			// debugTacticsLog(" -- declarer leads --\n")
 			if s.greater(s.trick[0], s.trick[1]) {

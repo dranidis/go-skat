@@ -1950,11 +1950,51 @@ func TestOpponentTacticFORE_short_TOD_SUENDE_1_not_a_choice(t *testing.T) {
 	// declarer BACK
 	s.opp1 = &player
 	s.opp2 = &teamMate
-	teamMate.previousSuit = ""
-	player.previousSuit = ""
 
 	card := player.playerTactic(&s, validCards)
 	if card.Suit == "" && card.Rank == "" {
+		t.Errorf("Error validCards: %v, played %v",
+			validCards, card)
+	}
+}
+
+func TestOpponentTacticFORE_StrongTrumps(t *testing.T) {
+	// FOREHAND
+	// if declarer is short on Trumps and you are strong
+
+	validCards := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "8"},
+
+		Card{CLUBS, "8"},
+		Card{CARO, "9"},
+		Card{CARO, "8"},
+	}
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer(validCards)
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &otherPlayer
+
+	teamMate.previousSuit = ""
+	player.previousSuit = ""
+	s.trump = HEART
+	s.trick = []Card{}
+	_ = teamMate
+
+	// declarer MIDDLE
+	s.opp2 = &player
+	s.opp1 = &teamMate
+
+	s.trumpsInGame = []Card{
+		Card{HEART, "J"},
+		Card{HEART, "10"},
+	}
+
+	card := player.playerTactic(&s, validCards)
+	if !card.equals(Card{CLUBS, "J"}) {
 		t.Errorf("Error validCards: %v, played %v",
 			validCards, card)
 	}
@@ -3104,6 +3144,7 @@ func TestDiscardInSkatGRAND_10s(t *testing.T) {
 	skat := []Card{Card{SPADE, "9"}, Card{HEART, "9"}}
 	p := makePlayer(cards)
 	p.trumpToDeclare = GRAND
+	p.risky = true
 	p.discardInSkat(skat)
 
 	if !in(skat, Card{CLUBS, "10"}) || !in(skat, Card{CARO, "10"}){

@@ -81,7 +81,7 @@ func firstCardTactic(c []Card) Card {
 // }
 func noHigherCard(s *SuitState, viewSkat bool, hand []Card, c Card) bool {
 	scip := suitCardsInPlay(s, viewSkat, hand, getSuit(s.trump, c))
-	debugTacticsLog("Cards of suit %s still in play: %v", c.Suit, scip)
+	// debugTacticsLog("Cards of suit %s still in play: %v", c.Suit, scip)
 	for _, card := range scip {
 		if s.greater(card, c) {
 			return false
@@ -399,7 +399,7 @@ func tenIsSupported(cs []Card, ten Card) bool {
 	suitCards := filter(cs, func (c Card) bool {
 		return c.Suit == s && c.Rank != "J"
 		})
-	if len(suitCards) > 1 {
+	if len(suitCards) > 2 {
 		debugTacticsLog("..Supported 10 in %v..", suitCards)
 		return true
 	}	

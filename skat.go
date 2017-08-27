@@ -392,7 +392,6 @@ func DealCards() {
 	oldCards = make([]Card, len(cards))
 	copy(oldCards, cards)
 
-	fmt.Printf("%v\n", players)
 	gamePlayers[0].setHand(sortSuit("", cards[:10]))
 	gamePlayers[1].setHand(sortSuit("", cards[10:20]))
 	gamePlayers[2].setHand(sortSuit("", cards[20:30]))
@@ -651,13 +650,12 @@ func makePlayers(auto, html, analysis bool, analysisPl int) {
 			player2.risky = true
 			player3.risky = false
 		}
-		fmt.Printf("%v\n", players)
 		delayMs = 0
 
 		gamePlayers[0].setName("You")
 		gamePlayers[1].setName("Bob")
 		gamePlayers[2].setName("Ana")
-
+		fmt.Printf("Analysed player: %s\n", gamePlayers[analysisPl-1].getName())
 		return
 	}
 	if auto {
@@ -747,16 +745,20 @@ func main() {
 	}
 
 	if analysis {
-		fmt.Printf("Performing analysis for player %d\n", analysisPlayer)
+		gameLogFlag = false
 		gamePlayers = rotatePlayers(gamePlayers)
 		score := game()
 		s := score
-		printScore(gamePlayers)
-		//i := 0
+		// printScore(gamePlayers)
+		i := 0
 		for s < 0 && !analysisEnded {
 			nextGameForAnalysis()
 			s = repeatGame()			
-			printScore(gamePlayers)
+			// printScore(gamePlayers)
+			i++
+		}
+		if analysisEnded {
+			fmt.Printf("No chance! %d repetitions\n", i)
 		}
 		return //exit
 	}
