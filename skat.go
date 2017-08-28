@@ -709,8 +709,9 @@ func main() {
 	if randSeed == 0 {
 		r = rand.New(rand.NewSource(time.Now().Unix()))
 		randSeed = r.Intn(9999)
-		fmt.Printf("SEED: %d\n", randSeed)
 	}
+	fmt.Printf("SEED: %d\n", randSeed)
+	fmt.Printf("Game: %d\n", gameNr)
 	r = rand.New(rand.NewSource(int64(randSeed)))
 
 	if fileLogFlag {
@@ -759,6 +760,8 @@ func main() {
 		}
 		if analysisEnded {
 			fmt.Printf("No chance! %d repetitions\n", i)
+		} else {
+			fmt.Printf("Won! %d repetitions\n", i)
 		}
 		return //exit
 	}

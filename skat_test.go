@@ -3695,6 +3695,47 @@ func TestOpponentTacticNULLMIDDeclBack3(t *testing.T) {
 	}
 }
 
+func TestOpponentTacticFORE_PlayerVoid(t *testing.T) {
+	validCards := []Card{
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "8"},
+	}
+	player := makePlayer(validCards)
+
+	teamMate := makePlayer([]Card{})
+	otherPlayer := makePlayer([]Card{})
+	s := makeSuitState()
+	s.declarer = &otherPlayer
+	s.leader = &player
+	s.opp1 = &teamMate
+	s.opp2 = &player
+	s.trump = CLUBS
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "J"},
+	}
+
+	teamMate.previousSuit = "CARO"
+	s.trick = []Card{}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "A"}
+	if !card.equals(exp) {
+		t.Errorf("VOID: %v, In trick %v and valid %v, expected to follow previous trick and play %v, played %v",
+			s.declarerVoidSuit, s.trick, validCards, exp, card)
+	}
+
+	s.declarerVoidSuit[CARO] = true
+	card = player.playerTactic(&s, validCards)
+	exp = Card{CARO, "8"}
+	if !card.equals(exp) {
+		t.Errorf("VOID: %v,In trick %v and valid %v, decl CARO void, expected to play Low %v, played %v",
+			s.declarerVoidSuit, s.trick, validCards, exp, card)
+	}
+}
+
 func TestOpponentTacticNULLFORE(t *testing.T) {
 	teamMate := makePlayer([]Card{})
 	otherPlayer := makePlayer([]Card{})

@@ -161,9 +161,34 @@ func HighestShort(trump string, c []Card) Card {
 	s := ShortestNonTrumpSuit(trump, c)
 	debugTacticsLog("ShortestNonTrumpSuit %v\n", s)
 	cards := sortRank(nonTrumpCards(s, c))
-	debugTacticsLog("%v", cards)
+	debugTacticsLog("HighestShort %v..", cards)
 	if len(cards) > 0 {
 		return cards[0]
+	}
+	// last card?
+	if len(c) > 0 {
+		debugTacticsLog("... DEBUG ... VALID: %v no HighestShort. Returning: %v\n", c, c[0])
+		return c[0]		
+	}
+	debugTacticsLog(".. NO CARDS..")
+	return Card{"",""}
+}
+
+
+func HighestShortNotFull(trump string, c []Card) Card {
+	s := ShortestNonTrumpSuit(trump, c)
+	debugTacticsLog("ShortestNonTrumpSuit %v\n", s)
+	cards := sortRank(nonTrumpCards(s, c))
+	debugTacticsLog("HighestShort not full %v..", cards)
+	for i := 0; i < len(cards); i++ {
+		if cardValue(cards[i]) > 4 {
+			continue
+		}
+		return cards[i]
+	}
+	debugTacticsLog(".. only fulls..")
+	if len(cards) > 0 {
+		return cards[len(cards)-1]
 	}
 	// last card?
 	if len(c) > 0 {
