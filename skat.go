@@ -419,7 +419,7 @@ func initGame() {
 		p.setDeclaredBid(0)
 	}
 	for _, p := range players {
-		h := p.calculateHighestBid()
+		h := p.calculateHighestBid(false)
 		debugTacticsLog("(%v) hand: %v Bid up to: %d\n", p.getName(), p.getHand(), h)
 	}
 
@@ -691,12 +691,14 @@ func main() {
 	auto := false
 	analysis := false
 	analysisPlayer := 1
+	winAnalysis := true
 	var randSeed int
 	flag.IntVar(&gameNr, "g", 1, "Deal cards # times before you start. You can use this option to move to a specific game of a series of games.")
 	flag.IntVar(&totalGames, "n", 36, "total number of games, default 36")
 	flag.IntVar(&randSeed, "r", 0, "Seed for random number generator. A value of 0 generates a random number to be used as a seed.")
 	flag.BoolVar(&auto, "auto", false, "Runs with CPU players only")
-	flag.BoolVar(&analysis, "analysis", false, "Analyses all the moves of a player in a repeated game")
+	flag.BoolVar(&analysis, "analysis", false, "Exhaustively tries out all the moves of a player in a repeated game")
+	flag.BoolVar(&winAnalysis, "win", true, "Win or Lose target of the analysed player")
 	flag.IntVar(&analysisPlayer, "player", 1, "The player whose moves are being analysed")
 	flag.BoolVar(&fileLogFlag, "log", true, "Saves log in a file")
 	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:3000")
@@ -752,11 +754,43 @@ func main() {
 		s := score
 		// printScore(gamePlayers)
 		i := 0
-		for s < 0 && !analysisEnded {
+		condition := func(s int) bool {
+			if winAnalysis {
+				return s < 0
+			} else {
+				return s > 0 
+			}
+		}
+
+		sym := 0
+		symbol := []string{
+			"\b/",
+			"\b-",
+			"\b\\",
+			"\b|",
+		}
+
+		nextSymbol := func () string {
+			sym++
+			if sym == len(symbol) {
+				sym = 0
+			}
+			return symbol[sym]
+
+		}
+
+		for condition(s) && !analysisEnded {
 			nextGameForAnalysis()
 			s = repeatGame()			
 			// printScore(gamePlayers)
 			i++
+			if i % 50 == 0 {
+				fmt.Print(nextSymbol())
+			}
+			if i % 1000 == 0 {
+				fmt.Print("\b. ")
+			}			
+		
 		}
 		if analysisEnded {
 			fmt.Printf("No chance! %d repetitions\n", i)

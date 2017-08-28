@@ -33,7 +33,7 @@ func (p *HtmlPlayer) declareTrump() string {
 	return <-declareChannel
 }
 
-func (p *HtmlPlayer) calculateHighestBid() int {
+func (p *HtmlPlayer) calculateHighestBid(b bool) int {
 	return 0
 }
 

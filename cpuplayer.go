@@ -9,7 +9,6 @@ type Player struct {
 	firstCardPlay  bool
 	risky          bool
 	trumpToDeclare string
-	afterSkat bool
 }
 
 func makePlayer(hand []Card) Player {
@@ -18,7 +17,6 @@ func makePlayer(hand []Card) Player {
 		firstCardPlay:  false,
 		risky:          false,
 		trumpToDeclare: "",
-		afterSkat: false,
 	}
 }
 
@@ -53,7 +51,7 @@ func (p Player) otherPlayersTrumps(s *SuitState) []Card {
 
 var TRYING = false
 
-func (p Player) canWin() string {
+func (p Player) canWin(afterSkat bool) string {
 	cs := p.getHand()
 	assOtherThan := func(suit string) int {
 		asses := 0
@@ -84,11 +82,10 @@ func (p Player) canWin() string {
 	debugTacticsLog("\nLosers: %v, %d jacks\n", grandLosers(cs), jackLosers(cs))
 	debugTacticsLog("\nConsidering GRAND in Hand: %v, Full ones: %v, Losers: %v\n", cs, fullOnes, losers)
 
-	if p.afterSkat {
+	if afterSkat {
 		debugTacticsLog("\nAFTER SKAT subtracting 2 losers\n")
 		losers -= 2
 	}
-	p.afterSkat = false
 
 	if fullOnes >= losers  || (p.risky && fullOnes + 1 >= losers) {
 		if fullOnes < losers {
@@ -244,7 +241,8 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 					return ownTrumps[0]
 				}
 			}
-			if len(ownTrumps) * 2 < len(otherTrumps) + 2 {
+			// if len(ownTrumps) * 2 < len(otherTrumps) + 2 {
+			if len(ownTrumps) * 2 < len(otherTrumps) + 2 || (len(ownTrumps) == 3 && len(otherTrumps) == 4) {
 				debugTacticsLog("Not enough trumps.  Playing suits")
 
 				// Checking if card will not be trumped did not improve results !!???!!!
@@ -647,13 +645,15 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			// declarer has taken with trump?
 			// He will take it again.
 
-			if (prevSuitCards[0].Rank == "10") && in(s.cardsPlayed, Card{prevSuit, "A"}) {
-				debugTacticsLog("A and 10 seen resetting previous suit..")
-				s.opp1.setPreviousSuit("")
-				s.opp2.setPreviousSuit("")
-				return p.opponentTactic(s, c)
-			}
+		// does not increase percentages (DECREASE BY 1%)
+			// if (prevSuitCards[0].Rank == "10") && in(s.cardsPlayed, Card{prevSuit, "A"}) {
+			// 	debugTacticsLog("A and 10 seen resetting previous suit..")
+			// 	s.opp1.setPreviousSuit("")
+			// 	s.opp2.setPreviousSuit("")
+			// 	return p.opponentTactic(s, c)
+			// }
 
+			// increase by 1%
 			if (s.declarerVoidSuit[prevSuit]) {
 				debugTacticsLog("..Declarer void, will trump")
 				return prevSuitCards[len(prevSuitCards)-1]
@@ -705,6 +705,16 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			debugTacticsLog("Candidates %v, returning last..", candidates)
 			if len(candidates) > 0 {
 				card = candidates[len(candidates) - 1]
+			}
+			// slightly increases win percentages
+			// although goes against some of the test
+			// that were disabled:
+			// TestOpponentTacticFORE_short_long
+			// TestOpponentTacticFORE_short_TOD_SUENDE_1_1
+			// TestOpponentTacticFORE_short_TOD_SUENDE_1_2
+			if cardValue(card) > 4 && len(sortedValueNoTrumps) > 0 {
+				debugTacticsLog(".. returning lowest to let the partner take it..")
+				card = sortedValueNoTrumps[len(sortedValueNoTrumps)-1]
 			}
 		}
 		suit := getSuit(s.trump, card)
@@ -932,10 +942,10 @@ func (p *Player) getGamevalue(suit string) int {
 }
 
 
-func (p *Player) calculateHighestBid() int {
+func (p *Player) calculateHighestBid(afterSkat bool) int {
 	p.highestBid = 0
 
-	switch p.canWin() {
+	switch p.canWin(afterSkat) {
 	case "":
 		return 0
 	case "SUIT":
@@ -1015,7 +1025,7 @@ func (p *Player) declareTrump() string {
 func (p *Player) discardInSkat(skat []Card) {
 	debugTacticsLog("FULL HAND %v\n", sortSuit("", p.getHand()))
 
-	newHbid := p.calculateHighestBid()
+	newHbid := p.calculateHighestBid(true)
 	debugTacticsLog("New high bid %d\n", newHbid)
 
 	most := mostCardsSuit(p.getHand())
@@ -1196,8 +1206,6 @@ func (p *Player) pickUpSkat(skat []Card) bool {
 	copy(hand, p.getHand())
 	hand = append(hand, skat...)
 	p.setHand(hand)
-
-	p.afterSkat = true
 
 	p.discardInSkat(skat)
 	debugTacticsLog("SKAT AFT: %v\n", skat)

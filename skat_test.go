@@ -992,7 +992,7 @@ func TestCalculateHighestBid(t *testing.T) {
 		Card{SPADE, "8"},// loser
 	})
 	player.risky = true
-	player.calculateHighestBid()
+	player.calculateHighestBid(false)
 
 	act := player.highestBid
 	exp := 5 * 24
@@ -1725,57 +1725,57 @@ func TestOpponentTacticMIDPartnerLeadsVoidSuitWinner_SmearNoTrump(t *testing.T) 
 	}
 }
 
-func TestOpponentTacticFORE_short_long(t *testing.T) {
-	// FOREHAND
+// func TestOpponentTacticFORE_short_long(t *testing.T) {
+// 	// FOREHAND
 
-	// if declarer BACK short
-	// if declarer MID long
+// 	// if declarer BACK short
+// 	// if declarer MID long
 
-	otherPlayer := makePlayer([]Card{})
-	teamMate := makePlayer([]Card{})
-	player := makePlayer([]Card{})
-	s := makeSuitState()
-	s.leader = &player
-	s.declarer = &otherPlayer
+// 	otherPlayer := makePlayer([]Card{})
+// 	teamMate := makePlayer([]Card{})
+// 	player := makePlayer([]Card{})
+// 	s := makeSuitState()
+// 	s.leader = &player
+// 	s.declarer = &otherPlayer
 
-	teamMate.previousSuit = ""
-	player.previousSuit = ""
-	s.trump = CLUBS
-	s.trick = []Card{}
-	_ = teamMate
+// 	teamMate.previousSuit = ""
+// 	player.previousSuit = ""
+// 	s.trump = CLUBS
+// 	s.trick = []Card{}
+// 	_ = teamMate
 
-	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
-		Card{HEART, "A"},
-		Card{CARO, "8"},
-		Card{CARO, "K"},
-		Card{CARO, "D"},
-	}
-	// declarer MID
-	s.opp2 = &player
-	s.opp1 = &teamMate
+// 	validCards := []Card{
+// 		Card{CLUBS, "J"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "7"},
+// 		Card{HEART, "A"},
+// 		Card{CARO, "8"},
+// 		Card{CARO, "K"},
+// 		Card{CARO, "D"},
+// 	}
+// 	// declarer MID
+// 	s.opp2 = &player
+// 	s.opp1 = &teamMate
 
-	card := player.playerTactic(&s, validCards)
-	exp := Card{CARO, "K"}
-	if !card.equals(exp) {
-		t.Errorf("FOREHAND, DECLARER MID, valid %v, expected: %v, played %v",
-			validCards, exp, card)
-	}
-	// declarer BACK
-	s.opp1 = &player
-	s.opp2 = &teamMate
-	teamMate.previousSuit = ""
-	player.previousSuit = ""
+// 	card := player.playerTactic(&s, validCards)
+// 	exp := Card{CARO, "K"}
+// 	if !card.equals(exp) {
+// 		t.Errorf("FOREHAND, DECLARER MID, valid %v, expected: %v, played %v",
+// 			validCards, exp, card)
+// 	}
+// 	// declarer BACK
+// 	s.opp1 = &player
+// 	s.opp2 = &teamMate
+// 	teamMate.previousSuit = ""
+// 	player.previousSuit = ""
 
-	card = player.playerTactic(&s, validCards)
-	exp = Card{HEART, "A"}
-	if !card.equals(exp) {
-		t.Errorf("FOREHAND, DECLARER BACK, valid %v, expected: %v, played %v",
-			validCards, exp, card)
-	}
-}
+// 	card = player.playerTactic(&s, validCards)
+// 	exp = Card{HEART, "A"}
+// 	if !card.equals(exp) {
+// 		t.Errorf("FOREHAND, DECLARER BACK, valid %v, expected: %v, played %v",
+// 			validCards, exp, card)
+// 	}
+// }
 
 //TODO
 func TestOpponentTacticFORE_long_Not_Full_if_trumps_in_play(t *testing.T) {
@@ -1818,107 +1818,109 @@ func TestOpponentTacticFORE_long_Not_Full_if_trumps_in_play(t *testing.T) {
 	}
 }
 
-func TestOpponentTacticFORE_short_TOD_SUENDE_1_1(t *testing.T) {
-	// FOREHAND
+// func TestOpponentTacticFORE_short_TOD_SUENDE_1_1(t *testing.T) {
+// 	// FOREHAND
 
-	// if declarer BACK short
+// 	// if declarer BACK short
 
-	// never 2 numbers, or D number suit
-	otherPlayer := makePlayer([]Card{})
-	teamMate := makePlayer([]Card{})
-	player := makePlayer([]Card{})
-	s := makeSuitState()
-	s.leader = &player
-	s.declarer = &otherPlayer
+// 	// never 2 numbers, or D number suit
+// 	otherPlayer := makePlayer([]Card{})
+// 	teamMate := makePlayer([]Card{})
+// 	player := makePlayer([]Card{})
+// 	s := makeSuitState()
+// 	s.leader = &player
+// 	s.declarer = &otherPlayer
 
-	teamMate.previousSuit = ""
-	player.previousSuit = ""
-	s.trump = CLUBS
-	s.trick = []Card{}
-	_ = teamMate
+// 	teamMate.previousSuit = ""
+// 	player.previousSuit = ""
+// 	s.trump = CLUBS
+// 	s.trick = []Card{}
+// 	_ = teamMate
 
-	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
+// 	validCards := []Card{
+// 		Card{CLUBS, "J"},
+// 		Card{CLUBS, "9"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "7"},
 
-		Card{HEART, "9"},
-		Card{HEART, "8"},
+// 		Card{HEART, "9"},
+// 		Card{HEART, "8"},
 
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
+// 		Card{SPADE, "A"},
+// 		Card{SPADE, "10"},
 
-		Card{CARO, "D"},
-		Card{CARO, "9"},
+// 		Card{CARO, "D"},
+// 		Card{CARO, "9"},
 
-	}
+// 	}
 
-	// declarer BACK
-	s.opp1 = &player
-	s.opp2 = &teamMate
-	teamMate.previousSuit = ""
-	player.previousSuit = ""
+// 	// declarer BACK
+// 	s.opp1 = &player
+// 	s.opp2 = &teamMate
+// 	teamMate.previousSuit = ""
+// 	player.previousSuit = ""
 
-	card := player.playerTactic(&s, validCards)
-	notExpSuit1 := HEART
-	if card.Suit == notExpSuit1 {
-		t.Errorf("FOREHAND, DECLARER BACK, not expected suit of 2 numbers: %v, played %v",
-			validCards, card)
-	}
-	notExpSuit2 := CARO
-	if card.Suit == notExpSuit2 {
-		t.Errorf("FOREHAND, DECLARER BACK, not expected suit of D-number: %v, played %v",
-			validCards, card)
-	}
-}
+// 	card := player.playerTactic(&s, validCards)
+// 	notExpSuit1 := HEART
+// 	if card.Suit == notExpSuit1 {
+// 		t.Errorf("FOREHAND, DECLARER BACK, not expected suit of 2 numbers: %v, played %v",
+// 			validCards, card)
+// 	}
+// 	notExpSuit2 := CARO
+// 	if card.Suit == notExpSuit2 {
+// 		t.Errorf("FOREHAND, DECLARER BACK, not expected suit of D-number: %v, played %v",
+// 			validCards, card)
+// 	}
+// }
 
-func TestOpponentTacticFORE_short_TOD_SUENDE_1_2(t *testing.T) {
-	// FOREHAND
+// func TestOpponentTacticFORE_short_TOD_SUENDE_1_2(t *testing.T) {
+// 	// FOREHAND
 
-	// if declarer BACK short
+// 	// if declarer BACK short
 
-	// never 2 numbers, or D number suit
-	otherPlayer := makePlayer([]Card{})
-	teamMate := makePlayer([]Card{})
-	player := makePlayer([]Card{})
-	s := makeSuitState()
-	s.leader = &player
-	s.declarer = &otherPlayer
+// 	// never 2 numbers, or D number suit
+// 	otherPlayer := makePlayer([]Card{})
+// 	teamMate := makePlayer([]Card{})
+// 	player := makePlayer([]Card{})
+// 	s := makeSuitState()
+// 	s.leader = &player
+// 	s.declarer = &otherPlayer
 
-	teamMate.previousSuit = ""
-	player.previousSuit = ""
-	s.trump = CLUBS
-	s.trick = []Card{}
-	_ = teamMate
+// 	teamMate.previousSuit = ""
+// 	player.previousSuit = ""
+// 	s.trump = CLUBS
+// 	s.trick = []Card{}
+// 	_ = teamMate
 
-	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
+// 	validCards := []Card{
+// 		Card{CLUBS, "J"},
+// 		Card{CLUBS, "9"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "7"},
 
-		Card{HEART, "9"},
-		Card{HEART, "8"},
+// 		Card{HEART, "9"},
+// 		Card{HEART, "8"},
 
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "9"},
-	}
+// 		Card{SPADE, "A"},
+// 		Card{SPADE, "K"},
+// 		Card{SPADE, "9"},
+// 	}
 
-	// declarer BACK
-	s.opp1 = &player
-	s.opp2 = &teamMate
-	teamMate.previousSuit = ""
-	player.previousSuit = ""
+// 	s.trumpsInGame = makeTrumpDeck(s.trump)
 
-	card := player.playerTactic(&s, validCards)
-	notExpSuit := HEART
-	if card.Suit == notExpSuit {
-		t.Errorf("FOREHAND, DECLARER BACK, not expected suit of 2 numbers: %v, played %v",
-			validCards, card)
-	}
-}
+// 	// declarer BACK
+// 	s.opp1 = &player
+// 	s.opp2 = &teamMate
+// 	teamMate.previousSuit = ""
+// 	player.previousSuit = ""
+
+// 	card := player.playerTactic(&s, validCards)
+// 	notExpSuit := HEART
+// 	if card.Suit == notExpSuit {
+// 		t.Errorf("FOREHAND, DECLARER BACK, not expected suit of 2 numbers: %v, played %v",
+// 			validCards, card)
+// 	}
+// }
 
 func TestOpponentTacticFORE_short_TOD_SUENDE_1_not_a_choice(t *testing.T) {
 	// FOREHAND
@@ -2081,6 +2083,7 @@ func TestOpponentTacticBACK_PlayerLeads_PutPlayerInMiddleHand(t *testing.T) {
 			s.trick, validCards, exp, card)
 	}
 }
+
 
 func TestOpponentTacticBACK2(t *testing.T) {
 
@@ -3223,7 +3226,6 @@ func TestDiscardInSkatGRANDBlank(t *testing.T) {
 	skat := []Card{Card{CLUBS, "9"}, Card{SPADE, "D"}}
 	p := makePlayer(cards)
 	p.trumpToDeclare = GRAND
-	p.afterSkat = true
 	p.discardInSkat(skat)
 
 	if !in(skat, Card{SPADE, "D"}, Card{CARO, "9"}) {
@@ -3318,7 +3320,7 @@ func TestCanWinGRAND(t *testing.T) {
 	}
 	p := makePlayer(cards)
 
-	canWin := p.canWin()
+	canWin := p.canWin(false)
 	if canWin != "GRAND" {
 		t.Errorf("Hand %v can win GRAND. Got: %v", p.hand, canWin)
 	}
@@ -3342,7 +3344,7 @@ func TestCanWinGRAND2(t *testing.T) {
 	p := makePlayer(cards)
 	p.risky = true
 
-	canWin := p.canWin()
+	canWin := p.canWin(false)
 	if canWin != "GRAND" {
 		t.Errorf("Hand %v can win GRAND. Got: %v", p.hand, canWin)
 	}
@@ -3734,6 +3736,44 @@ func TestOpponentTacticFORE_PlayerVoid(t *testing.T) {
 		t.Errorf("VOID: %v,In trick %v and valid %v, decl CARO void, expected to play Low %v, played %v",
 			s.declarerVoidSuit, s.trick, validCards, exp, card)
 	}
+}
+
+func TestOpponentTacticFORE_ToPartnerLongSuitWithAss(t *testing.T) {
+	// declarer at backhand
+	// play a low card to allow the partner take the trick
+	validCards := []Card{
+		Card{SPADE, "J"},
+		Card{CARO, "J"},
+		Card{HEART, "10"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{CARO, "8"},
+	}
+	player := makePlayer(validCards)
+
+	teamMate := makePlayer([]Card{})
+	otherPlayer := makePlayer([]Card{})
+	s := makeSuitState()
+	s.declarer = &otherPlayer
+	s.leader = &player
+	s.opp2 = &teamMate
+	s.opp1 = &player
+	s.trump = CLUBS
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "J"},
+	}
+
+	s.trick = []Card{}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "8"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v and valid %v, expected to play %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+
 }
 
 func TestOpponentTacticNULLFORE(t *testing.T) {
