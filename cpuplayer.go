@@ -196,7 +196,10 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 		return card.Rank == "J" || card.Suit == s.trump
 	}))
 	otherTrumps := p.otherPlayersTrumps(s)
-	
+	sortedValueNoTrumps := filter(sortValue(c), func(card Card) bool {
+		return card.Suit != s.trump && card.Rank != "J"
+	})
+
 	if len(s.trick) == 0 {
 		debugTacticsLog("FOREHAND ")
 		// count your own trumps and other players trump
@@ -384,11 +387,9 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				}
 			}
 			//REPETITION: see below
-			sortedValue := filter(sortValue(c), func(card Card) bool {
-				return card.Suit != s.trump && card.Rank != "J"
-			})
-			if len(sortedValue) > 0 {
-				return sortedValue[len(sortedValue)-1]
+
+			if len(sortedValueNoTrumps) > 0 {
+				return sortedValueNoTrumps[len(sortedValueNoTrumps)-1]
 			}
 		}
 
@@ -398,6 +399,21 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	if len(s.trick) == 1 {
 		debugTacticsLog("MIDDLEHAND ")
 		if len(follows) == 0 && len(ownTrumps) > 0 {
+
+			// THROW OFF? Increases win by 1%
+			if cardValue(s.trick[0]) == 0 {
+				debugTacticsLog("zero value..")
+				if len(sortedValueNoTrumps) > 0 {
+					debugTacticsLog("sortedValueNoTrumps last %v..", sortedValueNoTrumps)
+					card := sortedValueNoTrumps[len(sortedValueNoTrumps)-1]
+					if cardValue(card) == 0 {
+						debugTacticsLog("throwing off number..")
+						return card
+					}					
+				}
+
+			}
+
 			debugTacticsLog("..low strengrt/value trump.. ")
 
 			rank := []string{"A", "10", "J", "K", "D", "9", "8", "7"}
@@ -435,11 +451,8 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 			})
 			debugTacticsLog("Non-trumps: %v...", nonTrumps)
 
-			sortedValue := filter(sortValue(c), func(card Card) bool {
-				return card.Suit != s.trump && card.Rank != "J"
-			})
-			if len(sortedValue) > 0 {
-				return highestValueWinnerORlowestValueLoser(s, sortedValue)
+			if len(sortedValueNoTrumps) > 0 {
+				return highestValueWinnerORlowestValueLoser(s, sortedValueNoTrumps)
 			}
 		}
 		// don't throw your A if not 10 in the trick and still in game
