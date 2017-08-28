@@ -802,9 +802,11 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	}
 
 	if len(s.trick) == 2 {
-		debugTacticsLog("OPP BACKHAND\n")
+		debugTacticsLog("OPP BACKHAND..\n")
 
 		if s.leader == s.declarer {
+			// Player should try to win the trick to get the declarer
+			// at MIDDLEhand
 			// debugTacticsLog(" -- declarer leads --\n")
 			if s.greater(s.trick[0], s.trick[1]) {
 				candidate := highestValueWinnerORlowestValueLoser(s, c)
@@ -820,7 +822,19 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 				}
 				return candidate
 			}
-			debugTacticsLog(" largest non-trump")
+			// even if the partner wins
+			w := sortValue(winnerCards(s, c))
+			for len(w) > 0 {
+				card := w[0]
+				if in(sureWinners, card) {
+					w = remove(w, card)
+					continue
+				}
+				debugTacticsLog("bring player at MIDDLEhand..")
+				return card 
+			}
+
+			debugTacticsLog("teammate wins..largest not-sure winner")
 			candidates := []Card{}
 			candidates = sortedValue
 			for len(candidates) > 0 {

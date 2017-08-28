@@ -2057,6 +2057,31 @@ func TestOpponentTacticBACK_MateLeads(t *testing.T) {
 // 	}
 // }
 
+func TestOpponentTacticBACK_PlayerLeads_PutPlayerInMiddleHand(t *testing.T) {
+	validCards := []Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "8"},
+	}
+	player := makePlayer(validCards)
+	otherPlayer := makePlayer([]Card{})
+	// teamMate := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+
+	s.trump = CARO
+	s.trick = []Card{Card{CARO, "7"}, Card{CARO, "A"}}
+	s.follow = CARO
+	
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "J"}
+	if !card.equals(exp) {
+		t.Errorf("In trick led by declarer %v, and valid %v, expected: %v to bring declarer at MIDDLEHAND, played: %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
 func TestOpponentTacticBACK2(t *testing.T) {
 
 	otherPlayer := makePlayer([]Card{})
