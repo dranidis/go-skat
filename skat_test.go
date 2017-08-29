@@ -4082,6 +4082,145 @@ func TestHTMLBid2(t *testing.T) {
 	}
 }
 
+func TestHTMLBid3(t *testing.T) {
+	router := startServer()
+	var m BidData
+
+	makeChannels()
+
+	makeP := func(high int) Player {
+		player := makePlayer([]Card{})
+		player.highestBid = high
+		return player
+	}
+	player1 := makeP(0)
+	player2 := makeP(0)
+	player3 := makeP(18)
+	player1.name = "Ana"
+	player2.name = "You"
+	player3.name = "Bob"
+	// GLOBAL
+	players = []PlayerI{&player1, &player2, &player3}
+
+	// req, _ := http.NewRequest("GET", "/start", nil)
+	rr := httptest.NewRecorder()
+	// router.ServeHTTP(rr, req)
+
+	// MIDDLEHAND NO
+	req, _ := http.NewRequest("GET", "/getbidvalue/1", nil)
+	rr = httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+	json.Unmarshal(rr.Body.Bytes(), &m)
+	exp := 18
+	act := m.Bid
+	if act != exp {
+		t.Errorf("Error bid, exp: %v, found %v", exp, act)
+	}
+
+	// BACKHAND 18 yes
+	req, _ = http.NewRequest("GET", "/bid/2", nil)
+	rr = httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+	json.Unmarshal(rr.Body.Bytes(), &m)
+	exp = 18
+	act = m.Bid
+	if act != exp {
+		t.Errorf("Error bid, exp: %v, found %v", exp, act)
+	}
+	expB := true
+	actB := m.Accepted
+	if actB != expB {
+		t.Errorf("Error bid, exp: %v, found %v", expB, actB)
+	}
+
+
+	// FOREHAND (18) No
+	req, _ = http.NewRequest("GET", "/bid/0", nil)
+	rr = httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+	json.Unmarshal(rr.Body.Bytes(), &m)
+	exp = 18
+	act = m.Bid
+	if act != exp {
+		t.Errorf("Error bid, exp: %v, found %v", exp, act)
+	}
+	expB = false
+	actB = m.Accepted
+	if actB != expB {
+		t.Errorf("Error bid, exp: %v, found %v", expB, actB)
+	}
+}
+
+func TestHTMLBid4(t *testing.T) {
+	router := startServer()
+	var m BidData
+
+	makeChannels()
+
+	makeP := func(high int) Player {
+		player := makePlayer([]Card{})
+		player.highestBid = high
+		return player
+	}
+	player1 := makeP(0)
+	player2 := makeP(18)
+	player3 := makeP(18)
+	player1.name = "Ana"
+	player2.name = "You"
+	player3.name = "Bob"
+	// GLOBAL
+	players = []PlayerI{&player1, &player2, &player3}
+
+	// req, _ := http.NewRequest("GET", "/start", nil)
+	rr := httptest.NewRecorder()
+	// router.ServeHTTP(rr, req)
+
+	// MIDDLEHAND yes
+	req, _ := http.NewRequest("GET", "/getbidvalue/1", nil)
+	rr = httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+	json.Unmarshal(rr.Body.Bytes(), &m)
+	exp := 18
+	act := m.Bid
+	if act != exp {
+		t.Errorf("Error bid, exp: %v, found %v", exp, act)
+	}
+
+	//FOREHAND No
+	req, _ = http.NewRequest("GET", "/bid/0", nil)
+	rr = httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+	json.Unmarshal(rr.Body.Bytes(), &m)
+	exp = 18
+	act = m.Bid
+	if act != exp {
+		t.Errorf("Error bid, exp: %v, found %v", exp, act)
+	}
+	expB := false
+	actB := m.Accepted
+	if actB != expB {
+		t.Errorf("Error bid, exp: %v, found %v", expB, actB)
+	}
+
+	// BACKHAND 20 no
+	req, _ = http.NewRequest("GET", "/bid/2", nil)
+	rr = httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+	json.Unmarshal(rr.Body.Bytes(), &m)
+	exp = 20
+	act = m.Bid
+	if act != exp {
+		t.Errorf("Error bid, exp: %v, found %v", exp, act)
+	}
+	expB = false
+	actB = m.Accepted
+	if actB != expB {
+		t.Errorf("Error bid, exp: %v, found %v", expB, actB)
+	}
+
+
+}
+
 func TestWinnerCards(t *testing.T) {
 	cards := []Card{
 		Card{HEART, "D"},

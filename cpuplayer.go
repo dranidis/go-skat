@@ -327,22 +327,22 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				return ownTrumps[len(ownTrumps)-1]
 			}
 
-			if p.otherPlayersHaveJs(s) {
-				debugTacticsLog("... other players have Js..")
-				validCards := make([]Card, len(c))
-				copy(validCards, c)
-				first := firstCardTactic(validCards)
-				for len(validCards) > 1 && (first.equals(Card{s.trump, "A"}) || first.equals(Card{s.trump, "10"})  || first.equals(Card{s.trump, "K"})  || first.equals(Card{s.trump, "D"})) {
-					debugTacticsLog("... not playing A or 10 or figures ..")
-					validCards = remove(validCards, first)
-					first = firstCardTactic(validCards)
-				}
-				return first
-			} else {
+			// if p.otherPlayersHaveJs(s) {
+			// 	debugTacticsLog("... other players have Js..")
+			// 	validCards := make([]Card, len(c))
+			// 	copy(validCards, c)
+			// 	first := firstCardTactic(validCards)
+			// 	for len(validCards) > 1 && (first.equals(Card{s.trump, "A"}) || first.equals(Card{s.trump, "10"})  || first.equals(Card{s.trump, "K"})  || first.equals(Card{s.trump, "D"})) {
+			// 		debugTacticsLog("... not playing A or 10 or figures ..")
+			// 		validCards = remove(validCards, first)
+			// 		first = firstCardTactic(validCards)
+			// 	}
+			// 	return first
+			// } else {
 				debugTacticsLog("Playing strongest lowest\n")
 				return p.strongestLowestNotAor10(s, c)
 				// return firstCardTactic(c)
-			}
+			// }
 		}
 		// TRUMP MONOPOLY
 		// Declarer still has trumps
@@ -850,7 +850,12 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			// debugTacticsLog(" -- declarer leads --\n")
 			if s.greater(s.trick[0], s.trick[1]) {
 				candidate := highestValueWinnerORlowestValueLoser(s, c)
-				lowValue := sortedValue[0]
+				var lowValue Card
+				if len(sortedValueNoTrumps) > 0 {
+					lowValue = sortedValueNoTrumps[len(sortedValueNoTrumps)-1]
+				} else {
+					lowValue = sortedValue[len(sortedValue)-1]
+				}
 				if getSuit(s.trump, candidate) == s.trump && s.follow != s.trump {
 					debugTacticsLog("..see if it is worth Taking with trump: %v..", candidate)
 					if sum(s.trick) > 0 {

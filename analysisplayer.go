@@ -8,6 +8,8 @@ type APlayer struct {
 	Player
 	moves []int
 	play []int
+	prevPlay []int
+	forcedBid int
 }
 
 func makeAPlayer(hand []Card) APlayer {
@@ -15,15 +17,24 @@ func makeAPlayer(hand []Card) APlayer {
 		Player:     makePlayer(hand),
 		moves: []int{0,0,0,0,0,0,0,0,0,0},
 		play: []int{0,0,0,0,0,0,0,0,0,0},
+		prevPlay: []int{0,0,0,0,0,0,0,0,0,0},
+		forcedBid: 0,
 	}
 }
 
 var analysisEnded = false
 var	tIndex = -1
+var previousGameAnalysis = false
 
 func (p *APlayer) playerTactic(s *SuitState, c []Card) Card {
 	gameLog("Valid cards: %v\n", c)
 	tIndex++
+
+	if previousGameAnalysis {
+		return c[p.prevPlay[tIndex]]
+	}
+
+	p.prevPlay[tIndex] = p.play[tIndex]
 	gameLog("Index: %v\n", p.play[tIndex])
 	p.moves[tIndex] = len(c)
 	current := p.play[tIndex]
@@ -46,6 +57,14 @@ func (p *APlayer) next(t int) {
 			p.play[i] = 0
 		}
 	}
+}
+
+func (p *APlayer) calculateHighestBid(afterSkat bool) int {
+	if p.forcedBid == 0 {
+		return p.Player.calculateHighestBid(afterSkat)
+	}
+	p.highestBid = p.forcedBid
+	return p.forcedBid
 }
 
 func nextGameForAnalysis() {

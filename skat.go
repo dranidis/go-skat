@@ -23,10 +23,11 @@ var logFile io.Writer = nil
 var debugTacticsLogFlag = false
 var gameLogFlag = true
 var fileLogFlag = true
-var htmlLogFlag = false
+var htmlLogFlag = true
 var delayMs = 1000
 var totalGames = 21
 var oficialScoring = false
+var logFileName = "gameLog.txt"
 
 var playChannel chan CardPlayed
 var trickChannel chan Card
@@ -621,12 +622,16 @@ func makeChannels() {
 	skatPositionChannel = make(chan int)
 }
 
-func makePlayers(auto, html, analysis bool, analysisPl int) {
+func makePlayers(auto, html, analysis bool, analysisPl, analysisPlayerBid int) {
 	if analysis {
 		fmt.Printf("Creating players for analysis. Player: %d\n", analysisPl)
+		if analysisPlayerBid != 0 {
+			fmt.Printf(".. Bid:  %d\n", analysisPlayerBid)
+		}
 		switch analysisPl {
 		case 1:
 			player1 := makeAPlayer([]Card{})
+			player1.forcedBid = analysisPlayerBid
 			player2 := makePlayer([]Card{})
 			player3 := makePlayer([]Card{})
 			gamePlayers = []PlayerI{&player1, &player2, &player3}
@@ -636,6 +641,7 @@ func makePlayers(auto, html, analysis bool, analysisPl int) {
 		case 2:
 			player1 := makePlayer([]Card{})
 			player2 := makeAPlayer([]Card{})
+			player2.forcedBid = analysisPlayerBid
 			player3 := makePlayer([]Card{})
 			gamePlayers = []PlayerI{&player1, &player2, &player3}
 			player1.risky = true
@@ -645,6 +651,7 @@ func makePlayers(auto, html, analysis bool, analysisPl int) {
 			player1 := makePlayer([]Card{})
 			player2 := makePlayer([]Card{})
 			player3 := makeAPlayer([]Card{})
+			player3.forcedBid = analysisPlayerBid
 			gamePlayers = []PlayerI{&player1, &player2, &player3}
 			player1.risky = true
 			player2.risky = true
@@ -691,6 +698,7 @@ func main() {
 	auto := false
 	analysis := false
 	analysisPlayer := 1
+	analysisPlayerBid := 0
 	winAnalysis := true
 	var randSeed int
 	flag.IntVar(&gameNr, "g", 1, "Deal cards # times before you start. You can use this option to move to a specific game of a series of games.")
@@ -700,6 +708,7 @@ func main() {
 	flag.BoolVar(&analysis, "analysis", false, "Exhaustively tries out all the moves of a player in a repeated game")
 	flag.BoolVar(&winAnalysis, "win", true, "Win or Lose target of the analysed player")
 	flag.IntVar(&analysisPlayer, "player", 1, "The player whose moves are being analysed")
+	flag.IntVar(&analysisPlayerBid, "bid", 1, "Force the bid of the analysed player")
 	flag.BoolVar(&fileLogFlag, "log", true, "Saves log in a file")
 	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:3000")
 	flag.Parse()
@@ -717,7 +726,7 @@ func main() {
 	r = rand.New(rand.NewSource(int64(randSeed)))
 
 	if fileLogFlag {
-		file, err := os.Create("gameLog.txt")
+		file, err := os.Create(logFileName)
 		if err != nil {
 			log.Fatal("Cannot create file", err)
 		}
@@ -725,7 +734,7 @@ func main() {
 		defer file.Close()
 	}
 
-	makePlayers(auto, html, analysis, analysisPlayer)
+	makePlayers(auto, html, analysis, analysisPlayer, analysisPlayerBid)
 
 	rotateTimes := r.Intn(5) + gameNr - 1
 	for i := 0; i < rotateTimes; i++ {
@@ -748,6 +757,11 @@ func main() {
 	}
 
 	if analysis {
+		if !winAnalysis {
+			fmt.Println("Target: Declarer should lose.")
+		} else {
+			fmt.Println("Target: Declarer should win.")
+		}		
 		gameLogFlag = false
 		gamePlayers = rotatePlayers(gamePlayers)
 		score := game()
@@ -778,7 +792,7 @@ func main() {
 			return symbol[sym]
 
 		}
-
+		previousGameAnalysis = false
 		for condition(s) && !analysisEnded {
 			nextGameForAnalysis()
 			s = repeatGame()			
@@ -788,13 +802,32 @@ func main() {
 				fmt.Print(nextSymbol())
 			}
 			if i % 1000 == 0 {
-				fmt.Print("\b. ")
+				if i % 10000 == 0 {
+					fmt.Print("\b# ")
+				} else {
+					fmt.Print("\b. ")
+				}
+				if i % 50000 == 0 {
+					fmt.Printf(" (%d)\n", i)
+				}
 			}			
-		
 		}
 		if analysisEnded {
 			fmt.Printf("No chance! %d repetitions\n", i)
 		} else {
+			if fileLogFlag {
+				// logFile.Close() // close log file
+			}
+			file, err := os.Create("analysis.txt")
+			if err != nil {
+				log.Fatal("Cannot create file", err)
+			}
+			logFile = file
+			fileLogFlag = true
+
+			previousGameAnalysis = true
+			nextGameForAnalysis()
+			s = repeatGame()
 			fmt.Printf("Won! %d repetitions\n", i)
 		}
 		return //exit
@@ -863,6 +896,7 @@ func startServer() *mux.Router {
 	var currentBidIndex = -1
 	var secondBidRound = false
 	var currentGame = 0
+	var ForeHandAnswered = false
 
 	rt.HandleFunc("/start", func(w http.ResponseWriter, r *http.Request) {
 		currentGame++
@@ -969,36 +1003,30 @@ func startServer() *mux.Router {
 
 	rt.HandleFunc("/bid/{pl}", func(w http.ResponseWriter, r *http.Request) {
 		pl, _ := strconv.ParseInt(mux.Vars(r)["pl"], 10, 64)
-		// htmlLog("currentBidIndex %d\n", currentBidIndex)
 
+		htmlLog("/bid/%d\n", pl)
+		htmlLog("currentBidIndex %d\n", currentBidIndex)
+		if pl == 0 {
+			ForeHandAnswered = true
+		}
 		if pl == 2 {
 			secondBidRound = true
 		}
-		var data BidData
-		if (pl == 1 && !secondBidRound) || pl == 2 { // SPEAKER
-			htmlLog("SPEAKER\n")
-			if players[pl].accepts(currentBidIndex + 1) {
-				currentBidIndex++
-				debugTacticsLog("Player %s: %d\n", players[pl].getName(), bids[currentBidIndex])
-				data = BidData{bids[currentBidIndex], true}
-			} else {
-				debugTacticsLog("Player %s: PASS \n", players[pl].getName())
-				data = BidData{bids[currentBidIndex+1], false}
-			}
-		} else { // LISTENER
-			htmlLog("LISTENER\n")
+		htmlLog("secondBidRound:%v\n", secondBidRound)
 
-			if currentBidIndex == -1 {
-				currentBidIndex++
-			}
-			if players[pl].accepts(currentBidIndex) {
-				debugTacticsLog("Player %s: yes (%d)\n", players[pl].getName(), bids[currentBidIndex])
-				data = BidData{bids[currentBidIndex], true}
-			} else {
-				debugTacticsLog("Player %s: no (%d)\n", players[pl].getName(), bids[currentBidIndex])
-				data = BidData{bids[currentBidIndex], false}
-			}
+		var data BidData
+
+		if (pl == 1 && !secondBidRound) || (pl == 2 && ForeHandAnswered) {
+			currentBidIndex++
 		}
+		if players[pl].accepts(currentBidIndex) {
+			debugTacticsLog("Player %s: %d YES \n", players[pl].getName(), bids[currentBidIndex])
+			data = BidData{bids[currentBidIndex], true}
+		} else {
+			debugTacticsLog("Player %s: PASS %d \n", players[pl].getName(), bids[currentBidIndex])
+			data = BidData{bids[currentBidIndex], false}
+		}
+
 		time.Sleep(time.Duration(delayMs) * time.Millisecond)
 		time.Sleep(time.Duration(delayMs) * time.Millisecond)
 
@@ -1008,21 +1036,22 @@ func startServer() *mux.Router {
 	rt.HandleFunc("/getbidvalue/{pl}", func(w http.ResponseWriter, r *http.Request) {
 		pl, _ := strconv.ParseInt(mux.Vars(r)["pl"], 10, 64)
 
+		htmlLog("/getbidvalue/%d\n", pl)
+		htmlLog("currentBidIndex %d\n", currentBidIndex)
+
+		if pl == 0 {
+			ForeHandAnswered = true
+		}
 		if pl == 2 {
 			secondBidRound = true
 		}
 
-		bidvalue := currentBidIndex
-		if pl == 2 || (pl == 1 && !secondBidRound) {
-			bidvalue = currentBidIndex + 1
+		if (pl == 1 && !secondBidRound) || (pl == 2 && ForeHandAnswered) {
 			currentBidIndex++
 		}
-		if currentBidIndex == -1 {
-			bidvalue = currentBidIndex + 1
-			currentBidIndex++
-		}
-		htmlLog("BIDVALUE: %v\n", bids[bidvalue])
-		data := BidData{bids[bidvalue], true} // boolean value is ignored
+
+		htmlLog("BIDVALUE: %v\n", bids[currentBidIndex])
+		data := BidData{bids[currentBidIndex], true} // boolean value is ignored
 		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
 		// time.Sleep(time.Duration(delayMs) * time.Millisecond)
 
