@@ -723,7 +723,7 @@ func main() {
 	flag.BoolVar(&analysis, "analysis", false, "Exhaustively tries out all the moves of a player in a repeated game")
 	flag.BoolVar(&winAnalysis, "win", true, "Win or Lose target of the analysed player")
 	flag.IntVar(&analysisPlayer, "player", 1, "The player whose moves are being analysed")
-	flag.IntVar(&analysisPlayerBid, "bid", 1, "Force the bid of the analysed player")
+	flag.IntVar(&analysisPlayerBid, "bid", 0, "Force the bid of the analysed player")
 	flag.BoolVar(&fileLogFlag, "log", true, "Saves log in a file")
 	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:3000")
 	flag.Parse()

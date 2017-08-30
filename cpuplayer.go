@@ -948,12 +948,35 @@ func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 		debugTacticsLog("(%s) FIRST CARD PLAY\n", p.name)
 		return c[0]
 	}
+	printCollectedInfo(s)
 	if s.declarer == p {
 		return p.declarerTactic(s, c)
 	}
 	return p.opponentTactic(s, c)
 }
 
+
+func printCollectedInfo(s *SuitState) {
+	debugTacticsLog("\n\t%s: void:", s.declarer.getName())
+	for k, v := range s.declarerVoidSuit {
+		if v {
+			debugTacticsLog("%s ", k)
+		}
+	}
+	debugTacticsLog("\n\t%s: void:", s.opp1.getName())
+	for k, v := range s.opp1VoidSuit {
+		if v {
+			debugTacticsLog("%s ", k)
+		}
+	}
+	debugTacticsLog("\n\t%s: void:", s.opp2.getName())	
+	for k, v := range s.opp2VoidSuit {
+		if v {
+			debugTacticsLog("%s ", k)
+		}
+	}
+	debugTacticsLog("\n")
+}
 /*
 avg: -75 -- -178 with random play
 */
