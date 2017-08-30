@@ -957,6 +957,9 @@ func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 
 
 func printCollectedInfo(s *SuitState) {
+	if s.declarer == nil || s.opp1 == nil || s.opp2 == nil {
+		return
+	}
 	debugTacticsLog("\n\t%s: void:", s.declarer.getName())
 	for k, v := range s.declarerVoidSuit {
 		if v {
