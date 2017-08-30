@@ -365,6 +365,7 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 
 		// OVERBID?
 		if gs < state.declarer.getDeclaredBid() {
+			fmt.Printf(" --OVERBID!!! Game Value: %d < Bid: %d-- ", gs, state.declarer.getDeclaredBid())
 			gameLog(" --OVERBID!!! Game Value: %d < Bid: %d-- ", gs, state.declarer.getDeclaredBid())
 			overbid = true
 			leastMult := 0
@@ -448,15 +449,10 @@ func initGame() {
 }
 
 func declareAndPlay(players []PlayerI) int {
-	// HAND GAME?
 	handGame := true
-	// fmt.Printf("\nHAND bef: %v\n", sortSuit(declarer.getHand()))
-	// fmt.Printf("SKAT bef: %v\n", skat)
 
 	if state.declarer.pickUpSkat(state.skat) {
-		// fmt.Printf("HAND aft: %v\n", sortSuit(declarer.getHand()))
 		handGame = false
-		// fmt.Printf("SKAT aft: %v\n", skat)
 	}
 
 	state.trump = state.declarer.declareTrump()
@@ -467,7 +463,6 @@ func declareAndPlay(players []PlayerI) int {
 	}
 
 	if state.trump == GRAND {
-		//fmt.Println(GRAND)
 		grandGames++
 	}
 	state.trumpsInGame = filter(makeDeck(), func(c Card) bool {

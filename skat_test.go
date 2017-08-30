@@ -4562,3 +4562,34 @@ func TestGreaterTrump(t *testing.T) {
 		t.Errorf("Error in higher")
 	}
 }
+
+func TestOverbid(t *testing.T) {
+	p := makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "J"},
+
+		Card{CARO, "8"},
+		Card{CARO, "D"},
+
+		Card{SPADE, "9"},
+		Card{SPADE, "10"},
+		Card{SPADE, "K"},
+
+		Card{HEART, "A"},// loser
+		Card{HEART, "D"},// loser
+		Card{HEART, "8"},// loser
+	})
+
+	skat := []Card{
+		Card{HEART, "9"},
+		Card{HEART, "K"},
+	}
+
+	p.calculateHighestBid(false)
+	p.declaredBid = p.highestBid
+	p.pickUpSkat(skat)
+	trump := p.declareTrump()
+	if p.getGamevalue(trump) < p.declaredBid {
+		t.Errorf("OVERBID")
+	}
+}

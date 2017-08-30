@@ -984,61 +984,54 @@ func (p *Player) getGamevalue(suit string) int {
 func (p *Player) calculateHighestBid(afterSkat bool) int {
 	p.highestBid = 0
 
-	switch p.canWin(afterSkat) {
+	canWin := p.canWin(afterSkat)
+	debugTacticsLog("Can win: %s\n", canWin)
+
+	switch canWin {
 	case "":
 		return 0
 	case "SUIT":
-		p.trumpToDeclare = mostCardsSuit(p.getHand())
-		p.highestBid = p.getGamevalue(p.trumpToDeclare)
+		most := mostCardsSuit(p.getHand())
+		p.highestBid = p.getGamevalue(most)
+		if !afterSkat {
+			p.trumpToDeclare = mostCardsSuit(p.getHand())
+		}
 	case "GRAND":
 		p.trumpToDeclare = GRAND
 		p.highestBid = p.getGamevalue(p.trumpToDeclare)
 	default:
 		return 0
 	}
-	if matadors(p.trumpToDeclare, p.hand) < -1 {
-		// maybe you pick the CLUBS J from the skat 1/4
-		worstCaseScore := 2 * trumpBaseValue(p.trumpToDeclare)
-		if worstCaseScore < p.highestBid {
-			debugTacticsLog("(%s) I will not raise more. Bid: %d, worst: %d\n", p.name, p.declaredBid, worstCaseScore)
-			p.highestBid = worstCaseScore
+	if !afterSkat {
+		if matadors(p.trumpToDeclare, p.hand) < -1 {
+			// maybe you pick the CLUBS J from the skat 1/4
+			worstCaseScore := 2 * trumpBaseValue(p.trumpToDeclare)
+			if worstCaseScore < p.highestBid {
+				debugTacticsLog("(%s) I will not raise more. Bid: %d, worst: %d\n", p.name, p.declaredBid, worstCaseScore)
+				p.highestBid = worstCaseScore
+			}
 		}
 	}
+	debugTacticsLog("HighestBid %d\n", p.highestBid)
 	return p.highestBid
 }
 
 func (p *Player) declareTrump() string {
-	if p.trumpToDeclare == GRAND {
-		return GRAND
-	}
+	return p.trumpToDeclare
+	// if p.trumpToDeclare == GRAND {
+	// 	return GRAND
+	// }
 
-	// TODO:
-	// if after SKAT pick up bid less than score use the next suit
-	trump := mostCardsSuit(p.getHand())
+	// // TODO:
+	// // if after SKAT pick up bid less than score use the next suit
+	// trump := mostCardsSuit(p.getHand())
 
-	// 	EURO 487.79     -364.63 -123.16
-	// WON  27225      18802   18999
-	// LOST  7482       3631    3532
-	// bidp    44         28      28
-	// pcw     78         84      84
-	// pcwd    16         19      19
-	// AVG  17.2, passed 20329, won 65026, lost 14645 / 100000 game
-	if p.getGamevalue(trump) < p.declaredBid {
-		debugTacticsLog("Game Value: %d. Declared bid: %d. TO AVOID OVERBID I will play first trump %s and not new %s.\n",
-			p.getGamevalue(trump), p.declaredBid, p.trumpToDeclare, trump)
-		trump = p.trumpToDeclare
-	}
-	// EURO -524.86    229.37  295.49
-	// WON  26504      18436   18633
-	// LOST  8205       3996    3897
-	// bidp    44         28      28
-	// pcw     76         82      83
-	// pcwd    18         21      21
-	// AVG  18.2, passed 20329, won 63573, lost 16098 / 100000 game
-
-	// gs := gameScore(trump, p.hand, 61, 18,false, false, false)
-	// if gs .....
-	return trump
+	// if p.getGamevalue(trump) < p.declaredBid {
+	// 	debugTacticsLog("Game Value: %d. Declared bid: %d. TO AVOID OVERBID I will play first trump %s and not new %s.\n",
+	// 		p.getGamevalue(trump), p.declaredBid, p.trumpToDeclare, trump)
+	// 	trump = p.trumpToDeclare
+	// }
+	// return trump
 }
 
 //         You     Bob     Ana
@@ -1067,34 +1060,30 @@ func (p *Player) discardInSkat(skat []Card) {
 	newHbid := p.calculateHighestBid(true)
 	debugTacticsLog("New high bid %d\n", newHbid)
 
+
+	// // TODO:
+	// // if after SKAT pick up bid less than score use the next suit
+	// trump := p.trumpToDeclare
+
+
+	// return trump	
+
 	most := mostCardsSuit(p.getHand())
+
+	if p.trumpToDeclare != GRAND {
+		if p.getGamevalue(most) < p.declaredBid {
+			debugTacticsLog("Game Value: %d. Declared bid: %d. TO AVOID OVERBID I will play first trump %s and not new %s.\n",
+				p.getGamevalue(most), p.declaredBid, p.trumpToDeclare, most)
+			most = p.trumpToDeclare
+		} else {
+			p.trumpToDeclare = most
+		}
+	}
 
 	removed := 0
 
 	if p.trumpToDeclare == GRAND {
 		debugTacticsLog("..GRAND..")
-
-
-
-		// 	You	Bob	Ana
-		// EURO 124.48	29.77	-154.25
-		// WON   2664	 2614	 2501
-		// LOST   569	  564	  562	
-		// bidp    34	   34	   32	
-		// pcw     82	   82	   82	
-		// pcwd    18	   18	   18	
-		// AVG  21.4, passed 526, won 7779, lost 1695 / 10000 games
-		// Grand games 996, perc:  9.96
-
-		// 	You	Bob	Ana
-		// EURO 98.80	47.29	-146.09
-		// WON   2662	 2613	 2501
-		// LOST   571	  565	  562	
-		// bidp    34	   34	   32	
-		// pcw     82	   82	   82	
-		// pcwd    18	   18	   18	
-		// AVG  21.2, passed 526, won 7776, lost 1698 / 10000 games
-		// Grand games 996, perc:  9.96
 
 		tenSuits := []string{}
 		counts := []int{}
