@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -47,10 +46,10 @@ func TestGreater(t *testing.T) {
 
 func greaterAux(t *testing.T, s SuitState, card1, card2 Card) {
 	if !s.greater(card1, card2) {
-		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + card1.Suit + " " + card1.Rank + " should be greater than " + card2.Suit + " " + card2.Rank)
+		t.Errorf("TRUMP : %s  FOLLOW: %s. %v  should be greater than %v", s.trump, s.follow, card1, card2)
 	}
 	if s.greater(card2, card1) {
-		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + card2.Suit + " " + card2.Rank + " should NOT be greater than " + card1.Suit + " " + card1.Rank)
+		t.Errorf("TRUMP : %s  FOLLOW: %s. %v  should NOT be greater than %v", s.trump, s.follow, card1, card2)
 	}
 }
 
@@ -58,7 +57,7 @@ func TestGetSuite(t *testing.T) {
 	s := mState(CLUBS, HEART)
 	card := Card{SPADE, "J"}
 	if getSuit(s.trump, card) != CLUBS {
-		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + fmt.Sprintf("%v", card) + " should be CLUBS")
+		t.Errorf("TRUMP : %s  FOLLOW: %s. %v  should be CLUBS", s.trump, s.follow, card)
 	}
 }
 
@@ -86,13 +85,13 @@ func TestValidPlay(t *testing.T) {
 
 func validAux(t *testing.T, s SuitState, cards []Card, card Card) {
 	if !s.valid(cards, card) {
-		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + fmt.Sprintf("%v", card) + " should be valid play. HAND:" + fmt.Sprintf("%v", cards))
+		t.Errorf("TRUMP : %s  FOLLOW: %s. %v should be valid play. HAND: %v", s.trump, s.follow, card, cards)
 	}
 }
 
 func notValidAux(t *testing.T, s SuitState, cards []Card, card Card) {
 	if s.valid(cards, card) {
-		t.Errorf("TRUMP :" + s.trump + " FOLLOW :" + s.follow + " - " + fmt.Sprintf("%v", card) + " should NOT be valid play. HAND:" + fmt.Sprintf("%v", cards))
+		t.Errorf("TRUMP : %s  FOLLOW: %s. %v should NOT be valid play. HAND: %v", s.trump, s.follow, card, cards)
 	}
 }
 
@@ -109,11 +108,11 @@ func TestValidCards(t *testing.T) {
 
 func compareLists(t *testing.T, returned, expected []Card) {
 	if len(returned) != len(expected) {
-		t.Errorf("Expected: " + fmt.Sprintf("%v", expected) + " found: " + fmt.Sprintf("%v", returned))
+		t.Errorf("Expected: %v, found %v", expected, returned)
 	}
 	for i, c := range expected {
-		if c.Suit != returned[i].Suit || c.Rank != returned[i].Rank {
-			t.Errorf("Expected: " + fmt.Sprintf("%v", expected) + " found: " + fmt.Sprintf("%v", returned))
+		if !c.equals(returned[i]) {
+			t.Errorf("Expected: %v, found %v", expected, returned)
 		}
 	}
 }
@@ -194,13 +193,13 @@ func comparePlayers(t *testing.T, expected, returned []PlayerI) {
 // 	players = round(&state, players)
 
 // 	if len(player1.hand) != 2 {
-// 		t.Errorf("Expected: player1 len hand 2: " + fmt.Sprintf("%v", player1.hand))
+// 		t.Errorf("Expected: player1 len hand 2: "  fmt.Sprintf("%v", player1.hand))
 // 	}
 // 	if len(player2.hand) != 2 {
-// 		t.Errorf("Expected: player2 len hand 2" + fmt.Sprintf("%v", player2.hand))
+// 		t.Errorf("Expected: player2 len hand 2"  fmt.Sprintf("%v", player2.hand))
 // 	}
 // 	if len(player3.hand) != 2 {
-// 		t.Errorf("Expected: player3 len hand 2" + fmt.Sprintf("%v", player3.hand))
+// 		t.Errorf("Expected: player3 len hand 2"  fmt.Sprintf("%v", player3.hand))
 // 	}
 
 // 	expected := []*Player{&player2, &player3, &player1}
@@ -2340,6 +2339,7 @@ func TestDeclarerTacticFORE0(t *testing.T) {
 		Card{CLUBS, "8"},
 		Card{CLUBS, "7"},
 	}
+	s.cardsPlayed = remove(makeTrumpDeck(s.trump), s.trumpsInGame...)
 
 	card := player.playerTactic(&s, validCards)
 	exp := Card{CARO, "J"}
@@ -2348,6 +2348,86 @@ func TestDeclarerTacticFORE0(t *testing.T) {
 			s.trick, validCards, exp, card)
 	}
 }
+
+func TestDeclarerTacticFORE_DontPlayA10ifJsout(t *testing.T) {
+	// don't play your A-10 trumps if Js still there
+	validCards := []Card{
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CLUBS, "10"},
+		Card{SPADE, "A"},
+		Card{SPADE, "D"},
+	}
+
+	player := makePlayer(validCards)
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &player
+
+	s.trump = CARO
+	s.trick = []Card{}
+
+
+	s.trumpsInGame = []Card{
+		Card{CARO, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "7"},
+	}
+	s.cardsPlayed = remove(makeTrumpDeck(s.trump), s.trumpsInGame...)
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{SPADE, "A"}
+	if !card.equals(exp) {
+		t.Errorf("Trump: CLUBS, In trick %v and valid %v, expected to play %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
+
+// not sure about it
+// func TestDeclarerTacticFORE_LowTrumps(t *testing.T) {
+// 	// -r 2612 Bob
+// 	// don't play trumps if you are low
+// 	validCards := []Card{
+// 		Card{CARO, "10"},
+// 		Card{CARO, "K"},
+// 		Card{CARO, "9"},
+// 		Card{SPADE, "A"},
+// 		Card{SPADE, "D"},
+// 	}
+
+// 	player := makePlayer(validCards)
+// 	other := makePlayer(validCards)
+// 	s := makeSuitState()
+// 	s.leader = &player
+// 	s.declarer = &player
+// 	s.opp1 = &other
+
+// 	s.trump = CARO
+// 	s.trick = []Card{}
+// 	s.opp1VoidSuit[s.trump] = true
+
+// 	s.trumpsInGame = []Card{
+// 		Card{HEART, "J"},
+// 		Card{CARO, "J"},
+// 		Card{CARO, "10"},
+// 		Card{CARO, "K"},
+// 		Card{CARO, "Q"},
+// 		Card{CARO, "9"},
+// 	}
+// 	s.cardsPlayed = remove(makeTrumpDeck(s.trump), s.trumpsInGame...)
+
+// 	card := player.playerTactic(&s, validCards)
+// 	exp := Card{SPADE, "A"}
+// 	if !card.equals(exp) {
+// 		t.Errorf("Trump: CLUBS, opp1 has no more trumps. In trick %v and valid %v, expected to play %v, played %v",
+// 			s.trick, validCards, exp, card)
+// 	}
+// }
+
+
+
 
 func TestDeclarerTacticFORE1(t *testing.T) {
 	// don't play your A-10 trumps if Js still there
@@ -2563,8 +2643,6 @@ func TestDeclarerTacticMID_LowTrump(t *testing.T) {
 }
 
 func TestDeclarerTacticMID_ThrowOff(t *testing.T) {
-	// don't play a high trump if you are not strong
-
 	validCards := []Card{
 		Card{CLUBS, "J"},
 		Card{HEART, "J"},
@@ -2572,6 +2650,7 @@ func TestDeclarerTacticMID_ThrowOff(t *testing.T) {
 		Card{SPADE, "K"},
 		Card{SPADE, "D"},
 
+		Card{CARO, "9"},
 		Card{HEART, "A"},
 		Card{HEART, "K"},
 		Card{HEART, "8"},		
@@ -2586,7 +2665,7 @@ func TestDeclarerTacticMID_ThrowOff(t *testing.T) {
 	s.trick = []Card{Card{CLUBS, "9"}}
 
 	card := player.playerTactic(&s, validCards)
-	exp := Card{HEART, "8"}
+	exp := Card{CARO, "9"}
 	if !card.equals(exp) {
 		t.Errorf("Trump: %s, In trick %v and valid %v, was expected to play %v. Played %v",
 			s.trump, s.trick, validCards, exp, card)
@@ -3735,6 +3814,79 @@ func TestOpponentTacticFORE_PlayerVoid(t *testing.T) {
 	if !card.equals(exp) {
 		t.Errorf("VOID: %v,In trick %v and valid %v, decl CARO void, expected to play Low %v, played %v",
 			s.declarerVoidSuit, s.trick, validCards, exp, card)
+	}
+}
+
+func TestOpponentTacticFORE_PlayerVoid2(t *testing.T) {
+	validCards := []Card{
+		Card{CARO, "J"},
+		Card{SPADE, "K"},
+		Card{SPADE, "D"},
+		Card{SPADE, "8"},
+		Card{CARO, "10"},
+		Card{HEART, "A"},
+		Card{HEART, "D"},
+		Card{HEART, "8"},
+	}
+	player := makePlayer(validCards)
+
+	teamMate := makePlayer([]Card{})
+	otherPlayer := makePlayer([]Card{})
+	s := makeSuitState()
+	s.declarer = &otherPlayer
+	s.leader = &player
+	s.opp1 = &teamMate
+	s.opp2 = &player
+	s.trump = CLUBS
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "J"},
+	}
+
+	teamMate.previousSuit = "CARO"
+	s.trick = []Card{}
+
+	s.declarerVoidSuit[CARO] = true
+
+	card := player.playerTactic(&s, validCards)
+	unexp := Card{CARO, "10"}
+	if card.equals(unexp) {
+		t.Errorf("DEclarer void: %v. In trick %v and valid %v, not expected to play %v",
+			s.declarerVoidSuit, s.trick, validCards, unexp)
+	}
+}
+
+func TestOpponentTacticFORE_PlayerNoTrumps(t *testing.T) {
+	validCards := []Card{
+		Card{CARO, "J"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "7"},
+		Card{CARO, "7"},
+		Card{HEART, "7"},
+	}
+	player := makePlayer(validCards)
+
+	teamMate := makePlayer([]Card{})
+	otherPlayer := makePlayer([]Card{})
+	s := makeSuitState()
+	s.declarer = &otherPlayer
+	s.leader = &player
+	s.opp1 = &teamMate
+	s.opp2 = &player
+	s.trump = SPADE
+	s.trumpsInGame = []Card{
+		Card{CARO, "J"},
+	}
+	s.cardsPlayed = remove(makeTrumpDeck(s.trump), s.trumpsInGame...)
+
+	player.previousSuit = "HEART"
+	s.trick = []Card{}
+
+	card := player.playerTactic(&s, validCards)
+	unexp := Card{CARO, "J"}
+	if card.equals(unexp) {
+		t.Errorf("In trick %v and valid %v, all trumps exhausted it is not expected to play %v",
+			s.trick, validCards, unexp)
 	}
 }
 

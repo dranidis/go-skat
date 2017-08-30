@@ -23,7 +23,7 @@ var logFile io.Writer = nil
 var debugTacticsLogFlag = false
 var gameLogFlag = true
 var fileLogFlag = true
-var htmlLogFlag = true
+var htmlLogFlag = false
 var delayMs = 1000
 var totalGames = 21
 var oficialScoring = false
@@ -87,10 +87,24 @@ type SuitState struct {
 	trumpsInGame     []Card
 	cardsPlayed      []Card
 	declarerVoidSuit map[string]bool
+	opp1VoidSuit  map[string]bool
+	opp2VoidSuit  map[string]bool
 }
 
 func makeSuitState() SuitState {
 	return SuitState{nil, nil, nil, "", nil, "", []Card{}, []Card{}, []Card{}, []Card{},
+		map[string]bool{
+			CLUBS: false,
+			SPADE: false,
+			HEART: false,
+			CARO:  false,
+		},
+		map[string]bool{
+			CLUBS: false,
+			SPADE: false,
+			HEART: false,
+			CARO:  false,
+		},
 		map[string]bool{
 			CLUBS: false,
 			SPADE: false,
@@ -198,9 +212,15 @@ func play(s *SuitState, p PlayerI) Card {
 	card := p.playerTactic(s, valid)
 
 	// Player VOID on suit
-	if p == s.declarer {
-		if s.follow != "" && card.Suit != s.follow {
+	if s.follow != "" && getSuit(s.trump, card) != s.follow {
+		if p == s.declarer {
 			s.declarerVoidSuit[s.follow] = true
+		}
+		if p == s.opp1 {
+			s.opp1VoidSuit[s.follow] = true
+		}
+		if p == s.opp2 {
+			s.opp2VoidSuit[s.follow] = true
 		}
 	}
 
@@ -776,41 +796,15 @@ func main() {
 			}
 		}
 
-		sym := 0
-		symbol := []string{
-			"\b/",
-			"\b-",
-			"\b\\",
-			"\b|",
-		}
+		anim := animation()
 
-		nextSymbol := func () string {
-			sym++
-			if sym == len(symbol) {
-				sym = 0
-			}
-			return symbol[sym]
-
-		}
 		previousGameAnalysis = false
 		for condition(s) && !analysisEnded {
 			nextGameForAnalysis()
-			s = repeatGame()			
-			// printScore(gamePlayers)
+			s = repeatGame()		
+			anim()	
 			i++
-			if i % 50 == 0 {
-				fmt.Print(nextSymbol())
-			}
-			if i % 1000 == 0 {
-				if i % 10000 == 0 {
-					fmt.Print("\b# ")
-				} else {
-					fmt.Print("\b. ")
-				}
-				if i % 50000 == 0 {
-					fmt.Printf(" (%d)\n", i)
-				}
-			}			
+			// printScore(gamePlayers)
 		}
 		if analysisEnded {
 			fmt.Printf("No chance! %d repetitions\n", i)
@@ -836,6 +830,7 @@ func main() {
 	passed := 0
 	won := 0
 	lost := 0
+	anim := animation()
 	for ; gameIndex <= totalGames; gameIndex++ {
 		gamePlayers = rotatePlayers(gamePlayers)
 		score := game()
@@ -849,6 +844,8 @@ func main() {
 		}
 		if !auto {
 			fmt.Printf("\nGAME: %6d (%s) %5d     (%s) %5d     (%s) %5d\n", gameIndex, player1.getName(), player1.getTotalScore(), player2.getName(), player2.getTotalScore(), player3.getName(), player3.getTotalScore())
+		} else {
+			anim()
 		}
 	}
 
@@ -880,6 +877,43 @@ func main() {
 
 func printScore(players []PlayerI) {
 	fmt.Printf("\nGAME: %6d (%s) %5d     (%s) %5d     (%s) %5d\n", gameIndex, players[0].getName(), players[0].getTotalScore(), players[1].getName(), players[1].getTotalScore(), players[2].getName(), players[2].getTotalScore())
+}
+
+func animation() func() {
+	i := 0
+	sym := 0
+	symbol := []string{
+		"\b/",
+		"\b-",
+		"\b\\",
+		"\b|",
+	}
+
+	nextSymbol := func () string {
+		sym++
+		if sym == len(symbol) {
+			sym = 0
+		}
+		return symbol[sym]
+	}
+
+	next := func() {
+		i++
+		if i % 50 == 0 {
+			fmt.Print(nextSymbol())
+		}
+		if i % 1000 == 0 {
+			if i % 10000 == 0 {
+				fmt.Print("\b# ")
+			} else {
+				fmt.Print("\b. ")
+			}
+			if i % 50000 == 0 {
+				fmt.Printf(" (%d)\n", i)
+			}
+		}	
+	}
+	return next
 }
 
 func startServer() *mux.Router {

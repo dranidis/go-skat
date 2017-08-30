@@ -419,6 +419,23 @@ func nonTrumpCards(suit string, cards []Card) []Card {
 
 // TACTICS aux functions
 
+func strength(cs []Card) int {
+	s := sum(cs)
+	if in(cs, Card{CLUBS, "J"}) {
+		s += 25
+	}
+	if in(cs, Card{SPADE, "J"}) {
+		s += 20
+	}
+	if in(cs, Card{HEART, "J"}) {
+		s += 15
+	}
+	if in(cs, Card{CARO, "J"}) {
+		s += 12
+	}
+	return s 
+}
+
 func ShortestNonTrumpSuit(trump string, cards []Card) string {
 	minI, minCount := -1, 99
 	for i, s := range suits {

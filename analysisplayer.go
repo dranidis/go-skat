@@ -31,6 +31,7 @@ func (p *APlayer) playerTactic(s *SuitState, c []Card) Card {
 	tIndex++
 
 	if previousGameAnalysis {
+		gameLog("Index: %v\n", p.prevPlay[tIndex])
 		return c[p.prevPlay[tIndex]]
 	}
 

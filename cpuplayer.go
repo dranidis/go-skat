@@ -244,58 +244,7 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 			// if len(ownTrumps) * 2 < len(otherTrumps) + 2 {
 			if len(ownTrumps) * 2 < len(otherTrumps) + 2 || (len(ownTrumps) == 3 && len(otherTrumps) == 4) {
 				debugTacticsLog("Not enough trumps.  Playing suits")
-
-				// Checking if card will not be trumped did not improve results !!???!!!
-				ifMoreThanOne := func (cs []Card) bool {
-					if len(cs) > 0 {
-						// inPlay := suitCardsInPlay(s, true, p.hand, cs[0].Suit)
-						// debugTacticsLog("..Cards in play of suit %s, %v..", cs[0].Suit, inPlay)						
-						// if len(inPlay) > 1 {
-							return true
-						// }
-					}
-					return false
-				}	
-
-				suits := filter(c, func(card Card) bool {
-					return card.Suit != s.trump && card.Rank != "J"
-				})
-				debugTacticsLog("..SUITS : %v...", suits)
-				asses := filter(suits, func(card Card) bool {
-					return card.Rank == "A"
-				})
-				if ifMoreThanOne(asses){
-					return asses[0]
-				}
-				tens := filter(suits, func(card Card) bool {
-					cardsPlayed := append(s.cardsPlayed, s.skat...)
-					return card.Rank == "10" && in(cardsPlayed, Card{card.Suit, "A"})
-				})
-				if ifMoreThanOne(tens) {
-					return tens[0]
-				}					
-				Ks := filter(suits, func(card Card) bool {
-					cardsPlayed := append(s.cardsPlayed, s.skat...)
-					return card.Rank == "K" && in(cardsPlayed, Card{card.Suit, "A"}, Card{card.Suit, "10"})
-				})
-				if ifMoreThanOne(Ks) {
-					return Ks[0]
-				}					
-				Ds := filter(suits, func(card Card) bool {
-					cardsPlayed := append(s.cardsPlayed, s.skat...)
-					return card.Rank == "D" && in(cardsPlayed, Card{card.Suit, "A"}, Card{card.Suit, "10"}, Card{card.Suit, "K"})
-				})								
-				if ifMoreThanOne(Ds) {
-					return Ds[0]
-				}
-				sortedValue := sortValue(c)
-				// PLay a card with value
-				// for i := len(sortedValue)-1; i >=0 ; i-- {
-				// 	if cardValue(sortedValue[i]) > 0 {
-				// 		return sortedValue[i]
-				// 	}
-				// }
-				return sortedValue[len(sortedValue)-1]
+				return p.playSuit(s, c)
 			}
 
 			if len(sureWinners) > 1 {
@@ -313,12 +262,12 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				// 	return ownTrumps[len(ownTrumps) - 1]
 				// }
 			} else if len(sureWinners) == 0 {
-				if len(highLosers) > 1 {
-					debugTacticsLog("..Playing a high loser..")
+				if len(highLosers) > 1 && cardValue(highLosers[len(highLosers)-1]) < 10 {
+					debugTacticsLog("..Playing a high loser..%d")
 					return highLosers[len(highLosers)-1]
 				}
-				debugTacticsLog("..No winner, playing low trump")
-				return ownTrumps[len(ownTrumps) - 1]
+				// debugTacticsLog("..No winner, playing low trump")
+				// return ownTrumps[len(ownTrumps) - 1]
 			} else if len(otherTrumps) > 1 {
 				debugTacticsLog("..one or less sure winner and more than one Trump in opponents. Playing a low value high loser..")
 				if len(highLosers) > 0 {
@@ -339,8 +288,23 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 			// 	}
 			// 	return first
 			// } else {
-				debugTacticsLog("Playing strongest lowest\n")
-				return p.strongestLowestNotAor10(s, c)
+			debugTacticsLog("Own trumps strength: %d, Other: %d", strength(ownTrumps), strength(otherTrumps))
+			if strength(ownTrumps) > strength(otherTrumps) {
+				card := p.strongestLowestNotAor10(s, c)
+				if cardValue(card) < 4 || ! p.otherPlayersHaveJs(s) {
+					debugTacticsLog("Playing strongest lowest\n")
+					return 	card			
+				}
+
+			} 
+			lowest := ownTrumps[len(ownTrumps) - 1]
+			if cardValue(lowest) < 4 || ! p.otherPlayersHaveJs(s) {
+				debugTacticsLog("Playing lowest\n")
+				return 	lowest			
+			}			
+			debugTacticsLog("Playing a suit\n")
+			return p.playSuit(s, c)
+			
 				// return firstCardTactic(c)
 			// }
 		}
@@ -403,13 +367,16 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				debugTacticsLog("zero value..")
 				if len(sortedValueNoTrumps) > 0 {
 					debugTacticsLog("sortedValueNoTrumps last %v..", sortedValueNoTrumps)
-					card := sortedValueNoTrumps[len(sortedValueNoTrumps)-1]
-					if cardValue(card) == 0 {
-						debugTacticsLog("throwing off number..")
-						return card
-					}					
+					for i := len(sortedValueNoTrumps) - 1; i > 0; i-- {
+						card := sortedValueNoTrumps[i]
+						if cardValue(card) == 0 && !isAKX(card.Suit, p.hand) {
+							debugTacticsLog("throwing off number (not in AKX)..")
+							return card
+						}
+					}
+					debugTacticsLog("throwing off number (even in AKX)..")
+					return sortedValueNoTrumps[len(sortedValueNoTrumps) - 1]
 				}
-
 			}
 
 			debugTacticsLog("..low strengrt/value trump.. ")
@@ -443,12 +410,6 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 		}
 		if sum(s.trick) == 0 {
 			debugTacticsLog("ZERO valued trick. DO not trump!...")
-			// do not trump
-			nonTrumps := filter(sortValue(c), func(card Card) bool {
-				return card.Suit != s.trump && card.Rank != "J"
-			})
-			debugTacticsLog("Non-trumps: %v...", nonTrumps)
-
 			if len(sortedValueNoTrumps) > 0 {
 				return highestValueWinnerORlowestValueLoser(s, sortedValueNoTrumps)
 			}
@@ -472,6 +433,62 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 
 	return highestValueWinnerORlowestValueLoser(s, c)
 }
+
+func (p *Player) playSuit(s *SuitState, c []Card) Card {
+	// Checking if card will not be trumped did not improve results !!???!!!
+	ifMoreThanOne := func (cs []Card) bool {
+		if len(cs) > 0 {
+			// inPlay := suitCardsInPlay(s, true, p.hand, cs[0].Suit)
+			// debugTacticsLog("..Cards in play of suit %s, %v..", cs[0].Suit, inPlay)						
+			// if len(inPlay) > 1 {
+				return true
+			// }
+		}
+		return false
+	}	
+
+	suits := filter(c, func(card Card) bool {
+		return card.Suit != s.trump && card.Rank != "J"
+	})
+	debugTacticsLog("..SUITS : %v...", suits)
+	asses := filter(suits, func(card Card) bool {
+		return card.Rank == "A"
+	})
+	if ifMoreThanOne(asses){
+		return asses[0]
+	}
+	tens := filter(suits, func(card Card) bool {
+		cardsPlayed := append(s.cardsPlayed, s.skat...)
+		return card.Rank == "10" && in(cardsPlayed, Card{card.Suit, "A"})
+	})
+	if ifMoreThanOne(tens) {
+		return tens[0]
+	}					
+	Ks := filter(suits, func(card Card) bool {
+		cardsPlayed := append(s.cardsPlayed, s.skat...)
+		return card.Rank == "K" && in(cardsPlayed, Card{card.Suit, "A"}, Card{card.Suit, "10"})
+	})
+	if ifMoreThanOne(Ks) {
+		return Ks[0]
+	}					
+	Ds := filter(suits, func(card Card) bool {
+		cardsPlayed := append(s.cardsPlayed, s.skat...)
+		return card.Rank == "D" && in(cardsPlayed, Card{card.Suit, "A"}, Card{card.Suit, "10"}, Card{card.Suit, "K"})
+	})								
+	if ifMoreThanOne(Ds) {
+		return Ds[0]
+	}
+	sortedValue := sortValue(c)
+	// PLay a card with value
+	// for i := len(sortedValue)-1; i >=0 ; i-- {
+	// 	if cardValue(sortedValue[i]) > 0 {
+	// 		return sortedValue[i]
+	// 	}
+	// }
+	return sortedValue[len(sortedValue)-1]	
+}
+
+
 
 func (p *Player) FindPreviousSuit(s *SuitState) string {
 	partnerFunc := func(p PlayerI) PlayerI {
@@ -622,7 +639,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 		// OPPONENT FOREHAND
 		debugTacticsLog("FOREHAND..")
 
-		if len(ownTrumps) >= len(otherTrumps) {
+		if len(ownTrumps) >= len(otherTrumps) && len(otherTrumps) > 0 {
 			debugTacticsLog("Many trumps..")
 			if len(sureWinners) > 0 {
 				debugTacticsLog("sure winners %v..", sureWinners)
@@ -637,7 +654,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 		// if you have a card with suit played in a previous trick
 		// started from you or your partner continue with it
 		prevSuit := p.FindPreviousSuit(s)
-		prevSuitCards := followCards(s, prevSuit, c)
+		prevSuitCards := sortValue(followCards(s, prevSuit, c))
 		if len(prevSuitCards) > 0 {
 			debugTacticsLog("Following previous suit..")
 			// TODO:
@@ -656,7 +673,24 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			// increase by 1%
 			if (s.declarerVoidSuit[prevSuit]) {
 				debugTacticsLog("..Declarer void, will trump")
-				return prevSuitCards[len(prevSuitCards)-1]
+				card := prevSuitCards[len(prevSuitCards)-1]
+				if cardValue(card) < 10 {
+					return card
+				}
+				if s.opp1.getPreviousSuit() == prevSuit {
+					s.opp1.setPreviousSuit("")
+				}
+				if s.opp2.getPreviousSuit() == prevSuit {
+					s.opp2.setPreviousSuit("")
+				}
+				c = remove(c, makeNoTrumpDeck(prevSuit)...)
+				if len(c) > 0 {
+					return p.opponentTactic(s, c)
+				}
+				// if s.opp2 == p {
+				// 	debugTacticsLog("Declarer at MIDDLEHAND, ..")
+
+				// }
 			}
 
 			return prevSuitCards[0]
