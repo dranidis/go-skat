@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "fmt"
+	 "fmt"
 )
 
 type Player struct {
@@ -116,15 +116,6 @@ func (p Player) canWin(afterSkat bool) string {
 		//return "GRAND"
 
 	}
-	// if len(filter(p.hand, func (c Card) bool {
-	// 	return c.Rank == "J"
-	// })) > 1 {
-	// 	asses := assOtherThan("")
-	// 	if asses > 3 {
-	// 		debugTacticsLog(" - Can win GRAND - ")
-	// 		return "GRAND"
-	// 	}
-	// }
 
 	suit := mostCardsSuit(cs)
 	largest := len(trumpCards(suit, cs))
@@ -944,19 +935,29 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 }
 
 func (p *Player) playerTactic(s *SuitState, c []Card) Card {
-	if p.firstCardPlay {
-		debugTacticsLog("(%s) FIRST CARD PLAY\n", p.name)
-		return c[0]
-	}
+	var card Card
+	// if p.firstCardPlay {
+	// 	debugTacticsLog("(%s) FIRST CARD PLAY\n", p.name)
+	// 	return c[0]
+	// }
 	printCollectedInfo(s)
 	if s.declarer == p {
-		return p.declarerTactic(s, c)
+		card = p.declarerTactic(s, c)
+	} else {
+		card = p.opponentTactic(s, c)
 	}
-	return p.opponentTactic(s, c)
+	if issConnect {
+		playCard(card)
+	}	
+	return card
 }
 
 
 func printCollectedInfo(s *SuitState) {
+	if s.declarer == nil || s.opp1 == nil || s.opp2 == nil {
+		debugTacticsLog("NOT ABLE TO PRINT INFO. Players nil s.declarer:%v s.opp1:%v s.opp2:%v \n", s.declarer, s.opp1, s.opp2)
+		return
+	}
 	debugTacticsLog("\n\t%s: void:", s.declarer.getName())
 	for k, v := range s.declarerVoidSuit {
 		if v {
@@ -992,7 +993,16 @@ avg: -25 with random play, 25 with random play and good discard
 */
 func (p *Player) accepts(bidIndex int) bool {
 	debugTacticsLog("(%s) Bid: %d Highest: %d\n", p.name, bids[bidIndex], p.highestBid)
-	return bids[bidIndex] <= p.highestBid
+	if bids[bidIndex] <= p.highestBid {
+		if issConnect {
+			playBid(fmt.Sprintf("%d", bids[bidIndex]))
+		}
+		return true
+	}
+	if issConnect {
+		playBid("p")
+	}
+	return false
 }
 
 func (p *Player) getGamevalue(suit string) int {

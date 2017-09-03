@@ -1,0 +1,83 @@
+package main
+
+import (
+	"fmt"
+	"strconv"
+	"log"
+)
+
+type ISSPlayer struct {
+	PlayerData
+}
+
+func makeISSPlayer(hand []Card) ISSPlayer {
+	return ISSPlayer{
+		PlayerData: makePlayerData(hand)}
+}
+
+func (p *ISSPlayer) setPartner(partner PlayerI) {
+
+}
+
+func (p *ISSPlayer) accepts(bidIndex int) bool {
+	fmt.Printf("Waiting bid from %s..", p.getName())
+	bid := <-bidChannel 
+	fmt.Printf(" .. bid received %s\n", bid)
+
+	if bidNr, err := strconv.ParseInt(bid, 10, 64); err == nil {
+		if int64(bids[bidIndex]) ==  bidNr {
+			return true
+		}
+	}
+	if bid == "p" {
+		return false
+	}
+	log.Fatal("Unrecognised bid from ISS player")
+	return false
+}
+
+func (p *ISSPlayer) declareTrump() string {
+	fmt.Printf("Waiting declaration from %s..", p.getName())
+	declare := <-declareChannel
+	fmt.Printf(".. received %s", declare)
+
+	return declare
+}
+
+func (p *ISSPlayer) calculateHighestBid(b bool) int {
+	return 0
+}
+
+func (p *ISSPlayer) discardInSkat(skat []Card) {
+	// fmt.Printf("Waiting 2 discard cards from %s..", p.getName())
+	// card1 := <- discardChannel	
+	// card2 := <- discardChannel	
+	// fmt.Printf(" .. received %v and %v\n", card1, card2)
+
+	// p.setHand(remove(p.getHand(), card1))
+	// p.setHand(remove(p.getHand(), card2))
+	// skat[0] = card1
+	// skat[1] = card2
+}
+
+func (p *ISSPlayer) pickUpSkat(skat []Card) bool {
+	fmt.Printf("Waiting pick up from %s..", p.getName())
+	pickUp := <-pickUpChannel
+	fmt.Printf(" .. received %s\n", pickUp)
+
+	if pickUp == "hand" {
+		fmt.Printf("Player %s plays a hand game\n", p.getName())
+		return false
+	} else {
+		fmt.Printf("Player %s picks up the skat\n", p.getName())
+	}
+	p.discardInSkat(skat)
+	return true
+}
+
+func (p *ISSPlayer) playerTactic(s *SuitState, c []Card) Card {
+	fmt.Printf("Waiting card up from %s..", p.getName())
+	card := <-trickChannel
+	fmt.Printf(" .. received %v\n", card)
+	return card
+}

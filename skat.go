@@ -32,12 +32,16 @@ var logFileName = "gameLog.txt"
 var playChannel chan CardPlayed
 var trickChannel chan Card
 var winnerChannel chan string
+var bidChannel chan string
 var trumpChannel chan string
 var scoreChannel chan Score
 var pickUpChannel chan string
 var declareChannel chan string
 var discardChannel chan Card
 var skatPositionChannel chan int
+
+var gameNr int
+var issConnect = false
 
 func logToFile(format string, a ...interface{}) {
 	if fileLogFlag && logFile != nil {
@@ -186,9 +190,9 @@ func round(s *SuitState, players []PlayerI) []PlayerI {
 
 func play(s *SuitState, p PlayerI) Card {
 	red := color.New(color.Bold, color.FgRed).SprintFunc()
-	if len(p.getHand()) == 0 {
-		log.Fatal("EMPTY HAND")
-	}
+	// if len(p.getHand()) == 0 {
+	// 	log.Fatal("EMPTY HAND")
+	// }
 	valid := sortSuit(s.trump, validCards(*s, p.getHand()))
 
 	p.setHand(sortSuit(s.trump, p.getHand()))
@@ -565,6 +569,7 @@ func bidPhase(players []PlayerI) int {
 	declarer.setDeclaredBid(bidDecl)
 
 	state.declarer = declarer
+	gameLog("(%s) won the bidding\n", declarer.getName())
 
 	if declarer == players[0] {
 		state.opp1, state.opp2 = players[1], players[2]
@@ -628,6 +633,7 @@ var gamePlayers []PlayerI
 func makeChannels() {
 	playChannel = make(chan CardPlayed)
 	trickChannel = make(chan Card)
+	bidChannel = make(chan string)
 	winnerChannel = make(chan string)
 	trumpChannel = make(chan string)
 	scoreChannel = make(chan Score)
@@ -637,7 +643,7 @@ func makeChannels() {
 	skatPositionChannel = make(chan int)
 }
 
-func makePlayers(auto, html, analysis bool, analysisPl, analysisPlayerBid int) {
+func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlayerBid int) {
 	if analysis {
 		fmt.Printf("Creating players for analysis. Player: %d\n", analysisPl)
 		if analysisPlayerBid != 0 {
@@ -690,6 +696,17 @@ func makePlayers(auto, html, analysis bool, analysisPl, analysisPlayerBid int) {
 		if html {
 			player := makeHtmlPlayer([]Card{})
 			player1 = &player
+		} else if issConnect {
+			player := makePlayer([]Card{})
+			player.risky = true
+			player1 = &player
+			player2 := makeISSPlayer([]Card{})
+			player3 := makeISSPlayer([]Card{})
+			player1.setName("")
+			player2.setName("ISS1") // this will change by ISS
+			player3.setName("ISS2") // this will change by ISS
+			gamePlayers = []PlayerI{player1, &player2, &player3} // this will change by ISS
+			return			
 		} else {
 			player := makeHumanPlayer([]Card{})
 			player1 = &player
@@ -706,7 +723,7 @@ func makePlayers(auto, html, analysis bool, analysisPl, analysisPlayerBid int) {
 	gamePlayers = []PlayerI{player1, &player2, &player3}
 }
 
-var gameNr int
+
 
 func main() {
 	// COMMAND LINE FLAGS
@@ -715,6 +732,7 @@ func main() {
 	analysisPlayer := 1
 	analysisPlayerBid := 0
 	winAnalysis := true
+
 	var randSeed int
 	flag.IntVar(&gameNr, "g", 1, "Deal cards # times before you start. You can use this option to move to a specific game of a series of games.")
 	flag.IntVar(&totalGames, "n", 36, "total number of games, default 36")
@@ -726,6 +744,7 @@ func main() {
 	flag.IntVar(&analysisPlayerBid, "bid", 0, "Force the bid of the analysed player")
 	flag.BoolVar(&fileLogFlag, "log", true, "Saves log in a file")
 	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:3000")
+	flag.BoolVar(&issConnect, "iss", false, "Connects to ISS skat server")
 	flag.Parse()
 
 	if auto {
@@ -749,7 +768,22 @@ func main() {
 		defer file.Close()
 	}
 
-	makePlayers(auto, html, analysis, analysisPlayer, analysisPlayerBid)
+	makePlayers(auto, html, issConnect, analysis, analysisPlayer, analysisPlayerBid)
+
+	if issConnect {
+		usr := os.Getenv("ISS_USR")
+		pwd := os.Getenv("ISS_PWD")
+		if usr == "" || pwd == "" {
+			log.Fatal("To connect to the ISS skat server, you have to set the ISS_USR and ISS_PWD environment variables.")
+		}
+
+		err := Connect(usr, pwd) // blocks
+		if err != nil {
+			log.Fatal("Error in server connection: ", err)
+			return
+		}
+		return
+	}
 
 	rotateTimes := r.Intn(5) + gameNr - 1
 	for i := 0; i < rotateTimes; i++ {
