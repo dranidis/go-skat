@@ -4,15 +4,19 @@ import (
 	"fmt"
 	"strconv"
 	"log"
+	"strings"
 )
 
 type ISSPlayer struct {
 	PlayerData
+	shortcut [] Card
 }
 
 func makeISSPlayer(hand []Card) ISSPlayer {
 	return ISSPlayer{
-		PlayerData: makePlayerData(hand)}
+		PlayerData: makePlayerData(hand),
+		shortcut : []Card{},
+	}
 }
 
 func (p *ISSPlayer) setPartner(partner PlayerI) {
@@ -82,8 +86,26 @@ func (p *ISSPlayer) pickUpSkat(skat []Card) bool {
 }
 
 func (p *ISSPlayer) playerTactic(s *SuitState, c []Card) Card {
+	var card Card
+	if len(p.shortcut) > 0 {
+		card = p.shortcut[0]
+		p.shortcut = remove(p.shortcut, card)
+		fmt.Printf(" .. playing SC card %v\n", card)
+		return card
+	}
+
 	fmt.Printf("Waiting card up from %s..", p.getName())
-	card := <-trickChannel
+	card = <-trickChannel
+
+	if card.Suit == "SC" { // many cards packed in the rank
+		p.shortcut = parseCards(strings.Split(card.Rank, "."))
+		fmt.Printf(" .. received shortcut %v\n", p.shortcut)
+		card = p.shortcut[0]
+		p.shortcut = remove(p.shortcut, card)
+		fmt.Printf(" .. playing SC card %v\n", card)
+		return card
+	} 
+	p.shortcut = []Card{} // empty shortcut if normal card was played
 	fmt.Printf(" .. received %v\n", card)
 	return card
 }

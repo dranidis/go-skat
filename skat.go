@@ -462,6 +462,12 @@ func declareAndPlay() int {
 
 	state.trump = state.declarer.declareTrump()
 
+	if issConnect {
+		fmt.Println("sending trump and skat to server")
+		iss_declare(state.trump, state.skat)
+	}
+
+
 	if html {
 		htmlLog("Sending trump %v", state.trump)
 		trumpChannel <- state.trump

@@ -1270,7 +1270,9 @@ func (p *Player) pickUpSkat(skat []Card) bool {
 		pickUpSkat()
 		card1 := <-skatChannel
 		card2 := <-skatChannel
-		skat = []Card{card1, card2}
+		// skat = []Card{card1, card2}
+		skat[0] = card1
+		skat[1] = card2
 	}
 
 	debugTacticsLog("SKAT BEF: %v\n", skat)

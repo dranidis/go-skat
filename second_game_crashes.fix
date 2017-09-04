@@ -1,0 +1,275 @@
+SEED: 1846
+Game: 1
+Connected
+goskat
+SENT: goskat
+RCVD: password:
+
+b4c947
+SENT: b4c947
+RCVD: Welcome goskat @ 5.55.245.253 to ISS version 14.8960
+
+SENT: create / 3
+...Waiting server response
+RECV: clients + goskat 0 E 19 -557.1 0 15 0 1
+Unhandled server message:  clients + goskat 0 E 19 -557.1 0 15 0 1
+RECV: clients + bernie 0 - 1465471 700.2 192 233 1 2
+Unhandled server message:  clients + bernie 0 - 1465471 700.2 192 233 1 2
+RECV: clients + ddmits 0 E 267 479.2 0 13 0 1
+Unhandled server message:  clients + ddmits 0 E 267 479.2 0 13 0 1
+RECV: clients + kermit 0 - 1708196 969.1 21 126 1 2
+Unhandled server message:  clients + kermit 0 - 1708196 969.1 21 126 1 2
+RECV: clients + theCount 0 - 1579604 971.4 0 87 1 3
+Unhandled server message:  clients + theCount 0 - 1579604 971.4 0 87 1 3
+RECV: clients + xskat 0 - 3418565 722.3 8 62 1 1
+Unhandled server message:  clients + xskat 0 - 3418565 722.3 8 62 1 1
+RECV: clients + zoot 0 - 1608752 977.4 13 141 1 2
+Unhandled server message:  clients + zoot 0 - 1608752 977.4 13 141 1 2
+RECV: tables + .3 3 0 . . . -1
+Unhandled server message:  tables + .3 3 0 . . . -1
+RECV: tables + .3 3 0 goskat . . -1
+Unhandled server message:  tables + .3 3 0 goskat . . -1
+RECV: create .3 goskat 3 -1 3 ? ? ? 0
+Creating table: 3
+RECV: table .3 goskat state 3 goskat . . . goskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 false 0
+Unhandled server message:  table .3 goskat state 3 goskat . . . goskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 false 0
+SENT: table .3 goskat invite xskat xskat
+...Waiting server response
+SENT: table .3 goskat ready
+RECV: tables + .3 3 0 goskat xskat:1 . -1
+Unhandled server message:  tables + .3 3 0 goskat xskat:1 . -1
+RECV: table .3 goskat state 3 goskat xskat . . goskat . 0 0 0 0 0 0 1 0 xskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 false 0
+Unhandled server message:  table .3 goskat state 3 goskat xskat . . goskat . 0 0 0 0 0 0 1 0 xskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 false 0
+RECV: table .3 goskat state 3 goskat xskat . . goskat . 0 0 0 0 0 0 1 1 xskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 false 0
+Unhandled server message:  table .3 goskat state 3 goskat xskat . . goskat . 0 0 0 0 0 0 1 1 xskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 false 0
+RECV: tables + .3 3 0 goskat xskat:1 xskat:1 -1
+Unhandled server message:  tables + .3 3 0 goskat xskat:1 xskat:1 -1
+RECV: table .3 goskat state 3 goskat xskat xskat:2 . goskat . 0 0 0 0 0 0 1 1 xskat $ 0 0 0 0 0 0 1 0 xskat:2 $ 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 0
+Unhandled server message:  table .3 goskat state 3 goskat xskat xskat:2 . goskat . 0 0 0 0 0 0 1 1 xskat $ 0 0 0 0 0 0 1 0 xskat:2 $ 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 0
+RECV: table .3 goskat state 3 goskat xskat xskat:2 . goskat . 0 0 0 0 0 0 1 1 xskat $ 0 0 0 0 0 0 1 1 xskat:2 $ 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 0
+Unhandled server message:  table .3 goskat state 3 goskat xskat xskat:2 . goskat . 0 0 0 0 0 0 1 1 xskat $ 0 0 0 0 0 0 1 1 xskat:2 $ 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 0
+RECV: table .3 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 xskat # 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 1
+Unhandled server message:  table .3 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 xskat # 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 1
+RECV: table .3 goskat start 1 goskat 240.0 xskat 240.0 xskat:2 240.0
+You are player 0 in game: 1 with xskat and xskat:2 
+RECV: table .3 goskat go
+Unhandled server message:  table .3 goskat go
+RECV: table .3 goskat play w H9.HT.CA.S8.SA.DA.S9.DK.CK.D7|??.??.??.??.??.??.??.??.??.??|??.??.??.??.??.??.??.??.??.??|??.?? 240.0 240.0 240.0
+Your hand: [9 10 A 8 A A 9 K K 7]
+
+PLAYER ORDER: goskat - xskat - xskat:2
+
+RECV: table .3 goskat play 1 18 240.0 240.0 240.0
+Player: 1, Bidding: 18
+(goskat) vs (xskat)
+Waiting bid from xskat.. .. bid received 18
+	(xskat) 18
+SENT: table .3 goskat play p
+	(goskat) Pass
+(xskat) vs (xskat:2)
+Waiting bid from xskat:2..RECV: table .3 goskat play 0 p 239.6 240.0 240.0
+Player: 0, PASS
+RECV: table .3 goskat play 2 p 239.6 240.0 240.0
+Player: 2, PASS
+RECV: table .3 goskat play 1 s 239.6 239.9 240.0
+Player: 1, PICK UP SKAT
+RECV: table .3 goskat play w ??.?? 239.6 239.9 240.0
+RECV: table .3 goskat play 1 C.??.?? 239.6 239.9 240.0
+Player: 1 declares CLUBS
+ .. bid received p
+	(xskat:2) Pass 
+(xskat) won the bidding
+Waiting declaration from xskat.... received CLUBSsending trump and skat to server
+SENT: table .3 goskat play C..
+
+(xskat) TRUMP: CLUBS
+
+Trick: []
+(goskat) SENT: table .3 goskat play S9
+RECV: table .3 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 xskat # 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 true 1
+Unhandled server message:  table .3 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 xskat # 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 true 1
+RECV: table .3 goskat error play : _error_parsing_card C..
+Unhandled server message:  table .3 goskat error play : _error_parsing_card C..
+RECV: table .3 goskat play 0 S9 239.2 239.9 240.0
+Player: 0, PLAYED: 9
+Trick: [9]
+(xskat) Waiting card up from xskat..RECV: table .3 goskat play 1 C7 239.2 237.9 240.0
+Player: 1, PLAYED: 7
+ .. received 7
+Trick: [9 7]
+(xskat:2) Waiting card up from xskat:2..RECV: table .3 goskat play 2 S7 239.2 237.9 238.0
+Player: 2, PLAYED: 7
+ .. received 7
+RECV: table .3 goskat play 1 CJ 239.2 237.9 238.0
+Player: 1, PLAYED: J
+TRICK [9 7 7]
+
+Trick: []
+(xskat) Waiting card up from xskat.. .. received J
+Trick: [J]
+(xskat:2) Waiting card up from xskat:2..RECV: table .3 goskat play 2 DJ 239.2 237.9 236.0
+Player: 2, PLAYED: J
+ .. received J
+Trick: [J J]
+(goskat) SENT: table .3 goskat play CK
+RECV: table .3 goskat play 0 CK 238.0 237.9 236.0
+Player: 0, PLAYED: K
+RECV: table .3 goskat play 1 HJ 238.0 237.9 236.0
+Player: 1, PLAYED: J
+TRICK [J J K]
+
+Trick: []
+(xskat) Waiting card up from xskat.. .. received J
+Trick: [J]
+(xskat:2) Waiting card up from xskat:2..RECV: table .3 goskat play 2 CQ 238.0 237.9 234.0
+Player: 2, PLAYED: D
+ .. received D
+Trick: [J D]
+(goskat) SENT: table .3 goskat play CA
+RECV: table .3 goskat play 0 CA 236.8 237.9 234.0
+Player: 0, PLAYED: A
+RECV: table .3 goskat play 1 SJ 236.8 237.9 234.0
+Player: 1, PLAYED: J
+TRICK [J D A]
+
+Trick: []
+(xskat) Waiting card up from xskat.. .. received J
+Trick: [J]
+(xskat:2) Waiting card up from xskat:2..RECV: table .3 goskat play 2 H7 236.8 237.9 232.0
+Player: 2, PLAYED: 7
+ .. received 7
+Trick: [J 7]
+(goskat) SENT: table .3 goskat play D7
+RECV: table .3 goskat play 0 D7 235.6 237.9 232.0
+Player: 0, PLAYED: 7
+RECV: table .3 goskat play 1 C9 235.6 237.9 232.0
+Player: 1, PLAYED: 9
+TRICK [J 7 7]
+
+Trick: []
+(xskat) Waiting card up from xskat.. .. received 9
+Trick: [9]
+(xskat:2) Waiting card up from xskat:2..RECV: table .3 goskat play 2 HK 235.6 237.9 230.0
+Player: 2, PLAYED: K
+ .. received K
+Trick: [9 K]
+(goskat) SENT: table .3 goskat play S8
+RECV: table .3 goskat play 0 S8 234.4 237.9 230.0
+Player: 0, PLAYED: 8
+RECV: table .3 goskat play 1 D8 234.4 237.9 230.0
+Player: 1, PLAYED: 8
+TRICK [9 K 8]
+
+Trick: []
+(xskat) Waiting card up from xskat.. .. received 8
+RECV: table .3 goskat play 2 D9 234.4 237.9 230.0
+Player: 2, PLAYED: 9
+Trick: [8]
+(xskat:2) Waiting card up from xskat:2.. .. received 9
+Trick: [8 9]
+(goskat) SENT: table .3 goskat play DA
+RECV: table .3 goskat play 0 DA 231.4 237.9 230.0
+Player: 0, PLAYED: A
+TRICK [8 9 A]
+
+Trick: []
+(goskat) SENT: table .3 goskat play H9
+RECV: table .3 goskat play 0 H9 230.4 237.9 230.0
+Player: 0, PLAYED: 9
+RECV: table .3 goskat play 1 C8 230.4 237.9 230.0
+Player: 1, PLAYED: 8
+Trick: [9]
+(xskat) Waiting card up from xskat.. .. received 8
+RECV: table .3 goskat play 2 H8 230.4 237.9 230.0
+Player: 2, PLAYED: 8
+Trick: [9 8]
+(xskat:2) Waiting card up from xskat:2.. .. received 8
+RECV: table .3 goskat play 1 SC.DT.DQ.CT 230.4 237.8 230.0
+Player: 1, PLAYED SHORTCARD: SC.DT.DQ.CT
+RECV: table .3 goskat play 1 DT 230.4 237.8 230.0
+Player: 1, PLAYED: 10
+TRICK [9 8 8]
+
+Trick: []
+(xskat) Waiting card up from xskat.. .. received 10
+RECV: table .3 goskat play 2 RE 230.4 237.8 230.0
+Player: 2, RESIGNS, Ignored!
+RECV: table .3 goskat play 2 HQ 230.4 237.8 230.0
+Player: 2, PLAYED: D
+Trick: [10]
+(xskat:2) Waiting card up from xskat:2.. .. received D
+Trick: [10 D]
+(goskat) SENT: table .3 goskat play DK
+RECV: table .3 goskat play 0 DK 225.4 237.8 230.0
+Player: 0, PLAYED: K
+RECV: table .3 goskat play 1 DQ 225.4 237.8 230.0
+Player: 1, PLAYED: D
+TRICK [10 D K]
+
+Trick: []
+(xskat) Waiting card up from xskat.. .. received D
+RECV: table .3 goskat play 2 SQ 225.4 237.8 230.0
+Player: 2, PLAYED: D
+Trick: [D]
+(xskat:2) Waiting card up from xskat:2.. .. received D
+Trick: [D D]
+(goskat) SENT: table .3 goskat play HT
+RECV: table .3 goskat play 0 HT 222.4 237.8 230.0
+Player: 0, PLAYED: 10
+RECV: table .3 goskat play 1 CT 222.4 237.8 230.0
+Player: 1, PLAYED: 10
+TRICK [D D 10]
+
+Trick: []
+(xskat) Waiting card up from xskat.. .. received 10
+RECV: table .3 goskat play 2 HA 222.4 237.8 230.0
+Player: 2, PLAYED: A
+Trick: [10]
+(xskat:2) Waiting card up from xskat:2.. .. received A
+Trick: [10 A]
+(goskat) SENT: table .3 goskat play SA
+RECV: table .3 goskat play 0 SA 219.4 237.8 230.0
+Player: 0, PLAYED: A
+RECV: tables + .3 3 1 xskat:1 goskat xskat:1 -1
+Unhandled server message:  tables + .3 3 1 xskat:1 goskat xskat:1 -1
+RECV: table .3 goskat end (;GM[Skat]PC[International Skat Server]CO[]SE[251378]ID[4912814]DT[2017-09-04/08:06:38/UTC]P0[goskat]P1[xskat]P2[xskat:2]R0[0.0]R1[]R2[]MV[w H9.HT.CA.S8.SA.DA.S9.DK.CK.D7.DQ.HJ.DT.CT.CJ.SK.ST.C7.C9.SJ.HK.H8.HQ.CQ.H7.HA.DJ.S7.SQ.D9.C8.D8 1 18 0 p 2 p 1 s w C8.D8 1 C.ST.SK 0 S9 1 C7 2 S7 1 CJ 2 DJ 0 CK 1 HJ 2 CQ 0 CA 1 SJ 2 H7 0 D7 1 C9 2 HK 0 S8 1 D8 2 D9 0 DA 0 H9 1 C8 2 H8 1 SC 1 DT 2 RE 2 HQ 0 DK 1 DQ 2 SQ 0 HT 1 CT 2 HA 0 SA ]R[d:1 win v:60 m:3 bidok p:109 t:9 s:1 z:0 p0:0 p1:0 p2:0 l:-1 to:-1 r:0] ;)
+RECV: table .3 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 xskat # 1 1 110 110 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 1
+Unhandled server message:  table .3 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 xskat # 1 1 110 110 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 1
+RECV: table .3 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 1 goskat . 0 0 0 0 0 0 1 0 xskat # 1 1 110 110 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 1
+Unhandled server message:  table .3 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 1 goskat . 0 0 0 0 0 0 1 0 xskat # 1 1 110 110 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 1
+GAME ENDED
+SENT: table .3 goskat ready
+RECV: table .3 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 1 goskat . 0 0 0 0 0 0 1 0 xskat # 1 1 110 110 0 0 1 1 . . 0 0 0 0 0 0 0 0 false 1
+Unhandled server message:  table .3 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 1 goskat . 0 0 0 0 0 0 1 0 xskat # 1 1 110 110 0 0 1 1 . . 0 0 0 0 0 0 0 0 false 1
+RECV: table .3 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 xskat # 1 1 110 110 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 2
+Unhandled server message:  table .3 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 xskat # 1 1 110 110 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 2
+RECV: table .3 goskat start 2 xskat 240.0 xskat:2 240.0 goskat 240.0
+You are player 2 in game: 2 with xskat and xskat:2 
+RECV: table .3 goskat go
+Unhandled server message:  table .3 goskat go
+RECV: table .3 goskat play w ??.??.??.??.??.??.??.??.??.??|??.??.??.??.??.??.??.??.??.??|CJ.CK.HK.S8.H9.DJ.D9.CT.H8.C9|??.?? 240.0 240.0 240.0
+Your hand: [J K K 8 9 J 9 10 8 9]
+
+PLAYER ORDER: xskat - xskat:2 - goskat
+
+RECV: table .3 goskat play 1 p 240.0 240.0 240.0
+Player: 1, PASS
+(xskat) vs (xskat:2)
+Waiting bid from xskat:2.. .. bid received p
+	(xskat:2) Pass 
+(xskat) vs (goskat)
+SENT: table .3 goskat play p
+	(goskat) Pass 
+Waiting bid from xskat..panic: runtime error: index out of range
+
+goroutine 10 [running]:
+main.setNextTrickOrder(0x9a9a00, 0xc420150c00, 0x3, 0x3, 0x5, 0x7d7cea, 0x1)
+	/home/dimitris/go/src/github.com/dranidis/go-skat/skat.go:125 +0xd5a
+main.round(0x9a9a00, 0xc420150c00, 0x3, 0x3, 0x0, 0x1, 0x3)
+	/home/dimitris/go/src/github.com/dranidis/go-skat/skat.go:187 +0x2a4
+main.declareAndPlay(0x12)
+	/home/dimitris/go/src/github.com/dranidis/go-skat/skat.go:499 +0x87b
+main.parseServer.func1()
+	/home/dimitris/go/src/github.com/dranidis/go-skat/client_iss.go:366 +0x46
+created by main.parseServer
+	/home/dimitris/go/src/github.com/dranidis/go-skat/client_iss.go:368 +0xc77

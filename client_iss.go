@@ -32,6 +32,7 @@ func Connect(usr, pwd string) error {
 	// var conn io.ReadWriter
 
 	real := true
+
 	// connect to this socket
 	if real {
 		// var conniss io.ReadWriter
@@ -152,9 +153,12 @@ func Connect(usr, pwd string) error {
 	go func() {
 		createTable()
 		invite("xskat", "xskat")
-		ready()
-		<- waitServer // wait for game end
-		fmt.Println("GAME ENDED")
+		for i :=0 ; i < 36; i++ {
+			ready()
+			<- waitServer // wait for game end
+			fmt.Println("GAME ENDED")			
+		}
+
 		leaveTable()
 		// game begins
 
@@ -187,9 +191,6 @@ func readFromServer() {
 func parseServer(t string) {
 	fmt.Printf("RECV: %s\n", green(t))
 
-// TODO:
-// SHORTCUT SC: 3 cards played at once
-//table .2 goskat play 2 SC.D9.H8.HK 227.1 230.9 235.9
 
 	// create .3 goskat 3 -1 3 ? ? ? 0
 	if strings.HasPrefix(t, "create")  {
@@ -257,6 +258,10 @@ func parseServer(t string) {
 				return
 			} else if len(action) == 2 {
 				if player != "w" {
+					if action == "RE" {
+						fmt.Printf("Player: %s, RESIGNS, Ignored!\n", player)
+						return
+					}
 					card := parseCard(action)
 					fmt.Printf("Player: %s, PLAYED: %v\n", player, card)
 					if player != fmt.Sprintf("%d", playerNr) { // only sent to ISSPLAYER
@@ -265,6 +270,25 @@ func parseServer(t string) {
 					return
 				} 
 			}
+
+			if player != "w" && len(action) > 2 {
+				ss := strings.Split(action, ".")
+				if len(ss) > 0 && ss[0] == "SC" {
+					// SHORTCUT SC: many cards played at once
+					//table .2 goskat play 2 SC.D9.H8.HK 227.1 230.9 235.9
+					fmt.Printf("Player: %s, PLAYED SHORTCARD: %s\n", player, action)
+					rank := ss[1]
+					for i := 2; i < len(ss); i++ {
+						rank += "." + ss[i]
+					}
+					scCard := Card{"SC", rank}
+					_ = scCard
+					// ignore it
+					// trickChannel <- scCard
+					return
+				}
+			}
+
 
 			// p
 			if action == "p" {
