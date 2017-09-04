@@ -122,6 +122,9 @@ func makeSuitState() SuitState {
 func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
 	var newPlayers []PlayerI
 	var winner PlayerI
+	if len(s.trick) < 3 {
+		log.Fatal("Trick not full. SuitState: ", s, " Players ", players)
+	}
 	if s.greater(s.trick[0], s.trick[1]) && s.greater(s.trick[0], s.trick[2]) {
 		winner = players[0]
 		newPlayers = players
@@ -438,7 +441,6 @@ func initState() {
 }
 
 func initGame() {
-	players = []PlayerI{gamePlayers[0], gamePlayers[1], gamePlayers[2]}
 	for _, p := range players {
 		p.setScore(0)
 		p.setSchwarz(true)
@@ -463,8 +465,10 @@ func declareAndPlay() int {
 	state.trump = state.declarer.declareTrump()
 
 	if issConnect {
-		fmt.Println("sending trump and skat to server")
-		iss_declare(state.trump, state.skat)
+		if len(state.skat) == 2 && state.skat[0].Rank != "" {
+			fmt.Printf("sending trump %s and skat %v %v to server" , state.trump, state.skat[0], state.skat[1])
+			iss_declare(state.trump, state.skat)
+		}  
 	}
 
 
@@ -596,6 +600,8 @@ func game() int {
 	gameLog("\n\nGAME %d/%d\n", gameIndex, totalGames)
 	initState()
 	DealCards()
+
+	players = []PlayerI{gamePlayers[0], gamePlayers[1], gamePlayers[2]}
 	initGame()
 	if bidPhase() == 0 {
 		return 0
@@ -609,6 +615,8 @@ func repeatGame() int {
 	// players = rotatePlayers(players)
 	initState()
 	SameCards()
+
+	players = []PlayerI{gamePlayers[0], gamePlayers[1], gamePlayers[2]}
 	initGame()
 	if bidPhase() == 0 {
 		return 0
@@ -714,6 +722,8 @@ func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlay
 			player2.setName("ISS1") // this will change by ISS
 			player3.setName("ISS2") // this will change by ISS
 			gamePlayers = []PlayerI{player1, &player2, &player3} // this will change by ISS
+			delayMs = 0
+
 			return			
 		} else {
 			player := makeHumanPlayer([]Card{})
@@ -979,6 +989,8 @@ func startServer() *mux.Router {
 		gamePlayers = rotatePlayers(gamePlayers)
 		initState()
 		DealCards()
+
+		players = []PlayerI{gamePlayers[0], gamePlayers[1], gamePlayers[2]}
 		initGame()
 
 		position := 0
@@ -1008,6 +1020,8 @@ func startServer() *mux.Router {
 
 		initState()
 		SameCards()
+		
+		players = []PlayerI{gamePlayers[0], gamePlayers[1], gamePlayers[2]}
 		initGame()
 
 		position := 0

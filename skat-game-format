@@ -1,0 +1,81 @@
+move format:  <player-to-move> <action>
+
+<player-to-move> :: w | 0 | 1 | 2   // w = "world", 0 = forehand
+
+<action> ::
+
+- initial deal: 3 x 10 + 2 cards (see below)
+  ??.??.??.??.??.??.??.??.??.??|??.??.??.??.??.??.??.??.??.??|HJ.C9.SK.S8.S7.HT.DA.DK.D9.D7|??.??
+   
+- bids: numbers
+- answers: y ("yes")  or  p ("pass")
+- pick up skat or contract declaration:
+
+  s or <hand-game-type>[.<card>.<card>... in ouvert games]
+
+  - world provides skat:  <card1>.<card2>
+- discard cards and contract declaration:
+
+  <game-type>.<card1>.<card2>[.<card>.<card>... in ouvert games]
+      
+- cardplay:  <card>
+
+<card> :: <suit><rank> | ?? (=don't know)
+<suit> :: C | S | H | D  (clubs to diamonds)
+<rank> :: A | K | Q | J | T | 9 | 8 | 7  (T = 10)
+
+<game-type> :: (G | C | S | H | D | N)  (type Grand .. Null)
+               [O]        (ouvert)
+               [H]        (hand, not given if O + trump game)
+               [S]        (schneider announced, only in H games, not if O or Z)
+               [Z]        (schwarz announced, only in H games)
+
+examples:  GO   (grand ouvert)
+           NOH  (null ouvert hand)
+           HH   (hearts hand)
+           CHS  (clubs hand schneider announced)
+           GHZ  (grand hand schwarz announced)
+           C    (clubs)
+	   N    (null)
+
+<game-type> :: (G | C | S | H | D | N)  (type Grand .. Null)
+               [O]        (ouvert)
+               [H]        (hand, not given if O + trump game)
+               [S]        (schneider announced, only in H games)
+               [Z]        (schwarz announced, only in H games)
+
+
+examples:  GO   (grand ouvert)
+           NOH  (null ouvert hand)
+           HH   (hearts hand)
+           CHS  (clubs hand schneider announced)
+           GHZ  (grand hand schwarz announced)
+
+sample null ouvert game (player view):
+           
+w ??.??.??.??.??.??.??.??.??.??|??.??.??.??.??.??.??.??.??.??|HJ.C9.SK.S8.S7.HT.DA.DK.D9.D7|??.??
+1 18
+0 y
+1 20
+0 y
+1 p
+2 22
+0 y
+2 23
+0 y
+2 24
+0 y
+2 27
+0 p
+2 s
+w H9.H8
+2 NO.C9.SK.D7.D9.DK.DA.H8.H9.HT.HJ.S7.S8    // NO + 2 discarded cards + 10 player cards
+0 S9
+1 SA
+2 S7
+1 HA
+2 H8
+0 HQ
+1 H7
+2 H9
+0 DQ

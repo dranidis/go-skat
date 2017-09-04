@@ -2,4 +2,6 @@
 *.out
 *.txt
 *.log
-*.exe
+*.
+*~
+*swp

@@ -1,0 +1,76 @@
+clients + goskat 0 E 21 -504.0 0 16 0 1
+clients + bernie 0 - 1465471 700.2 192 233 1 2
+clients + ddmits 0 E 267 479.2 0 13 0 1
+clients + kafi 0 D 153303 1000.6 0 92 0 1
+clients + kermit 0 - 1708196 969.1 21 126 1 2
+clients + theCount 0 - 1579615 971.4 0 87 1 3
+clients + xskat 0 - 3418569 722.3 8 62 1 1
+clients + zoot 0 - 1608763 977.4 13 141 1 2
+tables + .3 3 12 theCount:2 kafi zoot:1 -1
+tables + .2 3 0 . . . -1
+tables + .2 3 0 goskat . . -1
+create .2 goskat 3 -1 3 ? ? ? 0
+table .2 goskat state 3 goskat . . . goskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 false 0
+table .2 goskat state 3 goskat . . . goskat . 0 0 0 0 0 0 1 1 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 false 0
+tables + .2 3 0 goskat xskat:1 . -1
+table .2 goskat state 3 goskat xskat . . goskat . 0 0 0 0 0 0 1 1 xskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 false 0
+tables + .2 3 0 goskat xskat:1 xskat:1 -1
+table .2 goskat state 3 goskat xskat xskat:2 . goskat . 0 0 0 0 0 0 1 1 xskat $ 0 0 0 0 0 0 1 0 xskat:2 $ 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 0
+table .2 goskat state 3 goskat xskat xskat:2 . goskat . 0 0 0 0 0 0 1 1 xskat $ 0 0 0 0 0 0 1 1 xskat:2 $ 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 0
+table .2 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 xskat # 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 1
+table .2 goskat start 1 goskat 240.0 xskat 240.0 xskat:2 240.0
+table .2 goskat go
+table .2 goskat play w H9.SK.D8.H8.CT.H7.S9.C7.CQ.DQ|??.??.??.??.??.??.??.??.??.??|??.??.??.??.??.??.??.??.??.??|??.?? 240.0 240.0 240.0
+table .2 goskat play 1 18 240.0 240.0 240.0
+table .2 goskat play 0 p 239.7 240.0 240.0
+table .2 goskat play 2 p 239.7 240.0 240.0
+table .2 goskat play 1 s 239.7 239.9 240.0
+table .2 goskat play w ??.?? 239.7 239.9 240.0
+table .2 goskat play 1 G.??.?? 239.7 239.9 240.0
+table .2 goskat play 0 CQ 239.3 239.9 240.0
+table .2 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 xskat # 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 true 1
+table .2 goskat play 1 CA 239.3 237.9 240.0
+table .2 goskat play 2 C8 239.3 237.9 238.0
+table .2 goskat play 1 DJ 239.3 237.9 238.0
+table .2 goskat play 2 SJ 239.3 237.9 236.0
+table .2 goskat play 0 CT 238.1 237.9 236.0
+table .2 goskat play 2 S7 238.1 237.9 236.0
+table .2 goskat play 0 SK 236.1 237.9 236.0
+table .2 goskat play 1 SA 236.1 235.9 236.0
+table .2 goskat play 1 DA 236.1 235.9 236.0
+tables + .3 3 12 theCount:2 kafi zoot:1 -1
+table .2 goskat play 2 D7 236.1 235.9 234.0
+table .2 goskat play 0 D8 234.9 235.9 234.0
+table .2 goskat play 1 HA 234.9 235.9 234.0
+table .2 goskat play 2 HQ 234.9 235.9 232.0
+table .2 goskat play 0 H9 233.7 235.9 232.0
+table .2 goskat play 1 HK 233.7 235.9 232.0
+table .2 goskat play 2 CJ 233.7 235.9 232.0
+table .2 goskat play 0 H7 230.7 235.9 232.0
+table .2 goskat play 2 DT 230.7 235.9 232.0
+table .2 goskat play 0 DQ 228.7 235.9 232.0
+table .2 goskat play 1 D9 228.7 235.9 232.0
+table .2 goskat play 2 ST 228.7 235.9 232.0
+table .2 goskat play 0 S9 225.7 235.9 232.0
+table .2 goskat play 1 HJ 225.7 235.9 232.0
+table .2 goskat play 1 SC.DK.HT 225.7 235.8 232.0
+table .2 goskat play 1 DK 225.7 235.8 232.0
+table .2 goskat play 2 RE 225.7 235.8 232.0
+table .2 goskat play 2 C9 225.7 235.8 232.0
+table .2 goskat play 0 H8 221.7 235.8 232.0
+table .2 goskat play 1 HT 221.7 235.8 232.0
+table .2 goskat play 2 SQ 221.7 235.8 232.0
+table .2 goskat play 0 C7 218.7 235.8 232.0
+tables + .2 3 1 xskat:1 goskat xskat:1 -1
+table .2 goskat end (;GM[Skat]PC[International Skat Server]CO[]SE[251380]ID[4912828]DT[2017-09-04/10:28:31/UTC]P0[goskat]P1[xskat]P2[xskat:2]R0[0.0]R1[]R2[]MV[w H9.SK.D8.H8.CT.H7.S9.C7.CQ.DQ.DA.DJ.D9.S8.CK.HA.HJ.SA.HT.HK.D7.C8.SJ.HQ.ST.SQ.CJ.DT.C9.S7.DK.CA 1 18 0 p 2 p 1 s w DK.CA 1 G.CK.S8 0 CQ 1 CA 2 C8 1 DJ 2 SJ 0 CT 2 S7 0 SK 1 SA 1 DA 2 D7 0 D8 1 HA 2 HQ 0 H9 1 HK 2 CJ 0 H7 2 DT 0 DQ 1 D9 2 ST 0 S9 1 HJ 1 SC 1 DK 2 RE 2 C9 0 H8 1 HT 2 SQ 0 C7 ]R[d:1 win v:72 m:-2 bidok p:87 t:7 s:0 z:0 p0:0 p1:0 p2:0 l:-1 to:-1 r:0] ;)
+table .2 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 xskat # 1 1 122 122 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 1
+table .2 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 1 goskat . 0 0 0 0 0 0 1 0 xskat # 1 1 122 122 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 1
+table .2 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 1 goskat . 0 0 0 0 0 0 1 0 xskat # 1 1 122 122 0 0 1 1 . . 0 0 0 0 0 0 0 0 false 1
+table .2 goskat state 3 xskat:2 goskat xskat . xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 xskat # 1 1 122 122 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 2
+table .2 goskat start 2 xskat 240.0 xskat:2 240.0 goskat 240.0
+table .2 goskat go
+table .2 goskat play w ??.??.??.??.??.??.??.??.??.??|??.??.??.??.??.??.??.??.??.??|C8.HA.H7.S8.S9.H8.DT.ST.D8.SJ|??.?? 240.0 240.0 240.0
+table .2 goskat play 1 18 240.0 240.0 240.0
+table .2 goskat play 0 p 240.0 240.0 240.0
+
+

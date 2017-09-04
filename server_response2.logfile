@@ -1,0 +1,331 @@
+clients + goskat 0 E 27 -693.3 0 20 0 1
+clients + DirkU 0 D 11927 538.0 0 74 0 1
+clients + aaaron66 0 D 10372 1074.7 0 63 0 1
+clients + bernie 0 - 1465485 700.2 192 233 1 2
+clients + ddmits 0 E 268 477.4 0 13 0 1
+clients + kermit 0 - 1708198 969.1 21 126 1 2
+clients + theCount 0 - 1579714 971.3 0 87 1 3
+clients + xskat 0 - 3418744 722.3 8 62 1 1
+clients + zoot 0 - 1608847 977.4 13 141 1 2
+tables + .6 3 29 theCount:3 zoot:2 DirkU -1
+tables + .8 3 9 xskat:1 xskat:1 aaaron66 -1
+tables + .3 3 0 . . . -1
+tables + .3 3 0 goskat . . -1
+create .3 goskat 3 -1 3 ? ? ? 0
+table .3 goskat state 3 goskat . . . goskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 false 0
+tables + .3 3 0 goskat xskat:1 . -1
+table .3 goskat state 3 goskat xskat . . goskat . 0 0 0 0 0 0 1 0 xskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 . . 0 0 0 0 0 0 0 0 false 0
+tables + .3 3 0 goskat xskat:1 xskat:1 -1
+table .3 goskat state 3 goskat xskat xskat:2 . goskat . 0 0 0 0 0 0 1 0 xskat $ 0 0 0 0 0 0 1 0 xskat:2 $ 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 0
+table .3 goskat state 3 goskat xskat xskat:2 . goskat . 0 0 0 0 0 0 1 0 xskat $ 0 0 0 0 0 0 1 1 xskat:2 $ 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 0
+table .3 goskat state 3 goskat xskat xskat:2 . goskat . 0 0 0 0 0 0 1 0 xskat $ 0 0 0 0 0 0 1 1 xskat:2 $ 0 0 0 0 0 0 1 1 . . 0 0 0 0 0 0 0 0 false 0
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 0 0 0 0 0 0 1 0 xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 1
+table .3 goskat start 1 xskat:2 240.0 goskat 240.0 xskat 240.0
+table .3 goskat go
+table .3 goskat play w ??.??.??.??.??.??.??.??.??.??|HK.DQ.HT.CT.H9.H8.SA.DA.HQ.C9|??.??.??.??.??.??.??.??.??.??|??.?? 240.0 240.0 240.0
+table .3 goskat play 1 18 240.0 238.6 240.0
+table .3 goskat play 0 p 240.0 238.6 240.0
+table .3 goskat play 2 p 240.0 238.6 240.0
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 0 0 0 0 0 0 1 0 xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 true 1
+table .3 goskat play 1 s 240.0 237.2 240.0
+table .3 goskat play w ST.HJ 240.0 237.2 240.0
+table .3 goskat play 1 H.CT.C9 240.0 235.8 240.0
+table .3 goskat play 0 CA 240.0 235.8 240.0
+table .3 goskat play 1 H8 240.0 233.3 240.0
+tables + .6 3 29 theCount:3 zoot:2 DirkU -1
+table .3 goskat play 2 C7 240.0 233.3 238.0
+table .3 goskat play 1 H9 240.0 231.1 238.0
+table .3 goskat play 2 DJ 240.0 231.1 236.0
+table .3 goskat play 0 HA 238.0 231.1 236.0
+tables + .8 3 9 xskat:1 xskat:1 aaaron66 -1
+table .3 goskat play 2 S9 238.0 231.1 236.0
+table .3 goskat play 0 S7 236.0 231.1 236.0
+table .3 goskat play 1 SA 236.0 228.9 236.0
+table .3 goskat play 1 HQ 236.0 226.8 236.0
+table .3 goskat play 2 SJ 236.0 226.8 234.0
+table .3 goskat play 0 H7 234.0 226.8 234.0
+table .3 goskat play 2 D8 234.0 226.8 234.0
+table .3 goskat play 0 D7 231.9 226.8 234.0
+table .3 goskat play 1 DQ 231.9 224.6 234.0
+table .3 goskat play 1 HJ 231.9 222.6 234.0
+table .3 goskat play 2 CJ 231.9 222.6 232.1
+table .3 goskat play 0 SQ 231.9 222.6 232.1
+table .3 goskat play 2 DK 231.9 222.6 232.1
+table .3 goskat play 0 D9 231.9 222.6 232.1
+table .3 goskat play 1 DA 231.9 216.8 232.1
+table .3 goskat play 1 ST 231.9 215.4 232.1
+table .3 goskat play 2 SK 231.9 215.4 231.4
+table .3 goskat play 0 S8 229.9 215.4 231.4
+table .3 goskat play 1 HT 229.9 213.2 231.4
+table .3 goskat play 2 CK 229.9 213.2 229.9
+table .3 goskat play 0 C8 229.8 213.2 229.9
+table .3 goskat play 1 HK 229.8 210.0 229.9
+table .3 goskat play 2 DT 229.8 210.0 228.4
+table .3 goskat play 0 CQ 229.8 210.0 228.4
+tables + .3 3 1 xskat:1 xskat:1 goskat -1
+table .3 goskat end (;GM[Skat]PC[International Skat Server]CO[]SE[251395]ID[4913031]DT[2017-09-04/14:18:29/UTC]P0[xskat:2]P1[goskat]P2[xskat]R0[]R1[0.0]R2[]MV[w D7.HA.CA.CQ.S7.H7.S8.C8.D9.SQ.HK.DQ.HT.CT.H9.H8.SA.DA.HQ.C9.S9.DT.DK.D8.DJ.CJ.SK.SJ.C7.CK.ST.HJ 1 18 0 p 2 p 1 s w ST.HJ 1 H.CT.C9 0 CA 1 H8 2 C7 1 H9 2 DJ 0 HA 2 S9 0 S7 1 SA 1 HQ 2 SJ 0 H7 2 D8 0 D7 1 DQ 1 HJ 2 CJ 0 SQ 2 DK 0 D9 1 DA 1 ST 2 SK 0 S8 1 HT 2 CK 0 C8 1 HK 2 DT 0 CQ ]R[d:1 win v:40 m:-2 bidok p:95 t:7 s:1 z:0 p0:0 p1:0 p2:0 l:-1 to:-1 r:0] ;)
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 0 0 0 0 0 0 1 0 xskat:2 # 0 0 0 0 0 0 1 0 goskat . 1 1 90 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 1
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 0 0 0 0 0 0 1 1 xskat:2 # 0 0 0 0 0 0 1 0 goskat . 1 1 90 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 1
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 0 0 0 0 0 0 1 1 xskat:2 # 0 0 0 0 0 0 1 1 goskat . 1 1 90 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 1
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 0 0 0 0 0 0 1 0 xskat:2 # 0 0 0 0 0 0 1 0 goskat . 1 1 90 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 2
+table .3 goskat start 2 goskat 240.0 xskat 240.0 xskat:2 240.0
+table .3 goskat go
+table .3 goskat play w H9.HT.DT.C7.HA.C9.C8.H7.CA.SA|??.??.??.??.??.??.??.??.??.??|??.??.??.??.??.??.??.??.??.??|??.?? 240.0 240.0 240.0
+table .3 goskat play 1 18 240.0 240.0 240.0
+table .3 goskat play 0 p 238.6 240.0 240.0
+table .3 goskat play 2 p 238.6 240.0 240.0
+table .3 goskat play 1 s 238.6 240.0 240.0
+table .3 goskat play w ??.?? 238.6 240.0 240.0
+table .3 goskat play 1 G.??.?? 238.6 240.0 240.0
+table .3 goskat play 0 C9 237.2 240.0 240.0
+table .3 goskat play 1 CJ 237.2 238.0 240.0
+tables + .6 3 30 theCount:3 zoot:2 DirkU -1
+table .3 goskat play 2 CQ 237.2 238.0 238.0
+table .3 goskat play 1 DA 237.2 238.0 238.0
+table .3 goskat play 2 D7 237.2 238.0 237.0
+tables + .8 3 10 xskat:1 xskat:1 aaaron66 -1
+table .3 goskat play 0 DT 234.0 238.0 237.0
+table .3 goskat play 1 S9 234.0 238.0 237.0
+table .3 goskat play 2 S7 234.0 238.0 234.9
+table .3 goskat play 0 SA 231.8 238.0 234.9
+table .3 goskat play 0 C8 229.8 238.0 234.9
+table .3 goskat play 1 D9 229.8 236.9 234.9
+table .3 goskat play 2 CK 229.8 236.9 233.9
+table .3 goskat play 2 D8 229.8 236.9 233.9
+table .3 goskat play 0 H9 226.6 236.9 233.9
+table .3 goskat play 1 SJ 226.6 234.9 233.9
+table .3 goskat play 1 SC.DJ.HJ.ST.SQ.SK 226.6 234.9 233.9
+table .3 goskat play 1 ST 226.6 234.9 233.9
+table .3 goskat play 2 RE 226.6 234.9 233.9
+table .3 goskat play 2 S8 226.6 234.9 233.9
+table .3 goskat play 0 H7 222.4 234.9 233.9
+table .3 goskat play 1 SK 222.4 233.1 233.9
+table .3 goskat play 2 H8 222.4 233.1 231.9
+table .3 goskat play 0 C7 220.1 233.1 231.9
+table .3 goskat play 1 SQ 220.1 231.9 231.9
+table .3 goskat play 2 DQ 220.1 231.9 229.9
+table .3 goskat play 0 HT 217.9 231.9 229.9
+table .3 goskat play 1 DJ 217.9 231.9 229.9
+table .3 goskat play 2 HK 217.9 231.9 229.9
+table .3 goskat play 0 HA 214.0 231.9 229.9
+table .3 goskat play 1 HJ 214.0 231.9 229.9
+table .3 goskat play 2 HQ 214.0 231.9 229.8
+table .3 goskat play 0 CA 210.0 231.9 229.8
+tables + .3 3 2 xskat:1 xskat:1 goskat -1
+table .3 goskat end (;GM[Skat]PC[International Skat Server]CO[]SE[251395]ID[4913034]DT[2017-09-04/14:19:19/UTC]P0[goskat]P1[xskat]P2[xskat:2]R0[0.0]R1[]R2[]MV[w H9.HT.DT.C7.HA.C9.C8.H7.CA.SA.DJ.DA.SJ.S9.HJ.SQ.CJ.CT.DK.ST.S7.DQ.HK.D8.CQ.S8.H8.CK.HQ.D7.SK.D9 1 18 0 p 2 p 1 s w SK.D9 1 G.CT.DK 0 C9 1 CJ 2 CQ 1 DA 2 D7 0 DT 1 S9 2 S7 0 SA 0 C8 1 D9 2 CK 2 D8 0 H9 1 SJ 1 SC 1 ST 2 RE 2 S8 0 H7 1 SK 2 H8 0 C7 1 SQ 2 DQ 0 HT 1 DJ 2 HK 0 HA 1 HJ 2 HQ 0 CA ]R[d:1 win v:144 m:4 bidok p:105 t:8 s:1 z:0 p0:0 p1:0 p2:0 l:-1 to:-1 r:0] ;)
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 1 1 194 194 0 0 1 0 xskat:2 # 0 0 0 0 0 0 1 0 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 2
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 1 1 194 194 0 0 1 1 xskat:2 # 0 0 0 0 0 0 1 0 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 2
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 1 1 194 194 0 0 1 1 xskat:2 # 0 0 0 0 0 0 1 1 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 2
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 1 1 194 194 0 0 1 0 xskat:2 # 0 0 0 0 0 0 1 0 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 3
+table .3 goskat start 3 xskat 240.0 xskat:2 240.0 goskat 240.0
+table .3 goskat go
+table .3 goskat play w ??.??.??.??.??.??.??.??.??.??|??.??.??.??.??.??.??.??.??.??|DQ.SK.C8.C7.HT.S8.CT.CA.H7.SJ|??.?? 240.0 240.0 240.0
+table .3 goskat play 1 18 240.0 240.0 240.0
+table .3 goskat play 0 p 240.0 240.0 240.0
+tables + .6 3 31 theCount:3 zoot:2 DirkU -1
+table .3 goskat play 2 p 240.0 240.0 238.6
+table .3 goskat play 1 s 240.0 240.0 238.6
+table .3 goskat play w ??.?? 240.0 240.0 238.6
+table .3 goskat play 1 D.??.?? 240.0 240.0 238.6
+table .3 goskat play 0 HA 240.0 240.0 238.6
+table .3 goskat play 1 DA 240.0 237.9 238.6
+table .3 goskat play 2 H7 240.0 237.9 236.3
+table .3 goskat play 1 CJ 240.0 237.9 236.3
+tables + .8 3 11 xskat:1 xskat:1 aaaron66 -1
+table .3 goskat play 2 DQ 240.0 237.9 233.3
+table .3 goskat play 0 D8 238.0 237.9 233.3
+table .3 goskat play 1 DJ 238.0 237.9 233.3
+table .3 goskat play 2 SJ 238.0 237.9 230.1
+table .3 goskat play 0 DT 236.0 237.9 230.1
+table .3 goskat play 2 S8 236.0 237.9 227.9
+table .3 goskat play 0 S7 234.0 237.9 227.9
+table .3 goskat play 1 S9 234.0 235.9 227.9
+table .3 goskat play 1 HJ 234.0 235.9 227.9
+table .3 goskat play 2 C7 234.0 235.9 224.7
+table .3 goskat play 0 DK 232.0 235.9 224.7
+table .3 goskat play 1 SA 232.0 235.9 224.7
+table .3 goskat play 2 SK 232.0 235.9 221.5
+table .3 goskat play 0 SQ 232.0 235.9 221.5
+table .3 goskat play 1 C9 232.0 235.8 221.5
+table .3 goskat play 2 CA 232.0 235.8 217.6
+table .3 goskat play 0 CK 230.6 235.8 217.6
+table .3 goskat play 2 C8 230.6 235.8 215.3
+table .3 goskat play 0 H9 229.6 235.8 215.3
+table .3 goskat play 1 CQ 229.6 235.8 215.3
+table .3 goskat play 1 SC.D7.D9 229.6 235.8 215.3
+table .3 goskat play 1 D7 229.6 235.8 215.3
+table .3 goskat play 0 RE 229.6 235.8 215.3
+table .3 goskat play 2 CT 229.6 235.8 211.2
+table .3 goskat play 0 HQ 229.6 235.8 211.2
+table .3 goskat play 1 D9 229.6 235.7 211.2
+tables + .8 3 12 xskat:1 xskat:1 aaaron66 -1
+table .3 goskat play 2 HT 229.6 235.7 207.2
+table .3 goskat play 0 ST 229.6 235.7 207.2
+tables + .3 3 3 xskat:1 xskat:1 goskat -1
+table .3 goskat end (;GM[Skat]PC[International Skat Server]CO[]SE[251395]ID[4913037]DT[2017-09-04/14:20:08/UTC]P0[xskat]P1[xskat:2]P2[goskat]R0[]R1[]R2[0.0]MV[w HQ.S7.HA.SQ.DT.CK.H9.D8.ST.DK.CQ.D7.C9.SA.S9.HK.D9.DA.HJ.DJ.DQ.SK.C8.C7.HT.S8.CT.CA.H7.SJ.H8.CJ 1 18 0 p 2 p 1 s w H8.CJ 1 D.HK.H8 0 HA 1 DA 2 H7 1 CJ 2 DQ 0 D8 1 DJ 2 SJ 0 DT 2 S8 0 S7 1 S9 1 HJ 2 C7 0 DK 1 SA 2 SK 0 SQ 1 C9 2 CA 0 CK 2 C8 0 H9 1 CQ 1 SC 1 D7 0 RE 2 CT 0 HQ 1 D9 2 HT 0 ST ]R[d:1 win v:27 m:1 bidok p:91 t:8 s:1 z:0 p0:0 p1:0 p2:0 l:-1 to:-1 r:0] ;)
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 1 1 0 194 0 0 1 0 xskat:2 # 1 1 77 77 0 0 1 0 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 3
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 1 1 0 194 0 0 1 1 xskat:2 # 1 1 77 77 0 0 1 0 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 3
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 1 1 0 194 0 0 1 1 xskat:2 # 1 1 77 77 0 0 1 1 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 3
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 1 1 0 194 0 0 1 0 xskat:2 # 1 1 77 77 0 0 1 0 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 4
+table .3 goskat start 4 xskat:2 240.0 goskat 240.0 xskat 240.0
+table .3 goskat go
+table .3 goskat play w ??.??.??.??.??.??.??.??.??.??|HQ.H8.SQ.HK.DK.D7.D9.S8.S7.C9|??.??.??.??.??.??.??.??.??.??|??.?? 240.0 240.0 240.0
+table .3 goskat play 1 p 240.0 238.6 240.0
+table .3 goskat play 2 18 240.0 238.6 240.0
+table .3 goskat play 0 y 240.0 238.6 240.0
+table .3 goskat play 2 20 240.0 238.6 240.0
+table .3 goskat play 0 y 239.9 238.6 240.0
+table .3 goskat play 2 22 239.9 238.6 240.0
+table .3 goskat play 0 y 239.9 238.6 240.0
+table .3 goskat play 2 23 239.9 238.6 240.0
+table .3 goskat play 0 p 239.8 238.6 240.0
+table .3 goskat play 2 s 239.8 238.6 240.0
+table .3 goskat play w ??.?? 239.8 238.6 240.0
+table .3 goskat play 2 C.??.?? 239.8 238.6 240.0
+table .3 goskat play 0 HA 239.8 238.6 240.0
+table .3 goskat play 1 HK 239.8 236.2 240.0
+table .3 goskat play 2 H7 239.8 236.2 239.0
+table .3 goskat play 0 SA 239.8 236.2 239.0
+table .3 goskat play 1 SQ 239.8 233.0 239.0
+table .3 goskat play 2 CT 239.8 233.0 237.0
+table .3 goskat play 2 CJ 239.8 233.0 236.9
+tables + .6 3 32 theCount:3 zoot:2 DirkU -1
+table .3 goskat play 0 CK 237.7 233.0 236.9
+table .3 goskat play 1 C9 237.7 230.7 236.9
+table .3 goskat play 2 HJ 237.7 230.7 236.2
+table .3 goskat play 0 SJ 235.7 230.7 236.2
+table .3 goskat play 1 DK 235.7 228.5 236.2
+table .3 goskat play 0 D8 235.4 228.5 236.2
+table .3 goskat play 1 D9 235.4 225.8 236.2
+table .3 goskat play 2 DA 235.4 225.8 233.2
+table .3 goskat play 2 C8 235.4 225.8 232.2
+table .3 goskat play 0 CA 235.4 225.8 232.2
+table .3 goskat play 1 HQ 235.4 222.6 232.2
+table .3 goskat play 0 DJ 235.2 222.6 232.2
+table .3 goskat play 1 S7 235.2 219.8 232.2
+table .3 goskat play 2 C7 235.2 219.8 231.9
+table .3 goskat play 0 H9 233.2 219.8 231.9
+table .3 goskat play 1 H8 233.2 217.6 231.9
+table .3 goskat play 2 CQ 233.2 217.6 231.9
+table .3 goskat play 2 SC.DT.DQ 233.2 217.6 231.9
+table .3 goskat play 2 DQ 233.2 217.6 231.9
+table .3 goskat play 0 RE 233.2 217.6 231.9
+table .3 goskat play 0 SK 233.2 217.6 231.9
+tables + .8 3 13 xskat:1 xskat:1 aaaron66 -1
+table .3 goskat play 1 D7 233.2 212.6 231.9
+table .3 goskat play 2 DT 233.2 212.6 231.9
+table .3 goskat play 0 S9 233.1 212.6 231.9
+table .3 goskat play 1 S8 233.1 208.7 231.9
+tables + .3 3 4 xskat:1 xskat:1 goskat -1
+table .3 goskat end (;GM[Skat]PC[International Skat Server]CO[]SE[251395]ID[4913041]DT[2017-09-04/14:20:56/UTC]P0[xskat:2]P1[goskat]P2[xskat]R0[]R1[0.0]R2[]MV[w D8.SJ.DJ.HA.SA.CK.S9.H9.CA.SK.HQ.H8.SQ.HK.DK.D7.D9.S8.S7.C9.C7.CQ.CJ.CT.HJ.H7.HT.C8.DQ.ST.DT.DA 1 p 2 18 0 y 2 20 0 y 2 22 0 y 2 23 0 p 2 s w DT.DA 2 C.ST.HT 0 HA 1 HK 2 H7 0 SA 1 SQ 2 CT 2 CJ 0 CK 1 C9 2 HJ 0 SJ 1 DK 0 D8 1 D9 2 DA 2 C8 0 CA 1 HQ 0 DJ 1 S7 2 C7 0 H9 1 H8 2 CQ 2 SC 2 DQ 0 RE 0 SK 1 D7 2 DT 0 S9 1 S8 ]R[d:2 win v:24 m:1 bidok p:81 t:6 s:0 z:0 p0:0 p1:0 p2:0 l:-1 to:-1 r:0] ;)
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 74 268 0 0 1 0 xskat:2 # 1 1 0 77 0 0 1 0 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 4
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 74 268 0 0 1 1 xskat:2 # 1 1 0 77 0 0 1 0 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 4
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 74 268 0 0 1 1 xskat:2 # 1 1 0 77 0 0 1 1 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 4
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 74 268 0 0 1 0 xskat:2 # 1 1 0 77 0 0 1 0 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 5
+table .3 goskat start 5 goskat 240.0 xskat 240.0 xskat:2 240.0
+table .3 goskat go
+table .3 goskat play w D8.H8.CT.H9.DQ.HA.CK.ST.CJ.HJ|??.??.??.??.??.??.??.??.??.??|??.??.??.??.??.??.??.??.??.??|??.?? 240.0 240.0 240.0
+table .3 goskat play 1 p 240.0 240.0 240.0
+table .3 goskat play 2 18 240.0 240.0 240.0
+table .3 goskat play 0 p 238.6 240.0 240.0
+table .3 goskat play 2 s 238.6 240.0 240.0
+table .3 goskat play w ??.?? 238.6 240.0 240.0
+table .3 goskat play 2 C.??.?? 238.6 240.0 239.9
+table .3 goskat play 0 H9 237.2 240.0 239.9
+table .3 goskat play 1 H7 237.2 238.0 239.9
+table .3 goskat play 2 HT 237.2 238.0 237.9
+table .3 goskat play 2 DJ 237.2 238.0 237.9
+table .3 goskat play 0 CJ 234.0 238.0 237.9
+table .3 goskat play 1 C9 234.0 234.1 237.9
+table .3 goskat play 0 HA 231.8 234.1 237.9
+table .3 goskat play 1 DK 231.8 230.3 237.9
+table .3 goskat play 2 HQ 231.8 230.3 235.9
+table .3 goskat play 0 H8 229.6 230.3 235.9
+table .3 goskat play 1 S8 229.6 228.3 235.9
+table .3 goskat play 2 HK 229.6 228.3 232.9
+tables + .6 3 33 theCount:3 zoot:2 DirkU -1
+table .3 goskat play 2 SJ 229.6 228.3 230.9
+table .3 goskat play 0 CK 227.4 228.3 230.9
+table .3 goskat play 1 D9 227.4 225.0 230.9
+table .3 goskat play 2 C8 227.4 225.0 230.9
+table .3 goskat play 0 CT 224.1 225.0 230.9
+table .3 goskat play 1 DA 224.1 225.0 230.9
+table .3 goskat play 0 D8 221.1 225.0 230.9
+table .3 goskat play 1 S9 221.1 225.0 230.9
+table .3 goskat play 2 S7 221.1 225.0 230.9
+tables + .8 3 14 xskat:1 xskat:1 aaaron66 -1
+table .3 goskat play 0 DQ 217.2 225.0 230.9
+table .3 goskat play 1 SQ 217.2 225.0 230.9
+table .3 goskat play 2 CA 217.2 225.0 230.8
+table .3 goskat play 2 C7 217.2 225.0 230.8
+table .3 goskat play 0 HJ 212.3 225.0 230.8
+table .3 goskat play 1 SA 212.3 225.0 230.8
+table .3 goskat play 0 ST 209.2 225.0 230.8
+table .3 goskat play 1 SK 209.2 225.0 230.8
+table .3 goskat play 2 CQ 209.2 225.0 230.7
+tables + .3 3 5 xskat:1 xskat:1 goskat -1
+table .3 goskat end (;GM[Skat]PC[International Skat Server]CO[]SE[251395]ID[4913044]DT[2017-09-04/14:21:53/UTC]P0[goskat]P1[xskat]P2[xskat:2]R0[0.0]R1[]R2[]MV[w D8.H8.CT.H9.DQ.HA.CK.ST.CJ.HJ.SQ.SA.H7.DA.DK.S9.S8.D9.C9.SK.S7.CA.HT.DT.SJ.C8.C7.CQ.DJ.D7.HQ.HK 1 p 2 18 0 p 2 s w HQ.HK 2 C.DT.D7 0 H9 1 H7 2 HT 2 DJ 0 CJ 1 C9 0 HA 1 DK 2 HQ 0 H8 1 S8 2 HK 2 SJ 0 CK 1 D9 2 C8 0 CT 1 DA 0 D8 1 S9 2 S7 0 DQ 1 SQ 2 CA 2 C7 0 HJ 1 SA 0 ST 1 SK 2 CQ ]R[d:2 win v:24 m:-1 bidok p:64 t:5 s:0 z:0 p0:0 p1:0 p2:0 l:-1 to:-1 r:0] ;)
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 0 268 0 0 1 0 xskat:2 # 2 2 74 151 0 0 1 0 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 5
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 0 268 0 0 1 1 xskat:2 # 2 2 74 151 0 0 1 0 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 5
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 0 268 0 0 1 1 xskat:2 # 2 2 74 151 0 0 1 1 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 5
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 0 268 0 0 1 0 xskat:2 # 2 2 74 151 0 0 1 0 goskat . 1 1 0 90 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 6
+table .3 goskat start 6 xskat 240.0 xskat:2 240.0 goskat 240.0
+table .3 goskat go
+table .3 goskat play w ??.??.??.??.??.??.??.??.??.??|??.??.??.??.??.??.??.??.??.??|C8.S7.CQ.HT.SK.CA.HQ.HK.SJ.C7|??.?? 240.0 240.0 240.0
+table .3 goskat play 1 p 240.0 240.0 240.0
+table .3 goskat play 2 18 240.0 240.0 238.6
+table .3 goskat play 0 y 239.2 240.0 238.6
+table .3 goskat play 2 20 239.2 240.0 237.4
+table .3 goskat play 0 p 238.4 240.0 237.4
+table .3 goskat play 2 s 238.4 240.0 236.1
+table .3 goskat play w HA.D8 238.4 240.0 236.1
+table .3 goskat play 2 H.D8.SK 238.4 240.0 234.7
+table .3 goskat play 0 C9 238.4 240.0 234.7
+table .3 goskat play 1 CT 238.4 238.0 234.7
+table .3 goskat play 2 CA 238.4 238.0 232.5
+table .3 goskat play 2 HQ 238.4 238.0 230.5
+table .3 goskat play 0 DJ 236.4 238.0 230.5
+table .3 goskat play 1 H7 236.4 236.9 230.5
+table .3 goskat play 0 CK 236.4 236.9 230.5
+table .3 goskat play 1 H9 236.4 235.9 230.5
+table .3 goskat play 2 C8 236.4 235.9 227.3
+table .3 goskat play 1 DA 236.4 235.9 227.3
+table .3 goskat play 2 HK 236.4 235.9 223.3
+tables + .6 3 34 theCount:3 zoot:2 DirkU -1
+table .3 goskat play 0 D7 235.4 235.9 223.3
+tables + .8 3 15 xskat:1 xskat:1 aaaron66 -1
+table .3 goskat play 2 CQ 235.4 235.9 221.0
+table .3 goskat play 0 H8 233.4 235.9 221.0
+table .3 goskat play 1 SA 233.4 233.9 221.0
+table .3 goskat play 0 DT 233.4 233.9 221.0
+table .3 goskat play 1 D9 233.4 233.9 221.0
+table .3 goskat play 2 HA 233.4 233.9 216.9
+table .3 goskat play 2 S7 233.4 233.9 214.9
+table .3 goskat play 0 SQ 233.4 233.9 214.9
+table .3 goskat play 1 ST 233.4 233.9 214.9
+table .3 goskat play 1 DK 233.4 233.8 214.9
+table .3 goskat play 2 SJ 233.4 233.8 209.9
+table .3 goskat play 0 DQ 233.4 233.8 209.9
+table .3 goskat play 2 C7 233.4 233.8 206.9
+table .3 goskat play 0 HJ 233.4 233.8 206.9
+table .3 goskat play 1 S8 233.4 233.8 206.9
+table .3 goskat play 0 CJ 233.4 233.8 206.9
+table .3 goskat play 1 S9 233.4 233.7 206.9
+table .3 goskat play 2 HT 233.4 233.7 201.0
+tables + .3 3 6 xskat:1 xskat:1 goskat -1
+table .3 goskat end (;GM[Skat]PC[International Skat Server]CO[]SE[251395]ID[4913047]DT[2017-09-04/14:22:48/UTC]P0[xskat]P1[xskat:2]P2[goskat]R0[]R1[]R2[0.0]MV[w D7.DJ.H8.HJ.CK.CJ.C9.DQ.DT.SQ.H9.S8.ST.H7.CT.D9.SA.S9.DK.DA.C8.S7.CQ.HT.SK.CA.HQ.HK.SJ.C7.HA.D8 1 p 2 18 0 y 2 20 0 p 2 s w HA.D8 2 H.D8.SK 0 C9 1 CT 2 CA 2 HQ 0 DJ 1 H7 0 CK 1 H9 2 C8 1 DA 2 HK 0 D7 2 CQ 0 H8 1 SA 0 DT 1 D9 2 HA 2 S7 0 SQ 1 ST 1 DK 2 SJ 0 DQ 2 C7 0 HJ 1 S8 0 CJ 1 S9 2 HT ]R[d:2 win v:20 m:-1 bidok p:70 t:4 s:0 z:0 p0:0 p1:0 p2:0 l:-1 to:-1 r:0] ;)
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 0 268 0 0 1 0 xskat:2 # 2 2 0 151 0 0 1 0 goskat . 2 2 70 160 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 6
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 0 268 0 0 1 1 xskat:2 # 2 2 0 151 0 0 1 0 goskat . 2 2 70 160 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 6
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 0 268 0 0 1 1 xskat:2 # 2 2 0 151 0 0 1 1 goskat . 2 2 70 160 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 6
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 0 268 0 0 1 0 xskat:2 # 2 2 0 151 0 0 1 0 goskat . 2 2 70 160 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 7
+table .3 goskat start 7 xskat:2 240.0 goskat 240.0 xskat 240.0
+table .3 goskat go
+table .3 goskat play w ??.??.??.??.??.??.??.??.??.??|CQ.S9.S7.SJ.CT.S8.SA.H7.DK.HQ|??.??.??.??.??.??.??.??.??.??|??.?? 240.0 240.0 240.0
+table .3 goskat play 1 p 240.0 238.5 240.0
+table .3 goskat play 2 p 240.0 238.5 240.0
+table .3 goskat play 0 p 240.0 238.5 240.0
+tables + .3 3 7 xskat:1 xskat:1 goskat -1
+table .3 goskat end (;GM[Skat]PC[International Skat Server]CO[]SE[251395]ID[4913050]DT[2017-09-04/14:22:51/UTC]P0[xskat:2]P1[goskat]P2[xskat]R0[]R1[0.0]R2[]MV[w HA.C9.HK.SK.CK.D8.HJ.DA.D7.SQ.CQ.S9.S7.SJ.CT.S8.SA.H7.DK.HQ.DT.C7.D9.CJ.H9.CA.C8.HT.H8.ST.DJ.DQ 1 p 2 p 0 p ]R[passed] ;)
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 0 268 0 0 1 0 xskat:2 # 2 2 0 151 0 0 1 0 goskat . 2 2 70 160 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 7
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 0 268 0 0 1 1 xskat:2 # 2 2 0 151 0 0 1 0 goskat . 2 2 70 160 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 7
+table .3 goskat state 3 xskat xskat:2 goskat . xskat # 2 2 0 268 0 0 1 1 xskat:2 # 2 2 0 151 0 0 1 1 goskat . 2 2 70 160 0 0 1 0 . . 0 0 0 0 0 0 0 0 false 7

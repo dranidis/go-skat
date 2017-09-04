@@ -1,0 +1,4392 @@
+(xskat:2) hand: [] Bid up to: 0
+..Supported 10 in [[1;31m10[0m [1;31mK[0m [1;31m9[0m]..
+Losers: [[1;37mK[0m [1;32m9[0m [1;32m8[0m [1;31mK[0m [1;31m9[0m [1;33mD[0m], 2 jacks
+
+Considering GRAND in Hand: [[1;31mJ[0m [1;33mJ[0m [1;37mK[0m [1;32mA[0m [1;32m9[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mD[0m], Full ones: 2, Losers: 8
+Longest suit HEART, 5 cards
+Extra suits: 1
+Hand: [[1;31mJ[0m [1;33mJ[0m [1;37mK[0m [1;32mA[0m [1;32m9[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mD[0m], Estimation: 30
+Can win: SUIT
+(goskat) I will not raise more. Bid: 0, worst: 20
+HighestBid 20
+(goskat) hand: [[1;31mJ[0m [1;33mJ[0m [1;37mK[0m [1;32mA[0m [1;32m9[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mD[0m] Bid up to: 20
+(xskat) hand: [] Bid up to: 0
+
+PLAYER ORDER: xskat:2 - goskat - xskat
+
+(xskat:2) vs (goskat)
+(goskat) Bid: 18 Highest: 20
+	(goskat) 18
+	(xskat:2) Pass
+(goskat) vs (xskat)
+	(xskat) Pass 
+Declarer &{{goskat [{HEART J} {CARO J} {CLUBS K} {SPADE A} {SPADE 9} {SPADE 8} {HEART 10} {HEART K} {HEART 9} {CARO D}] 20 0 true 0  0 0 0 0} false true HEART}
+(goskat) won the bidding
+SKAT BEF: [[1;33mK[0m [1;32m10[0m]
+FULL HAND [[1;31mJ[0m [1;33mJ[0m [1;37mK[0m [1;32mA[0m [1;32m10[0m [1;32m9[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mK[0m [1;33mD[0m]
+..Supported 10 in [[1;31m10[0m [1;31mK[0m [1;31m9[0m]..
+Losers: [[1;37mK[0m [1;32m9[0m [1;32m8[0m [1;31mK[0m [1;31m9[0m [1;33mD[0m [1;33mK[0m], 2 jacks
+
+Considering GRAND in Hand: [[1;31mJ[0m [1;33mJ[0m [1;37mK[0m [1;32mA[0m [1;32m9[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mD[0m [1;33mK[0m [1;32m10[0m], Full ones: 3, Losers: 9
+
+AFTER SKAT subtracting 2 losers
+Longest suit SPADE, 6 cards
+..Supported 10 in [[1;31m10[0m [1;31mK[0m [1;31m9[0m]..Extra suits: 1
+Hand: [[1;31mJ[0m [1;33mJ[0m [1;37mK[0m [1;32mA[0m [1;32m9[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mD[0m [1;33mK[0m [1;32m10[0m], Estimation: 40
+Can win: SUIT
+HighestBid 33
+New high bid 33
+BLANK [[1;37mK[0m]
+...lessCardsSuit 9999, 104, 3, 2.....Less cards suit CARO.... TRUMP to DECLARE [SPADE]..SUIT CARO LESS [[1;33mK[0m [1;33mD[0m]
+SKAT AFT: [[1;37mK[0m [1;33mK[0m]
+(goskat) Hand [[1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32m9[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mD[0m]
+
+([1;31mgoskat[0m) TRUMP: SPADE
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;33mA[0m]
+([1;31mgoskat[0m) HAND [[1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32m9[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mD[0m] valid: [[1;33mD[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:
+DECLARER ..FORCED MOVE.. Trick: [[1;33mA[0m [1;33mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) TRICK [[1;33mA[0m [1;33mD[0m [1;33m7[0m]
+14 points: 0 - 14
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;33m10[0m]
+([1;31mgoskat[0m) HAND [[1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32m9[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m] valid: [[1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32m9[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:
+DECLARER MIDDLEHAND ..low strengrt/value trump.. Trick: [[1;33m10[0m [1;32m8[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) TRICK [[1;33m10[0m [1;32m8[0m [1;33m9[0m]
+10 points: 10 - 14
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32m9[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m] valid: [[1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32m9[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO 
+	xskat: void:
+	xskat:2: void:
+DECLARER FOREHAND ..other TRUMPS in game: [[1;37mJ[0m [1;32mJ[0m [1;32mK[0m [1;32mD[0m [1;32m7[0m]..own TRUMPS: [[1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32m9[0m]..sure winners: []..high losers: []Own trumps strength: 52, Other: 56Playing lowest
+Trick: [[1;32m9[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;32m9[0m [1;32mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;32m9[0m [1;32mJ[0m [1;32mK[0m]
+6 points: 10 - 20
+TRUMPS IN PLAY [[1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mD[0m [1;32m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;31m7[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;31m7[0m [1;31mA[0m]
+([1;31mgoskat[0m) HAND [[1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m] valid: [[1;31m10[0m [1;31mK[0m [1;31m9[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO 
+	xskat: void:
+	xskat:2: void:
+DECLARER BACKHAND Following normal suit...winners []...CHECKING the A... in trick [[1;31m7[0m [1;31mA[0m], valid [[1;31m10[0m [1;31mK[0m [1;31m9[0m], played [[1;33mA[0m [1;33mD[0m [1;33m7[0m [1;33m10[0m [1;32m8[0m [1;33m9[0m [1;32m9[0m [1;32mJ[0m [1;32mK[0m [1;31m7[0m [1;31mA[0m]..Winners: []
+LOSING Cards (last)[[1;31m10[0m [1;31mK[0m [1;31m9[0m]
+TRICK [[1;31m7[0m [1;31mA[0m [1;31m9[0m]
+11 points: 10 - 31
+TRUMPS IN PLAY [[1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mD[0m [1;32m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;37mA[0m]
+([1;31mgoskat[0m) HAND [[1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;31m10[0m [1;31mK[0m] valid: [[1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;31m10[0m [1;31mK[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO 
+	xskat: void:
+	xskat:2: void:
+DECLARER MIDDLEHAND ..low strengrt/value trump.. Trick: [[1;37mA[0m [1;33mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) TRICK [[1;37mA[0m [1;33mJ[0m [1;37m7[0m]
+13 points: 23 - 31
+TRUMPS IN PLAY [[1;37mJ[0m [1;31mJ[0m [1;32mA[0m [1;32m10[0m [1;32mD[0m [1;32m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;31mJ[0m [1;32mA[0m [1;32m10[0m [1;31m10[0m [1;31mK[0m] valid: [[1;31mJ[0m [1;32mA[0m [1;32m10[0m [1;31m10[0m [1;31mK[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CLUBS CARO 
+	xskat: void:
+	xskat:2: void:
+DECLARER FOREHAND ..other TRUMPS in game: [[1;37mJ[0m [1;32mD[0m [1;32m7[0m]..own TRUMPS: [[1;31mJ[0m [1;32mA[0m [1;32m10[0m]..sure winners: []..high losers: [[1;32mA[0m [1;32m10[0m [1;31mJ[0m]..Playing a high loser..%!d(MISSING)Trick: [[1;31mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;31mJ[0m [1;37mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;31mJ[0m [1;37mJ[0m [1;32mD[0m]
+7 points: 23 - 38
+TRUMPS IN PLAY [[1;32mA[0m [1;32m10[0m [1;32m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;31m8[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;31m8[0m [1;31mD[0m]
+([1;31mgoskat[0m) HAND [[1;32mA[0m [1;32m10[0m [1;31m10[0m [1;31mK[0m] valid: [[1;31m10[0m [1;31mK[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CLUBS CARO 
+	xskat: void:
+	xskat:2: void:
+DECLARER BACKHAND Following normal suit...winners [[1;31m10[0m [1;31mK[0m]...Returning  [1;31m10[0m...TRICK [[1;31m8[0m [1;31mD[0m [1;31m10[0m]
+13 points: 36 - 38
+TRUMPS IN PLAY [[1;32mA[0m [1;32m10[0m [1;32m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;32mA[0m [1;32m10[0m [1;31mK[0m] valid: [[1;32mA[0m [1;32m10[0m [1;31mK[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO CLUBS 
+	xskat: void:
+	xskat:2: void:
+DECLARER FOREHAND ..other TRUMPS in game: [[1;32m7[0m]..own TRUMPS: [[1;32mA[0m [1;32m10[0m]..sure winners: [[1;32mA[0m [1;32m10[0m]..high losers: []Trick: [[1;32mA[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;32mA[0m [1;32m7[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;32mA[0m [1;32m7[0m [1;33m8[0m]
+11 points: 47 - 38
+TRUMPS IN PLAY [[1;32m10[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;32m10[0m [1;31mK[0m] valid: [[1;32m10[0m [1;31mK[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CLUBS CARO 
+	xskat: void:
+	xskat:2: void:SPADE 
+DECLARER FOREHAND  Sure winner card [1;31mK[0mTrick: [[1;31mK[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;31mK[0m [1;37m8[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;31mK[0m [1;37m8[0m [1;37mD[0m]
+7 points: 54 - 38
+TRUMPS IN PLAY [[1;32m10[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;32m10[0m] valid: [[1;32m10[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CLUBS CARO 
+	xskat: void:HEART 
+	xskat:2: void:SPADE HEART 
+DECLARER ..FORCED MOVE.. Trick: [[1;32m10[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;32m10[0m [1;37m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;32m10[0m [1;37m9[0m [1;37m10[0m]
+20 points: 74 - 38
+
+SKAT: [[1;37mK[0m [1;33mK[0m]
+
+SCORING
+	SPADE, Without 2 SCORE 33
+VICTORY: 82 - 38, SCORE: 33
+..Supported 10 in [[1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m7[0m]....Supported 10 in [[1;31m10[0m [1;31mD[0m [1;31m8[0m]..
+Losers: [[1;32mK[0m [1;32m9[0m [1;37mK[0m [1;37mD[0m [1;37m7[0m [1;31mD[0m [1;31m8[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;32mK[0m [1;32m9[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m], Full ones: 2, Losers: 7
+Longest suit CLUBS, 4 cards
+..Supported 10 in [[1;31m10[0m [1;31mD[0m [1;31m8[0m]..Extra suits: 1
+Hand: [[1;32mK[0m [1;32m9[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m], Estimation: 0
+Can win: 
+(goskat) hand: [[1;32mK[0m [1;32m9[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m] Bid up to: 0
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+
+PLAYER ORDER: goskat - xskat - xskat:2
+
+(goskat) vs (xskat)
+	(xskat) 18
+(goskat) Bid: 18 Highest: 0
+	(goskat) Pass
+(xskat) vs (xskat:2)
+	(xskat:2) Pass 
+Declarer &{{xskat [] 0 0 true 0  0 0 0 0} []}
+(xskat) won the bidding
+
+([1;31mxskat[0m) TRUMP: Grand
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m]
+
+Trick: []
+(goskat) HAND [[1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m7[0m [1;32mK[0m [1;32m9[0m [1;31m10[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m] valid: [[1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m7[0m [1;32mK[0m [1;32m9[0m [1;31m10[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:
+	xskat:2: void:
+	goskat: void:
+OPPONENT..FOREHAND..No cards in previous suit ''..Declarer at MIDDLEHAND, playing LONG..not full ones if trumps in play..trumps still in play..LongestNonTrumpSuit CLUBS
+[[1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m7[0m]Trick: [[1;37mK[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;37mK[0m [1;31mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) TRICK [[1;37mK[0m [1;31mJ[0m [1;37m9[0m]
+6 points: 6 - 0
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;33mJ[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;37mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;37mJ[0m [1;32mJ[0m]
+(goskat) HAND [[1;37m10[0m [1;37mD[0m [1;37m7[0m [1;32mK[0m [1;32m9[0m [1;31m10[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m] valid: [[1;37m10[0m [1;37mD[0m [1;37m7[0m [1;32mK[0m [1;32m9[0m [1;31m10[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:CLUBS 
+	xskat:2: void:
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+Winners: []
+TRICK [[1;37mJ[0m [1;32mJ[0m [1;37m7[0m]
+4 points: 10 - 0
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;33mA[0m [1;33m7[0m]
+(goskat) HAND [[1;37m10[0m [1;37mD[0m [1;32mK[0m [1;32m9[0m [1;31m10[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m] valid: [[1;33m10[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:CLUBS 
+	xskat:2: void:
+	goskat: void:Grand 
+OPPONENT..FORCED MOVE
+TRICK [[1;33mA[0m [1;33m7[0m [1;33m10[0m]
+21 points: 31 - 0
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33mK[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;33mK[0m [1;33mD[0m]
+(goskat) HAND [[1;37m10[0m [1;37mD[0m [1;32mK[0m [1;32m9[0m [1;31m10[0m [1;31mD[0m [1;31m8[0m] valid: [[1;37m10[0m [1;37mD[0m [1;32mK[0m [1;32m9[0m [1;31m10[0m [1;31mD[0m [1;31m8[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:CLUBS 
+	xskat:2: void:
+	goskat: void:Grand 
+OPPONENT..OPP BACKHAND..
+Winners: []
+LOSING Cards (last)[[1;37m10[0m [1;31m10[0m [1;32mK[0m [1;37mD[0m [1;31mD[0m [1;31m8[0m [1;32m9[0m]
+TRICK [[1;33mK[0m [1;33mD[0m [1;32m9[0m]
+7 points: 38 - 0
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;33m9[0m [1;31m9[0m]
+(goskat) HAND [[1;37m10[0m [1;37mD[0m [1;32mK[0m [1;31m10[0m [1;31mD[0m [1;31m8[0m] valid: [[1;37m10[0m [1;37mD[0m [1;32mK[0m [1;31m10[0m [1;31mD[0m [1;31m8[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:CLUBS 
+	xskat:2: void:CARO 
+	goskat: void:CARO Grand 
+OPPONENT..OPP BACKHAND..
+Winners: []
+LOSING Cards (last)[[1;37m10[0m [1;31m10[0m [1;32mK[0m [1;37mD[0m [1;31mD[0m [1;31m8[0m]
+TRICK [[1;33m9[0m [1;31m9[0m [1;31m8[0m]
+0 points: 38 - 0
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33m8[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;33m8[0m [1;32mD[0m]
+(goskat) HAND [[1;37m10[0m [1;37mD[0m [1;32mK[0m [1;31m10[0m [1;31mD[0m] valid: [[1;37m10[0m [1;37mD[0m [1;32mK[0m [1;31m10[0m [1;31mD[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:CLUBS 
+	xskat:2: void:CARO 
+	goskat: void:Grand CARO 
+OPPONENT..OPP BACKHAND..
+Winners: []
+LOSING Cards (last)[[1;37m10[0m [1;31m10[0m [1;32mK[0m [1;37mD[0m [1;31mD[0m]
+TRICK [[1;33m8[0m [1;32mD[0m [1;31mD[0m]
+6 points: 44 - 0
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;31mA[0m [1;31mK[0m]
+(goskat) HAND [[1;37m10[0m [1;37mD[0m [1;32mK[0m [1;31m10[0m] valid: [[1;31m10[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:CLUBS 
+	xskat:2: void:CARO 
+	goskat: void:CARO Grand 
+OPPONENT..FORCED MOVE
+TRICK [[1;31mA[0m [1;31mK[0m [1;31m10[0m]
+25 points: 69 - 0
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31m7[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;31m7[0m [1;32m10[0m]
+(goskat) HAND [[1;37m10[0m [1;37mD[0m [1;32mK[0m] valid: [[1;37m10[0m [1;37mD[0m [1;32mK[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:CLUBS 
+	xskat:2: void:HEART CARO 
+	goskat: void:CARO Grand 
+OPPONENT..OPP BACKHAND..
+Winners: []
+LOSING Cards (last)[[1;37m10[0m [1;32mK[0m [1;37mD[0m]
+TRICK [[1;31m7[0m [1;32m10[0m [1;37mD[0m]
+13 points: 82 - 0
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;32m7[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;32m7[0m [1;32mA[0m]
+(goskat) HAND [[1;37m10[0m [1;32mK[0m] valid: [[1;32mK[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:CLUBS 
+	xskat:2: void:HEART CARO 
+	goskat: void:HEART CARO Grand 
+OPPONENT..FORCED MOVE
+TRICK [[1;32m7[0m [1;32mA[0m [1;32mK[0m]
+15 points: 82 - 15
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;37mA[0m]
+(goskat) HAND [[1;37m10[0m] valid: [[1;37m10[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:CLUBS 
+	xskat:2: void:HEART CARO 
+	goskat: void:HEART CARO Grand 
+OPPONENT..FORCED MOVE
+Trick: [[1;37mA[0m [1;37m10[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;37mA[0m [1;37m10[0m [1;33mJ[0m]
+23 points: 105 - 15
+
+SKAT: [ ]
+
+SCORING
+	Grand, Without 10 Schneider SCORE 288
+VICTORY: 105 - 15, SCORE: 288
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+..Supported 10 in [[1;32m10[0m [1;32mD[0m [1;32m8[0m]....Supported 10 in [[1;31m10[0m [1;31mK[0m [1;31m9[0m]..
+Losers: [[1;37m8[0m [1;32mD[0m [1;32m8[0m [1;31mK[0m [1;31m9[0m [1;33m8[0m], 1 jacks
+
+Considering GRAND in Hand: [[1;33mJ[0m [1;37m8[0m [1;32m10[0m [1;32mD[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mA[0m [1;33m8[0m], Full ones: 3, Losers: 7
+Longest suit HEART, 4 cards
+..Supported 10 in [[1;32m10[0m [1;32mD[0m [1;32m8[0m]..Extra suits: 2
+Hand: [[1;33mJ[0m [1;37m8[0m [1;32m10[0m [1;32mD[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mA[0m [1;33m8[0m], Estimation: 15
+Can win: 
+(goskat) hand: [[1;33mJ[0m [1;37m8[0m [1;32m10[0m [1;32mD[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mA[0m [1;33m8[0m] Bid up to: 0
+
+PLAYER ORDER: xskat - xskat:2 - goskat
+
+(xskat) vs (xskat:2)
+	(xskat:2) 18
+	(xskat) Yes
+	(xskat:2) Pass 
+(xskat) vs (goskat)
+(goskat) Bid: 20 Highest: 0
+	(goskat) Pass 
+Declarer &{{xskat [] 0 0 true 288  1 0 0 0} []}
+(xskat) won the bidding
+
+([1;31mxskat[0m) TRUMP: CLUBS
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m [1;37mA[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;31mJ[0m [1;37mJ[0m]
+(goskat) HAND [[1;33mJ[0m [1;37m8[0m [1;32m10[0m [1;32mD[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mA[0m [1;33m8[0m] valid: [[1;33mJ[0m [1;37m8[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:
+	xskat:2: void:
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+teammate wins..largest not-sure winnerTRICK [[1;31mJ[0m [1;37mJ[0m [1;33mJ[0m]
+6 points: 0 - 6
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mA[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;32mA[0m]
+(goskat) HAND [[1;37m8[0m [1;32m10[0m [1;32mD[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mA[0m [1;33m8[0m] valid: [[1;32m10[0m [1;32mD[0m [1;32m8[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:
+	xskat:2: void:
+	goskat: void:
+OPPONENT..MIDDLEHAND..Teammate leads [1;32mA[0m..SORT-VALUE no trumps [[1;32m10[0m [1;32mD[0m [1;32m8[0m]
+..FOLLOW [[1;32m10[0m [1;32mD[0m [1;32m8[0m]....other cards in play [[1;32mK[0m [1;32m9[0m [1;32m7[0m]..Trick: [[1;32mA[0m [1;32m10[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;32mA[0m [1;32m10[0m [1;37mA[0m]
+32 points: 32 - 6
+TRUMPS IN PLAY [[1;32mJ[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;32mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;32mJ[0m [1;37mK[0m]
+(goskat) HAND [[1;37m8[0m [1;32mD[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mA[0m [1;33m8[0m] valid: [[1;37m8[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:SPADE 
+	xskat:2: void:
+	goskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;32mJ[0m [1;37mK[0m [1;37m8[0m]
+6 points: 38 - 6
+TRUMPS IN PLAY [[1;37m10[0m [1;37mD[0m [1;37m9[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;37m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;37m9[0m [1;37m10[0m]
+(goskat) HAND [[1;32mD[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mA[0m [1;33m8[0m] valid: [[1;32mD[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33mA[0m [1;33m8[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:SPADE 
+	xskat:2: void:
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+teammate wins..largest not-sure winnerTRICK [[1;37m9[0m [1;37m10[0m [1;33mA[0m]
+21 points: 38 - 27
+TRUMPS IN PLAY [[1;37mD[0m [1;37m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;33m7[0m]
+(goskat) HAND [[1;32mD[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m [1;33m8[0m] valid: [[1;33m8[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:SPADE 
+	xskat:2: void:
+	goskat: void:CLUBS 
+OPPONENT..FORCED MOVE
+Trick: [[1;33m7[0m [1;33m8[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;33m7[0m [1;33m8[0m [1;33mD[0m]
+3 points: 41 - 27
+TRUMPS IN PLAY [[1;37mD[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33m10[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;33m10[0m [1;33mK[0m]
+(goskat) HAND [[1;32mD[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m] valid: [[1;32mD[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m [1;31m9[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:SPADE 
+	xskat:2: void:
+	goskat: void:CLUBS 
+OPPONENT..OPP BACKHAND..
+Winners: []
+LOSING Cards (last)[[1;31m10[0m [1;31mK[0m [1;32mD[0m [1;32m8[0m [1;31m9[0m]
+TRICK [[1;33m10[0m [1;33mK[0m [1;31m9[0m]
+14 points: 55 - 27
+TRUMPS IN PLAY [[1;37mD[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;33m9[0m [1;31m7[0m]
+(goskat) HAND [[1;32mD[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m] valid: [[1;32mD[0m [1;32m8[0m [1;31m10[0m [1;31mK[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:SPADE 
+	xskat:2: void:CARO 
+	goskat: void:CARO CLUBS 
+OPPONENT..OPP BACKHAND..
+Winners: []
+LOSING Cards (last)[[1;31m10[0m [1;31mK[0m [1;32mD[0m [1;32m8[0m]
+TRICK [[1;33m9[0m [1;31m7[0m [1;32m8[0m]
+0 points: 55 - 27
+TRUMPS IN PLAY [[1;37mD[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;31mA[0m [1;31m8[0m]
+(goskat) HAND [[1;32mD[0m [1;31m10[0m [1;31mK[0m] valid: [[1;31m10[0m [1;31mK[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:SPADE 
+	xskat:2: void:CARO 
+	goskat: void:CLUBS CARO 
+OPPONENT..OPP BACKHAND..
+Winners: []
+LOSING Cards (last)[[1;31m10[0m [1;31mK[0m]
+TRICK [[1;31mA[0m [1;31m8[0m [1;31mK[0m]
+15 points: 70 - 27
+TRUMPS IN PLAY [[1;37mD[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;37m7[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;37m7[0m [1;31mD[0m]
+(goskat) HAND [[1;32mD[0m [1;31m10[0m] valid: [[1;32mD[0m [1;31m10[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:SPADE 
+	xskat:2: void:CLUBS CARO 
+	goskat: void:CARO CLUBS 
+OPPONENT..OPP BACKHAND..
+Winners: []
+TRICK [[1;37m7[0m [1;31mD[0m [1;32mD[0m]
+6 points: 76 - 27
+TRUMPS IN PLAY [[1;37mD[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;37mD[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;37mD[0m [1;32m7[0m]
+(goskat) HAND [[1;31m10[0m] valid: [[1;31m10[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:SPADE 
+	xskat:2: void:CLUBS CARO 
+	goskat: void:CLUBS CARO 
+OPPONENT..FORCED MOVE
+TRICK [[1;37mD[0m [1;32m7[0m [1;31m10[0m]
+13 points: 89 - 27
+
+SKAT: [ ]
+
+SCORING
+	CLUBS, Without 10 SCORE 132
+VICTORY: 89 - 27, SCORE: 132
+(xskat:2) hand: [] Bid up to: 0
+..Supported 10 in [[1;33m10[0m [1;33mD[0m [1;33m7[0m]..
+Losers: [[1;37m7[0m [1;32m8[0m [1;31mD[0m [1;31m8[0m [1;33mD[0m [1;33m7[0m], 1 jacks
+
+Considering GRAND in Hand: [[1;32mJ[0m [1;31mJ[0m [1;37mA[0m [1;37m7[0m [1;32m8[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m [1;33mD[0m [1;33m7[0m], Full ones: 2, Losers: 7
+Longest suit CARO, 5 cards
+Extra suits: 1
+Hand: [[1;32mJ[0m [1;31mJ[0m [1;37mA[0m [1;37m7[0m [1;32m8[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m [1;33mD[0m [1;33m7[0m], Estimation: 30
+Can win: SUIT
+HighestBid 18
+(goskat) hand: [[1;32mJ[0m [1;31mJ[0m [1;37mA[0m [1;37m7[0m [1;32m8[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m [1;33mD[0m [1;33m7[0m] Bid up to: 18
+(xskat) hand: [] Bid up to: 0
+
+PLAYER ORDER: xskat:2 - goskat - xskat
+
+(xskat:2) vs (goskat)
+(goskat) Bid: 18 Highest: 18
+	(goskat) 18
+	(xskat:2) Yes
+(goskat) Bid: 20 Highest: 18
+	(goskat) Pass 
+(xskat:2) vs (xskat)
+	(xskat) Pass 
+Declarer &{{xskat:2 [] 0 0 true 0  0 0 0 0} []}
+(xskat:2) won the bidding
+
+([1;31mxskat:2[0m) TRUMP: Grand
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37mJ[0m]
+(goskat) HAND [[1;32mJ[0m [1;31mJ[0m [1;37mA[0m [1;37m7[0m [1;32m8[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m [1;33mD[0m [1;33m7[0m] valid: [[1;32mJ[0m [1;31mJ[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;37mJ[0m..Winners: []
+Trick: [[1;37mJ[0m [1;31mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;37mJ[0m [1;31mJ[0m [1;32m7[0m]
+4 points: 4 - 0
+TRUMPS IN PLAY [[1;32mJ[0m [1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33mA[0m]
+(goskat) HAND [[1;32mJ[0m [1;37mA[0m [1;37m7[0m [1;32m8[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m [1;33mD[0m [1;33m7[0m] valid: [[1;33m10[0m [1;33mD[0m [1;33m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:Grand 
+OPPONENT..MIDDLEHAND..Declarer leads [1;33mA[0m..Winners: []
+LOSING Cards (last)[[1;33m10[0m [1;33mD[0m [1;33m7[0m]
+Trick: [[1;33mA[0m [1;33m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33mA[0m [1;33m7[0m [1;33m8[0m]
+11 points: 15 - 0
+TRUMPS IN PLAY [[1;32mJ[0m [1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31mA[0m]
+(goskat) HAND [[1;32mJ[0m [1;37mA[0m [1;37m7[0m [1;32m8[0m [1;31mD[0m [1;31m8[0m [1;33m10[0m [1;33mD[0m] valid: [[1;31mD[0m [1;31m8[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:Grand 
+OPPONENT..MIDDLEHAND..Declarer leads [1;31mA[0m..Winners: []
+LOSING Cards (last)[[1;31mD[0m [1;31m8[0m]
+Trick: [[1;31mA[0m [1;31m8[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31mA[0m [1;31m8[0m [1;31m10[0m]
+21 points: 36 - 0
+TRUMPS IN PLAY [[1;32mJ[0m [1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31mK[0m]
+(goskat) HAND [[1;32mJ[0m [1;37mA[0m [1;37m7[0m [1;32m8[0m [1;31mD[0m [1;33m10[0m [1;33mD[0m] valid: [[1;31mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:Grand 
+OPPONENT..FORCED MOVE
+Trick: [[1;31mK[0m [1;31mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31mK[0m [1;31mD[0m [1;33m9[0m]
+7 points: 43 - 0
+TRUMPS IN PLAY [[1;32mJ[0m [1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31m7[0m]
+(goskat) HAND [[1;32mJ[0m [1;37mA[0m [1;37m7[0m [1;32m8[0m [1;33m10[0m [1;33mD[0m] valid: [[1;32mJ[0m [1;37mA[0m [1;37m7[0m [1;32m8[0m [1;33m10[0m [1;33mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:Grand HEART 
+OPPONENT..MIDDLEHAND..Declarer leads [1;31m7[0m..Winners: [[1;32mJ[0m]
+Trick: [[1;31m7[0m [1;32mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31m7[0m [1;32mJ[0m [1;32m10[0m]
+12 points: 43 - 12
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+(goskat) HAND [[1;37mA[0m [1;37m7[0m [1;32m8[0m [1;33m10[0m [1;33mD[0m] valid: [[1;37mA[0m [1;37m7[0m [1;32m8[0m [1;33m10[0m [1;33mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:HEART 
+	xskat: void:HEART Grand 
+OPPONENT..FOREHAND..No cards in previous suit ''..Declarer at BACKHAND, playing SHORT..Avoiding 2 numbers and D-number suits..ShortestNonTrumpSuit SPADE
+HighestShort not full [[1;32m8[0m]....Checking cards [[1;37mA[0m [1;37m7[0m [1;32m8[0m [1;33m10[0m [1;33mD[0m] for 2 number suit SPADE....Checking cards [[1;37mA[0m [1;37m7[0m [1;32m8[0m [1;33m10[0m [1;33mD[0m] for D number suit SPADE..Candidates [[1;32m8[0m], returning last..Trick: [[1;32m8[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:SPADE, xskat:
+(xskat) Trick: [[1;32m8[0m [1;32mD[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) TRICK [[1;32m8[0m [1;32mD[0m [1;32mA[0m]
+14 points: 57 - 12
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31m9[0m]
+(goskat) HAND [[1;37mA[0m [1;37m7[0m [1;33m10[0m [1;33mD[0m] valid: [[1;37mA[0m [1;37m7[0m [1;33m10[0m [1;33mD[0m]
+	Previous suit: goskat:SPADE, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:HEART 
+	xskat: void:HEART Grand 
+OPPONENT..MIDDLEHAND..Declarer leads [1;31m9[0m..Winners: []
+LOSING Cards (last)[[1;37mA[0m [1;33m10[0m [1;33mD[0m [1;37m7[0m]
+Trick: [[1;31m9[0m [1;37m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:SPADE, xskat:
+(xskat) TRICK [[1;31m9[0m [1;37m7[0m [1;37m9[0m]
+0 points: 57 - 12
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mK[0m]
+(goskat) HAND [[1;37mA[0m [1;33m10[0m [1;33mD[0m] valid: [[1;37mA[0m [1;33m10[0m [1;33mD[0m]
+	Previous suit: goskat:SPADE, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:HEART 
+	xskat: void:Grand HEART 
+OPPONENT..MIDDLEHAND..Declarer leads [1;32mK[0m..Winners: []
+LOSING Cards (last)[[1;37mA[0m [1;33m10[0m [1;33mD[0m]
+Trick: [[1;32mK[0m [1;33mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:SPADE, xskat:
+(xskat) TRICK [[1;32mK[0m [1;33mD[0m [1;37mD[0m]
+10 points: 67 - 12
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m9[0m]
+(goskat) HAND [[1;37mA[0m [1;33m10[0m] valid: [[1;37mA[0m [1;33m10[0m]
+	Previous suit: goskat:SPADE, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:SPADE HEART 
+	xskat: void:SPADE HEART Grand 
+OPPONENT..MIDDLEHAND..Declarer leads [1;32m9[0m..Winners: []
+LOSING Cards (last)[[1;37mA[0m [1;33m10[0m]
+Trick: [[1;32m9[0m [1;33m10[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:SPADE, xskat:
+(xskat) TRICK [[1;32m9[0m [1;33m10[0m [1;37mK[0m]
+14 points: 81 - 12
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33mJ[0m]
+(goskat) HAND [[1;37mA[0m] valid: [[1;37mA[0m]
+	Previous suit: goskat:SPADE, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:SPADE HEART 
+	xskat: void:HEART Grand SPADE 
+OPPONENT..FORCED MOVE
+Trick: [[1;33mJ[0m [1;37mA[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:SPADE, xskat:
+(xskat) TRICK [[1;33mJ[0m [1;37mA[0m [1;37m10[0m]
+23 points: 104 - 12
+
+SKAT: [ ]
+
+SCORING
+	Grand, Without 10 Schneider SCORE 288
+VICTORY: 104 - 12, SCORE: 288
+
+Losers: [[1;37m8[0m [1;31mK[0m [1;31m8[0m [1;33mK[0m [1;33mD[0m [1;33m7[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;37mJ[0m [1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32m10[0m [1;31mK[0m [1;31m8[0m [1;33mK[0m [1;33mD[0m [1;33m7[0m], Full ones: 3, Losers: 6
+Longest suit CARO, 4 cards
+Extra suits: 3
+Hand: [[1;37mJ[0m [1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32m10[0m [1;31mK[0m [1;31m8[0m [1;33mK[0m [1;33mD[0m [1;33m7[0m], Estimation: 40
+Can win: 
+(goskat) hand: [[1;37mJ[0m [1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32m10[0m [1;31mK[0m [1;31m8[0m [1;33mK[0m [1;33mD[0m [1;33m7[0m] Bid up to: 0
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+
+PLAYER ORDER: goskat - xskat - xskat:2
+
+(goskat) vs (xskat)
+	(xskat) 18
+(goskat) Bid: 18 Highest: 0
+	(goskat) Pass
+(xskat) vs (xskat:2)
+	(xskat:2) Pass 
+Declarer &{{xskat [] 0 0 true 420  2 0 0 0} []}
+(xskat) won the bidding
+
+([1;31mxskat[0m) TRUMP: CLUBS
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m [1;37mA[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+(goskat) HAND [[1;37mJ[0m [1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32m10[0m [1;31mK[0m [1;31m8[0m [1;33mK[0m [1;33mD[0m [1;33m7[0m] valid: [[1;37mJ[0m [1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32m10[0m [1;31mK[0m [1;31m8[0m [1;33mK[0m [1;33mD[0m [1;33m7[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:
+	xskat:2: void:
+	goskat: void:
+OPPONENT..FOREHAND..No cards in previous suit ''..Declarer at MIDDLEHAND, playing LONG..not full ones if trumps in play..trumps still in play..LongestNonTrumpSuit CARO
+[[1;33mK[0m [1;33mD[0m [1;33m7[0m]Trick: [[1;33mK[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33mK[0m [1;37mD[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CARO
+(xskat:2) TRICK [[1;33mK[0m [1;37mD[0m [1;33m9[0m]
+7 points: 7 - 0
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m [1;37mA[0m [1;37m10[0m [1;37mK[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CARO
+(xskat:2) Trick: [[1;31mJ[0m [1;37mK[0m]
+(goskat) HAND [[1;37mJ[0m [1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32m10[0m [1;31mK[0m [1;31m8[0m [1;33mD[0m [1;33m7[0m] valid: [[1;37mJ[0m [1;37mA[0m [1;37m8[0m]
+	Previous suit: xskat:2:, goskat:CARO
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+Winners: [[1;37mJ[0m]
+TRICK [[1;31mJ[0m [1;37mK[0m [1;37mJ[0m]
+8 points: 7 - 8
+TRUMPS IN PLAY [[1;32mJ[0m [1;33mJ[0m [1;37mA[0m [1;37m10[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+(goskat) HAND [[1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32m10[0m [1;31mK[0m [1;31m8[0m [1;33mD[0m [1;33m7[0m] valid: [[1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32m10[0m [1;31mK[0m [1;31m8[0m [1;33mD[0m [1;33m7[0m]
+	Previous suit: xskat:2:, goskat:CARO
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:
+	goskat: void:
+OPPONENT..FOREHAND..Following previous suit....Declarer void, will trumpTrick: [[1;33m7[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33m7[0m [1;37m7[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CARO
+(xskat:2) TRICK [[1;33m7[0m [1;37m7[0m [1;33mA[0m]
+11 points: 18 - 8
+TRUMPS IN PLAY [[1;32mJ[0m [1;33mJ[0m [1;37mA[0m [1;37m10[0m [1;37m9[0m [1;37m8[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CARO
+(xskat:2) Trick: [[1;33mJ[0m [1;37m10[0m]
+(goskat) HAND [[1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32m10[0m [1;31mK[0m [1;31m8[0m [1;33mD[0m] valid: [[1;37mA[0m [1;37m8[0m]
+	Previous suit: xskat:2:, goskat:CARO
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+Winners: []
+TRICK [[1;33mJ[0m [1;37m10[0m [1;37m8[0m]
+12 points: 30 - 8
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mA[0m [1;37m9[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;32mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CARO
+(xskat:2) Trick: [[1;32mJ[0m [1;31m7[0m]
+(goskat) HAND [[1;37mA[0m [1;32mA[0m [1;32m10[0m [1;31mK[0m [1;31m8[0m [1;33mD[0m] valid: [[1;37mA[0m]
+	Previous suit: xskat:2:, goskat:CARO
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:CLUBS 
+	goskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;32mJ[0m [1;31m7[0m [1;37mA[0m]
+13 points: 43 - 8
+TRUMPS IN PLAY [[1;37m9[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CARO
+(xskat:2) Trick: [[1;31mA[0m [1;31m9[0m]
+(goskat) HAND [[1;32mA[0m [1;32m10[0m [1;31mK[0m [1;31m8[0m [1;33mD[0m] valid: [[1;31mK[0m [1;31m8[0m]
+	Previous suit: xskat:2:, goskat:CARO
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:CLUBS 
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+Winners: []
+LOSING Cards (last)[[1;31mK[0m [1;31m8[0m]
+TRICK [[1;31mA[0m [1;31m9[0m [1;31m8[0m]
+11 points: 54 - 8
+TRUMPS IN PLAY [[1;37m9[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31m10[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CARO
+(xskat:2) Trick: [[1;31m10[0m [1;31mD[0m]
+(goskat) HAND [[1;32mA[0m [1;32m10[0m [1;31mK[0m [1;33mD[0m] valid: [[1;31mK[0m]
+	Previous suit: xskat:2:, goskat:CARO
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:CLUBS 
+	goskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;31m10[0m [1;31mD[0m [1;31mK[0m]
+17 points: 71 - 8
+TRUMPS IN PLAY [[1;37m9[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;32m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CARO
+(xskat:2) Trick: [[1;32m9[0m [1;32mK[0m]
+(goskat) HAND [[1;32mA[0m [1;32m10[0m [1;33mD[0m] valid: [[1;32mA[0m [1;32m10[0m]
+	Previous suit: xskat:2:, goskat:CARO
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:CLUBS 
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+bring player at MIDDLEhand..TRICK [[1;32m9[0m [1;32mK[0m [1;32mA[0m]
+15 points: 71 - 23
+TRUMPS IN PLAY [[1;37m9[0m]
+
+Trick: []
+(goskat) HAND [[1;32m10[0m [1;33mD[0m] valid: [[1;32m10[0m [1;33mD[0m]
+	Previous suit: xskat:2:, goskat:CARO
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:CLUBS 
+	goskat: void:
+OPPONENT..FOREHAND..Following previous suit....Declarer void, will trumpTrick: [[1;33mD[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33mD[0m [1;37m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CARO
+(xskat:2) TRICK [[1;33mD[0m [1;37m9[0m [1;32m7[0m]
+3 points: 74 - 23
+TRUMPS IN PLAY []
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;32mD[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CARO
+(xskat:2) Trick: [[1;32mD[0m [1;32m8[0m]
+(goskat) HAND [[1;32m10[0m] valid: [[1;32m10[0m]
+	Previous suit: xskat:2:, goskat:CARO
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:CLUBS CARO 
+	goskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;32mD[0m [1;32m8[0m [1;32m10[0m]
+13 points: 74 - 36
+
+SKAT: [ ]
+
+SCORING
+	CLUBS, Without 10 SCORE 132
+VICTORY: 74 - 36, SCORE: 132
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+
+Losers: [[1;37mK[0m [1;37mD[0m [1;37m8[0m [1;32mK[0m [1;32m8[0m [1;31m7[0m [1;33mD[0m], 1 jacks
+
+Considering GRAND in Hand: [[1;32mJ[0m [1;37mK[0m [1;37mD[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32m8[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m], Full ones: 2, Losers: 8
+Longest suit CLUBS, 4 cards
+Extra suits: 2
+Hand: [[1;32mJ[0m [1;37mK[0m [1;37mD[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32m8[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m], Estimation: 25
+Can win: 
+(goskat) hand: [[1;32mJ[0m [1;37mK[0m [1;37mD[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32m8[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m] Bid up to: 0
+
+PLAYER ORDER: xskat - xskat:2 - goskat
+
+(xskat) vs (xskat:2)
+	(xskat:2) Pass 
+(xskat) vs (goskat)
+(goskat) Bid: 18 Highest: 0
+	(goskat) Pass 
+	(xskat) Yes 18
+Declarer &{{xskat [] 0 0 true 552  3 0 0 0} []}
+(xskat) won the bidding
+
+([1;31mxskat[0m) TRUMP: CARO
+TRUMPS IN PLAY [[1;33mJ[0m [1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mA[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;37mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;37mJ[0m [1;33mJ[0m]
+(goskat) HAND [[1;32mJ[0m [1;33mA[0m [1;33mD[0m [1;37mK[0m [1;37mD[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32m8[0m [1;31m7[0m] valid: [[1;32mJ[0m [1;33mA[0m [1;33mD[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:
+	xskat:2: void:
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+Winners: []
+TRICK [[1;37mJ[0m [1;33mJ[0m [1;33mD[0m]
+7 points: 7 - 0
+TRUMPS IN PLAY [[1;32mJ[0m [1;31mJ[0m [1;33mA[0m [1;33m10[0m [1;33mK[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;31mJ[0m [1;31m10[0m]
+(goskat) HAND [[1;32mJ[0m [1;33mA[0m [1;37mK[0m [1;37mD[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32m8[0m [1;31m7[0m] valid: [[1;32mJ[0m [1;33mA[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:
+	xskat:2: void:CARO 
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+Winners: [[1;32mJ[0m]
+TRICK [[1;31mJ[0m [1;31m10[0m [1;32mJ[0m]
+14 points: 7 - 14
+TRUMPS IN PLAY [[1;33mA[0m [1;33m10[0m [1;33mK[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+(goskat) HAND [[1;33mA[0m [1;37mK[0m [1;37mD[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32m8[0m [1;31m7[0m] valid: [[1;33mA[0m [1;37mK[0m [1;37mD[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32m8[0m [1;31m7[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:
+	xskat:2: void:CARO 
+	goskat: void:
+OPPONENT..FOREHAND..No cards in previous suit ''..Declarer at MIDDLEHAND, playing LONG..not full ones if trumps in play..trumps still in play..LongestNonTrumpSuit CLUBS
+[[1;37mK[0m [1;37mD[0m [1;37m8[0m]Trick: [[1;37mK[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;37mK[0m [1;37m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) TRICK [[1;37mK[0m [1;37m9[0m [1;37mA[0m]
+15 points: 7 - 29
+TRUMPS IN PLAY [[1;33mA[0m [1;33m10[0m [1;33mK[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;31mA[0m]
+(goskat) HAND [[1;33mA[0m [1;37mD[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32m8[0m [1;31m7[0m] valid: [[1;31m7[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:
+	xskat:2: void:CARO 
+	goskat: void:
+OPPONENT..FORCED MOVE
+Trick: [[1;31mA[0m [1;31m7[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;31mA[0m [1;31m7[0m [1;31mD[0m]
+14 points: 7 - 43
+TRUMPS IN PLAY [[1;33mA[0m [1;33m10[0m [1;33mK[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;32m7[0m]
+(goskat) HAND [[1;33mA[0m [1;37mD[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32m8[0m] valid: [[1;32mA[0m [1;32mK[0m [1;32m8[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:
+	xskat:2: void:CARO 
+	goskat: void:
+OPPONENT..MIDDLEHAND..Teammate leads [1;32m7[0m..SORT-VALUE no trumps [[1;32mA[0m [1;32mK[0m [1;32m8[0m]
+..FOLLOW [[1;32mA[0m [1;32mK[0m [1;32m8[0m]....other cards in play [[1;32m10[0m [1;32mD[0m [1;32m9[0m]..Trick: [[1;32m7[0m [1;32mA[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;32m7[0m [1;32mA[0m [1;33m10[0m]
+21 points: 28 - 43
+TRUMPS IN PLAY [[1;33mA[0m [1;33mK[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;33m9[0m [1;32mD[0m]
+(goskat) HAND [[1;33mA[0m [1;37mD[0m [1;37m8[0m [1;32mK[0m [1;32m8[0m] valid: [[1;33mA[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:SPADE 
+	xskat:2: void:CARO 
+	goskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;33m9[0m [1;32mD[0m [1;33mA[0m]
+14 points: 28 - 57
+TRUMPS IN PLAY [[1;33mK[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+(goskat) HAND [[1;37mD[0m [1;37m8[0m [1;32mK[0m [1;32m8[0m] valid: [[1;37mD[0m [1;37m8[0m [1;32mK[0m [1;32m8[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:SPADE 
+	xskat:2: void:CARO 
+	goskat: void:
+OPPONENT..FOREHAND..Following previous suit..Trick: [[1;37mD[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;37mD[0m [1;33mK[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) TRICK [[1;37mD[0m [1;33mK[0m [1;37m7[0m]
+7 points: 35 - 57
+TRUMPS IN PLAY [[1;33m8[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31mK[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;31mK[0m [1;31m8[0m]
+(goskat) HAND [[1;37m8[0m [1;32mK[0m [1;32m8[0m] valid: [[1;37m8[0m [1;32mK[0m [1;32m8[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:CLUBS SPADE 
+	xskat:2: void:CARO 
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+Winners: []
+LOSING Cards (last)[[1;32mK[0m [1;37m8[0m [1;32m8[0m]
+TRICK [[1;31mK[0m [1;31m8[0m [1;32m8[0m]
+4 points: 39 - 57
+TRUMPS IN PLAY [[1;33m8[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33m7[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;33m7[0m [1;31m9[0m]
+(goskat) HAND [[1;37m8[0m [1;32mK[0m] valid: [[1;37m8[0m [1;32mK[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:CLUBS SPADE 
+	xskat:2: void:CARO 
+	goskat: void:HEART 
+OPPONENT..OPP BACKHAND..
+Winners: []
+TRICK [[1;33m7[0m [1;31m9[0m [1;37m8[0m]
+0 points: 39 - 57
+TRUMPS IN PLAY [[1;33m8[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33m8[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;33m8[0m [1;32m9[0m]
+(goskat) HAND [[1;32mK[0m] valid: [[1;32mK[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:CLUBS SPADE 
+	xskat:2: void:CARO 
+	goskat: void:HEART CARO 
+OPPONENT..FORCED MOVE
+TRICK [[1;33m8[0m [1;32m9[0m [1;32mK[0m]
+4 points: 43 - 57
+
+SKAT: [ ]
+
+SCORING
+	CARO, Without 10 SCORE -198
+DEFEAT: 43 - 57, SCORE: -198
+(xskat:2) hand: [] Bid up to: 0
+
+Losers: [[1;33mD[0m [1;33m7[0m [1;37m8[0m [1;32mK[0m [1;32mD[0m [1;31mD[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;37mJ[0m [1;32mJ[0m [1;33mD[0m [1;33m7[0m [1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m [1;31mD[0m], Full ones: 2, Losers: 6
+Longest suit SPADE, 5 cards
+Extra suits: 1
+Hand: [[1;37mJ[0m [1;32mJ[0m [1;33mD[0m [1;33m7[0m [1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m [1;31mD[0m], Estimation: 50
+Can win: SUIT
+HighestBid 33
+(goskat) hand: [[1;37mJ[0m [1;32mJ[0m [1;33mD[0m [1;33m7[0m [1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m [1;31mD[0m] Bid up to: 33
+(xskat) hand: [] Bid up to: 0
+
+PLAYER ORDER: xskat:2 - goskat - xskat
+
+(xskat:2) vs (goskat)
+(goskat) Bid: 18 Highest: 33
+	(goskat) 18
+	(xskat:2) Pass
+(goskat) vs (xskat)
+	(xskat) Pass 
+Declarer &{{goskat [{CLUBS J} {SPADE J} {CARO D} {CARO 7} {CLUBS A} {CLUBS 8} {SPADE A} {SPADE K} {SPADE D} {HEART D}] 33 0 true 33  1 0 1 0} false true SPADE}
+(goskat) won the bidding
+SKAT BEF: [[1;31m10[0m [1;37m7[0m]
+FULL HAND [[1;37mJ[0m [1;32mJ[0m [1;33mD[0m [1;33m7[0m [1;37mA[0m [1;37m8[0m [1;37m7[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m [1;31m10[0m [1;31mD[0m]
+
+Losers: [[1;33mD[0m [1;33m7[0m [1;37m8[0m [1;37m7[0m [1;32mK[0m [1;32mD[0m [1;31mD[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;37mJ[0m [1;32mJ[0m [1;33mD[0m [1;33m7[0m [1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m [1;31mD[0m [1;31m10[0m [1;37m7[0m], Full ones: 2, Losers: 7
+
+AFTER SKAT subtracting 2 losers
+Longest suit SPADE, 5 cards
+Extra suits: 1
+Hand: [[1;37mJ[0m [1;32mJ[0m [1;33mD[0m [1;33m7[0m [1;37mA[0m [1;37m8[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m [1;31mD[0m [1;31m10[0m [1;37m7[0m], Estimation: 50
+Can win: SUIT
+HighestBid 33
+New high bid 33
+BLANK []
+...lessCardsSuit 103, 103, 2, 2.....Less cards suit CARO.... TRUMP to DECLARE [SPADE]..SUIT CARO LESS [[1;33mD[0m [1;33m7[0m]
+SKAT AFT: [[1;33mD[0m [1;33m7[0m]
+(goskat) Hand [[1;37mJ[0m [1;32mJ[0m [1;37mA[0m [1;37m8[0m [1;37m7[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m [1;31m10[0m [1;31mD[0m]
+
+([1;31mgoskat[0m) TRUMP: SPADE
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;33m8[0m]
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;32mJ[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m [1;37mA[0m [1;37m8[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m] valid: [[1;37mJ[0m [1;32mJ[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m [1;37mA[0m [1;37m8[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:
+DECLARER MIDDLEHAND zero value..sortedValueNoTrumps last [[1;37mA[0m [1;31m10[0m [1;31mD[0m [1;37m7[0m [1;37m8[0m]..throwing off number (not in AKX)..Trick: [[1;33m8[0m [1;37m8[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) TRICK [[1;33m8[0m [1;37m8[0m [1;33mA[0m]
+11 points: 0 - 11
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;33m10[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;33m10[0m [1;33m9[0m]
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;32mJ[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m [1;37mA[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m] valid: [[1;37mJ[0m [1;32mJ[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m [1;37mA[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO 
+	xskat: void:
+	xskat:2: void:
+DECLARER BACKHAND TRUMP OR No cards of suit played...CHECKING the A... in trick [[1;33m10[0m [1;33m9[0m], valid [[1;37mJ[0m [1;32mJ[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m [1;37mA[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m], played [[1;33m8[0m [1;37m8[0m [1;33mA[0m [1;33m10[0m [1;33m9[0m]..Winners: [[1;37mJ[0m [1;32mJ[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m]
+TRICK [[1;33m10[0m [1;33m9[0m [1;32mA[0m]
+21 points: 21 - 11
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;32mJ[0m [1;32mK[0m [1;32mD[0m [1;37mA[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m] valid: [[1;37mJ[0m [1;32mJ[0m [1;32mK[0m [1;32mD[0m [1;37mA[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO 
+	xskat: void:
+	xskat:2: void:
+DECLARER FOREHAND ..other TRUMPS in game: [[1;32m10[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m [1;31mJ[0m [1;33mJ[0m]..own TRUMPS: [[1;32mJ[0m [1;37mJ[0m [1;32mK[0m [1;32mD[0m]..sure winners: [[1;37mJ[0m [1;32mJ[0m]..high losers: []..more than one sure winner..Trick: [[1;32mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;32mJ[0m [1;32m8[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;32mJ[0m [1;32m8[0m [1;32m7[0m]
+2 points: 23 - 11
+TRUMPS IN PLAY [[1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;32mK[0m [1;32mD[0m [1;37mA[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m] valid: [[1;37mJ[0m [1;32mK[0m [1;32mD[0m [1;37mA[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO 
+	xskat: void:
+	xskat:2: void:
+DECLARER FOREHAND ..other TRUMPS in game: [[1;32m10[0m [1;32m9[0m [1;31mJ[0m [1;33mJ[0m]..own TRUMPS: [[1;37mJ[0m [1;32mK[0m [1;32mD[0m]..sure winners: [[1;37mJ[0m]..high losers: []Not enough trumps.  Playing suits..SUITS : [[1;37mA[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m]...Trick: [[1;37mA[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;37mA[0m [1;37m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;37mA[0m [1;37m9[0m [1;37mD[0m]
+14 points: 37 - 11
+TRUMPS IN PLAY [[1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;32mK[0m [1;32mD[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m] valid: [[1;37mJ[0m [1;32mK[0m [1;32mD[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO 
+	xskat: void:
+	xskat:2: void:
+DECLARER FOREHAND ..other TRUMPS in game: [[1;32m10[0m [1;32m9[0m [1;31mJ[0m [1;33mJ[0m]..own TRUMPS: [[1;37mJ[0m [1;32mK[0m [1;32mD[0m]..sure winners: [[1;37mJ[0m]..high losers: []Not enough trumps.  Playing suits..SUITS : [[1;37m7[0m [1;31m10[0m [1;31mD[0m]...Trick: [[1;37m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;37m7[0m [1;37m10[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;37m7[0m [1;37m10[0m [1;37mK[0m]
+14 points: 37 - 25
+TRUMPS IN PLAY [[1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;33mK[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;33mK[0m [1;32m10[0m]
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;32mK[0m [1;32mD[0m [1;31m10[0m [1;31mD[0m] valid: [[1;37mJ[0m [1;32mK[0m [1;32mD[0m [1;31m10[0m [1;31mD[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO 
+	xskat: void:
+	xskat:2: void:CARO 
+DECLARER BACKHAND TRUMP OR No cards of suit played...CHECKING the A... in trick [[1;33mK[0m [1;32m10[0m], valid [[1;37mJ[0m [1;32mK[0m [1;32mD[0m [1;31m10[0m [1;31mD[0m], played [[1;33m8[0m [1;37m8[0m [1;33mA[0m [1;33m10[0m [1;33m9[0m [1;32mA[0m [1;32mJ[0m [1;32m8[0m [1;32m7[0m [1;37mA[0m [1;37m9[0m [1;37mD[0m [1;37m7[0m [1;37m10[0m [1;37mK[0m [1;33mK[0m [1;32m10[0m]..Winners: [[1;37mJ[0m]
+TRICK [[1;33mK[0m [1;32m10[0m [1;37mJ[0m]
+16 points: 53 - 25
+TRUMPS IN PLAY [[1;31mJ[0m [1;33mJ[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;32mK[0m [1;32mD[0m [1;31m10[0m [1;31mD[0m] valid: [[1;32mK[0m [1;32mD[0m [1;31m10[0m [1;31mD[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO 
+	xskat: void:
+	xskat:2: void:CARO 
+DECLARER FOREHAND ..other TRUMPS in game: [[1;32m9[0m [1;31mJ[0m [1;33mJ[0m]..own TRUMPS: [[1;32mK[0m [1;32mD[0m]..sure winners: []..high losers: []Not enough trumps.  Playing suits..SUITS : [[1;31m10[0m [1;31mD[0m]...Trick: [[1;31mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;31mD[0m [1;31mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;31mD[0m [1;31mA[0m [1;31m8[0m]
+14 points: 53 - 39
+TRUMPS IN PLAY [[1;31mJ[0m [1;33mJ[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;31m7[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;31m7[0m [1;31m9[0m]
+([1;31mgoskat[0m) HAND [[1;32mK[0m [1;32mD[0m [1;31m10[0m] valid: [[1;31m10[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO 
+	xskat: void:
+	xskat:2: void:CARO 
+DECLARER ..FORCED MOVE.. TRICK [[1;31m7[0m [1;31m9[0m [1;31m10[0m]
+10 points: 63 - 39
+TRUMPS IN PLAY [[1;31mJ[0m [1;33mJ[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;32mK[0m [1;32mD[0m] valid: [[1;32mK[0m [1;32mD[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO 
+	xskat: void:
+	xskat:2: void:CARO 
+DECLARER FOREHAND ..other TRUMPS in game: [[1;32m9[0m [1;31mJ[0m [1;33mJ[0m]..own TRUMPS: [[1;32mK[0m [1;32mD[0m]..sure winners: []..high losers: []Not enough trumps.  Playing suits..SUITS : []...Trick: [[1;32mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;32mD[0m [1;32m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;32mD[0m [1;32m9[0m [1;33mJ[0m]
+5 points: 63 - 44
+TRUMPS IN PLAY [[1;31mJ[0m [1;32mK[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;31mJ[0m]
+([1;31mgoskat[0m) HAND [[1;32mK[0m] valid: [[1;32mK[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO 
+	xskat: void:
+	xskat:2: void:CARO 
+DECLARER ..FORCED MOVE.. Trick: [[1;31mJ[0m [1;32mK[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) TRICK [[1;31mJ[0m [1;32mK[0m [1;31mK[0m]
+10 points: 63 - 54
+
+SKAT: [[1;33mD[0m [1;33m7[0m]
+
+SCORING
+	SPADE, With 2 SCORE 33
+VICTORY: 66 - 54, SCORE: 33
+
+Losers: [[1;32m9[0m [1;32m7[0m [1;37mD[0m [1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m], 1 jacks
+
+Considering GRAND in Hand: [[1;33mJ[0m [1;32m9[0m [1;32m7[0m [1;37mD[0m [1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m], Full ones: 0, Losers: 10
+Longest suit CARO, 5 cards
+Extra suits: 0
+Hand: [[1;33mJ[0m [1;32m9[0m [1;32m7[0m [1;37mD[0m [1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m], Estimation: 5
+Can win: 
+(goskat) hand: [[1;33mJ[0m [1;32m9[0m [1;32m7[0m [1;37mD[0m [1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m] Bid up to: 0
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+
+PLAYER ORDER: goskat - xskat - xskat:2
+
+(goskat) vs (xskat)
+	(xskat) 18
+(goskat) Bid: 18 Highest: 0
+	(goskat) Pass
+(xskat) vs (xskat:2)
+	(xskat:2) 20
+	(xskat) Pass
+Declarer &{{xskat:2 [] 0 0 true 288  1 0 1 0} []}
+(xskat:2) won the bidding
+
+([1;31mxskat:2[0m) TRUMP: SPADE
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+(goskat) HAND [[1;33mJ[0m [1;32m9[0m [1;32m7[0m [1;37mD[0m [1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m] valid: [[1;33mJ[0m [1;32m9[0m [1;32m7[0m [1;37mD[0m [1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..FOREHAND..No cards in previous suit ''..Declarer at BACKHAND, playing SHORT..Avoiding 2 numbers and D-number suits..ShortestNonTrumpSuit CLUBS
+HighestShort not full [[1;37mD[0m]....Checking cards [[1;37mD[0m [1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m] for 2 number suit CLUBS....Checking cards [[1;37mD[0m [1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m] for D number suit CLUBS..Candidates [[1;37mD[0m], returning last..Trick: [[1;37mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CLUBS, xskat:
+(xskat) Trick: [[1;37mD[0m [1;37m9[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) TRICK [[1;37mD[0m [1;37m9[0m [1;37mA[0m]
+14 points: 14 - 0
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37mJ[0m]
+(goskat) HAND [[1;33mJ[0m [1;32m9[0m [1;32m7[0m [1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m] valid: [[1;33mJ[0m [1;32m9[0m [1;32m7[0m]
+	Previous suit: goskat:CLUBS, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;37mJ[0m..Winners: []
+Trick: [[1;37mJ[0m [1;32m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CLUBS, xskat:
+(xskat) TRICK [[1;37mJ[0m [1;32m7[0m [1;32mJ[0m]
+4 points: 18 - 0
+TRUMPS IN PLAY [[1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31mJ[0m]
+(goskat) HAND [[1;33mJ[0m [1;32m9[0m [1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m] valid: [[1;33mJ[0m [1;32m9[0m]
+	Previous suit: goskat:CLUBS, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;31mJ[0m..Winners: []
+Trick: [[1;31mJ[0m [1;32m9[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CLUBS, xskat:
+(xskat) TRICK [[1;31mJ[0m [1;32m9[0m [1;32m10[0m]
+12 points: 30 - 0
+TRUMPS IN PLAY [[1;33mJ[0m [1;32mA[0m [1;32mK[0m [1;32mD[0m [1;32m8[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m8[0m]
+(goskat) HAND [[1;33mJ[0m [1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m] valid: [[1;33mJ[0m]
+	Previous suit: goskat:CLUBS, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..FORCED MOVE
+Trick: [[1;32m8[0m [1;33mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CLUBS, xskat:
+(xskat) TRICK [[1;32m8[0m [1;33mJ[0m [1;31mA[0m]
+13 points: 30 - 13
+TRUMPS IN PLAY [[1;32mA[0m [1;32mK[0m [1;32mD[0m]
+
+Trick: []
+(goskat) HAND [[1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m] valid: [[1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+	Previous suit: goskat:CLUBS, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:SPADE 
+OPPONENT..FOREHAND..No cards in previous suit 'CLUBS'..Declarer at BACKHAND, playing SHORT..Avoiding 2 numbers and D-number suits..ShortestNonTrumpSuit HEART
+HighestShort not full [[1;31m9[0m [1;31m7[0m]....Checking cards [[1;31m9[0m [1;31m7[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m] for 2 number suit HEART..FOUND..ShortestNonTrumpSuit CARO
+HighestShort not full [[1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]....Checking cards [[1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m] for 2 number suit CARO....Checking cards [[1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m] for D number suit CARO..Candidates [[1;31m9[0m [1;33mD[0m], returning last..Trick: [[1;33mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CARO, xskat:
+(xskat) Trick: [[1;33mD[0m [1;33mK[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) TRICK [[1;33mD[0m [1;33mK[0m [1;33mA[0m]
+18 points: 48 - 13
+TRUMPS IN PLAY [[1;32mA[0m [1;32mK[0m [1;32mD[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mD[0m]
+(goskat) HAND [[1;31m9[0m [1;31m7[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m] valid: [[1;31m9[0m [1;31m7[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+	Previous suit: goskat:CARO, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:SPADE 
+OPPONENT..MIDDLEHAND..Declarer leads [1;32mD[0m..TRUMP. There are higher trumps, SMEAR..Trick: [[1;32mD[0m [1;31m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CARO, xskat:
+(xskat) TRICK [[1;32mD[0m [1;31m7[0m [1;31mD[0m]
+6 points: 54 - 13
+TRUMPS IN PLAY [[1;32mA[0m [1;32mK[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37m7[0m]
+(goskat) HAND [[1;31m9[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m] valid: [[1;31m9[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+	Previous suit: goskat:CARO, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:SPADE 
+	xskat: void:SPADE 
+OPPONENT..MIDDLEHAND..Declarer leads [1;37m7[0m..higher cards in play, SMEAR..Trick: [[1;37m7[0m [1;33m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CARO, xskat:
+(xskat) TRICK [[1;37m7[0m [1;33m7[0m [1;37m10[0m]
+10 points: 54 - 23
+TRUMPS IN PLAY [[1;32mA[0m [1;32mK[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CARO, xskat:
+(xskat) Trick: [[1;33m10[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33m10[0m [1;32mA[0m]
+(goskat) HAND [[1;31m9[0m [1;33m9[0m [1;33m8[0m] valid: [[1;33m9[0m [1;33m8[0m]
+	Previous suit: goskat:CARO, xskat:
+(goskat) 
+	xskat:2: void:CARO 
+	goskat: void:CLUBS SPADE 
+	xskat: void:SPADE 
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+Winners: []
+LOSING Cards (last)[[1;33m8[0m [1;33m9[0m]
+TRICK [[1;33m10[0m [1;32mA[0m [1;33m9[0m]
+21 points: 75 - 23
+TRUMPS IN PLAY [[1;32mK[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37m8[0m]
+(goskat) HAND [[1;31m9[0m [1;33m8[0m] valid: [[1;31m9[0m [1;33m8[0m]
+	Previous suit: goskat:CARO, xskat:
+(goskat) 
+	xskat:2: void:CARO 
+	goskat: void:CLUBS SPADE 
+	xskat: void:SPADE 
+OPPONENT..MIDDLEHAND..Declarer leads [1;37m8[0m..higher cards in play, SMEAR..Trick: [[1;37m8[0m [1;33m8[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CARO, xskat:
+(xskat) TRICK [[1;37m8[0m [1;33m8[0m [1;37mK[0m]
+4 points: 75 - 27
+TRUMPS IN PLAY [[1;32mK[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CARO, xskat:
+(xskat) Trick: [[1;31mK[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31mK[0m [1;32mK[0m]
+(goskat) HAND [[1;31m9[0m] valid: [[1;31m9[0m]
+	Previous suit: goskat:CARO, xskat:
+(goskat) 
+	xskat:2: void:CARO HEART 
+	goskat: void:CLUBS SPADE 
+	xskat: void:SPADE 
+OPPONENT..FORCED MOVE
+TRICK [[1;31mK[0m [1;32mK[0m [1;31m9[0m]
+8 points: 83 - 27
+
+SKAT: [ ]
+
+SCORING
+	SPADE, Without 10 SCORE 121
+VICTORY: 83 - 27, SCORE: 121
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+
+Losers: [[1;32m7[0m [1;37m9[0m [1;37m7[0m [1;31m7[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;37mJ[0m [1;32m7[0m [1;37m9[0m [1;37m7[0m [1;31m10[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m], Full ones: 1, Losers: 7
+Longest suit CARO, 5 cards
+Extra suits: 0
+Hand: [[1;37mJ[0m [1;32m7[0m [1;37m9[0m [1;37m7[0m [1;31m10[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m], Estimation: 20
+Can win: 
+(goskat) hand: [[1;37mJ[0m [1;32m7[0m [1;37m9[0m [1;37m7[0m [1;31m10[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m] Bid up to: 0
+
+PLAYER ORDER: xskat - xskat:2 - goskat
+
+(xskat) vs (xskat:2)
+	(xskat:2) 18
+	(xskat) Pass
+(xskat:2) vs (goskat)
+(goskat) Bid: 20 Highest: 0
+	(goskat) Pass 
+Declarer &{{xskat:2 [] 0 0 true 409  2 0 1 0} []}
+(xskat:2) won the bidding
+
+([1;31mxskat:2[0m) TRUMP: SPADE
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;37mA[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37mA[0m [1;37m8[0m]
+(goskat) HAND [[1;37mJ[0m [1;32m7[0m [1;37m9[0m [1;37m7[0m [1;31m10[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m] valid: [[1;37m9[0m [1;37m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+ largest non-trumpTRICK [[1;37mA[0m [1;37m8[0m [1;37m7[0m]
+11 points: 0 - 11
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;31m8[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31m8[0m [1;31m9[0m]
+(goskat) HAND [[1;37mJ[0m [1;32m7[0m [1;37m9[0m [1;31m10[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m] valid: [[1;31m10[0m [1;31m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+Winners: [[1;31m10[0m]
+TRICK [[1;31m8[0m [1;31m9[0m [1;31m10[0m]
+10 points: 0 - 21
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+(goskat) HAND [[1;37mJ[0m [1;32m7[0m [1;37m9[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m] valid: [[1;37mJ[0m [1;32m7[0m [1;37m9[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..FOREHAND..No cards in previous suit ''..Declarer at BACKHAND, playing SHORT..Avoiding 2 numbers and D-number suits..ShortestNonTrumpSuit CLUBS
+HighestShort not full [[1;37m9[0m]....Checking cards [[1;37m9[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m] for 2 number suit CLUBS....Checking cards [[1;37m9[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m] for D number suit CLUBS..Candidates [[1;37m9[0m], returning last..Trick: [[1;37m9[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CLUBS, xskat:
+(xskat) Trick: [[1;37m9[0m [1;37mD[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) TRICK [[1;37m9[0m [1;37mD[0m [1;32mA[0m]
+14 points: 14 - 21
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31mJ[0m]
+(goskat) HAND [[1;37mJ[0m [1;32m7[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m] valid: [[1;37mJ[0m [1;32m7[0m]
+	Previous suit: goskat:CLUBS, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;31mJ[0m..Winners: [[1;37mJ[0m]
+Trick: [[1;31mJ[0m [1;37mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CLUBS, xskat:
+(xskat) TRICK [[1;31mJ[0m [1;37mJ[0m [1;32mD[0m]
+7 points: 14 - 28
+TRUMPS IN PLAY [[1;32mJ[0m [1;33mJ[0m [1;32m10[0m [1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+(goskat) HAND [[1;32m7[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m] valid: [[1;32m7[0m [1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m]
+	Previous suit: goskat:CLUBS, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:
+	xskat: void:
+OPPONENT..FOREHAND..No cards in previous suit 'CLUBS'..Declarer at BACKHAND, playing SHORT..Avoiding 2 numbers and D-number suits..ShortestNonTrumpSuit HEART
+HighestShort not full [[1;31m7[0m]....Checking cards [[1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m] for 2 number suit HEART....Checking cards [[1;31m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m] for D number suit HEART..Candidates [[1;31m7[0m], returning last..Trick: [[1;31m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:HEART, xskat:
+(xskat) Trick: [[1;31m7[0m [1;31mD[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) TRICK [[1;31m7[0m [1;31mD[0m [1;31mA[0m]
+14 points: 28 - 28
+TRUMPS IN PLAY [[1;32mJ[0m [1;33mJ[0m [1;32m10[0m [1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mJ[0m]
+(goskat) HAND [[1;32m7[0m [1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m] valid: [[1;32m7[0m]
+	Previous suit: goskat:HEART, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:
+	xskat: void:
+OPPONENT..FORCED MOVE
+Trick: [[1;32mJ[0m [1;32m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:HEART, xskat:
+(xskat) TRICK [[1;32mJ[0m [1;32m7[0m [1;32m9[0m]
+2 points: 30 - 28
+TRUMPS IN PLAY [[1;33mJ[0m [1;32m10[0m [1;32mK[0m [1;32m8[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m8[0m]
+(goskat) HAND [[1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m] valid: [[1;33mA[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m]
+	Previous suit: goskat:HEART, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;32m8[0m..TRUMP. There are higher trumps, SMEAR..Trick: [[1;32m8[0m [1;33mA[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:HEART, xskat:
+(xskat) TRICK [[1;32m8[0m [1;33mA[0m [1;33mJ[0m]
+13 points: 30 - 41
+TRUMPS IN PLAY [[1;32m10[0m [1;32mK[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:HEART, xskat:
+(xskat) Trick: [[1;33m10[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33m10[0m [1;32mK[0m]
+(goskat) HAND [[1;33mD[0m [1;33m8[0m [1;33m7[0m] valid: [[1;33mD[0m [1;33m8[0m [1;33m7[0m]
+	Previous suit: goskat:HEART, xskat:
+(goskat) 
+	xskat:2: void:CLUBS CARO 
+	goskat: void:SPADE 
+	xskat: void:
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+Winners: []
+LOSING Cards (last)[[1;33mD[0m [1;33m7[0m [1;33m8[0m]
+TRICK [[1;33m10[0m [1;32mK[0m [1;33m8[0m]
+14 points: 44 - 41
+TRUMPS IN PLAY [[1;32m10[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31mK[0m]
+(goskat) HAND [[1;33mD[0m [1;33m7[0m] valid: [[1;33mD[0m [1;33m7[0m]
+	Previous suit: goskat:HEART, xskat:
+(goskat) 
+	xskat:2: void:CLUBS CARO 
+	goskat: void:SPADE 
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;31mK[0m..Winners: []
+LOSING Cards (last)[[1;33mD[0m [1;33m7[0m]
+Trick: [[1;31mK[0m [1;33m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:HEART, xskat:
+(xskat) TRICK [[1;31mK[0m [1;33m7[0m [1;33m9[0m]
+4 points: 48 - 41
+TRUMPS IN PLAY [[1;32m10[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m10[0m]
+(goskat) HAND [[1;33mD[0m] valid: [[1;33mD[0m]
+	Previous suit: goskat:HEART, xskat:
+(goskat) 
+	xskat:2: void:CLUBS CARO 
+	goskat: void:SPADE HEART 
+	xskat: void:HEART 
+OPPONENT..FORCED MOVE
+Trick: [[1;32m10[0m [1;33mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:HEART, xskat:
+(xskat) TRICK [[1;32m10[0m [1;33mD[0m [1;37mK[0m]
+17 points: 65 - 41
+
+SKAT: [ ]
+
+SCORING
+	SPADE, Without 10 SCORE 121
+VICTORY: 65 - 41, SCORE: 121
+(xskat:2) hand: [] Bid up to: 0
+
+Losers: [[1;32m8[0m [1;32m7[0m [1;37mK[0m [1;37m7[0m [1;31mK[0m [1;31mD[0m [1;33m7[0m], 1 jacks
+
+Considering GRAND in Hand: [[1;31mJ[0m [1;32m8[0m [1;32m7[0m [1;37mK[0m [1;37m7[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m [1;33m10[0m [1;33m7[0m], Full ones: 1, Losers: 8
+Longest suit HEART, 4 cards
+Extra suits: 0
+Hand: [[1;31mJ[0m [1;32m8[0m [1;32m7[0m [1;37mK[0m [1;37m7[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m [1;33m10[0m [1;33m7[0m], Estimation: 20
+Can win: 
+(goskat) hand: [[1;31mJ[0m [1;32m8[0m [1;32m7[0m [1;37mK[0m [1;37m7[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m [1;33m10[0m [1;33m7[0m] Bid up to: 0
+(xskat) hand: [] Bid up to: 0
+
+PLAYER ORDER: xskat:2 - goskat - xskat
+
+(xskat:2) vs (goskat)
+(goskat) Bid: 18 Highest: 0
+	(goskat) Pass 
+(xskat:2) vs (xskat)
+	(xskat) 18
+	(xskat:2) Yes
+	(xskat) Pass 
+Declarer &{{xskat:2 [] 0 0 true 530  3 0 1 0} []}
+(xskat:2) won the bidding
+
+([1;31mxskat:2[0m) TRUMP: CARO
+TRUMPS IN PLAY [[1;33mJ[0m [1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mA[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mJ[0m]
+(goskat) HAND [[1;31mJ[0m [1;33m10[0m [1;33m7[0m [1;37mK[0m [1;37m7[0m [1;32m8[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m] valid: [[1;31mJ[0m [1;33m10[0m [1;33m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;32mJ[0m..TRUMP. There are higher trumps, SMEAR..Trick: [[1;32mJ[0m [1;33m10[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;32mJ[0m [1;33m10[0m [1;37mJ[0m]
+14 points: 0 - 14
+TRUMPS IN PLAY [[1;33mJ[0m [1;31mJ[0m [1;33mA[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;37mA[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37mA[0m [1;33mA[0m]
+(goskat) HAND [[1;31mJ[0m [1;33m7[0m [1;37mK[0m [1;37m7[0m [1;32m8[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m] valid: [[1;37mK[0m [1;37m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:
+	xskat: void:
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+Winners: []
+LOSING Cards (last)[[1;37mK[0m [1;37m7[0m]
+TRICK [[1;37mA[0m [1;33mA[0m [1;37m7[0m]
+22 points: 22 - 14
+TRUMPS IN PLAY [[1;33mJ[0m [1;31mJ[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33m9[0m]
+(goskat) HAND [[1;31mJ[0m [1;33m7[0m [1;37mK[0m [1;32m8[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m] valid: [[1;31mJ[0m [1;33m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;33m9[0m..Winners: [[1;31mJ[0m]
+Trick: [[1;33m9[0m [1;31mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33m9[0m [1;31mJ[0m [1;33m8[0m]
+2 points: 22 - 16
+TRUMPS IN PLAY [[1;33mJ[0m [1;33mK[0m [1;33mD[0m [1;33m7[0m]
+
+Trick: []
+(goskat) HAND [[1;33m7[0m [1;37mK[0m [1;32m8[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m] valid: [[1;33m7[0m [1;37mK[0m [1;32m8[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:
+	xskat: void:
+OPPONENT..FOREHAND..No cards in previous suit ''..Declarer at BACKHAND, playing SHORT..Avoiding 2 numbers and D-number suits..ShortestNonTrumpSuit CLUBS
+HighestShort not full [[1;37mK[0m]....Checking cards [[1;37mK[0m [1;32m8[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m] for 2 number suit CLUBS....Checking cards [[1;37mK[0m [1;32m8[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m] for D number suit CLUBS..Candidates [[1;37mK[0m], returning last..Trick: [[1;37mK[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CLUBS, xskat:
+(xskat) Trick: [[1;37mK[0m [1;37m9[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) TRICK [[1;37mK[0m [1;37m9[0m [1;33mK[0m]
+8 points: 30 - 16
+TRUMPS IN PLAY [[1;33mJ[0m [1;33mD[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mA[0m]
+(goskat) HAND [[1;33m7[0m [1;32m8[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m] valid: [[1;32m8[0m [1;32m7[0m]
+	Previous suit: goskat:CLUBS, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;32mA[0m..Winners: []
+LOSING Cards (last)[[1;32m7[0m [1;32m8[0m]
+Trick: [[1;32mA[0m [1;32m8[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CLUBS, xskat:
+(xskat) TRICK [[1;32mA[0m [1;32m8[0m [1;32m9[0m]
+11 points: 41 - 16
+TRUMPS IN PLAY [[1;33mJ[0m [1;33mD[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31m8[0m]
+(goskat) HAND [[1;33m7[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m] valid: [[1;31mA[0m [1;31mK[0m [1;31mD[0m]
+	Previous suit: goskat:CLUBS, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;31m8[0m..Winners: [[1;31mA[0m [1;31mK[0m [1;31mD[0m]
+Trick: [[1;31m8[0m [1;31mA[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:CLUBS, xskat:
+(xskat) TRICK [[1;31m8[0m [1;31mA[0m [1;31m7[0m]
+11 points: 41 - 27
+TRUMPS IN PLAY [[1;33mJ[0m [1;33mD[0m [1;33m7[0m]
+
+Trick: []
+(goskat) HAND [[1;33m7[0m [1;32m7[0m [1;31mK[0m [1;31mD[0m] valid: [[1;33m7[0m [1;32m7[0m [1;31mK[0m [1;31mD[0m]
+	Previous suit: goskat:CLUBS, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:
+	xskat: void:
+OPPONENT..FOREHAND..No cards in previous suit 'CLUBS'..Declarer at BACKHAND, playing SHORT..Avoiding 2 numbers and D-number suits..ShortestNonTrumpSuit SPADE
+HighestShort not full [[1;32m7[0m]....Checking cards [[1;32m7[0m [1;31mK[0m [1;31mD[0m] for 2 number suit SPADE....Checking cards [[1;32m7[0m [1;31mK[0m [1;31mD[0m] for D number suit SPADE..Candidates [[1;32m7[0m], returning last..Trick: [[1;32m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:SPADE, xskat:
+(xskat) Trick: [[1;32m7[0m [1;32mK[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) TRICK [[1;32m7[0m [1;32mK[0m [1;32mD[0m]
+7 points: 41 - 34
+TRUMPS IN PLAY [[1;33mJ[0m [1;33mD[0m [1;33m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:SPADE, xskat:
+(xskat) Trick: [[1;33mJ[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33mJ[0m [1;33mD[0m]
+(goskat) HAND [[1;33m7[0m [1;31mK[0m [1;31mD[0m] valid: [[1;33m7[0m]
+	Previous suit: goskat:SPADE, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:
+	xskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;33mJ[0m [1;33mD[0m [1;33m7[0m]
+5 points: 41 - 39
+TRUMPS IN PLAY []
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:SPADE, xskat:
+(xskat) Trick: [[1;32m10[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m10[0m [1;31m9[0m]
+(goskat) HAND [[1;31mK[0m [1;31mD[0m] valid: [[1;31mK[0m [1;31mD[0m]
+	Previous suit: goskat:SPADE, xskat:
+(goskat) 
+	xskat:2: void:SPADE CLUBS 
+	goskat: void:
+	xskat: void:
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+ largest non-trumpTRICK [[1;32m10[0m [1;31m9[0m [1;31mK[0m]
+14 points: 41 - 53
+TRUMPS IN PLAY []
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:SPADE, xskat:
+(xskat) Trick: [[1;37mD[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37mD[0m [1;31m10[0m]
+(goskat) HAND [[1;31mD[0m] valid: [[1;31mD[0m]
+	Previous suit: goskat:SPADE, xskat:
+(goskat) 
+	xskat:2: void:CLUBS SPADE 
+	goskat: void:SPADE 
+	xskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;37mD[0m [1;31m10[0m [1;31mD[0m]
+16 points: 41 - 69
+
+SKAT: [ ]
+
+SCORING
+	CARO, Without 10 SCORE -198
+DEFEAT: 41 - 69, SCORE: -198
+..Supported 10 in [[1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m]..
+Losers: [[1;33mK[0m [1;33mD[0m [1;33m9[0m [1;32m7[0m [1;31mK[0m [1;31m8[0m [1;31m7[0m], 1 jacks
+
+Considering GRAND in Hand: [[1;31mJ[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31m8[0m [1;31m7[0m], Full ones: 2, Losers: 8
+Longest suit CARO, 5 cards
+Extra suits: 1
+Hand: [[1;31mJ[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31m8[0m [1;31m7[0m], Estimation: 15
+Can win: SUIT
+(goskat) I will not raise more. Bid: 0, worst: 18
+HighestBid 18
+(goskat) hand: [[1;31mJ[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31m8[0m [1;31m7[0m] Bid up to: 18
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+
+PLAYER ORDER: goskat - xskat - xskat:2
+
+(goskat) vs (xskat)
+	(xskat) 18
+(goskat) Bid: 18 Highest: 18
+	(goskat) Yes
+	(xskat) Pass 
+(goskat) vs (xskat:2)
+	(xskat:2) 20
+(goskat) Bid: 20 Highest: 18
+	(goskat) Pass
+Declarer &{{xskat:2 [] 0 0 true 332  3 1 1 0} []}
+(xskat:2) won the bidding
+
+([1;31mxskat:2[0m) TRUMP: CLUBS
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m [1;37mA[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+(goskat) HAND [[1;31mJ[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m] valid: [[1;31mJ[0m [1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..FOREHAND..No cards in previous suit ''..Declarer at BACKHAND, playing SHORT..Avoiding 2 numbers and D-number suits..ShortestNonTrumpSuit SPADE
+HighestShort not full [[1;32m7[0m]....Checking cards [[1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m] for 2 number suit SPADE....Checking cards [[1;32m7[0m [1;31mA[0m [1;31mK[0m [1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m] for D number suit SPADE..Candidates [[1;32m7[0m], returning last..Trick: [[1;32m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:SPADE, xskat:
+(xskat) Trick: [[1;32m7[0m [1;32mA[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) TRICK [[1;32m7[0m [1;32mA[0m [1;32mD[0m]
+14 points: 0 - 14
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m [1;37mA[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:SPADE, xskat:
+(xskat) Trick: [[1;32m8[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m8[0m [1;31m9[0m]
+(goskat) HAND [[1;31mJ[0m [1;31mA[0m [1;31mK[0m [1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m] valid: [[1;31mJ[0m [1;31mA[0m [1;31mK[0m [1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m]
+	Previous suit: goskat:SPADE, xskat:
+(goskat) 
+	xskat:2: void:SPADE 
+	goskat: void:
+	xskat: void:
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+ largest non-trumpTRICK [[1;32m8[0m [1;31m9[0m [1;31mA[0m]
+11 points: 0 - 25
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m [1;37mA[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:SPADE, xskat:
+(xskat) Trick: [[1;32m9[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m9[0m [1;37mA[0m]
+(goskat) HAND [[1;31mJ[0m [1;31mK[0m [1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m] valid: [[1;31mJ[0m [1;31mK[0m [1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m]
+	Previous suit: goskat:SPADE, xskat:
+(goskat) 
+	xskat:2: void:SPADE 
+	goskat: void:SPADE 
+	xskat: void:
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+Winners: [[1;31mJ[0m]
+TRICK [[1;32m9[0m [1;37mA[0m [1;31mJ[0m]
+13 points: 0 - 38
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+(goskat) HAND [[1;31mK[0m [1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m] valid: [[1;31mK[0m [1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m]
+	Previous suit: goskat:SPADE, xskat:
+(goskat) 
+	xskat:2: void:SPADE 
+	goskat: void:SPADE 
+	xskat: void:
+OPPONENT..FOREHAND..No cards in previous suit 'SPADE'..Declarer at BACKHAND, playing SHORT..Avoiding 2 numbers and D-number suits..ShortestNonTrumpSuit HEART
+HighestShort not full [[1;31mK[0m [1;31m8[0m [1;31m7[0m]....Checking cards [[1;31mK[0m [1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m] for 2 number suit HEART....Checking cards [[1;31mK[0m [1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m] for D number suit HEART..Candidates [[1;31mK[0m], returning last..Trick: [[1;31mK[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:HEART, xskat:
+(xskat) Trick: [[1;31mK[0m [1;31mD[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) TRICK [[1;31mK[0m [1;31mD[0m [1;37m10[0m]
+17 points: 17 - 38
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37mJ[0m]
+(goskat) HAND [[1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m] valid: [[1;31m8[0m [1;31m7[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m]
+	Previous suit: goskat:HEART, xskat:
+(goskat) 
+	xskat:2: void:HEART SPADE 
+	goskat: void:SPADE 
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;37mJ[0m..Winners: []
+Trick: [[1;37mJ[0m [1;31m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:HEART, xskat:
+(xskat) TRICK [[1;37mJ[0m [1;31m7[0m [1;37m9[0m]
+2 points: 19 - 38
+TRUMPS IN PLAY [[1;32mJ[0m [1;33mJ[0m [1;37mK[0m [1;37mD[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33mA[0m]
+(goskat) HAND [[1;31m8[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m] valid: [[1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m]
+	Previous suit: goskat:HEART, xskat:
+(goskat) 
+	xskat:2: void:SPADE HEART 
+	goskat: void:CLUBS SPADE 
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;33mA[0m..Winners: []
+LOSING Cards (last)[[1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m]
+Trick: [[1;33mA[0m [1;33m9[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:HEART, xskat:
+(xskat) TRICK [[1;33mA[0m [1;33m9[0m [1;37mK[0m]
+15 points: 19 - 53
+TRUMPS IN PLAY [[1;32mJ[0m [1;33mJ[0m [1;37mD[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:HEART, xskat:
+(xskat) Trick: [[1;32mJ[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mJ[0m [1;37m7[0m]
+(goskat) HAND [[1;31m8[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m] valid: [[1;31m8[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m]
+	Previous suit: goskat:HEART, xskat:
+(goskat) 
+	xskat:2: void:SPADE HEART 
+	goskat: void:CLUBS SPADE 
+	xskat: void:CARO 
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+ largest non-trumpTRICK [[1;32mJ[0m [1;37m7[0m [1;33m10[0m]
+12 points: 19 - 65
+TRUMPS IN PLAY [[1;33mJ[0m [1;37mD[0m [1;37m8[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:HEART, xskat:
+(xskat) Trick: [[1;33mJ[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33mJ[0m [1;37m8[0m]
+(goskat) HAND [[1;31m8[0m [1;33mK[0m [1;33mD[0m] valid: [[1;31m8[0m [1;33mK[0m [1;33mD[0m]
+	Previous suit: goskat:HEART, xskat:
+(goskat) 
+	xskat:2: void:SPADE HEART 
+	goskat: void:CLUBS SPADE 
+	xskat: void:CARO 
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+ largest non-trumpTRICK [[1;33mJ[0m [1;37m8[0m [1;33mK[0m]
+6 points: 19 - 71
+TRUMPS IN PLAY [[1;37mD[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:HEART, xskat:
+(xskat) Trick: [[1;37mD[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37mD[0m [1;33m7[0m]
+(goskat) HAND [[1;31m8[0m [1;33mD[0m] valid: [[1;31m8[0m [1;33mD[0m]
+	Previous suit: goskat:HEART, xskat:
+(goskat) 
+	xskat:2: void:CLUBS SPADE HEART 
+	goskat: void:CLUBS SPADE 
+	xskat: void:CARO 
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+ largest non-trumpTRICK [[1;37mD[0m [1;33m7[0m [1;33mD[0m]
+6 points: 19 - 77
+TRUMPS IN PLAY []
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:HEART, xskat:
+(xskat) Trick: [[1;32mK[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mK[0m [1;33m8[0m]
+(goskat) HAND [[1;31m8[0m] valid: [[1;31m8[0m]
+	Previous suit: goskat:HEART, xskat:
+(goskat) 
+	xskat:2: void:SPADE HEART CLUBS 
+	goskat: void:CLUBS SPADE 
+	xskat: void:CARO 
+OPPONENT..FORCED MOVE
+TRICK [[1;32mK[0m [1;33m8[0m [1;31m8[0m]
+4 points: 19 - 81
+
+SKAT: [ ]
+
+SCORING
+	CLUBS, Without 10 Schneider SCORE -288
+DEFEAT: 19 - 81, SCORE: -288
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+
+Losers: [[1;37mD[0m [1;37m9[0m [1;32mD[0m [1;31mD[0m [1;31m9[0m [1;31m7[0m [1;33mK[0m], 1 jacks
+
+Considering GRAND in Hand: [[1;31mJ[0m [1;37mD[0m [1;37m9[0m [1;32mA[0m [1;32m10[0m [1;32mD[0m [1;31mD[0m [1;31m9[0m [1;31m7[0m [1;33mK[0m], Full ones: 2, Losers: 8
+Longest suit HEART, 4 cards
+Extra suits: 2
+Hand: [[1;31mJ[0m [1;37mD[0m [1;37m9[0m [1;32mA[0m [1;32m10[0m [1;32mD[0m [1;31mD[0m [1;31m9[0m [1;31m7[0m [1;33mK[0m], Estimation: 25
+Can win: 
+(goskat) hand: [[1;31mJ[0m [1;37mD[0m [1;37m9[0m [1;32mA[0m [1;32m10[0m [1;32mD[0m [1;31mD[0m [1;31m9[0m [1;31m7[0m [1;33mK[0m] Bid up to: 0
+
+PLAYER ORDER: xskat - xskat:2 - goskat
+
+(xskat) vs (xskat:2)
+	(xskat:2) 18
+	(xskat) Pass
+(xskat:2) vs (goskat)
+(goskat) Bid: 20 Highest: 0
+	(goskat) Pass 
+Declarer &{{xskat:2 [] 0 0 true 44  3 2 1 0} []}
+(xskat:2) won the bidding
+
+([1;31mxskat:2[0m) TRUMP: Grand
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;37m7[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37m7[0m [1;37mA[0m]
+(goskat) HAND [[1;31mJ[0m [1;37mD[0m [1;37m9[0m [1;32mA[0m [1;32m10[0m [1;32mD[0m [1;31mD[0m [1;31m9[0m [1;31m7[0m [1;33mK[0m] valid: [[1;37mD[0m [1;37m9[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+Winners: []
+LOSING Cards (last)[[1;37mD[0m [1;37m9[0m]
+TRICK [[1;37m7[0m [1;37mA[0m [1;37m9[0m]
+11 points: 11 - 0
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mJ[0m]
+(goskat) HAND [[1;31mJ[0m [1;37mD[0m [1;32mA[0m [1;32m10[0m [1;32mD[0m [1;31mD[0m [1;31m9[0m [1;31m7[0m [1;33mK[0m] valid: [[1;31mJ[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..FORCED MOVE
+Trick: [[1;32mJ[0m [1;31mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;32mJ[0m [1;31mJ[0m [1;33mJ[0m]
+6 points: 17 - 0
+TRUMPS IN PLAY [[1;37mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33mA[0m]
+(goskat) HAND [[1;37mD[0m [1;32mA[0m [1;32m10[0m [1;32mD[0m [1;31mD[0m [1;31m9[0m [1;31m7[0m [1;33mK[0m] valid: [[1;33mK[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..FORCED MOVE
+Trick: [[1;33mA[0m [1;33mK[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33mA[0m [1;33mK[0m [1;33m8[0m]
+15 points: 32 - 0
+TRUMPS IN PLAY [[1;37mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31mA[0m]
+(goskat) HAND [[1;37mD[0m [1;32mA[0m [1;32m10[0m [1;32mD[0m [1;31mD[0m [1;31m9[0m [1;31m7[0m] valid: [[1;31mD[0m [1;31m9[0m [1;31m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;31mA[0m..Winners: []
+LOSING Cards (last)[[1;31mD[0m [1;31m7[0m [1;31m9[0m]
+Trick: [[1;31mA[0m [1;31m9[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31mA[0m [1;31m9[0m [1;31mK[0m]
+15 points: 47 - 0
+TRUMPS IN PLAY [[1;37mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31m10[0m]
+(goskat) HAND [[1;37mD[0m [1;32mA[0m [1;32m10[0m [1;32mD[0m [1;31mD[0m [1;31m7[0m] valid: [[1;31mD[0m [1;31m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;31m10[0m..Winners: []
+LOSING Cards (last)[[1;31mD[0m [1;31m7[0m]
+Trick: [[1;31m10[0m [1;31m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31m10[0m [1;31m7[0m [1;32m8[0m]
+10 points: 57 - 0
+TRUMPS IN PLAY [[1;37mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33m9[0m]
+(goskat) HAND [[1;37mD[0m [1;32mA[0m [1;32m10[0m [1;32mD[0m [1;31mD[0m] valid: [[1;37mD[0m [1;32mA[0m [1;32m10[0m [1;32mD[0m [1;31mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:HEART 
+OPPONENT..MIDDLEHAND..Declarer leads [1;33m9[0m..higher cards in play, SMEAR..Trick: [[1;33m9[0m [1;32mA[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33m9[0m [1;32mA[0m [1;33m10[0m]
+21 points: 57 - 21
+TRUMPS IN PLAY [[1;37mJ[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;37m10[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37m10[0m [1;37mJ[0m]
+(goskat) HAND [[1;37mD[0m [1;32m10[0m [1;32mD[0m [1;31mD[0m] valid: [[1;37mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:CARO 
+	xskat: void:HEART 
+OPPONENT..FORCED MOVE
+TRICK [[1;37m10[0m [1;37mJ[0m [1;37mD[0m]
+15 points: 72 - 21
+TRUMPS IN PLAY []
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33mD[0m]
+(goskat) HAND [[1;32m10[0m [1;32mD[0m [1;31mD[0m] valid: [[1;32m10[0m [1;32mD[0m [1;31mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:CARO 
+	xskat: void:HEART 
+OPPONENT..MIDDLEHAND..Declarer leads [1;33mD[0m..Winners: []
+LOSING Cards (last)[[1;32m10[0m [1;32mD[0m [1;31mD[0m]
+Trick: [[1;33mD[0m [1;31mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33mD[0m [1;31mD[0m [1;37m8[0m]
+6 points: 78 - 21
+TRUMPS IN PLAY []
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33m7[0m]
+(goskat) HAND [[1;32m10[0m [1;32mD[0m] valid: [[1;32m10[0m [1;32mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:CARO 
+	xskat: void:HEART CARO 
+OPPONENT..MIDDLEHAND..Declarer leads [1;33m7[0m..Winners: []
+LOSING Cards (last)[[1;32m10[0m [1;32mD[0m]
+Trick: [[1;33m7[0m [1;32mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33m7[0m [1;32mD[0m [1;32m9[0m]
+3 points: 81 - 21
+TRUMPS IN PLAY []
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31m8[0m]
+(goskat) HAND [[1;32m10[0m] valid: [[1;32m10[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:CARO 
+	xskat: void:HEART CARO 
+OPPONENT..FORCED MOVE
+Trick: [[1;31m8[0m [1;32m10[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31m8[0m [1;32m10[0m [1;32mK[0m]
+14 points: 95 - 21
+
+SKAT: [ ]
+
+SCORING
+	Grand, Without 10 Schneider SCORE 288
+VICTORY: 95 - 21, SCORE: 288
+(xskat:2) hand: [] Bid up to: 0
+
+Losers: [[1;37mD[0m [1;37m9[0m [1;37m7[0m [1;31mK[0m [1;31mD[0m [1;33m8[0m], 1 jacks
+
+Considering GRAND in Hand: [[1;31mJ[0m [1;37mD[0m [1;37m9[0m [1;37m7[0m [1;32mA[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m [1;33mA[0m [1;33m8[0m], Full ones: 3, Losers: 7
+Longest suit CLUBS, 4 cards
+Extra suits: 3
+Hand: [[1;31mJ[0m [1;37mD[0m [1;37m9[0m [1;37m7[0m [1;32mA[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m [1;33mA[0m [1;33m8[0m], Estimation: 40
+Can win: 
+(goskat) hand: [[1;31mJ[0m [1;37mD[0m [1;37m9[0m [1;37m7[0m [1;32mA[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m [1;33mA[0m [1;33m8[0m] Bid up to: 0
+(xskat) hand: [] Bid up to: 0
+
+PLAYER ORDER: xskat:2 - goskat - xskat
+
+(xskat:2) vs (goskat)
+(goskat) Bid: 18 Highest: 0
+	(goskat) Pass 
+(xskat:2) vs (xskat)
+	(xskat) 18
+	(xskat:2) Pass
+Declarer &{{xskat [] 0 0 true 354  3 1 2 0} []}
+(xskat) won the bidding
+
+([1;31mxskat[0m) TRUMP: CARO
+TRUMPS IN PLAY [[1;33mJ[0m [1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mA[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;37m8[0m]
+(goskat) HAND [[1;31mJ[0m [1;33mA[0m [1;33m8[0m [1;37mD[0m [1;37m9[0m [1;37m7[0m [1;32mA[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m] valid: [[1;37mD[0m [1;37m9[0m [1;37m7[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:
+	xskat:2: void:
+	goskat: void:
+OPPONENT..MIDDLEHAND..Teammate leads [1;37m8[0m..SORT-VALUE no trumps [[1;37mD[0m [1;37m7[0m [1;37m9[0m]
+..FOLLOW [[1;37mD[0m [1;37m7[0m [1;37m9[0m]....other cards in play [[1;37mA[0m [1;37m10[0m [1;37mK[0m]..play low card..
+increase zero value trick..
+Trick: [[1;37m8[0m [1;37mD[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;37m8[0m [1;37mD[0m [1;37mA[0m]
+14 points: 14 - 0
+TRUMPS IN PLAY [[1;33mJ[0m [1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mA[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;33mJ[0m [1;37mJ[0m]
+(goskat) HAND [[1;31mJ[0m [1;33mA[0m [1;33m8[0m [1;37m9[0m [1;37m7[0m [1;32mA[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m] valid: [[1;31mJ[0m [1;33mA[0m [1;33m8[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:
+	xskat:2: void:
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+teammate wins..largest not-sure winnerTRICK [[1;33mJ[0m [1;37mJ[0m [1;33mA[0m]
+15 points: 14 - 15
+TRUMPS IN PLAY [[1;32mJ[0m [1;31mJ[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;31m7[0m]
+(goskat) HAND [[1;31mJ[0m [1;33m8[0m [1;37m9[0m [1;37m7[0m [1;32mA[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m] valid: [[1;31mA[0m [1;31mK[0m [1;31mD[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:
+	xskat:2: void:
+	goskat: void:
+OPPONENT..MIDDLEHAND..Teammate leads [1;31m7[0m..SORT-VALUE no trumps [[1;31mA[0m [1;31mK[0m [1;31mD[0m]
+..FOLLOW [[1;31mA[0m [1;31mK[0m [1;31mD[0m]....other cards in play [[1;31m10[0m [1;31m9[0m [1;31m8[0m]..Trick: [[1;31m7[0m [1;31mA[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;31m7[0m [1;31mA[0m [1;31m9[0m]
+11 points: 14 - 26
+TRUMPS IN PLAY [[1;32mJ[0m [1;31mJ[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+(goskat) HAND [[1;31mJ[0m [1;33m8[0m [1;37m9[0m [1;37m7[0m [1;32mA[0m [1;31mK[0m [1;31mD[0m] valid: [[1;31mJ[0m [1;33m8[0m [1;37m9[0m [1;37m7[0m [1;32mA[0m [1;31mK[0m [1;31mD[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:
+	xskat:2: void:
+	goskat: void:
+OPPONENT..FOREHAND..No cards in previous suit ''..Declarer at MIDDLEHAND, playing LONG..not full ones if trumps in play..trumps still in play..LongestNonTrumpSuit CLUBS
+[[1;37m9[0m [1;37m7[0m]Trick: [[1;37m9[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;37m9[0m [1;37mK[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) TRICK [[1;37m9[0m [1;37mK[0m [1;33mK[0m]
+8 points: 14 - 34
+TRUMPS IN PLAY [[1;32mJ[0m [1;31mJ[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;31m10[0m]
+(goskat) HAND [[1;31mJ[0m [1;33m8[0m [1;37m7[0m [1;32mA[0m [1;31mK[0m [1;31mD[0m] valid: [[1;31mK[0m [1;31mD[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:
+	xskat:2: void:CLUBS 
+	goskat: void:
+OPPONENT..MIDDLEHAND..Teammate leads [1;31m10[0m..SORT-VALUE no trumps [[1;31mK[0m [1;31mD[0m]
+..FOLLOW [[1;31mK[0m [1;31mD[0m]....other cards in play [[1;31m8[0m]..Trick: [[1;31m10[0m [1;31mK[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;31m10[0m [1;31mK[0m [1;33m10[0m]
+24 points: 38 - 34
+TRUMPS IN PLAY [[1;32mJ[0m [1;31mJ[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;32mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;32mJ[0m [1;32m7[0m]
+(goskat) HAND [[1;31mJ[0m [1;33m8[0m [1;37m7[0m [1;32mA[0m [1;31mD[0m] valid: [[1;31mJ[0m [1;33m8[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:HEART 
+	xskat:2: void:CARO CLUBS 
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+Winners: []
+TRICK [[1;32mJ[0m [1;32m7[0m [1;33m8[0m]
+2 points: 40 - 34
+TRUMPS IN PLAY [[1;31mJ[0m [1;33mD[0m [1;33m9[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;33m9[0m [1;32mK[0m]
+(goskat) HAND [[1;31mJ[0m [1;37m7[0m [1;32mA[0m [1;31mD[0m] valid: [[1;31mJ[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:HEART 
+	xskat:2: void:CLUBS CARO 
+	goskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;33m9[0m [1;32mK[0m [1;31mJ[0m]
+6 points: 40 - 40
+TRUMPS IN PLAY [[1;33mD[0m [1;33m7[0m]
+
+Trick: []
+(goskat) HAND [[1;37m7[0m [1;32mA[0m [1;31mD[0m] valid: [[1;37m7[0m [1;32mA[0m [1;31mD[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:HEART 
+	xskat:2: void:CLUBS CARO 
+	goskat: void:
+OPPONENT..FOREHAND..Following previous suit..Trick: [[1;37m7[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;37m7[0m [1;37m10[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) TRICK [[1;37m7[0m [1;37m10[0m [1;31m8[0m]
+10 points: 50 - 40
+TRUMPS IN PLAY [[1;33mD[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33m7[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;33m7[0m [1;32m9[0m]
+(goskat) HAND [[1;32mA[0m [1;31mD[0m] valid: [[1;32mA[0m [1;31mD[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:HEART 
+	xskat:2: void:CLUBS CARO 
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+Winners: []
+TRICK [[1;33m7[0m [1;32m9[0m [1;31mD[0m]
+3 points: 53 - 40
+TRUMPS IN PLAY [[1;33mD[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33mD[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:CLUBS
+(xskat:2) Trick: [[1;33mD[0m [1;32m8[0m]
+(goskat) HAND [[1;32mA[0m] valid: [[1;32mA[0m]
+	Previous suit: xskat:2:, goskat:CLUBS
+(goskat) 
+	xskat: void:HEART 
+	xskat:2: void:CLUBS CARO 
+	goskat: void:CARO 
+OPPONENT..FORCED MOVE
+TRICK [[1;33mD[0m [1;32m8[0m [1;32mA[0m]
+14 points: 67 - 40
+
+SKAT: [ ]
+
+SCORING
+	CARO, Without 10 SCORE 99
+VICTORY: 67 - 40, SCORE: 99
+
+Losers: [[1;33mK[0m [1;37mD[0m [1;37m7[0m [1;32m9[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m], 1 jacks
+
+Considering GRAND in Hand: [[1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;33mK[0m [1;37mD[0m [1;37m7[0m [1;32m9[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m], Full ones: 0, Losers: 8
+Longest suit HEART, 6 cards
+Extra suits: 0
+Hand: [[1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;33mK[0m [1;37mD[0m [1;37m7[0m [1;32m9[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m], Estimation: 37
+Can win: SUIT
+HighestBid 30
+(goskat) hand: [[1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;33mK[0m [1;37mD[0m [1;37m7[0m [1;32m9[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m] Bid up to: 30
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+
+PLAYER ORDER: goskat - xskat - xskat:2
+
+(goskat) vs (xskat)
+	(xskat) Pass 
+(goskat) vs (xskat:2)
+	(xskat:2) 18
+(goskat) Bid: 18 Highest: 30
+	(goskat) Yes
+	(xskat:2) Pass 
+Declarer &{{goskat [{CLUBS J} {SPADE J} {CARO J} {CARO K} {CLUBS D} {CLUBS 7} {SPADE 9} {HEART K} {HEART D} {HEART 9}] 30 0 true 66  2 0 3 0} false true HEART}
+(goskat) won the bidding
+SKAT BEF: [[1;33m7[0m [1;33m10[0m]
+FULL HAND [[1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;33m10[0m [1;33mK[0m [1;33m7[0m [1;37mD[0m [1;37m7[0m [1;32m9[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m]
+..Supported 10 in [[1;33mK[0m [1;33m7[0m [1;33m10[0m]..
+Losers: [[1;33mK[0m [1;33m7[0m [1;37mD[0m [1;37m7[0m [1;32m9[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m], 1 jacks
+
+Considering GRAND in Hand: [[1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;33mK[0m [1;37mD[0m [1;37m7[0m [1;32m9[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m [1;33m7[0m [1;33m10[0m], Full ones: 1, Losers: 9
+
+AFTER SKAT subtracting 2 losers
+Longest suit CARO, 6 cards
+Extra suits: 0
+Hand: [[1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;33mK[0m [1;37mD[0m [1;37m7[0m [1;32m9[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m [1;33m7[0m [1;33m10[0m], Estimation: 37
+Can win: SUIT
+HighestBid 27
+New high bid 27
+BLANK [[1;32m9[0m]
+...lessCardsSuit 2, 9999, 3, 3.....Less cards suit CLUBS.... TRUMP to DECLARE [CARO]..SUIT CLUBS LESS [[1;37mD[0m [1;37m7[0m]
+SKAT AFT: [[1;32m9[0m [1;37mD[0m]
+(goskat) Hand [[1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;33m10[0m [1;33mK[0m [1;33m7[0m [1;37m7[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m]
+
+([1;31mgoskat[0m) TRUMP: CARO
+TRUMPS IN PLAY [[1;33mJ[0m [1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mA[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;33m10[0m [1;33mK[0m [1;33m7[0m [1;37m7[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m] valid: [[1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;33m10[0m [1;33mK[0m [1;33m7[0m [1;37m7[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:
+DECLARER FOREHAND ..other TRUMPS in game: [[1;31mJ[0m [1;33mA[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m]..own TRUMPS: [[1;33mJ[0m [1;37mJ[0m [1;32mJ[0m [1;33m10[0m [1;33mK[0m [1;33m7[0m]..sure winners: [[1;37mJ[0m [1;32mJ[0m]..high losers: [[1;33mJ[0m]..more than one sure winner..Trick: [[1;32mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;32mJ[0m [1;33m8[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;32mJ[0m [1;33m8[0m [1;33m9[0m]
+2 points: 2 - 0
+TRUMPS IN PLAY [[1;33mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mA[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;33mJ[0m [1;33m10[0m [1;33mK[0m [1;33m7[0m [1;37m7[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m] valid: [[1;37mJ[0m [1;33mJ[0m [1;33m10[0m [1;33mK[0m [1;33m7[0m [1;37m7[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:
+DECLARER FOREHAND ..other TRUMPS in game: [[1;31mJ[0m [1;33mA[0m [1;33mD[0m]..own TRUMPS: [[1;33mJ[0m [1;37mJ[0m [1;33m10[0m [1;33mK[0m [1;33m7[0m]..sure winners: [[1;37mJ[0m]..high losers: [[1;33mJ[0m]Own trumps strength: 55, Other: 31..Strongest lowest: [[1;37mJ[0m] ..Playing strongest lowest
+Trick: [[1;37mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;37mJ[0m [1;33mD[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;37mJ[0m [1;33mD[0m [1;31mJ[0m]
+7 points: 9 - 0
+TRUMPS IN PLAY [[1;33mJ[0m [1;33mA[0m [1;33m10[0m [1;33mK[0m [1;33m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;33mJ[0m [1;33m10[0m [1;33mK[0m [1;33m7[0m [1;37m7[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m] valid: [[1;33mJ[0m [1;33m10[0m [1;33mK[0m [1;33m7[0m [1;37m7[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:
+DECLARER FOREHAND ..other TRUMPS in game: [[1;33mA[0m]..own TRUMPS: [[1;33mJ[0m [1;33m10[0m [1;33mK[0m [1;33m7[0m]..sure winners: [[1;33mJ[0m]..high losers: [[1;33m10[0m [1;33mK[0m [1;33m7[0m]Trick: [[1;33mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;33mJ[0m [1;33mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;33mJ[0m [1;33mA[0m [1;32m7[0m]
+13 points: 22 - 0
+TRUMPS IN PLAY [[1;33m10[0m [1;33mK[0m [1;33m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;33m10[0m [1;33mK[0m [1;33m7[0m [1;37m7[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m] valid: [[1;33m10[0m [1;33mK[0m [1;33m7[0m [1;37m7[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:CARO 
+DECLARER FOREHAND  Play loser card [1;31m9[0mTrick: [[1;31m9[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;31m9[0m [1;31mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;31m9[0m [1;31mA[0m [1;31m10[0m]
+21 points: 22 - 21
+TRUMPS IN PLAY [[1;33m10[0m [1;33mK[0m [1;33m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;37mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;37mA[0m [1;37m8[0m]
+([1;31mgoskat[0m) HAND [[1;33m10[0m [1;33mK[0m [1;33m7[0m [1;37m7[0m [1;31mK[0m [1;31mD[0m] valid: [[1;37m7[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:CARO 
+DECLARER ..FORCED MOVE.. TRICK [[1;37mA[0m [1;37m8[0m [1;37m7[0m]
+11 points: 22 - 32
+TRUMPS IN PLAY [[1;33m10[0m [1;33mK[0m [1;33m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;31m7[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;31m7[0m [1;32mK[0m]
+([1;31mgoskat[0m) HAND [[1;33m10[0m [1;33mK[0m [1;33m7[0m [1;31mK[0m [1;31mD[0m] valid: [[1;31mK[0m [1;31mD[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:HEART CARO 
+DECLARER BACKHAND Following normal suit...winners [[1;31mK[0m [1;31mD[0m]...Returning  [1;31mK[0m...TRICK [[1;31m7[0m [1;32mK[0m [1;31mK[0m]
+8 points: 30 - 32
+TRUMPS IN PLAY [[1;33m10[0m [1;33mK[0m [1;33m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;33m10[0m [1;33mK[0m [1;33m7[0m [1;31mD[0m] valid: [[1;33m10[0m [1;33mK[0m [1;33m7[0m [1;31mD[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:HEART CARO 
+DECLARER FOREHAND  Sure winner card [1;31mD[0mTrick: [[1;31mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;31mD[0m [1;31m8[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;31mD[0m [1;31m8[0m [1;37m9[0m]
+3 points: 33 - 32
+TRUMPS IN PLAY [[1;33m10[0m [1;33mK[0m [1;33m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;33m10[0m [1;33mK[0m [1;33m7[0m] valid: [[1;33m10[0m [1;33mK[0m [1;33m7[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:HEART CARO 
+DECLARER FOREHAND  -TRUMPS exhausted: Hand: [[1;33m10[0m [1;33mK[0m [1;33m7[0m] LongestNonTrumpSuit CLUBS
+[]... DEBUG ... VALID: [[1;33m10[0m [1;33mK[0m [1;33m7[0m] no highest long. Returning: [1;33m10[0m
+Trick: [[1;33m10[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;33m10[0m [1;32m8[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;33m10[0m [1;32m8[0m [1;32m10[0m]
+20 points: 53 - 32
+TRUMPS IN PLAY [[1;33mK[0m [1;33m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;33mK[0m [1;33m7[0m] valid: [[1;33mK[0m [1;33m7[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:CARO 
+	xskat:2: void:HEART CARO 
+DECLARER FOREHAND  -TRUMPS exhausted: Hand: [[1;33mK[0m [1;33m7[0m] LongestNonTrumpSuit CLUBS
+[]... DEBUG ... VALID: [[1;33mK[0m [1;33m7[0m] no highest long. Returning: [1;33mK[0m
+Trick: [[1;33mK[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;33mK[0m [1;32mD[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;33mK[0m [1;32mD[0m [1;37m10[0m]
+17 points: 70 - 32
+TRUMPS IN PLAY [[1;33m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;33m7[0m] valid: [[1;33m7[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:CARO 
+	xskat:2: void:HEART CARO 
+DECLARER ..FORCED MOVE.. Trick: [[1;33m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;33m7[0m [1;37mK[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;33m7[0m [1;37mK[0m [1;32mA[0m]
+15 points: 85 - 32
+
+SKAT: [[1;32m9[0m [1;37mD[0m]
+
+SCORING
+	CARO, With 2 SCORE 27
+VICTORY: 88 - 32, SCORE: 27
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+..Supported 10 in [[1;33m10[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m]..
+Losers: [[1;33mD[0m [1;33m9[0m [1;33m8[0m [1;37m9[0m [1;37m7[0m [1;32m7[0m [1;31mK[0m], 1 jacks
+
+Considering GRAND in Hand: [[1;31mJ[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;37mA[0m [1;37m9[0m [1;37m7[0m [1;32m7[0m [1;31mK[0m], Full ones: 2, Losers: 8
+Longest suit CARO, 5 cards
+Extra suits: 1
+Hand: [[1;31mJ[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;37mA[0m [1;37m9[0m [1;37m7[0m [1;32m7[0m [1;31mK[0m], Estimation: 15
+Can win: SUIT
+(goskat) I will not raise more. Bid: 0, worst: 18
+HighestBid 18
+(goskat) hand: [[1;31mJ[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;37mA[0m [1;37m9[0m [1;37m7[0m [1;32m7[0m [1;31mK[0m] Bid up to: 18
+
+PLAYER ORDER: xskat - xskat:2 - goskat
+
+(xskat) vs (xskat:2)
+	(xskat:2) 18
+	(xskat) Pass
+(xskat:2) vs (goskat)
+(goskat) Bid: 20 Highest: 18
+	(goskat) Pass 
+Declarer &{{xskat:2 [] 0 0 true 332  4 2 1 0} []}
+(xskat:2) won the bidding
+
+([1;31mxskat:2[0m) TRUMP: Grand
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;31m7[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31m7[0m [1;31mA[0m]
+(goskat) HAND [[1;31mJ[0m [1;37mA[0m [1;37m9[0m [1;37m7[0m [1;32m7[0m [1;31mK[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m] valid: [[1;31mK[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;31m7[0m [1;31mA[0m [1;31mK[0m]
+15 points: 15 - 0
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mJ[0m]
+(goskat) HAND [[1;31mJ[0m [1;37mA[0m [1;37m9[0m [1;37m7[0m [1;32m7[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m] valid: [[1;31mJ[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..FORCED MOVE
+Trick: [[1;32mJ[0m [1;31mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;32mJ[0m [1;31mJ[0m [1;33m7[0m]
+4 points: 19 - 0
+TRUMPS IN PLAY [[1;37mJ[0m [1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33mA[0m]
+(goskat) HAND [[1;37mA[0m [1;37m9[0m [1;37m7[0m [1;32m7[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m] valid: [[1;33m10[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:Grand 
+OPPONENT..MIDDLEHAND..Declarer leads [1;33mA[0m..Winners: []
+LOSING Cards (last)[[1;33m10[0m [1;33mD[0m [1;33m8[0m [1;33m9[0m]
+Trick: [[1;33mA[0m [1;33m9[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33mA[0m [1;33m9[0m [1;33mK[0m]
+15 points: 34 - 0
+TRUMPS IN PLAY [[1;37mJ[0m [1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mA[0m]
+(goskat) HAND [[1;37mA[0m [1;37m9[0m [1;37m7[0m [1;32m7[0m [1;33m10[0m [1;33mD[0m [1;33m8[0m] valid: [[1;32m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:Grand 
+OPPONENT..FORCED MOVE
+Trick: [[1;32mA[0m [1;32m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;32mA[0m [1;32m7[0m [1;32mD[0m]
+14 points: 48 - 0
+TRUMPS IN PLAY [[1;37mJ[0m [1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m9[0m]
+(goskat) HAND [[1;37mA[0m [1;37m9[0m [1;37m7[0m [1;33m10[0m [1;33mD[0m [1;33m8[0m] valid: [[1;37mA[0m [1;37m9[0m [1;37m7[0m [1;33m10[0m [1;33mD[0m [1;33m8[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:Grand 
+OPPONENT..MIDDLEHAND..Declarer leads [1;32m9[0m..higher cards in play, SMEAR..Trick: [[1;32m9[0m [1;37mA[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;32m9[0m [1;37mA[0m [1;32m10[0m]
+21 points: 48 - 21
+TRUMPS IN PLAY [[1;37mJ[0m [1;33mJ[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;31m10[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31m10[0m [1;37mJ[0m]
+(goskat) HAND [[1;37m9[0m [1;37m7[0m [1;33m10[0m [1;33mD[0m [1;33m8[0m] valid: [[1;37m9[0m [1;37m7[0m [1;33m10[0m [1;33mD[0m [1;33m8[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:HEART 
+	goskat: void:SPADE 
+	xskat: void:Grand 
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+Winners: []
+LOSING Cards (last)[[1;33m10[0m [1;33mD[0m [1;37m7[0m [1;33m8[0m [1;37m9[0m]
+TRICK [[1;31m10[0m [1;37mJ[0m [1;37m9[0m]
+12 points: 60 - 21
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mK[0m]
+(goskat) HAND [[1;37m7[0m [1;33m10[0m [1;33mD[0m [1;33m8[0m] valid: [[1;37m7[0m [1;33m10[0m [1;33mD[0m [1;33m8[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:HEART 
+	goskat: void:SPADE HEART 
+	xskat: void:Grand 
+OPPONENT..MIDDLEHAND..Declarer leads [1;32mK[0m..Winners: []
+LOSING Cards (last)[[1;33m10[0m [1;33mD[0m [1;37m7[0m [1;33m8[0m]
+Trick: [[1;32mK[0m [1;33m8[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;32mK[0m [1;33m8[0m [1;31m8[0m]
+4 points: 64 - 21
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m8[0m]
+(goskat) HAND [[1;37m7[0m [1;33m10[0m [1;33mD[0m] valid: [[1;37m7[0m [1;33m10[0m [1;33mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:HEART 
+	goskat: void:SPADE HEART 
+	xskat: void:SPADE Grand 
+OPPONENT..MIDDLEHAND..Declarer leads [1;32m8[0m..Winners: []
+LOSING Cards (last)[[1;33m10[0m [1;33mD[0m [1;37m7[0m]
+Trick: [[1;32m8[0m [1;37m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;32m8[0m [1;37m7[0m [1;31m9[0m]
+0 points: 64 - 21
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37m8[0m]
+(goskat) HAND [[1;33m10[0m [1;33mD[0m] valid: [[1;33m10[0m [1;33mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:HEART 
+	goskat: void:SPADE HEART 
+	xskat: void:SPADE Grand 
+OPPONENT..MIDDLEHAND..Declarer leads [1;37m8[0m..higher cards in play, SMEAR..Trick: [[1;37m8[0m [1;33m10[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;37m8[0m [1;33m10[0m [1;37mD[0m]
+13 points: 64 - 34
+TRUMPS IN PLAY [[1;33mJ[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;31mD[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31mD[0m [1;33mJ[0m]
+(goskat) HAND [[1;33mD[0m] valid: [[1;33mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:HEART 
+	goskat: void:CLUBS SPADE HEART 
+	xskat: void:SPADE Grand 
+OPPONENT..FORCED MOVE
+TRICK [[1;31mD[0m [1;33mJ[0m [1;33mD[0m]
+8 points: 72 - 34
+
+SKAT: [ ]
+
+SCORING
+	Grand, Without 10 SCORE 264
+VICTORY: 72 - 34, SCORE: 264
+(xskat:2) hand: [] Bid up to: 0
+..Supported 10 in [[1;37m10[0m [1;37mK[0m [1;37mD[0m]..
+Losers: [[1;37mK[0m [1;37mD[0m [1;32mK[0m [1;32mD[0m [1;31mD[0m [1;31m9[0m [1;33mK[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;37m10[0m [1;37mK[0m [1;37mD[0m [1;32mK[0m [1;32mD[0m [1;31mA[0m [1;31mD[0m [1;31m9[0m [1;33mA[0m [1;33mK[0m], Full ones: 3, Losers: 7
+Longest suit CLUBS, 3 cards
+Extra suits: 2
+Hand: [[1;37m10[0m [1;37mK[0m [1;37mD[0m [1;32mK[0m [1;32mD[0m [1;31mA[0m [1;31mD[0m [1;31m9[0m [1;33mA[0m [1;33mK[0m], Estimation: 20
+Can win: 
+(goskat) hand: [[1;37m10[0m [1;37mK[0m [1;37mD[0m [1;32mK[0m [1;32mD[0m [1;31mA[0m [1;31mD[0m [1;31m9[0m [1;33mA[0m [1;33mK[0m] Bid up to: 0
+(xskat) hand: [] Bid up to: 0
+
+PLAYER ORDER: xskat:2 - goskat - xskat
+
+(xskat:2) vs (goskat)
+(goskat) Bid: 18 Highest: 0
+	(goskat) Pass 
+(xskat:2) vs (xskat)
+	(xskat) 18
+	(xskat:2) Yes
+	(xskat) Pass 
+Declarer &{{xskat:2 [] 0 0 true 596  5 2 1 0} []}
+(xskat:2) won the bidding
+
+([1;31mxskat:2[0m) TRUMP: CARO
+TRUMPS IN PLAY [[1;33mJ[0m [1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mA[0m [1;33m10[0m [1;33mK[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37mJ[0m]
+(goskat) HAND [[1;33mA[0m [1;33mK[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;32mK[0m [1;32mD[0m [1;31mA[0m [1;31mD[0m [1;31m9[0m] valid: [[1;33mA[0m [1;33mK[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;37mJ[0m..Winners: []
+Trick: [[1;37mJ[0m [1;33mK[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;37mJ[0m [1;33mK[0m [1;33m9[0m]
+6 points: 6 - 0
+TRUMPS IN PLAY [[1;33mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mA[0m [1;33m10[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31mJ[0m]
+(goskat) HAND [[1;33mA[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;32mK[0m [1;32mD[0m [1;31mA[0m [1;31mD[0m [1;31m9[0m] valid: [[1;33mA[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..FORCED MOVE
+Trick: [[1;31mJ[0m [1;33mA[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31mJ[0m [1;33mA[0m [1;32mJ[0m]
+15 points: 6 - 15
+TRUMPS IN PLAY [[1;33mJ[0m [1;33m10[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;32m7[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m7[0m [1;32mA[0m]
+(goskat) HAND [[1;37m10[0m [1;37mK[0m [1;37mD[0m [1;32mK[0m [1;32mD[0m [1;31mA[0m [1;31mD[0m [1;31m9[0m] valid: [[1;32mK[0m [1;32mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+Winners: []
+LOSING Cards (last)[[1;32mK[0m [1;32mD[0m]
+TRICK [[1;32m7[0m [1;32mA[0m [1;32mD[0m]
+14 points: 20 - 15
+TRUMPS IN PLAY [[1;33mJ[0m [1;33m10[0m [1;33mD[0m [1;33m8[0m [1;33m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33m8[0m]
+(goskat) HAND [[1;37m10[0m [1;37mK[0m [1;37mD[0m [1;32mK[0m [1;31mA[0m [1;31mD[0m [1;31m9[0m] valid: [[1;37m10[0m [1;37mK[0m [1;37mD[0m [1;32mK[0m [1;31mA[0m [1;31mD[0m [1;31m9[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;33m8[0m..TRUMP. There are higher trumps, SMEAR..Trick: [[1;33m8[0m [1;31mA[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33m8[0m [1;31mA[0m [1;33mD[0m]
+14 points: 20 - 29
+TRUMPS IN PLAY [[1;33mJ[0m [1;33m10[0m [1;33m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;32m10[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m10[0m [1;33m7[0m]
+(goskat) HAND [[1;37m10[0m [1;37mK[0m [1;37mD[0m [1;32mK[0m [1;31mD[0m [1;31m9[0m] valid: [[1;32mK[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:SPADE 
+	goskat: void:CARO 
+	xskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;32m10[0m [1;33m7[0m [1;32mK[0m]
+14 points: 34 - 29
+TRUMPS IN PLAY [[1;33mJ[0m [1;33m10[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31mK[0m]
+(goskat) HAND [[1;37m10[0m [1;37mK[0m [1;37mD[0m [1;31mD[0m [1;31m9[0m] valid: [[1;31mD[0m [1;31m9[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:SPADE 
+	goskat: void:CARO 
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;31mK[0m..higher cards in play, SMEAR..Trick: [[1;31mK[0m [1;31mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31mK[0m [1;31mD[0m [1;31m7[0m]
+7 points: 41 - 29
+TRUMPS IN PLAY [[1;33mJ[0m [1;33m10[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31m10[0m]
+(goskat) HAND [[1;37m10[0m [1;37mK[0m [1;37mD[0m [1;31m9[0m] valid: [[1;31m9[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:SPADE 
+	goskat: void:CARO 
+	xskat: void:
+OPPONENT..FORCED MOVE
+Trick: [[1;31m10[0m [1;31m9[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31m10[0m [1;31m9[0m [1;33mJ[0m]
+12 points: 41 - 41
+TRUMPS IN PLAY [[1;33m10[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;32m9[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m9[0m [1;33m10[0m]
+(goskat) HAND [[1;37m10[0m [1;37mK[0m [1;37mD[0m] valid: [[1;37m10[0m [1;37mK[0m [1;37mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:SPADE 
+	goskat: void:CARO 
+	xskat: void:HEART 
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+Winners: []
+LOSING Cards (last)[[1;37m10[0m [1;37mK[0m [1;37mD[0m]
+TRICK [[1;32m9[0m [1;33m10[0m [1;37mD[0m]
+13 points: 54 - 41
+TRUMPS IN PLAY []
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31m8[0m]
+(goskat) HAND [[1;37m10[0m [1;37mK[0m] valid: [[1;37m10[0m [1;37mK[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:SPADE 
+	goskat: void:SPADE CARO 
+	xskat: void:HEART 
+OPPONENT..MIDDLEHAND..Declarer leads [1;31m8[0m..Winners: []
+LOSING Cards (last)[[1;37m10[0m [1;37mK[0m]
+Trick: [[1;31m8[0m [1;37mK[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31m8[0m [1;37mK[0m [1;37m7[0m]
+4 points: 58 - 41
+TRUMPS IN PLAY []
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37mA[0m]
+(goskat) HAND [[1;37m10[0m] valid: [[1;37m10[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:SPADE 
+	goskat: void:CARO SPADE HEART 
+	xskat: void:HEART 
+OPPONENT..FORCED MOVE
+Trick: [[1;37mA[0m [1;37m10[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;37mA[0m [1;37m10[0m [1;37m8[0m]
+21 points: 79 - 41
+
+SKAT: [ ]
+
+SCORING
+	CARO, Without 10 SCORE 99
+VICTORY: 79 - 41, SCORE: 99
+
+Losers: [[1;33mK[0m [1;33m8[0m [1;33m7[0m [1;37mK[0m [1;37m8[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;33mK[0m [1;33m8[0m [1;33m7[0m [1;37mK[0m [1;37m8[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m], Full ones: 0, Losers: 10
+Longest suit HEART, 3 cards
+Extra suits: 0
+Hand: [[1;33mK[0m [1;33m8[0m [1;33m7[0m [1;37mK[0m [1;37m8[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m], Estimation: 0
+Can win: 
+(goskat) hand: [[1;33mK[0m [1;33m8[0m [1;33m7[0m [1;37mK[0m [1;37m8[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m] Bid up to: 0
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+
+PLAYER ORDER: goskat - xskat - xskat:2
+
+(goskat) vs (xskat)
+	(xskat) 18
+(goskat) Bid: 18 Highest: 0
+	(goskat) Pass
+(xskat) vs (xskat:2)
+	(xskat:2) Pass 
+Declarer &{{xskat [] 0 0 true 453  4 1 2 0} []}
+(xskat) won the bidding
+
+([1;31mxskat[0m) TRUMP: CLUBS
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m [1;37mA[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+(goskat) HAND [[1;37mK[0m [1;37m8[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m [1;33mK[0m [1;33m8[0m [1;33m7[0m] valid: [[1;37mK[0m [1;37m8[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m [1;33mK[0m [1;33m8[0m [1;33m7[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:
+	xskat:2: void:
+	goskat: void:
+OPPONENT..FOREHAND..No cards in previous suit ''..Declarer at MIDDLEHAND, playing LONG..not full ones if trumps in play..trumps still in play..LongestNonTrumpSuit HEART
+[[1;31mK[0m [1;31mD[0m [1;31m7[0m]Trick: [[1;31mK[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31mK[0m [1;31m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:HEART
+(xskat:2) TRICK [[1;31mK[0m [1;31m9[0m [1;31m8[0m]
+4 points: 0 - 4
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m [1;37mA[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+(goskat) HAND [[1;37mK[0m [1;37m8[0m [1;32m8[0m [1;32m7[0m [1;31mD[0m [1;31m7[0m [1;33mK[0m [1;33m8[0m [1;33m7[0m] valid: [[1;37mK[0m [1;37m8[0m [1;32m8[0m [1;32m7[0m [1;31mD[0m [1;31m7[0m [1;33mK[0m [1;33m8[0m [1;33m7[0m]
+	Previous suit: xskat:2:, goskat:HEART
+(goskat) 
+	xskat: void:
+	xskat:2: void:
+	goskat: void:
+OPPONENT..FOREHAND..Following previous suit..Trick: [[1;31mD[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31mD[0m [1;37mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:HEART
+(xskat:2) TRICK [[1;31mD[0m [1;37mA[0m [1;31mA[0m]
+25 points: 25 - 4
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;37mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:HEART
+(xskat:2) Trick: [[1;37mJ[0m [1;33mJ[0m]
+(goskat) HAND [[1;37mK[0m [1;37m8[0m [1;32m8[0m [1;32m7[0m [1;31m7[0m [1;33mK[0m [1;33m8[0m [1;33m7[0m] valid: [[1;37mK[0m [1;37m8[0m]
+	Previous suit: xskat:2:, goskat:HEART
+(goskat) 
+	xskat: void:HEART 
+	xskat:2: void:
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+Winners: []
+TRICK [[1;37mJ[0m [1;33mJ[0m [1;37m8[0m]
+4 points: 29 - 4
+TRUMPS IN PLAY [[1;32mJ[0m [1;31mJ[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;37m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:HEART
+(xskat:2) Trick: [[1;37m9[0m [1;37m10[0m]
+(goskat) HAND [[1;37mK[0m [1;32m8[0m [1;32m7[0m [1;31m7[0m [1;33mK[0m [1;33m8[0m [1;33m7[0m] valid: [[1;37mK[0m]
+	Previous suit: xskat:2:, goskat:HEART
+(goskat) 
+	xskat: void:HEART 
+	xskat:2: void:
+	goskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;37m9[0m [1;37m10[0m [1;37mK[0m]
+14 points: 29 - 18
+TRUMPS IN PLAY [[1;32mJ[0m [1;31mJ[0m [1;37mD[0m [1;37m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:HEART
+(xskat:2) Trick: [[1;33mA[0m]
+(goskat) HAND [[1;32m8[0m [1;32m7[0m [1;31m7[0m [1;33mK[0m [1;33m8[0m [1;33m7[0m] valid: [[1;33mK[0m [1;33m8[0m [1;33m7[0m]
+	Previous suit: xskat:2:, goskat:HEART
+(goskat) 
+	xskat: void:HEART 
+	xskat:2: void:
+	goskat: void:
+OPPONENT..MIDDLEHAND..Teammate leads [1;33mA[0m..SORT-VALUE no trumps [[1;33mK[0m [1;33m7[0m [1;33m8[0m]
+..FOLLOW [[1;33mK[0m [1;33m7[0m [1;33m8[0m]....other cards in play [[1;33m10[0m [1;33mD[0m [1;33m9[0m]..Trick: [[1;33mA[0m [1;33mK[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;33mA[0m [1;33mK[0m [1;37mD[0m]
+18 points: 47 - 18
+TRUMPS IN PLAY [[1;32mJ[0m [1;31mJ[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;32mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:HEART
+(xskat:2) Trick: [[1;32mA[0m [1;32mD[0m]
+(goskat) HAND [[1;32m8[0m [1;32m7[0m [1;31m7[0m [1;33m8[0m [1;33m7[0m] valid: [[1;32m8[0m [1;32m7[0m]
+	Previous suit: xskat:2:, goskat:HEART
+(goskat) 
+	xskat: void:HEART CARO 
+	xskat:2: void:
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+Winners: []
+LOSING Cards (last)[[1;32m7[0m [1;32m8[0m]
+TRICK [[1;32mA[0m [1;32mD[0m [1;32m8[0m]
+14 points: 61 - 18
+TRUMPS IN PLAY [[1;32mJ[0m [1;31mJ[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;32m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:HEART
+(xskat:2) Trick: [[1;32m9[0m [1;33mD[0m]
+(goskat) HAND [[1;32m7[0m [1;31m7[0m [1;33m8[0m [1;33m7[0m] valid: [[1;32m7[0m]
+	Previous suit: xskat:2:, goskat:HEART
+(goskat) 
+	xskat: void:HEART CARO 
+	xskat:2: void:SPADE 
+	goskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;32m9[0m [1;33mD[0m [1;32m7[0m]
+3 points: 64 - 18
+TRUMPS IN PLAY [[1;32mJ[0m [1;31mJ[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;32mK[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:HEART
+(xskat:2) Trick: [[1;32mK[0m [1;31mJ[0m]
+(goskat) HAND [[1;31m7[0m [1;33m8[0m [1;33m7[0m] valid: [[1;31m7[0m [1;33m8[0m [1;33m7[0m]
+	Previous suit: xskat:2:, goskat:HEART
+(goskat) 
+	xskat: void:HEART CARO 
+	xskat:2: void:SPADE 
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+teammate wins..largest not-sure winnerTRICK [[1;32mK[0m [1;31mJ[0m [1;31m7[0m]
+6 points: 64 - 24
+TRUMPS IN PLAY [[1;32mJ[0m [1;37m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:HEART
+(xskat:2) Trick: [[1;32mJ[0m]
+(goskat) HAND [[1;33m8[0m [1;33m7[0m] valid: [[1;33m8[0m [1;33m7[0m]
+	Previous suit: xskat:2:, goskat:HEART
+(goskat) 
+	xskat: void:HEART CARO 
+	xskat:2: void:SPADE 
+	goskat: void:SPADE 
+OPPONENT..MIDDLEHAND..Teammate leads [1;32mJ[0m..VOID on CLUBS..CLUBS still in play [[1;37m7[0m]..partner wins the trick, smear..Trick: [[1;32mJ[0m [1;33m7[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;32mJ[0m [1;33m7[0m [1;37m7[0m]
+2 points: 64 - 26
+TRUMPS IN PLAY []
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:HEART
+(xskat:2) Trick: [[1;33m9[0m]
+(goskat) HAND [[1;33m8[0m] valid: [[1;33m8[0m]
+	Previous suit: xskat:2:, goskat:HEART
+(goskat) 
+	xskat: void:HEART CARO 
+	xskat:2: void:SPADE 
+	goskat: void:CLUBS SPADE 
+OPPONENT..FORCED MOVE
+Trick: [[1;33m9[0m [1;33m8[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;33m9[0m [1;33m8[0m [1;32m10[0m]
+10 points: 64 - 36
+
+SKAT: [ ]
+
+SCORING
+	CLUBS, Without 10 SCORE 132
+VICTORY: 64 - 36, SCORE: 132
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+..Supported 10 in [[1;31m10[0m [1;31mK[0m [1;31mD[0m]..
+Losers: [[1;32m7[0m [1;31mK[0m [1;31mD[0m [1;33mK[0m [1;33m9[0m [1;33m7[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;32m7[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;33mK[0m [1;33m9[0m [1;33m7[0m], Full ones: 1, Losers: 6
+Longest suit HEART, 6 cards
+Extra suits: 0
+Hand: [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;32m7[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;33mK[0m [1;33m9[0m [1;33m7[0m], Estimation: 40
+Can win: SUIT
+HighestBid 40
+(goskat) hand: [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;32m7[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;33mK[0m [1;33m9[0m [1;33m7[0m] Bid up to: 40
+
+PLAYER ORDER: xskat - xskat:2 - goskat
+
+(xskat) vs (xskat:2)
+	(xskat:2) Pass 
+(xskat) vs (goskat)
+(goskat) Bid: 18 Highest: 40
+	(goskat) 18
+	(xskat) Pass
+Declarer &{{goskat [{CLUBS J} {SPADE J} {HEART J} {SPADE 7} {HEART 10} {HEART K} {HEART D} {CARO K} {CARO 9} {CARO 7}] 40 0 true 93  3 0 3 0} false true HEART}
+(goskat) won the bidding
+SKAT BEF: [[1;31m7[0m [1;37m10[0m]
+FULL HAND [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;37m10[0m [1;32m7[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m [1;33mK[0m [1;33m9[0m [1;33m7[0m]
+..Supported 10 in [[1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m]..
+Losers: [[1;32m7[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m [1;33mK[0m [1;33m9[0m [1;33m7[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;32m7[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;33mK[0m [1;33m9[0m [1;33m7[0m [1;31m7[0m [1;37m10[0m], Full ones: 1, Losers: 7
+
+AFTER SKAT subtracting 2 losers
+Longest suit HEART, 7 cards
+Extra suits: 0
+Hand: [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;32m7[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;33mK[0m [1;33m9[0m [1;33m7[0m [1;31m7[0m [1;37m10[0m], Estimation: 40
+Can win: SUIT
+HighestBid 40
+New high bid 40
+BLANK [[1;37m10[0m [1;32m7[0m]
+SKAT AFT: [[1;37m10[0m [1;32m7[0m]
+(goskat) Hand [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m [1;33mK[0m [1;33m9[0m [1;33m7[0m]
+
+([1;31mgoskat[0m) TRUMP: HEART
+TRUMPS IN PLAY [[1;31mJ[0m [1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;31mA[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m [1;31m8[0m [1;31m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;33mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;33mA[0m [1;33m8[0m]
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m [1;33mK[0m [1;33m9[0m [1;33m7[0m] valid: [[1;33mK[0m [1;33m9[0m [1;33m7[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:
+DECLARER BACKHAND Following normal suit...winners []...CHECKING the A... in trick [[1;33mA[0m [1;33m8[0m], valid [[1;33mK[0m [1;33m9[0m [1;33m7[0m], played [[1;33mA[0m [1;33m8[0m]..Winners: []
+LOSING Cards (last)[[1;33mK[0m [1;33m7[0m [1;33m9[0m]
+TRICK [[1;33mA[0m [1;33m8[0m [1;33m9[0m]
+11 points: 0 - 11
+TRUMPS IN PLAY [[1;31mJ[0m [1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;31mA[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m9[0m [1;31m8[0m [1;31m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;33m10[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;33m10[0m [1;31m9[0m]
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m [1;33mK[0m [1;33m7[0m] valid: [[1;33mK[0m [1;33m7[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:CARO 
+DECLARER BACKHAND Following normal suit...winners []...CHECKING the A... in trick [[1;33m10[0m [1;31m9[0m], valid [[1;33mK[0m [1;33m7[0m], played [[1;33mA[0m [1;33m8[0m [1;33m9[0m [1;33m10[0m [1;31m9[0m]..Winners: []
+LOSING Cards (last)[[1;33mK[0m [1;33m7[0m]
+TRICK [[1;33m10[0m [1;31m9[0m [1;33m7[0m]
+10 points: 0 - 21
+TRUMPS IN PLAY [[1;31mJ[0m [1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;31mA[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m8[0m [1;31m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;37m7[0m]
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m [1;33mK[0m] valid: [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m [1;33mK[0m]
+([1;31mgoskat[0m) 
+	goskat: void:
+	xskat: void:
+	xskat:2: void:CARO 
+DECLARER MIDDLEHAND zero value..sortedValueNoTrumps last [[1;33mK[0m]..throwing off number (even in AKX)..Trick: [[1;37m7[0m [1;33mK[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) TRICK [[1;37m7[0m [1;33mK[0m [1;37mA[0m]
+15 points: 0 - 36
+TRUMPS IN PLAY [[1;31mJ[0m [1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;31mA[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m8[0m [1;31m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;33mD[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) Trick: [[1;33mD[0m [1;31m8[0m]
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m] valid: [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CLUBS 
+	xskat: void:
+	xskat:2: void:CARO 
+DECLARER BACKHAND TRUMP OR No cards of suit played...CHECKING the A... in trick [[1;33mD[0m [1;31m8[0m], valid [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m], played [[1;33mA[0m [1;33m8[0m [1;33m9[0m [1;33m10[0m [1;31m9[0m [1;33m7[0m [1;37m7[0m [1;33mK[0m [1;37mA[0m [1;33mD[0m [1;31m8[0m]..Winners: [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;31m10[0m [1;31mK[0m [1;31mD[0m]
+TRICK [[1;33mD[0m [1;31m8[0m [1;31m10[0m]
+13 points: 13 - 36
+TRUMPS IN PLAY [[1;31mJ[0m [1;37mJ[0m [1;32mJ[0m [1;33mJ[0m [1;31mA[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m] valid: [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO CLUBS 
+	xskat: void:
+	xskat:2: void:CARO 
+DECLARER FOREHAND ..other TRUMPS in game: [[1;31mA[0m [1;33mJ[0m]..own TRUMPS: [[1;31mJ[0m [1;37mJ[0m [1;32mJ[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m]..sure winners: [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m]..high losers: []..more than one sure winner..Trick: [[1;31mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;31mJ[0m [1;31mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;31mJ[0m [1;31mA[0m [1;33mJ[0m]
+15 points: 28 - 36
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;37mJ[0m [1;32mJ[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m] valid: [[1;37mJ[0m [1;32mJ[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO CLUBS 
+	xskat: void:
+	xskat:2: void:CARO 
+DECLARER FOREHAND  -TRUMPS exhausted: Hand: [[1;37mJ[0m [1;32mJ[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m] LongestNonTrumpSuit CLUBS
+[]... DEBUG ... VALID: [[1;37mJ[0m [1;32mJ[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m] no highest long. Returning: [1;37mJ[0m
+Trick: [[1;37mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;37mJ[0m [1;37m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;37mJ[0m [1;37m9[0m [1;32m8[0m]
+2 points: 30 - 36
+TRUMPS IN PLAY [[1;32mJ[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;32mJ[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m] valid: [[1;32mJ[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CLUBS CARO 
+	xskat: void:HEART 
+	xskat:2: void:HEART CARO 
+DECLARER FOREHAND  -TRUMPS exhausted: Hand: [[1;32mJ[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m] LongestNonTrumpSuit CLUBS
+[]... DEBUG ... VALID: [[1;32mJ[0m [1;31mK[0m [1;31mD[0m [1;31m7[0m] no highest long. Returning: [1;32mJ[0m
+Trick: [[1;32mJ[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;32mJ[0m [1;32mD[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;32mJ[0m [1;32mD[0m [1;37m8[0m]
+5 points: 35 - 36
+TRUMPS IN PLAY [[1;31mK[0m [1;31mD[0m [1;31m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;31mK[0m [1;31mD[0m [1;31m7[0m] valid: [[1;31mK[0m [1;31mD[0m [1;31m7[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CARO CLUBS 
+	xskat: void:HEART 
+	xskat:2: void:HEART CARO 
+DECLARER FOREHAND  -TRUMPS exhausted: Hand: [[1;31mK[0m [1;31mD[0m [1;31m7[0m] LongestNonTrumpSuit CLUBS
+[]... DEBUG ... VALID: [[1;31mK[0m [1;31mD[0m [1;31m7[0m] no highest long. Returning: [1;31mK[0m
+Trick: [[1;31mK[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;31mK[0m [1;32mK[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;31mK[0m [1;32mK[0m [1;32m9[0m]
+8 points: 43 - 36
+TRUMPS IN PLAY [[1;31mD[0m [1;31m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;31mD[0m [1;31m7[0m] valid: [[1;31mD[0m [1;31m7[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CLUBS CARO 
+	xskat: void:HEART 
+	xskat:2: void:HEART CARO 
+DECLARER FOREHAND  -TRUMPS exhausted: Hand: [[1;31mD[0m [1;31m7[0m] LongestNonTrumpSuit CLUBS
+[]... DEBUG ... VALID: [[1;31mD[0m [1;31m7[0m] no highest long. Returning: [1;31mD[0m
+Trick: [[1;31mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;31mD[0m [1;37mK[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;31mD[0m [1;37mK[0m [1;37mD[0m]
+10 points: 53 - 36
+TRUMPS IN PLAY [[1;31m7[0m]
+
+Trick: []
+([1;31mgoskat[0m) HAND [[1;31m7[0m] valid: [[1;31m7[0m]
+([1;31mgoskat[0m) 
+	goskat: void:CLUBS CARO 
+	xskat: void:HEART 
+	xskat:2: void:CARO HEART 
+DECLARER ..FORCED MOVE.. Trick: [[1;31m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat) Trick: [[1;31m7[0m [1;32mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:, xskat:2:
+(xskat:2) TRICK [[1;31m7[0m [1;32mA[0m [1;32m10[0m]
+21 points: 74 - 36
+
+SKAT: [[1;37m10[0m [1;32m7[0m]
+
+SCORING
+	HEART, With 3 SCORE 40
+VICTORY: 84 - 36, SCORE: 40
+(xskat:2) hand: [] Bid up to: 0
+..Supported 10 in [[1;33m10[0m [1;33mD[0m [1;33m9[0m]..
+Losers: [[1;31mK[0m [1;31m7[0m [1;37m7[0m [1;32mK[0m [1;32m8[0m [1;32m7[0m [1;33mD[0m [1;33m9[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;31mK[0m [1;31m7[0m [1;37mA[0m [1;37m7[0m [1;32mK[0m [1;32m8[0m [1;32m7[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m], Full ones: 2, Losers: 8
+Longest suit CARO, 3 cards
+Extra suits: 1
+Hand: [[1;31mK[0m [1;31m7[0m [1;37mA[0m [1;37m7[0m [1;32mK[0m [1;32m8[0m [1;32m7[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m], Estimation: 10
+Can win: 
+(goskat) hand: [[1;31mK[0m [1;31m7[0m [1;37mA[0m [1;37m7[0m [1;32mK[0m [1;32m8[0m [1;32m7[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m] Bid up to: 0
+(xskat) hand: [] Bid up to: 0
+
+PLAYER ORDER: xskat:2 - goskat - xskat
+
+(xskat:2) vs (goskat)
+(goskat) Bid: 18 Highest: 0
+	(goskat) Pass 
+(xskat:2) vs (xskat)
+	(xskat) Pass 
+	(xskat:2) Yes 18
+Declarer &{{xskat:2 [] 0 0 true 695  6 2 1 0} []}
+(xskat:2) won the bidding
+
+([1;31mxskat:2[0m) TRUMP: Grand
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33mJ[0m]
+(goskat) HAND [[1;37mA[0m [1;37m7[0m [1;32mK[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m7[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m] valid: [[1;37mA[0m [1;37m7[0m [1;32mK[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m7[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;33mJ[0m..TRUMP. There are higher trumps, SMEAR..Trick: [[1;33mJ[0m [1;37mA[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33mJ[0m [1;37mA[0m [1;37mJ[0m]
+15 points: 0 - 15
+TRUMPS IN PLAY [[1;32mJ[0m [1;31mJ[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;37m8[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37m8[0m [1;32mJ[0m]
+(goskat) HAND [[1;37m7[0m [1;32mK[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m7[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m] valid: [[1;37m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:Grand 
+	xskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;37m8[0m [1;32mJ[0m [1;37m7[0m]
+2 points: 2 - 15
+TRUMPS IN PLAY [[1;31mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33mA[0m]
+(goskat) HAND [[1;32mK[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m7[0m [1;33m10[0m [1;33mD[0m [1;33m9[0m] valid: [[1;33m10[0m [1;33mD[0m [1;33m9[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:Grand 
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;33mA[0m..Winners: []
+LOSING Cards (last)[[1;33m10[0m [1;33mD[0m [1;33m9[0m]
+Trick: [[1;33mA[0m [1;33m9[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33mA[0m [1;33m9[0m [1;33m7[0m]
+11 points: 13 - 15
+TRUMPS IN PLAY [[1;31mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31mA[0m]
+(goskat) HAND [[1;32mK[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m7[0m [1;33m10[0m [1;33mD[0m] valid: [[1;31mK[0m [1;31m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:Grand 
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;31mA[0m..Winners: []
+LOSING Cards (last)[[1;31mK[0m [1;31m7[0m]
+Trick: [[1;31mA[0m [1;31m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31mA[0m [1;31m7[0m [1;31m9[0m]
+11 points: 24 - 15
+TRUMPS IN PLAY [[1;31mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31m10[0m]
+(goskat) HAND [[1;32mK[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;33m10[0m [1;33mD[0m] valid: [[1;31mK[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:Grand 
+	xskat: void:
+OPPONENT..FORCED MOVE
+Trick: [[1;31m10[0m [1;31mK[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31m10[0m [1;31mK[0m [1;33m8[0m]
+14 points: 38 - 15
+TRUMPS IN PLAY [[1;31mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31mD[0m]
+(goskat) HAND [[1;32mK[0m [1;32m8[0m [1;32m7[0m [1;33m10[0m [1;33mD[0m] valid: [[1;32mK[0m [1;32m8[0m [1;32m7[0m [1;33m10[0m [1;33mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:Grand 
+	xskat: void:HEART 
+OPPONENT..MIDDLEHAND..Declarer leads [1;31mD[0m..Winners: []
+LOSING Cards (last)[[1;33m10[0m [1;32mK[0m [1;33mD[0m [1;32m7[0m [1;32m8[0m]
+Trick: [[1;31mD[0m [1;32m8[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31mD[0m [1;32m8[0m [1;37m9[0m]
+3 points: 41 - 15
+TRUMPS IN PLAY [[1;31mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31m8[0m]
+(goskat) HAND [[1;32mK[0m [1;32m7[0m [1;33m10[0m [1;33mD[0m] valid: [[1;32mK[0m [1;32m7[0m [1;33m10[0m [1;33mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:Grand HEART 
+	xskat: void:HEART 
+OPPONENT..MIDDLEHAND..Declarer leads [1;31m8[0m..Winners: []
+LOSING Cards (last)[[1;33m10[0m [1;32mK[0m [1;33mD[0m [1;32m7[0m]
+Trick: [[1;31m8[0m [1;32m7[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;31m8[0m [1;32m7[0m [1;37mD[0m]
+3 points: 44 - 15
+TRUMPS IN PLAY [[1;31mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mA[0m]
+(goskat) HAND [[1;32mK[0m [1;33m10[0m [1;33mD[0m] valid: [[1;32mK[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:HEART Grand 
+	xskat: void:HEART 
+OPPONENT..FORCED MOVE
+Trick: [[1;32mA[0m [1;32mK[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;32mA[0m [1;32mK[0m [1;32m9[0m]
+15 points: 59 - 15
+TRUMPS IN PLAY [[1;31mJ[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mD[0m]
+(goskat) HAND [[1;33m10[0m [1;33mD[0m] valid: [[1;33m10[0m [1;33mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:HEART Grand 
+	xskat: void:HEART 
+OPPONENT..MIDDLEHAND..Declarer leads [1;32mD[0m..higher cards in play, SMEAR..Trick: [[1;32mD[0m [1;33m10[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;32mD[0m [1;33m10[0m [1;32m10[0m]
+23 points: 59 - 38
+TRUMPS IN PLAY [[1;31mJ[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;37mK[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37mK[0m [1;31mJ[0m]
+(goskat) HAND [[1;33mD[0m] valid: [[1;33mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS 
+	goskat: void:SPADE HEART Grand 
+	xskat: void:HEART 
+OPPONENT..FORCED MOVE
+TRICK [[1;37mK[0m [1;31mJ[0m [1;33mD[0m]
+9 points: 68 - 38
+
+SKAT: [ ]
+
+SCORING
+	Grand, Without 10 SCORE 264
+VICTORY: 68 - 38, SCORE: 264
+
+Losers: [[1;37m8[0m [1;32mD[0m [1;31m9[0m [1;31m7[0m [1;33m7[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;37m8[0m [1;32m10[0m [1;32mD[0m [1;31m9[0m [1;31m7[0m [1;33m10[0m [1;33m7[0m], Full ones: 0, Losers: 5
+Longest suit SPADE, 5 cards
+Extra suits: 0
+Hand: [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;37m8[0m [1;32m10[0m [1;32mD[0m [1;31m9[0m [1;31m7[0m [1;33m10[0m [1;33m7[0m], Estimation: 40
+Can win: 
+(goskat) hand: [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;37m8[0m [1;32m10[0m [1;32mD[0m [1;31m9[0m [1;31m7[0m [1;33m10[0m [1;33m7[0m] Bid up to: 0
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+
+PLAYER ORDER: goskat - xskat - xskat:2
+
+(goskat) vs (xskat)
+	(xskat) Pass 
+(goskat) vs (xskat:2)
+	(xskat:2) Pass 
+(goskat) Bid: 18 Highest: 0
+	(goskat) Pass
+ALL PASSED
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+
+Losers: [[1;37mD[0m [1;37m8[0m [1;37m7[0m [1;32mK[0m [1;32mD[0m [1;31mD[0m [1;33mD[0m [1;33m9[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;37mD[0m [1;37m8[0m [1;37m7[0m [1;32mK[0m [1;32mD[0m [1;31m10[0m [1;31mD[0m [1;33mA[0m [1;33mD[0m [1;33m9[0m], Full ones: 1, Losers: 8
+Longest suit CLUBS, 3 cards
+Extra suits: 1
+Hand: [[1;37mD[0m [1;37m8[0m [1;37m7[0m [1;32mK[0m [1;32mD[0m [1;31m10[0m [1;31mD[0m [1;33mA[0m [1;33mD[0m [1;33m9[0m], Estimation: 10
+Can win: 
+(goskat) hand: [[1;37mD[0m [1;37m8[0m [1;37m7[0m [1;32mK[0m [1;32mD[0m [1;31m10[0m [1;31mD[0m [1;33mA[0m [1;33mD[0m [1;33m9[0m] Bid up to: 0
+
+PLAYER ORDER: xskat - xskat:2 - goskat
+
+(xskat) vs (xskat:2)
+	(xskat:2) 18
+	(xskat) Pass
+(xskat:2) vs (goskat)
+(goskat) Bid: 20 Highest: 0
+	(goskat) Pass 
+Declarer &{{xskat:2 [] 0 0 true 959  7 2 1 0} []}
+(xskat:2) won the bidding
+
+([1;31mxskat:2[0m) TRUMP: SPADE
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32mA[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;31mA[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;31mA[0m [1;32mA[0m]
+(goskat) HAND [[1;32mK[0m [1;32mD[0m [1;37mD[0m [1;37m8[0m [1;37m7[0m [1;31m10[0m [1;31mD[0m [1;33mA[0m [1;33mD[0m [1;33m9[0m] valid: [[1;31m10[0m [1;31mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:HEART 
+	goskat: void:
+	xskat: void:
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+Winners: []
+LOSING Cards (last)[[1;31m10[0m [1;31mD[0m]
+TRICK [[1;31mA[0m [1;32mA[0m [1;31mD[0m]
+25 points: 25 - 0
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;31mJ[0m [1;33mJ[0m [1;32m10[0m [1;32mK[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33mJ[0m]
+(goskat) HAND [[1;32mK[0m [1;32mD[0m [1;37mD[0m [1;37m8[0m [1;37m7[0m [1;31m10[0m [1;33mA[0m [1;33mD[0m [1;33m9[0m] valid: [[1;32mK[0m [1;32mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:HEART 
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;33mJ[0m..TRUMP. There are higher trumps, SMEAR..Trick: [[1;33mJ[0m [1;32mK[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33mJ[0m [1;32mK[0m [1;31mJ[0m]
+8 points: 25 - 8
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;32m10[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;37m9[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37m9[0m [1;37mA[0m]
+(goskat) HAND [[1;32mD[0m [1;37mD[0m [1;37m8[0m [1;37m7[0m [1;31m10[0m [1;33mA[0m [1;33mD[0m [1;33m9[0m] valid: [[1;37mD[0m [1;37m8[0m [1;37m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:HEART 
+	goskat: void:
+	xskat: void:
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+Winners: []
+LOSING Cards (last)[[1;37mD[0m [1;37m7[0m [1;37m8[0m]
+TRICK [[1;37m9[0m [1;37mA[0m [1;37m8[0m]
+11 points: 36 - 8
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mJ[0m [1;32m10[0m [1;32mD[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32mJ[0m]
+(goskat) HAND [[1;32mD[0m [1;37mD[0m [1;37m7[0m [1;31m10[0m [1;33mA[0m [1;33mD[0m [1;33m9[0m] valid: [[1;32mD[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:HEART 
+	goskat: void:
+	xskat: void:
+OPPONENT..FORCED MOVE
+Trick: [[1;32mJ[0m [1;32mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;32mJ[0m [1;32mD[0m [1;37mJ[0m]
+7 points: 36 - 15
+TRUMPS IN PLAY [[1;32m10[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+
+Trick: []
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) Trick: [[1;37m10[0m]
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;37m10[0m [1;32m8[0m]
+(goskat) HAND [[1;37mD[0m [1;37m7[0m [1;31m10[0m [1;33mA[0m [1;33mD[0m [1;33m9[0m] valid: [[1;37mD[0m [1;37m7[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS HEART 
+	goskat: void:
+	xskat: void:
+OPPONENT..OPP BACKHAND..
+ -- teammate leads --
+Winners: []
+LOSING Cards (last)[[1;37mD[0m [1;37m7[0m]
+TRICK [[1;37m10[0m [1;32m8[0m [1;37m7[0m]
+10 points: 46 - 15
+TRUMPS IN PLAY [[1;32m10[0m [1;32m9[0m [1;32m7[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m9[0m]
+(goskat) HAND [[1;37mD[0m [1;31m10[0m [1;33mA[0m [1;33mD[0m [1;33m9[0m] valid: [[1;37mD[0m [1;31m10[0m [1;33mA[0m [1;33mD[0m [1;33m9[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS HEART 
+	goskat: void:
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;32m9[0m..TRUMP. There are higher trumps, SMEAR..Trick: [[1;32m9[0m [1;33mA[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;32m9[0m [1;33mA[0m [1;32m7[0m]
+11 points: 57 - 15
+TRUMPS IN PLAY [[1;32m10[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33mK[0m]
+(goskat) HAND [[1;37mD[0m [1;31m10[0m [1;33mD[0m [1;33m9[0m] valid: [[1;33mD[0m [1;33m9[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS HEART 
+	goskat: void:SPADE 
+	xskat: void:
+OPPONENT..MIDDLEHAND..Declarer leads [1;33mK[0m..higher cards in play, SMEAR..Trick: [[1;33mK[0m [1;33mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33mK[0m [1;33mD[0m [1;33m8[0m]
+7 points: 64 - 15
+TRUMPS IN PLAY [[1;32m10[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33m10[0m]
+(goskat) HAND [[1;37mD[0m [1;31m10[0m [1;33m9[0m] valid: [[1;33m9[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS HEART 
+	goskat: void:SPADE 
+	xskat: void:
+OPPONENT..FORCED MOVE
+Trick: [[1;33m10[0m [1;33m9[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33m10[0m [1;33m9[0m [1;31m8[0m]
+10 points: 74 - 15
+TRUMPS IN PLAY [[1;32m10[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;33m7[0m]
+(goskat) HAND [[1;37mD[0m [1;31m10[0m] valid: [[1;37mD[0m [1;31m10[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS HEART 
+	goskat: void:SPADE 
+	xskat: void:CARO 
+OPPONENT..MIDDLEHAND..Declarer leads [1;33m7[0m..Winners: []
+LOSING Cards (last)[[1;31m10[0m [1;37mD[0m]
+Trick: [[1;33m7[0m [1;37mD[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;33m7[0m [1;37mD[0m [1;31m9[0m]
+3 points: 77 - 15
+TRUMPS IN PLAY [[1;32m10[0m]
+
+Trick: []
+([1;31mxskat:2[0m) HAND [] valid: []
+([1;31mxskat:2[0m) Trick: [[1;32m10[0m]
+(goskat) HAND [[1;31m10[0m] valid: [[1;31m10[0m]
+	Previous suit: goskat:, xskat:
+(goskat) 
+	xskat:2: void:CLUBS HEART 
+	goskat: void:SPADE CARO 
+	xskat: void:CARO 
+OPPONENT..FORCED MOVE
+Trick: [[1;32m10[0m [1;31m10[0m]
+(xskat) HAND [] valid: []
+	Previous suit: goskat:, xskat:
+(xskat) TRICK [[1;32m10[0m [1;31m10[0m [1;37mK[0m]
+24 points: 101 - 15
+
+SKAT: [ ]
+
+SCORING
+	SPADE, Without 10 Schneider SCORE 132
+VICTORY: 101 - 15, SCORE: 132
+(xskat:2) hand: [] Bid up to: 0
+
+Losers: [[1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m [1;37m7[0m [1;31mK[0m [1;31m7[0m [1;33m7[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m [1;37m10[0m [1;37m7[0m [1;31mK[0m [1;31m7[0m [1;33m10[0m [1;33m7[0m], Full ones: 0, Losers: 8
+Longest suit SPADE, 4 cards
+Extra suits: 0
+Hand: [[1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m [1;37m10[0m [1;37m7[0m [1;31mK[0m [1;31m7[0m [1;33m10[0m [1;33m7[0m], Estimation: 0
+Can win: 
+(goskat) hand: [[1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m [1;37m10[0m [1;37m7[0m [1;31mK[0m [1;31m7[0m [1;33m10[0m [1;33m7[0m] Bid up to: 0
+(xskat) hand: [] Bid up to: 0
+
+PLAYER ORDER: xskat:2 - goskat - xskat
+
+(xskat:2) vs (goskat)
+(goskat) Bid: 18 Highest: 0
+	(goskat) Pass 
+(xskat:2) vs (xskat)
+	(xskat) 18
+	(xskat:2) Yes
+	(xskat) 20
+	(xskat:2) Pass
+Declarer &{{xskat [] 0 0 true 585  5 1 2 0} []}
+(xskat) won the bidding
+
+([1;31mxskat[0m) TRUMP: CLUBS
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m [1;37mA[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;33mA[0m]
+(goskat) HAND [[1;37m10[0m [1;37m7[0m [1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m7[0m [1;33m10[0m [1;33m7[0m] valid: [[1;33m10[0m [1;33m7[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:
+	xskat:2: void:
+	goskat: void:
+OPPONENT..MIDDLEHAND..Teammate leads [1;33mA[0m..SORT-VALUE no trumps [[1;33m10[0m [1;33m7[0m]
+..FOLLOW [[1;33m10[0m [1;33m7[0m]....other cards in play [[1;33mK[0m [1;33mD[0m [1;33m9[0m [1;33m8[0m]..Trick: [[1;33mA[0m [1;33m10[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;33mA[0m [1;33m10[0m [1;37mA[0m]
+32 points: 32 - 0
+TRUMPS IN PLAY [[1;37mJ[0m [1;32mJ[0m [1;31mJ[0m [1;33mJ[0m [1;37m10[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;31mJ[0m [1;37mJ[0m]
+(goskat) HAND [[1;37m10[0m [1;37m7[0m [1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m7[0m [1;33m7[0m] valid: [[1;37m10[0m [1;37m7[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+teammate wins..largest not-sure winnerTRICK [[1;31mJ[0m [1;37mJ[0m [1;37m10[0m]
+14 points: 32 - 14
+TRUMPS IN PLAY [[1;32mJ[0m [1;33mJ[0m [1;37mK[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;33mK[0m]
+(goskat) HAND [[1;37m7[0m [1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m7[0m [1;33m7[0m] valid: [[1;33m7[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:
+	goskat: void:
+OPPONENT..FORCED MOVE
+Trick: [[1;33mK[0m [1;33m7[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;33mK[0m [1;33m7[0m [1;37mK[0m]
+8 points: 40 - 14
+TRUMPS IN PLAY [[1;32mJ[0m [1;33mJ[0m [1;37mD[0m [1;37m9[0m [1;37m8[0m [1;37m7[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;33mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;33mJ[0m [1;37m8[0m]
+(goskat) HAND [[1;37m7[0m [1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m7[0m] valid: [[1;37m7[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:
+	goskat: void:
+OPPONENT..FORCED MOVE
+TRICK [[1;33mJ[0m [1;37m8[0m [1;37m7[0m]
+2 points: 42 - 14
+TRUMPS IN PLAY [[1;32mJ[0m [1;37mD[0m [1;37m9[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;32mJ[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;32mJ[0m [1;33m8[0m]
+(goskat) HAND [[1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m7[0m] valid: [[1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m7[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:CLUBS 
+	goskat: void:
+OPPONENT..OPP BACKHAND..
+Winners: []
+TRICK [[1;32mJ[0m [1;33m8[0m [1;31m7[0m]
+2 points: 44 - 14
+TRUMPS IN PLAY [[1;37mD[0m [1;37m9[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31mA[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;31mA[0m [1;31m8[0m]
+(goskat) HAND [[1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m] valid: [[1;31mK[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:CLUBS 
+	goskat: void:CLUBS 
+OPPONENT..FORCED MOVE
+TRICK [[1;31mA[0m [1;31m8[0m [1;31mK[0m]
+15 points: 59 - 14
+TRUMPS IN PLAY [[1;37mD[0m [1;37m9[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;31m9[0m [1;31m10[0m]
+(goskat) HAND [[1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m] valid: [[1;32mK[0m [1;32m9[0m [1;32m8[0m [1;32m7[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:CLUBS 
+	goskat: void:CLUBS 
+OPPONENT..OPP BACKHAND..
+teammate wins..largest not-sure winnerTRICK [[1;31m9[0m [1;31m10[0m [1;32mK[0m]
+14 points: 59 - 28
+TRUMPS IN PLAY [[1;37mD[0m [1;37m9[0m]
+
+Trick: []
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;33mD[0m]
+(goskat) HAND [[1;32m9[0m [1;32m8[0m [1;32m7[0m] valid: [[1;32m9[0m [1;32m8[0m [1;32m7[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:CLUBS 
+	goskat: void:CLUBS HEART 
+OPPONENT..MIDDLEHAND..Teammate leads [1;33mD[0m..VOID on CARO..CARO still in play [[1;33m9[0m]..partner wins the trick, smear..Trick: [[1;33mD[0m [1;32m7[0m]
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) TRICK [[1;33mD[0m [1;32m7[0m [1;37mD[0m]
+6 points: 65 - 28
+TRUMPS IN PLAY [[1;37m9[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;31mD[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;31mD[0m [1;33m9[0m]
+(goskat) HAND [[1;32m9[0m [1;32m8[0m] valid: [[1;32m9[0m [1;32m8[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:CLUBS HEART 
+	goskat: void:HEART CARO CLUBS 
+OPPONENT..OPP BACKHAND..
+Winners: []
+LOSING Cards (last)[[1;32m8[0m [1;32m9[0m]
+TRICK [[1;31mD[0m [1;33m9[0m [1;32m9[0m]
+3 points: 68 - 28
+TRUMPS IN PLAY [[1;37m9[0m]
+
+Trick: []
+([1;31mxskat[0m) HAND [] valid: []
+([1;31mxskat[0m) Trick: [[1;37m9[0m]
+(xskat:2) HAND [] valid: []
+	Previous suit: xskat:2:, goskat:
+(xskat:2) Trick: [[1;37m9[0m [1;32mA[0m]
+(goskat) HAND [[1;32m8[0m] valid: [[1;32m8[0m]
+	Previous suit: xskat:2:, goskat:
+(goskat) 
+	xskat: void:CARO 
+	xskat:2: void:CLUBS HEART 
+	goskat: void:CLUBS HEART CARO 
+OPPONENT..FORCED MOVE
+TRICK [[1;37m9[0m [1;32mA[0m [1;32m8[0m]
+11 points: 79 - 28
+
+SKAT: [ ]
+
+SCORING
+	CLUBS, Without 10 SCORE 132
+VICTORY: 79 - 28, SCORE: 132
+
+Losers: [[1;37mK[0m [1;37m9[0m [1;37m8[0m [1;32mK[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m9[0m [1;33mK[0m [1;33mD[0m], 0 jacks
+
+Considering GRAND in Hand: [[1;37mK[0m [1;37m9[0m [1;37m8[0m [1;32mK[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m9[0m [1;33mK[0m [1;33mD[0m], Full ones: 0, Losers: 10
+Longest suit CLUBS, 3 cards
+Extra suits: 0
+Hand: [[1;37mK[0m [1;37m9[0m [1;37m8[0m [1;32mK[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m9[0m [1;33mK[0m [1;33mD[0m], Estimation: 0
+Can win: 
+(goskat) hand: [[1;37mK[0m [1;37m9[0m [1;37m8[0m [1;32mK[0m [1;32m8[0m [1;32m7[0m [1;31mK[0m [1;31m9[0m [1;33mK[0m [1;33mD[0m] Bid up to: 0
+(xskat) hand: [] Bid up to: 0
+(xskat:2) hand: [] Bid up to: 0
+
+PLAYER ORDER: goskat - xskat - xskat:2
+
+(goskat) vs (xskat)
+	(xskat) 18
+(goskat) Bid: 18 Highest: 0
+	(goskat) Pass
+(xskat) vs (xskat:2)
+	(xskat:2) Pass 

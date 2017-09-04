@@ -10,7 +10,7 @@ import (
 	"log"
 	"strconv"
 	// "errors"
-	// "time"
+	"time"
 )
 
 var username = "goskat"
@@ -25,13 +25,12 @@ var	waitServer chan string
 
 var connR io.Reader
 var connW io.Writer
+var real = true
 
 func Connect(usr, pwd string) error {
 	waitServer = make(chan string)
 
 	// var conn io.ReadWriter
-
-	real := true
 
 	// connect to this socket
 	if real {
@@ -240,6 +239,9 @@ func parseServer(t string) {
 			return
 		}
 		if s[3] == "end" {
+			//
+			// TODO: get cards info to calculate score based on declarer cards and skat
+			//
 			waitServer <- "OK"
 			return
 		}
@@ -347,12 +349,13 @@ func parseServer(t string) {
 					gamePlayers[0].setHand(sortSuit("", cards))
 					gamePlayers[1].setName(opp1name)
 					gamePlayers[2].setName(opp2name)
+					players = []PlayerI{gamePlayers[0], gamePlayers[1], gamePlayers[2]}
 					if playerNr == 1 {
-						gamePlayers = rotatePlayers(gamePlayers)
-						gamePlayers = rotatePlayers(gamePlayers)
+						players = rotatePlayers(players)
+						players = rotatePlayers(players)
 					}
 					if playerNr == 2 {
-						gamePlayers = rotatePlayers(gamePlayers)
+						players = rotatePlayers(players)
 					}
 					initState()
 					//DealCards()
@@ -361,7 +364,7 @@ func parseServer(t string) {
 						if bidPhase() == 0 {
 							fmt.Println("ISS: All passed")
 							// ??????????????
-							// return 0
+							return 
 						}
 						gs := declareAndPlay()
 						fmt.Println("ISS: gs:", gs)
@@ -369,6 +372,7 @@ func parseServer(t string) {
 					return
 				}
 			}
+
 
 			// D.??.?? 179.9 239.9 240.0   declare game and skat
 			if len(action) > 6 && player != "w" {
@@ -391,7 +395,11 @@ func parseServer(t string) {
 				}
 				fmt.Printf("Player: %s declares %s\n", player, issTrump)
 
-				declareChannel <- issTrump
+
+				if player != fmt.Sprintf("%d", playerNr) { // only sent to ISSPLAYER
+					declareChannel <- issTrump
+				}
+
 
 				sk1 := s[1]
 				if sk1 != "??" {
@@ -539,6 +547,13 @@ func iss_declare(trump string, skat []Card) {
 }
 
 func sendToServer(s string) {
+	if real {
+		delayMs = 1000
+		time.Sleep(time.Duration(delayMs) * time.Millisecond)
+	} else {
+		delayMs = 1000
+		time.Sleep(time.Duration(delayMs) * time.Millisecond)		
+	}
 	fmt.Printf("SENT: %s\n", yellow(s))
 	fmt.Fprintf(connW, "%s\n", s)
 }
