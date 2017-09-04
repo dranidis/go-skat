@@ -8,7 +8,7 @@ import (
 
 type PlayerI interface {
 	playerTactic(s *SuitState, c []Card) Card
-	accepts(bidIndex int) bool
+	accepts(bidIndex int, listens bool) bool
 	declareTrump() string
 	discardInSkat(skat []Card)
 	pickUpSkat(skat []Card) bool
@@ -51,7 +51,7 @@ func (p *HumanPlayer) setPartner(partner PlayerI) {
 
 }
 
-func (p *HumanPlayer) accepts(bidIndex int) bool {
+func (p *HumanPlayer) accepts(bidIndex int, listens bool) bool {
 
 	fmt.Printf("HAND: %v", p.getHand())
 

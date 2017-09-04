@@ -19,7 +19,7 @@ func (p *HtmlPlayer) setPartner(partner PlayerI) {
 
 }
 
-func (p *HtmlPlayer) accepts(bidIndex int) bool {
+func (p *HtmlPlayer) accepts(bidIndex int, listens bool) bool {
 
 	fmt.Printf("HAND: %v", p.getHand())
 

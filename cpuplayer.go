@@ -955,10 +955,7 @@ func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 
 func printCollectedInfo(s *SuitState) {
 	if s.declarer == nil || s.opp1 == nil || s.opp2 == nil {
-<<<<<<< HEAD
-=======
 		debugTacticsLog("NOT ABLE TO PRINT INFO. Players nil s.declarer:%v s.opp1:%v s.opp2:%v \n", s.declarer, s.opp1, s.opp2)
->>>>>>> c0b0c021dd043518d22db38ffeca27b7746442e0
 		return
 	}
 	debugTacticsLog("\n\t%s: void:", s.declarer.getName())
@@ -994,11 +991,15 @@ avg: -75 -- -178 with random play
 /*
 avg: -25 with random play, 25 with random play and good discard
 */
-func (p *Player) accepts(bidIndex int) bool {
+func (p *Player) accepts(bidIndex int, listens bool) bool {
 	debugTacticsLog("(%s) Bid: %d Highest: %d\n", p.name, bids[bidIndex], p.highestBid)
 	if bids[bidIndex] <= p.highestBid {
 		if issConnect {
-			playBid(fmt.Sprintf("%d", bids[bidIndex]))
+			if listens {
+				playBid("y")
+			} else {
+				playBid(fmt.Sprintf("%d", bids[bidIndex]))
+			}
 		}
 		return true
 	}
@@ -1265,6 +1266,13 @@ func (p *Player) discardInSkat(skat []Card) {
 }
 
 func (p *Player) pickUpSkat(skat []Card) bool {
+	if issConnect {
+		pickUpSkat()
+		card1 := <-skatChannel
+		card2 := <-skatChannel
+		skat = []Card{card1, card2}
+	}
+
 	debugTacticsLog("SKAT BEF: %v\n", skat)
 	hand := make([]Card, 10)
 	copy(hand, p.getHand())

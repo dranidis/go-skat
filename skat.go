@@ -31,6 +31,7 @@ var logFileName = "gameLog.txt"
 
 var playChannel chan CardPlayed
 var trickChannel chan Card
+var skatChannel chan Card
 var winnerChannel chan string
 var bidChannel chan string
 var trumpChannel chan string
@@ -267,9 +268,9 @@ var bids = []int{
 }
 
 func bidding(listener, speaker PlayerI, bidIndex int) (int, PlayerI) {
-	for speaker.accepts(bidIndex) {
+	for speaker.accepts(bidIndex, false) {
 		bidLog("\t(%v) %d\n", speaker.getName(), bids[bidIndex])
-		if listener.accepts(bidIndex) {
+		if listener.accepts(bidIndex, true) {
 			//bidLog("Yes %d\n", bids[bidIndex])
 			bidLog("\t(%v) Yes\n", listener.getName())
 			bidIndex++
@@ -292,7 +293,7 @@ func bid(players []PlayerI) (int, PlayerI) {
 	bidLog("(%v) vs (%v)\n", p.getName(), players[2].getName())
 	bidIndex, p = bidding(p, players[2], bidIndex)
 	if bidIndex == -1 {
-		if players[0].accepts(0) {
+		if players[0].accepts(0, false) { // speaks at end
 			bidLog("\t(%s) Yes %d\n", players[0].getName(), bids[0])
 			return bids[0], players[0]
 		} else {
@@ -452,7 +453,7 @@ func initGame() {
 	gameLog("\nPLAYER ORDER: %s - %s - %s\n\n", players[0].getName(), players[1].getName(), players[2].getName())
 }
 
-func declareAndPlay(players []PlayerI) int {
+func declareAndPlay() int {
 	handGame := true
 
 	if state.declarer.pickUpSkat(state.skat) {
@@ -558,7 +559,7 @@ type Score struct {
 	Total3 int
 }
 
-func bidPhase(players []PlayerI) int {
+func bidPhase() int {
 	// BIDDING
 	bidDecl, declarer := bid(players)
 	if bidDecl == 0 {
@@ -590,10 +591,10 @@ func game() int {
 	initState()
 	DealCards()
 	initGame()
-	if bidPhase(players) == 0 {
+	if bidPhase() == 0 {
 		return 0
 	}
-	gs := declareAndPlay(players)
+	gs := declareAndPlay()
 	return gs
 }
 
@@ -603,10 +604,10 @@ func repeatGame() int {
 	initState()
 	SameCards()
 	initGame()
-	if bidPhase(players) == 0 {
+	if bidPhase() == 0 {
 		return 0
 	}
-	gs := declareAndPlay(players)
+	gs := declareAndPlay()
 	return gs
 }
 
@@ -633,6 +634,7 @@ var gamePlayers []PlayerI
 func makeChannels() {
 	playChannel = make(chan CardPlayed)
 	trickChannel = make(chan Card)
+	skatChannel = make(chan Card)
 	bidChannel = make(chan string)
 	winnerChannel = make(chan string)
 	trumpChannel = make(chan string)
@@ -1082,7 +1084,7 @@ func startServer() *mux.Router {
 		if (pl == 1 && !secondBidRound) || (pl == 2 && ForeHandAnswered) {
 			currentBidIndex++
 		}
-		if players[pl].accepts(currentBidIndex) {
+		if players[pl].accepts(currentBidIndex, false) { // false?? ONLY FOR ISS
 			debugTacticsLog("Player %s: %d YES \n", players[pl].getName(), bids[currentBidIndex])
 			data = BidData{bids[currentBidIndex], true}
 		} else {
@@ -1152,7 +1154,7 @@ func startServer() *mux.Router {
 		}
 		state.opp1.setPartner(state.opp2)
 
-		go declareAndPlay(players) // end of goroutine
+		go declareAndPlay() // end of goroutine
 	})
 
 	rt.HandleFunc("/getCardPlayed", func(w http.ResponseWriter, r *http.Request) {

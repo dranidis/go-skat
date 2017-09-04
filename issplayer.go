@@ -19,7 +19,7 @@ func (p *ISSPlayer) setPartner(partner PlayerI) {
 
 }
 
-func (p *ISSPlayer) accepts(bidIndex int) bool {
+func (p *ISSPlayer) accepts(bidIndex int, listens bool) bool {
 	fmt.Printf("Waiting bid from %s..", p.getName())
 	bid := <-bidChannel 
 	fmt.Printf(" .. bid received %s\n", bid)
@@ -32,6 +32,9 @@ func (p *ISSPlayer) accepts(bidIndex int) bool {
 	if bid == "p" {
 		return false
 	}
+	if bid == "y" {
+		return true
+	}	
 	log.Fatal("Unrecognised bid from ISS player")
 	return false
 }
@@ -61,17 +64,20 @@ func (p *ISSPlayer) discardInSkat(skat []Card) {
 }
 
 func (p *ISSPlayer) pickUpSkat(skat []Card) bool {
-	fmt.Printf("Waiting pick up from %s..", p.getName())
-	pickUp := <-pickUpChannel
-	fmt.Printf(" .. received %s\n", pickUp)
 
-	if pickUp == "hand" {
-		fmt.Printf("Player %s plays a hand game\n", p.getName())
-		return false
-	} else {
-		fmt.Printf("Player %s picks up the skat\n", p.getName())
-	}
-	p.discardInSkat(skat)
+	// WHAT HAPPENS IN A HAND GAME???
+
+	// fmt.Printf("Waiting pick up from %s..", p.getName())
+	// pickUp := <-pickUpChannel
+	// fmt.Printf(" .. received %s\n", pickUp)
+
+	// if pickUp == "hand" {
+	// 	fmt.Printf("Player %s plays a hand game\n", p.getName())
+	// 	return false
+	// } else {
+	// 	fmt.Printf("Player %s picks up the skat\n", p.getName())
+	// }
+	// p.discardInSkat(skat)
 	return true
 }
 

@@ -9,7 +9,7 @@ import (
 	"io"
 	"log"
 	"strconv"
-	"errors"
+	// "errors"
 	// "time"
 )
 
@@ -31,46 +31,81 @@ func Connect(usr, pwd string) error {
 
 	// var conn io.ReadWriter
 
-	real := false
+	real := true
 	// connect to this socket
 	if real {
-		var conniss io.ReadWriter
-		var err error
-		if conniss, err = net.Dial("tcp", "skatgame.net:7000"); err != nil {
-			fmt.Printf("Error %v\n", err)
-			return err
-		}
-		fmt.Println("Connected to server")
-		connR = conniss
-		connW = conniss
+		// var conniss io.ReadWriter
+		// var err error
+		// if conniss, err = net.Dial("tcp", "skatgame.net:7000"); err != nil {
+		// 	fmt.Printf("Error %v\n", err)
+		// 	return err
+		// }
+		// fmt.Println("Connected to server")
+		// connR = conniss
+		// connW = conniss
 
-		fmt.Fprintf(connW, usr)
+		// fmt.Println("Sending username:", usr)
+		// fmt.Fprintf(conniss, usr)
+		// fmt.Printf("SENT: %v", usr)
+
+		// // listen for reply
+		// message, err := bufio.NewReader(conniss).ReadString('\n')
+		// if err != nil {
+		// 	fmt.Printf("Error %v\n", err)
+		// 	return err
+		// } else {
+		// 	fmt.Printf("RCVD: %v\n", message)
+		// }
+
+		// if strings.Index(message, "password") == -1 {
+		// 	return errors.New("Error. Password not requested:" + message)
+		// }
+
+		// fmt.Fprintf(conniss, pwd)
+		// message, err = bufio.NewReader(conniss).ReadString('\n')
+		// if err != nil {
+		// 	fmt.Printf("Error %v\n", err)
+		// 	return err
+		// } else {
+		// 	fmt.Printf("RCVD: %v\n", message)
+		// }
+
+		// if strings.Index(message, "Welcome") == -1 {
+		// 	return errors.New("Not logged in:" + message)
+		// }
+
+
+	// connect to this socket
+	conn, err := net.Dial("tcp", "skatgame.net:7000")
+
+	if err != nil {
+		fmt.Printf("Error %v\n", err)
+		return err
+	}
+
+	fmt.Println("Connected")
+
+		// read in input from stdin
+	reader := bufio.NewReader(os.Stdin)
+		//fmt.Print("Text to send: ")
+
+	for i := 0 ; i < 2; i++ {
+		text, _ := reader.ReadString('\n')
+		// send to socket
+		fmt.Fprintf(conn, text)
+		fmt.Printf("SENT: %v", text)
 
 		// listen for reply
-		message, err := bufio.NewReader(connR).ReadString('\n')
+		message, err := bufio.NewReader(conn).ReadString('\n')
 		if err != nil {
 			fmt.Printf("Error %v\n", err)
-			return err
+
 		} else {
 			fmt.Printf("RCVD: %v\n", message)
 		}
-
-		if strings.Index(message, "password") == -1 {
-			return errors.New("Error. Password not requested:" + message)
-		}
-
-		fmt.Fprintf(connW, pwd)
-		message, err = bufio.NewReader(connR).ReadString('\n')
-		if err != nil {
-			fmt.Printf("Error %v\n", err)
-			return err
-		} else {
-			fmt.Printf("RCVD: %v\n", message)
-		}
-
-		if strings.Index(message, "Welcome") == -1 {
-			return errors.New("Not logged in:" + message)
-		}
+	}
+		connR = conn
+		connW = conn
 
 		// WRITE TO SERVER to LOGIN
 		// reader := bufio.NewReader(os.Stdin)
@@ -118,6 +153,9 @@ func Connect(usr, pwd string) error {
 		createTable()
 		invite("xskat", "xskat")
 		ready()
+		<- waitServer // wait for game end
+		fmt.Println("GAME ENDED")
+		leaveTable()
 		// game begins
 
 		// TODO:
@@ -134,11 +172,11 @@ func readFromServer() {
 	scanner := bufio.NewScanner(connR)
 	text := ""
 	for {
-		fmt.Println("..Waiting msg from server..")
+		// fmt.Println("..Waiting msg from server..")
 	  	for scanner.Scan() {
 	  		text = scanner.Text()
 		  	parseServer(text)
-			fmt.Println("..Waiting msg from server..")
+			// fmt.Println("..Waiting msg from server..")
 	  	}
 	  	if err := scanner.Err(); err != nil {
 	  		fmt.Fprintln(os.Stderr, "ERROR:", err)
@@ -147,7 +185,11 @@ func readFromServer() {
 }
 
 func parseServer(t string) {
-	fmt.Println("RECV: " + t)
+	fmt.Printf("RECV: %s\n", green(t))
+
+// TODO:
+// SHORTCUT SC: 3 cards played at once
+//table .2 goskat play 2 SC.D9.H8.HK 227.1 230.9 235.9
 
 	// create .3 goskat 3 -1 3 ? ? ? 0
 	if strings.HasPrefix(t, "create")  {
@@ -191,7 +233,12 @@ func parseServer(t string) {
 				opp1name = s[5]
 				opp2name = s[7]
 			}
-			fmt.Printf("You are player %d in a game with %s and %s \n", playerNr, opp1name, opp2name)
+			gameNr := s[4]
+			fmt.Printf("You are player %d in game: %s with %s and %s \n", playerNr, gameNr, opp1name, opp2name)
+			// waitServer <- "OK"
+			return
+		}
+		if s[3] == "end" {
 			waitServer <- "OK"
 			return
 		}
@@ -204,13 +251,17 @@ func parseServer(t string) {
 			// XX
 			if bidNr, err := strconv.ParseInt(action, 10, 64); err == nil {
 				fmt.Printf("Player: %s, Bidding: %d\n", player, bidNr)
-				bidChannel <- action
+				if player != fmt.Sprintf("%d", playerNr) { // only sent to ISSPLAYER
+					bidChannel <- action
+				}
 				return
 			} else if len(action) == 2 {
 				if player != "w" {
 					card := parseCard(action)
 					fmt.Printf("Player: %s, PLAYED: %v\n", player, card)
-					trickChannel <- card
+					if player != fmt.Sprintf("%d", playerNr) { // only sent to ISSPLAYER
+						trickChannel <- card
+					}
 					return
 				} 
 			}
@@ -218,14 +269,24 @@ func parseServer(t string) {
 			// p
 			if action == "p" {
 				fmt.Printf("Player: %s, PASS\n", player)
-				bidChannel <- action
+				if player != fmt.Sprintf("%d", playerNr) { // only sent to ISSPLAYER
+					bidChannel <- action
+				}
 				return
 			}
+			// y
+			if action == "y" {
+				fmt.Printf("Player: %s, ACCEPTS\n", player)
+				if player != fmt.Sprintf("%d", playerNr) { // only sent to ISSPLAYER
+					bidChannel <- action
+				}
+				return
+			}			
 
 			// s
 			if action == "s" {
 				fmt.Printf("Player: %s, PICK UP SKAT\n", player)
-				pickUpChannel <- "SKAT"
+				// pickUpChannel <- "SKAT"
 				return
 				// TODO: what happens in a Hand game???
 			}
@@ -233,7 +294,14 @@ func parseServer(t string) {
 			// w
 			if player == "w" {
 				if len(action) == 5 && action[2] == '.' {
-					fmt.Printf("Player: %s, SKAT: %s\n", player, action)
+					ss := strings.Split(action, ".")
+					if ss[0] != "??" {
+						card1 := parseCard(ss[0])
+						card2 := parseCard(ss[1])
+						skatChannel <- card1
+						skatChannel <- card2
+						fmt.Printf("Player: %s, SKAT: %v %v\n", player, card1, card2)
+					}
 					return
 				} else if len(action) > 1 && action[0] == 'T' && action[1] == 'I' {
 				// TI.0	   timeout ?
@@ -255,24 +323,23 @@ func parseServer(t string) {
 					gamePlayers[0].setHand(sortSuit("", cards))
 					gamePlayers[1].setName(opp1name)
 					gamePlayers[2].setName(opp2name)
-					players = gamePlayers
 					if playerNr == 1 {
-						players = rotatePlayers(players)
-						players = rotatePlayers(players)
+						gamePlayers = rotatePlayers(gamePlayers)
+						gamePlayers = rotatePlayers(gamePlayers)
 					}
 					if playerNr == 2 {
-						players = rotatePlayers(players)
+						gamePlayers = rotatePlayers(gamePlayers)
 					}
 					initState()
 					//DealCards()
 					initGame()
 					go (func () {
-						if bidPhase(players) == 0 {
+						if bidPhase() == 0 {
 							fmt.Println("ISS: All passed")
 							// ??????????????
 							// return 0
 						}
-						gs := declareAndPlay(players)
+						gs := declareAndPlay()
 						fmt.Println("ISS: gs:", gs)
 						})()
 					return
@@ -282,15 +349,19 @@ func parseServer(t string) {
 			// D.??.?? 179.9 239.9 240.0   declare game and skat
 			if len(action) > 6 && player != "w" {
 				s := strings.Split(action, ".")
-				switch s[0] {
-				case "C":
-					issTrump = CARO
-				case "S":
+				switch s[0][0] {
+				case 'C':
+					issTrump = CLUBS
+				case 'S':
 					issTrump = SPADE
-				case "H":
+				case 'H':
 					issTrump = HEART
-				case "D":
+				case 'D':
 					issTrump = CARO
+				case 'G':
+					issTrump = GRAND
+				case 'N':
+					issTrump = NULL
 				default:
 					log.Fatal("Unrecognized game declared ", s[0], " in: ", action)
 				}
@@ -371,11 +442,12 @@ func invite(p1, p2 string) {
 	opp1name = p1
 	opp2name = p2
 	fmt.Println("...Waiting server response")
-	<- waitServer
+	// <- waitServer
 }
 
 func ready() {
 	sendToServer(fmt.Sprintf("table .%d %s ready", tableNr, username))
+
 }
 
 func leaveTable() {
@@ -383,6 +455,11 @@ func leaveTable() {
 }
 
 func playCard(card Card) {
+	cardString := cardString(card)
+	sendToServer(fmt.Sprintf("table .%d %s play %s", tableNr, username, cardString))
+}
+
+func cardString(card Card) string {
 	cardString := ""
 	switch card.Suit {
 	case CLUBS:
@@ -402,7 +479,7 @@ func playCard(card Card) {
 	default:
 		cardString += card.Rank
 	}
-	sendToServer(fmt.Sprintf("table .%d %s play %s", tableNr, username, cardString))
+	return cardString	
 }
 
 func playBid(bid string) {
@@ -411,8 +488,33 @@ func playBid(bid string) {
 
 // TODO
 // Declare and discard
+func pickUpSkat() {
+	sendToServer(fmt.Sprintf("table .%d %s play s", tableNr, username))
+}
+
+
+func iss_declare(trump string, skat []Card) {
+	game := ""
+	switch trump {
+	case CLUBS:
+		game = "C"
+	case SPADE:
+		game = "S"
+	case HEART:
+		game = "H"
+	case CARO:
+		game = "D"
+	case GRAND:
+		game = "G"
+	case NULL:
+		game = "N"
+	}
+	card1 := cardString(skat[0])	
+	card2 := cardString(skat[1])	
+	sendToServer(fmt.Sprintf("table .%d %s play %s.%s.%s", tableNr, username, game, card1, card2))
+}
 
 func sendToServer(s string) {
-	fmt.Printf("SENT: %s\n", s)
+	fmt.Printf("SENT: %s\n", yellow(s))
 	fmt.Fprintf(connW, "%s\n", s)
 }
