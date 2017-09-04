@@ -373,6 +373,10 @@ func parseServer(t string) {
 				}
 			}
 
+			// TODO
+			// Hand game declarations
+			// example: Grand Hand
+			// table .6 goskat play 1 GH 238.0 240.0 240.0
 
 			// D.??.?? 179.9 239.9 240.0   declare game and skat
 			if len(action) > 6 && player != "w" {
