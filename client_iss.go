@@ -25,7 +25,7 @@ var	waitServer chan string
 
 var connR io.Reader
 var connW io.Writer
-var real = true
+var real = false
 
 func Connect(usr, pwd string) error {
 	waitServer = make(chan string)
@@ -98,9 +98,9 @@ func Connect(usr, pwd string) error {
 
 		leaveTable()
 
-		for i :=0 ; i < 10; i++ {
-			time.Sleep(time.Duration(delayMs) * time.Millisecond)	
-		}	
+		// for i :=0 ; i < 10; i++ {
+		// 	time.Sleep(time.Duration(delayMs) * time.Millisecond)	
+		// }	
 		fmt.Println("Exiting...")			
 
 		os.Exit(1)		
@@ -241,7 +241,7 @@ func parseServer(t string) {
 
 			// D.??.?? 179.9 239.9 240.0   declare game and skat
 
-			if action == "GH" || (len(action) > 6 && player != "w") {
+			if len(action) > 1 && (action[1] == 'H' || action[1] == 'O') || (len(action) > 6 && player != "w") {
 				s := strings.Split(action, ".")
 				switch s[0][0] {
 				case 'C':
@@ -517,11 +517,9 @@ func iss_declare(trump string, skat []Card) {
 
 func sendToServer(s string) {
 	if real {
-		delayMs = 1000
-		time.Sleep(time.Duration(delayMs) * time.Millisecond)
+		time.Sleep(time.Duration(issSentDelay) * time.Millisecond)
 	} else {
-		delayMs = 1000
-		time.Sleep(time.Duration(delayMs) * time.Millisecond)		
+		time.Sleep(time.Duration(1000) * time.Millisecond)		
 	}
 	fmt.Printf("SENT: %s\n", yellow(s))
 	fmt.Fprintf(connW, "%s\n", s)

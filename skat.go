@@ -43,6 +43,7 @@ var skatPositionChannel chan int
 
 var gameNr int
 var issConnect = false
+var issSentDelay = 0
 
 func logToFile(format string, a ...interface{}) {
 	if fileLogFlag && logFile != nil {
@@ -763,6 +764,7 @@ func main() {
 	flag.BoolVar(&fileLogFlag, "log", true, "Saves log in a file")
 	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:3000")
 	flag.BoolVar(&issConnect, "iss", false, "Connects to ISS skat server")
+	flag.IntVar(&issSentDelay, "issdelay", 0, "Delay (in ms) before sending an action to ISS server. Useful for debugging and for observing a game.")
 	flag.Parse()
 
 	if auto {
@@ -1020,7 +1022,7 @@ func startServer() *mux.Router {
 
 		initState()
 		SameCards()
-		
+
 		players = []PlayerI{gamePlayers[0], gamePlayers[1], gamePlayers[2]}
 		initGame()
 

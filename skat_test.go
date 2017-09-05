@@ -513,7 +513,7 @@ func TestMostCardsSuitA(t *testing.T) {
 }
 
 func TestMostCardsSuit1(t *testing.T) {
-	// from two A-suits prefer the strongest
+	// from two A-suits prefer the weakest
 	player := makePlayer([]Card{
 		Card{CLUBS, "J"},
 		Card{SPADE, "J"},
@@ -529,8 +529,9 @@ func TestMostCardsSuit1(t *testing.T) {
 		Card{HEART, "8"},
 	})
 	most := mostCardsSuit(player.hand)
-	if most != HEART {
-		t.Errorf("In hand %v, Two suits equal length. Expected %s, got %s", player.hand, HEART, most)
+	exp := CARO
+	if most != exp {
+		t.Errorf("In hand %v, Two suits equal length. Expected %s, got %s", player.hand, exp, most)
 	}
 
 	player = makePlayer([]Card{
@@ -542,16 +543,66 @@ func TestMostCardsSuit1(t *testing.T) {
 		Card{HEART, "8"},
 		Card{HEART, "9"},
 
-		Card{CARO, "A"},
+		Card{CARO, "A"}, // keep as suit
 		Card{CARO, "10"},
 		Card{CARO, "K"},
 		Card{CARO, "8"},
 	})
 	most = mostCardsSuit(player.hand)
-	if most != CARO {
-		t.Errorf("In hand %v, Two suits equal length. Expected %s, got %s", player.hand, CARO, most)
+	if most != HEART {
+		t.Errorf("In hand %v, Two suits equal length. Expected %s, got %s", player.hand, HEART, most)
 	}
 }
+
+func TestMostCardsSuitTwoAsuitsAndAWeakSuit(t *testing.T) {
+	// from two A-suits prefer the weakest
+	player := makePlayer([]Card{
+		Card{CLUBS, "J"},
+
+		Card{CARO, "A"},
+		Card{CARO, "7"},
+		Card{CARO, "8"},
+		Card{CARO, "9"},
+
+		Card{HEART, "A"},
+		Card{HEART, "10"},
+		Card{HEART, "K"},
+		Card{HEART, "8"},
+
+		Card{SPADE, "10"},
+	})
+	most := mostCardsSuit(player.hand)
+	exp := CARO
+	if most != exp {
+		t.Errorf("In hand %v, Two suits equal length. Expected %s, got %s", player.hand, exp, most)
+	}
+}
+
+func TestMostCardsSuitTwoAsuitsAndAWeakSuit2(t *testing.T) {
+	// from two A-suits prefer the weakest
+	player := makePlayer([]Card{
+		Card{CLUBS, "J"},
+
+		Card{CARO, "A"},
+		Card{CARO, "7"},
+		Card{CARO, "8"},
+
+		Card{HEART, "A"},
+		Card{HEART, "10"},
+		Card{HEART, "K"},
+
+		Card{SPADE, "10"},
+
+		Card{CLUBS, "K"},
+		Card{CLUBS, "D"},
+	})
+	most := mostCardsSuit(player.hand)
+	exp := CARO
+	if most != exp {
+		t.Errorf("In hand %v, Two suits equal length. Expected %s, got %s", player.hand, exp, most)
+	}
+}
+
 
 func gameScore1(trump string, cs []Card, s int, bid int, decS, oppS bool, hg bool) int {
 	d := makePlayer([]Card{})
@@ -3531,6 +3582,46 @@ func TestNextLowestCardsStillInPlay(t *testing.T) {
 		t.Errorf("10 played")
 	}
 }
+
+
+// DECREASE PERCENTAGE
+
+// func TestDiscardInSkat_CanWinNonAsuitWithLessCardsThanAsuit(t *testing.T) {
+// 	cards := []Card{
+// 		Card{CARO, "J"},
+// 		Card{SPADE, "J"},
+
+// 		Card{CARO, "K"}, // declare this
+// 		Card{CARO, "9"},
+// 		Card{CARO, "8"},
+
+// 		Card{CLUBS, "D"},
+
+// 		Card{SPADE, "A"}, // keep this as a strong by-suit
+// 		Card{SPADE, "10"},
+// 		Card{SPADE, "K"},
+// 		Card{SPADE, "8"},
+
+// 		Card{HEART, "10"},
+// 		Card{HEART, "8"},
+// 	}
+// 	p := makePlayer(cards)
+
+// 	canWin := p.canWin(true)
+// 	if canWin != "SUIT" {
+// 		t.Errorf("Hand %v can win CARO to keep the strong by-suit. Got: %v", p.hand, canWin)
+// 	}
+
+// 	skat := []Card{Card{HEART, "10"}, Card{HEART, "8"}}
+
+// 	p.discardInSkat(skat)
+
+// 	exp := CARO
+// 	act := p.trumpToDeclare
+// 	if exp != act {
+// 		t.Errorf("Hand %v can win %v to keep the strong by-suit HEART. Got: %v", p.hand, exp, act)
+// 	}
+// }
 
 func TestCanWinGRAND(t *testing.T) {
 	cards := []Card{

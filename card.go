@@ -482,9 +482,60 @@ func LongestNonTrumpSuit(trump string, cards []Card) string {
 	return suits[maxI]
 }
 
+
+// func mostCardsSuit(cards []Card) string {
+// 	debugTacticsLog("..mostCardsSuit")
+// 	maxCount := 0
+// 	maxI := -1
+// 	for i, s := range suits {
+// 		cs := trumpCards(s, cards)
+// 		count := 200 * len(cs)
+// 		if !in(cards, Card{s, "A"}) {
+// 			count += 100
+// 			count += 100
+// 			count += sum(cs)
+// 		} else {
+// 			count -= sum(cs)
+// 		}
+// 		if len(cs) < 4 {
+// 			count -= 200
+// 		}
+// 		if len(cs) < 5 {
+// 			count -= 200
+// 		}
+// 		if count > maxCount {
+// 			maxCount = count
+// 			maxI = i
+// 		}
+// 		debugTacticsLog(".%s:%d  ", s, count)
+// 	}
+// 	return suits[maxI]
+// }
+
 // With a preference to non-A suits
 // and a preference to stronger cards (between A-suits)
+// func mostCardsSuit(cards []Card) string {
+// 	maxCount := 0
+// 	maxI := -1
+// 	for i, s := range suits {
+// 		cs := trumpCards(s, cards)
+// 		count := 200 * len(cs)
+// 		if !in(cards, Card{s, "A"}) {
+// 			count += 100
+// 		}
+// 		count += sum(cs)
+// 		if count > maxCount {
+// 			maxCount = count
+// 			maxI = i
+// 		}
+// 	}
+// 	return suits[maxI]
+// }
+
+// With a preference to non-A suits
+// and a preference to weaker cards (between A-suits)
 func mostCardsSuit(cards []Card) string {
+	debugTacticsLog("..mostCardsSuit")
 	maxCount := 0
 	maxI := -1
 	for i, s := range suits {
@@ -492,15 +543,40 @@ func mostCardsSuit(cards []Card) string {
 		count := 200 * len(cs)
 		if !in(cards, Card{s, "A"}) {
 			count += 100
+			count += sum(cs)
+			// if len(cs) > 4 {
+			// 	count += 100
+			// }
+		} else {
+			count -= sum(cs)
 		}
-		count += sum(cs)
 		if count > maxCount {
 			maxCount = count
 			maxI = i
 		}
+		debugTacticsLog(".%s:%d  ", s, count)
 	}
 	return suits[maxI]
 }
+
+// func mostCardsSuit(cards []Card) string {
+// 	maxCount := 0
+// 	maxI := -1
+// 	for i, s := range suits {
+// 		cs := trumpCards(s, cards)
+// 		count := 200 * len(cs)
+// 		if !in(cards, Card{s, "A"}) {
+// 			count += 100
+// 		}
+// 		count += sum(cs)
+// 		if count > maxCount {
+// 			maxCount = count
+// 			maxI = i
+// 		}
+// 	}
+// 	return suits[maxI]
+// }
+
 
 func lessCardsSuit(cards []Card) string {
 	c := len(nonTrumpCards(CLUBS, cards))
