@@ -30,99 +30,48 @@ var real = true
 func Connect(usr, pwd string) error {
 	waitServer = make(chan string)
 
-	// var conn io.ReadWriter
-
-	// connect to this socket
+	// connect to server socket
 	if real {
-		// var conniss io.ReadWriter
-		// var err error
-		// if conniss, err = net.Dial("tcp", "skatgame.net:7000"); err != nil {
-		// 	fmt.Printf("Error %v\n", err)
-		// 	return err
-		// }
-		// fmt.Println("Connected to server")
-		// connR = conniss
-		// connW = conniss
+		var conniss io.ReadWriter
+		var err error
+		if conniss, err = net.Dial("tcp", "skatgame.net:7000"); err != nil {
+			fmt.Printf("Error %v\n", err)
+			return err
+		}
+		fmt.Println("Connected to server")
+		connR = conniss
+		connW = conniss
 
-		// fmt.Println("Sending username:", usr)
-		// fmt.Fprintf(conniss, usr)
-		// fmt.Printf("SENT: %v", usr)
-
-		// // listen for reply
-		// message, err := bufio.NewReader(conniss).ReadString('\n')
-		// if err != nil {
-		// 	fmt.Printf("Error %v\n", err)
-		// 	return err
-		// } else {
-		// 	fmt.Printf("RCVD: %v\n", message)
-		// }
-
-		// if strings.Index(message, "password") == -1 {
-		// 	return errors.New("Error. Password not requested:" + message)
-		// }
-
-		// fmt.Fprintf(conniss, pwd)
-		// message, err = bufio.NewReader(conniss).ReadString('\n')
-		// if err != nil {
-		// 	fmt.Printf("Error %v\n", err)
-		// 	return err
-		// } else {
-		// 	fmt.Printf("RCVD: %v\n", message)
-		// }
-
-		// if strings.Index(message, "Welcome") == -1 {
-		// 	return errors.New("Not logged in:" + message)
-		// }
-
-
-	// connect to this socket
-	conn, err := net.Dial("tcp", "skatgame.net:7000")
-
-	if err != nil {
-		fmt.Printf("Error %v\n", err)
-		return err
-	}
-
-	fmt.Println("Connected")
-
-		// read in input from stdin
-	reader := bufio.NewReader(os.Stdin)
-		//fmt.Print("Text to send: ")
-
-	for i := 0 ; i < 2; i++ {
-		text, _ := reader.ReadString('\n')
-		// send to socket
-		fmt.Fprintf(conn, text)
-		fmt.Printf("SENT: %v", text)
+		fmt.Println("Sending username:", usr)
+		fmt.Fprintf(conniss, usr+"\n")
+		fmt.Printf("SENT: %v", usr)
 
 		// listen for reply
-		message, err := bufio.NewReader(conn).ReadString('\n')
+		message, err := bufio.NewReader(conniss).ReadString('\n')
 		if err != nil {
 			fmt.Printf("Error %v\n", err)
-
+			return err
 		} else {
 			fmt.Printf("RCVD: %v\n", message)
 		}
-	}
-		connR = conn
-		connW = conn
 
-		// WRITE TO SERVER to LOGIN
-		// reader := bufio.NewReader(os.Stdin)
-		// for i := 0 ; i < 2; i++ {
-		// 	text, _ := reader.ReadString('\n')
-		// 	// send to socket
-		// 	fmt.Printf("SENT: %v", text)
+		if strings.Index(message, "password") == -1 {
+			return errors.New("Error. Password not requested:" + message)
+		}
 
-		// 	// listen for reply
-		// 	message, err := bufio.NewReader(conn).ReadString('\n')
-		// 	if err != nil {
-		// 		fmt.Printf("Error %v\n", err)
+		fmt.Fprintf(conniss, pwd+"\n")
+		message, err = bufio.NewReader(conniss).ReadString('\n')
+		if err != nil {
+			fmt.Printf("Error %v\n", err)
+			return err
+		} else {
+			fmt.Printf("RCVD: %v\n", message)
+		}
 
-		// 	} else {
-		// 		fmt.Printf("RCVD: %v\n", message)
-		// 	}
-		// }
+		if strings.Index(message, "Welcome") == -1 {
+			return errors.New("Not logged in:" + message)
+		}
+
 	} else {
 		connR = os.Stdin
 		connW = os.Stdout
@@ -137,17 +86,6 @@ func Connect(usr, pwd string) error {
 	}
 
 	username = usr
-		// read in input from stdin
-		//fmt.Print("Text to send: ")
-
-	// go func() {
-	// 	for {
-	// 		text, _ := reader.ReadString('\n')
-	// 		// send to socket
-	// 		fmt.Fprintf(conn, text)
-	// 		fmt.Printf("SENT: %v", text)
-	// 	}
-	// }()
 
 	go func() {
 		createTable()
@@ -165,12 +103,6 @@ func Connect(usr, pwd string) error {
 		time.Sleep(time.Duration(delayMs) * time.Millisecond)		
 
 		os.Exit(1)		
-		// game begins
-
-		// TODO:
-		// pickup the skat, discard and declare game if won the bidding
-
-		// leaveTable()		
 	}()
 
 	readFromServer() // BLOCKS
