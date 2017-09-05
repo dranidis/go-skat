@@ -142,6 +142,10 @@ func (p Player) canWin(afterSkat bool) string {
 			return ""
 		}
 	}
+
+	if est < 32 {
+		return ""
+	}
 	//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
 
 	// fmt.Printf("HIGH %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
