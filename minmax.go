@@ -5,6 +5,7 @@ import (
 )
 
 type Node struct {
+	score int
 	children []Node
 }
 
@@ -13,6 +14,12 @@ func terminal(node Node) bool {
 }
 
 func heuristic(node Node) int {
+	if terminal(node) {
+		if node.score > 60 {
+			return 1
+		}
+		return -1 
+	}
 	return 0
 }
 
