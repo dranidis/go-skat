@@ -98,9 +98,10 @@ func Connect(usr, pwd string) error {
 
 		leaveTable()
 
-		time.Sleep(time.Duration(delayMs) * time.Millisecond)		
-		time.Sleep(time.Duration(delayMs) * time.Millisecond)		
-		time.Sleep(time.Duration(delayMs) * time.Millisecond)		
+		for i :=0 ; i < 10; i++ {
+			time.Sleep(time.Duration(delayMs) * time.Millisecond)	
+		}	
+		fmt.Println("Exiting...")			
 
 		os.Exit(1)		
 	}()

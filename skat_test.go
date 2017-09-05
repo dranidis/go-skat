@@ -2819,6 +2819,36 @@ func TestDeclarerTacticBACK_DontWasteYourAonaZeroTrick(t *testing.T) {
 	}
 }
 
+func TestDeclarerTacticBACK_DontWasteYourAonaZeroTrick_UnlessYouHavethe10(t *testing.T) {
+
+	validCards := []Card{
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "D"},
+		Card{HEART, "A"},
+		Card{HEART, "10"},
+		Card{HEART, "K"},
+		Card{HEART, "8"},
+	}
+	player := makePlayer(validCards)
+	other := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &other
+	s.declarer = &player
+
+	s.trump = CARO
+	s.trick = []Card{Card{HEART, "7"}, Card{HEART, "9"}}
+	s.follow = HEART
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("Trump: %s, In trick %v and valid %v, was expected to play %v. Played %v",
+			s.trump, s.trick, validCards, exp, card)
+	}
+}
+
+
 func TestDeclarerTacticAKX(t *testing.T) {
 	// BUT play your A-10 trumps if Js ARE NOT still there
 
