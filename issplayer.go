@@ -107,5 +107,11 @@ func (p *ISSPlayer) playerTactic(s *SuitState, c []Card) Card {
 	} 
 	p.shortcut = []Card{} // empty shortcut if normal card was played
 	fmt.Printf(" .. received %v\n", card)
+
+	suit := getSuit(s.trump, card)
+	if suit != s.trump {
+		p.setPreviousSuit(suit)
+	}
+
 	return card
 }

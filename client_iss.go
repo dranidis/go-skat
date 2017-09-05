@@ -9,7 +9,7 @@ import (
 	"io"
 	"log"
 	"strconv"
-	// "errors"
+	"errors"
 	"time"
 )
 
@@ -152,7 +152,7 @@ func Connect(usr, pwd string) error {
 	go func() {
 		createTable()
 		invite("xskat", "xskat")
-		for i :=0 ; i < 36; i++ {
+		for i :=0 ; i < totalGames; i++ {
 			ready()
 			<- waitServer // wait for game end
 			fmt.Println("GAME ENDED")			
@@ -251,27 +251,8 @@ func parseServer(t string) {
 			action := s[5]
 			// fmt.Printf("Player: %s, Action: %s in [%s]\n", player, action, t)
 
-			// XX
-			if bidNr, err := strconv.ParseInt(action, 10, 64); err == nil {
-				fmt.Printf("Player: %s, Bidding: %d\n", player, bidNr)
-				if player != fmt.Sprintf("%d", playerNr) { // only sent to ISSPLAYER
-					bidChannel <- action
-				}
-				return
-			} else if len(action) == 2 {
-				if player != "w" {
-					if action == "RE" {
-						fmt.Printf("Player: %s, RESIGNS, Ignored!\n", player)
-						return
-					}
-					card := parseCard(action)
-					fmt.Printf("Player: %s, PLAYED: %v\n", player, card)
-					if player != fmt.Sprintf("%d", playerNr) { // only sent to ISSPLAYER
-						trickChannel <- card
-					}
-					return
-				} 
-			}
+
+
 
 			if player != "w" && len(action) > 2 {
 				ss := strings.Split(action, ".")
@@ -290,6 +271,93 @@ func parseServer(t string) {
 					return
 				}
 			}
+
+			// XX
+			if bidNr, err := strconv.ParseInt(action, 10, 64); err == nil {
+				fmt.Printf("Player: %s, Bidding: %d\n", player, bidNr)
+				if player != fmt.Sprintf("%d", playerNr) { // only sent to ISSPLAYER
+					bidChannel <- action
+				}
+				return
+			} else if len(action) == 2 { // CARDS MOSTLY
+				if player != "w" {
+					if action == "RE" {
+						fmt.Printf("Player: %s, RESIGNS, Ignored!\n", player)
+						return
+					}
+					if card, err := parseCard(action); err == nil {
+						fmt.Printf("Player: %s, PLAYED: %v\n", player, card)
+						if player != fmt.Sprintf("%d", playerNr) { // only sent to ISSPLAYER
+							trickChannel <- card
+						}
+						return					
+					}
+				} 
+			}
+
+			// TODO
+			// Hand game declarations
+			// example: Grand Hand
+			// table .6 goskat play 1 GH 238.0 240.0 240.0
+
+			// D.??.?? 179.9 239.9 240.0   declare game and skat
+
+			if action == "GH" || (len(action) > 6 && player != "w") {
+				s := strings.Split(action, ".")
+				switch s[0][0] {
+				case 'C':
+					issTrump = CLUBS
+				case 'S':
+					issTrump = SPADE
+				case 'H':
+					issTrump = HEART
+				case 'D':
+					issTrump = CARO
+				case 'G':
+					issTrump = GRAND
+				case 'N':
+					issTrump = NULL
+				default:
+					log.Fatal("Unrecognized game declared ", s[0], " in: ", action)
+				}
+				fmt.Printf("Player: %s declares %s\n", player, issTrump)
+				if len(s[0]) > 1 {
+					handIndex := 1
+					if s[0][1] == 'O' {
+						fmt.Printf("Player: %s plays an OUVERT game %s\n", player)
+						handIndex++
+					}
+					if len(s[0]) > handIndex && s[0][handIndex] == 'H' {
+						fmt.Printf("Player: %s plays a HAND game %s\n", player)
+						if len(s[0]) > handIndex + 1 {
+							if s[0][handIndex+1] == 'S' {
+								fmt.Printf("Player: %s announces a SCHNEIDER game %s\n", player)
+							}
+							if s[0][handIndex+1] == 'Z' {
+								fmt.Printf("Player: %s announces a SCHWARZ game %s\n", player)
+							}
+						}
+					}
+				}
+
+
+				if player != fmt.Sprintf("%d", playerNr) { // only sent to ISSPLAYER
+					declareChannel <- issTrump
+				}
+
+				if len(s) == 3 { // SKAT
+					sk1 := s[1]
+					if sk1 != "??" {
+						issSkat = make([]Card, 2)
+						issSkat[0], _ = parseCard(sk1)
+						sk2 := s[2]
+						issSkat[1], _ = parseCard(sk2)
+						fmt.Printf("SKAT: %v\n", issSkat)
+					}
+				}
+				return
+			}
+
 
 
 			// p
@@ -322,8 +390,8 @@ func parseServer(t string) {
 				if len(action) == 5 && action[2] == '.' {
 					ss := strings.Split(action, ".")
 					if ss[0] != "??" {
-						card1 := parseCard(ss[0])
-						card2 := parseCard(ss[1])
+						card1, _ := parseCard(ss[0])
+						card2, _ := parseCard(ss[1])
 						skatChannel <- card1
 						skatChannel <- card2
 						fmt.Printf("Player: %s, SKAT: %v %v\n", player, card1, card2)
@@ -373,55 +441,12 @@ func parseServer(t string) {
 				}
 			}
 
-			// TODO
-			// Hand game declarations
-			// example: Grand Hand
-			// table .6 goskat play 1 GH 238.0 240.0 240.0
-
-			// D.??.?? 179.9 239.9 240.0   declare game and skat
-			if len(action) > 6 && player != "w" {
-				s := strings.Split(action, ".")
-				switch s[0][0] {
-				case 'C':
-					issTrump = CLUBS
-				case 'S':
-					issTrump = SPADE
-				case 'H':
-					issTrump = HEART
-				case 'D':
-					issTrump = CARO
-				case 'G':
-					issTrump = GRAND
-				case 'N':
-					issTrump = NULL
-				default:
-					log.Fatal("Unrecognized game declared ", s[0], " in: ", action)
-				}
-				fmt.Printf("Player: %s declares %s\n", player, issTrump)
-
-
-				if player != fmt.Sprintf("%d", playerNr) { // only sent to ISSPLAYER
-					declareChannel <- issTrump
-				}
-
-
-				sk1 := s[1]
-				if sk1 != "??" {
-					issSkat = make([]Card, 2)
-					issSkat[0] = parseCard(sk1)
-					sk2 := s[2]
-					issSkat[1] = parseCard(sk2)
-
-					fmt.Printf("SKAT: %v\n", issSkat)
-				}
-				return
-			}
 		}
 	}
 	fmt.Println("Unhandled server message: ", t)
 }
 
-func parseCard(action string) Card {
+func parseCard(action string) (Card, error) {
 	rank, suit := "", ""
 	switch action[0] {
 	case 'C':
@@ -433,7 +458,7 @@ func parseCard(action string) Card {
 	case 'D':
 		rank = "CARO"
 	default:
-		log.Fatal("Unrecognized rank:", action[0], " in action: ", action)
+		return Card{"", ""}, errors.New("Not a card suit:" + action)
 	}
 	switch action[1] {
 	case '7':
@@ -453,15 +478,16 @@ func parseCard(action string) Card {
 	case 'J':
 		suit = "J"
 	default:
-		log.Fatal("Unrecognized suit:", action[1], " in action: ", action)
+		return Card{"", ""}, errors.New("Not a card rank:" + action)
 	}
-	return Card{rank, suit}	
+	return Card{rank, suit}, nil	
 }
 
 func parseCards(ss []string) []Card {
 	cards := []Card{}
 	for _, s := range ss {
-		cards = append(cards, parseCard(s))
+		c, _ := parseCard(s)
+		cards = append(cards, c)
 	}
 	return cards
 }

@@ -2672,6 +2672,71 @@ func TestDeclarerTacticMID_ThrowOff(t *testing.T) {
 	}
 }
 
+func TestDeclarerTacticMID_DontThrowOffTheProtectorOfa10(t *testing.T) {
+	validCards := []Card{
+		Card{HEART, "J"},
+		Card{HEART, "A"},
+		Card{HEART, "10"},
+		Card{HEART, "D"},
+
+		Card{CLUBS, "10"},
+		Card{CLUBS, "7"},
+	}
+	player := makePlayer(validCards)
+	other := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &other
+	s.declarer = &player
+
+	s.trump = HEART
+	s.trick = []Card{Card{SPADE, "9"}}
+	s.trumpsInGame = []Card{
+		Card{HEART, "J"},
+		Card{HEART, "A"},
+		Card{HEART, "10"},
+		Card{HEART, "K"}, //
+		Card{HEART, "D"},
+		Card{HEART, "9"},
+		Card{HEART, "8"},
+	}
+	s.cardsPlayed = remove(makeTrumpDeck(s.trump), s.trumpsInGame...)
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("Trump: %s, In trick %v and valid %v, was expected to play %v (sure winner) to keep the protector of 10. Played %v",
+			s.trump, s.trick, validCards, exp, card)
+	}
+}
+
+func TestDeclarerTacticMID_DontThrowOffAor10(t *testing.T) {
+	validCards := []Card{
+		Card{SPADE, "9"},
+		Card{HEART, "A"},
+		Card{HEART, "10"},
+
+	}
+	player := makePlayer(validCards)
+	other := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &other
+	s.declarer = &player
+
+	s.trump = SPADE
+	s.trick = []Card{Card{CARO, "7"}}
+	s.trumpsInGame = []Card{
+		Card{SPADE, "9"},
+	}
+	s.cardsPlayed = remove(makeTrumpDeck(s.trump), s.trumpsInGame...)
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{SPADE, "9"}
+	if !card.equals(exp) {
+		t.Errorf("Trump: %s, In trick %v and valid %v, was expected to play %v not an A or 10. Played %v",
+			s.trump, s.trick, validCards, exp, card)
+	}
+}
+
 func TestDeclarerTacticMID_ThrowOffToGoBack(t *testing.T) {
 	// throw off on a null opener to go in backhand
 
@@ -2694,6 +2759,34 @@ func TestDeclarerTacticMID_ThrowOffToGoBack(t *testing.T) {
 
 	card := player.playerTactic(&s, validCards)
 	exp := Card{SPADE, "7"}
+	if !card.equals(exp) {
+		t.Errorf("Trump: %s, In trick %v and valid %v, was expected to play %v. Played %v",
+			s.trump, s.trick, validCards, exp, card)
+	}
+}
+
+func TestDeclarerTacticBACK_TrumpWithLowJack(t *testing.T) {
+	// throw off on a null opener to go in backhand
+
+	validCards := []Card{
+		Card{SPADE, "J"},
+		Card{CARO, "J"},
+		Card{HEART, "D"},
+		Card{SPADE, "A"},
+		Card{SPADE, "7"},
+	}
+	player := makePlayer(validCards)
+	other := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &other
+	s.declarer = &player
+
+	s.trump = GRAND
+	s.trick = []Card{Card{CLUBS, "A"}, Card{CLUBS, "8"}}
+	s.follow = CLUBS
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "J"}
 	if !card.equals(exp) {
 		t.Errorf("Trump: %s, In trick %v and valid %v, was expected to play %v. Played %v",
 			s.trump, s.trick, validCards, exp, card)

@@ -172,6 +172,17 @@ func (p Player) strongestLowestNotAor10(s *SuitState, cs []Card) Card {
 	return strongest[l]
 }
 
+func (p Player) enoughTrumps(s *SuitState) bool {
+	ownTrumps := sortRank(filter(p.hand, func(card Card) bool {
+		return card.Rank == "J" || card.Suit == s.trump
+	}))
+	otherTrumps := p.otherPlayersTrumps(s)
+	if len(ownTrumps) * 2 < len(otherTrumps) + 2 || (len(ownTrumps) == 3 && len(otherTrumps) == 4) {
+		return false
+	}
+	return true
+}
+
 func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	debugTacticsLog("DECLARER ")
 	if len(c) == 1 {
@@ -188,8 +199,18 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 		return card.Suit != s.trump && card.Rank != "J"
 	})
 
+	// calculating sure winners and 2nd losers
+	sureWinners := []Card{}
+	for _,t := range ownTrumps {
+		if noHigherCard(s, true, p.hand, t) {
+			sureWinners = append(sureWinners, t)
+		}
+	}
+	sureWinners = sortSuit(s.trump, sureWinners)
+	debugTacticsLog("..sure winners: %v", sureWinners)
+
 	if len(s.trick) == 0 {
-		debugTacticsLog("FOREHAND ")
+		debugTacticsLog("..FOREHAND ")
 		// count your own trumps and other players trump
 		// if you have less you should not play trumps immediately
 		if len(p.otherPlayersTrumps(s)) > 0 {
@@ -198,15 +219,7 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 			debugTacticsLog("..own TRUMPS: %v", ownTrumps)
 
 
-			// calculating sure winners and 2nd losers
-			sureWinners := []Card{}
-			for _,t := range ownTrumps {
-				if noHigherCard(s, true, p.hand, t) {
-					sureWinners = append(sureWinners, t)
-				}
-			}
-			sureWinners = sortSuit(s.trump, sureWinners)
-			debugTacticsLog("..sure winners: %v", sureWinners)
+
 
 			highLosers := []Card{}
 			for _,t := range ownTrumps {
@@ -233,7 +246,7 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				}
 			}
 			// if len(ownTrumps) * 2 < len(otherTrumps) + 2 {
-			if len(ownTrumps) * 2 < len(otherTrumps) + 2 || (len(ownTrumps) == 3 && len(otherTrumps) == 4) {
+			if ! p.enoughTrumps(s) {
 				debugTacticsLog("Not enough trumps.  Playing suits")
 				return p.playSuit(s, c)
 			}
@@ -350,9 +363,9 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 		return HighestLong(s.trump, c)
 	}
 	if len(s.trick) == 1 {
+		// DECLARER MIDDLEHAND
 		debugTacticsLog("MIDDLEHAND ")
 		if len(follows) == 0 && len(ownTrumps) > 0 {
-
 			// THROW OFF? Increases win by 1%
 			if cardValue(s.trick[0]) == 0 {
 				debugTacticsLog("zero value..")
@@ -361,13 +374,22 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 					for i := len(sortedValueNoTrumps) - 1; i > 0; i-- {
 						card := sortedValueNoTrumps[i]
 						if cardValue(card) == 0 && !isAKX(card.Suit, p.hand) {
-							debugTacticsLog("throwing off number (not in AKX)..")
-							return card
+							debugTacticsLog("throwing off number (not in AKX) not in 10X..")
+							if !is10X(card.Suit, p.hand) && cardValue(card) == 0 {
+								return card
+							}						
 						}
 					}
 					debugTacticsLog("throwing off number (even in AKX)..")
-					return sortedValueNoTrumps[len(sortedValueNoTrumps) - 1]
+					card := sortedValueNoTrumps[len(sortedValueNoTrumps) - 1]
+					if !is10X(card.Suit, p.hand)  && cardValue(card) == 0 {
+						return card
+					}
 				}
+			}
+
+			if len(sureWinners) > 0 && len(sureWinners) + 1 > len(otherTrumps) && p.enoughTrumps(s) {
+				return sortValue(sureWinners)[0]
 			}
 
 			debugTacticsLog("..low strengrt/value trump.. ")

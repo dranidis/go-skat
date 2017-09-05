@@ -5,3 +5,5 @@
 *.
 *~
 *swp
+*.check
+*logfile

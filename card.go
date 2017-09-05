@@ -108,6 +108,19 @@ func sortRankSpecial(cs []Card, ranks []string) []Card {
 	return cards
 }
 
+func sortSuitRankSpecial(cs []Card, suits, ranks []string) []Card {
+	cards := []Card{}
+
+	for _, r := range ranks {
+		for _, s := range suits {
+			if in(cs, Card{s, r}) {
+				cards = append(cards, Card{s, r})
+			}
+		}
+	}
+	return cards
+}
+
 func previousNull(c Card) Card {
 	for i := len(nullRanks) - 1; i >= 0; i-- {
 		if c.Rank != nullRanks[i] {

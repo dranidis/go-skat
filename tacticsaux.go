@@ -22,15 +22,18 @@ func winnerCards(s *SuitState, cs []Card) []Card {
 
 func highestValueWinnerORlowestValueLoser(s *SuitState, c []Card) Card {
 	winners := winnerCards(s, c)
-	debugTacticsLog("Winners: %v\n", winners)
+
+	trumpSuits := []string{CARO, HEART, SPADE, CLUBS}
 	trumpWinnerRanks := []string{"A", "10", "K", "D", "9", "8", "7", "J"}
 	if s.trump == s.follow {
-		winners = sortRankSpecial(winners, trumpWinnerRanks)
+		winners = sortSuitRankSpecial(winners, trumpSuits, trumpWinnerRanks)
 	} else {
 		// winners = sortValue(winners)
-		winners = sortRankSpecial(winners, trumpWinnerRanks)
+		winners = sortSuitRankSpecial(winners, trumpSuits, trumpWinnerRanks)
 	}
+
 	if len(winners) > 0 {
+		debugTacticsLog("Winners: %v\n", winners)
 		return winners[0]
 	}
 
@@ -151,6 +154,24 @@ func isAKX(trump string, cs []Card) bool {
 		return false
 	}
 	if len(cards) < 3 {
+		// fmt.Printf("less than 3\n")
+		return false
+	}
+	return true
+}
+
+func is10X(suit string, cs []Card) bool {
+	cards := filter(cs, func(c Card) bool {
+		return c.Suit == suit
+	})
+
+	if in(cards, Card{suit, "A"}) {
+		return false
+	}
+	if !in(cards, Card{suit, "10"}) {
+		return false
+	}
+	if len(cards) > 2 {
 		// fmt.Printf("less than 3\n")
 		return false
 	}
