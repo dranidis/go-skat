@@ -421,6 +421,20 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 		} else {
 			debugTacticsLog("TRUMP OR No cards of suit played...")
 		}
+
+		if len(follows) > 1 && sum(s.trick) == 0 { // losers
+			if in(p.hand, Card{s.follow, "A"}) && !in(s.cardsPlayed, Card{s.follow, "10"}) {
+				debugTacticsLog(".. %v in hand and %v not played yet", Card{s.follow, "A"}, Card{s.follow, "10"})
+				fs := 7 - len(filter(s.cardsPlayed, func (c Card) bool {
+					return c.Suit == s.follow && c.Rank != "J"
+					}))
+				debugTacticsLog(".. %d %s cards still in play..", fs, s.follow)
+				if fs > 4 {
+					return sortedValueNoTrumps[len(sortedValueNoTrumps) - 1]
+				}
+			} 
+		}
+
 		if sum(s.trick) == 0 {
 			debugTacticsLog("ZERO valued trick. DO not trump!...")
 			if len(sortedValueNoTrumps) > 0 {

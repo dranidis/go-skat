@@ -159,6 +159,12 @@ func Connect(usr, pwd string) error {
 		}
 
 		leaveTable()
+
+		time.Sleep(time.Duration(delayMs) * time.Millisecond)		
+		time.Sleep(time.Duration(delayMs) * time.Millisecond)		
+		time.Sleep(time.Duration(delayMs) * time.Millisecond)		
+
+		os.Exit(1)		
 		// game begins
 
 		// TODO:

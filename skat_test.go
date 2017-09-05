@@ -2766,7 +2766,6 @@ func TestDeclarerTacticMID_ThrowOffToGoBack(t *testing.T) {
 }
 
 func TestDeclarerTacticBACK_TrumpWithLowJack(t *testing.T) {
-	// throw off on a null opener to go in backhand
 
 	validCards := []Card{
 		Card{SPADE, "J"},
@@ -2787,6 +2786,33 @@ func TestDeclarerTacticBACK_TrumpWithLowJack(t *testing.T) {
 
 	card := player.playerTactic(&s, validCards)
 	exp := Card{CARO, "J"}
+	if !card.equals(exp) {
+		t.Errorf("Trump: %s, In trick %v and valid %v, was expected to play %v. Played %v",
+			s.trump, s.trick, validCards, exp, card)
+	}
+}
+
+func TestDeclarerTacticBACK_DontWasteYourAonaZeroTrick(t *testing.T) {
+
+	validCards := []Card{
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "D"},
+		Card{HEART, "A"},
+		Card{HEART, "8"},
+	}
+	player := makePlayer(validCards)
+	other := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &other
+	s.declarer = &player
+
+	s.trump = CARO
+	s.trick = []Card{Card{HEART, "7"}, Card{HEART, "9"}}
+	s.follow = HEART
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "8"}
 	if !card.equals(exp) {
 		t.Errorf("Trump: %s, In trick %v and valid %v, was expected to play %v. Played %v",
 			s.trump, s.trick, validCards, exp, card)
