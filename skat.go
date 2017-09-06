@@ -420,7 +420,20 @@ var oldCards []Card
 
 func DealCards() {
 	debugTacticsLog("Dealing\n")
-	cards := Shuffle(makeDeck())
+
+	var cards []Card 
+	for {
+		cards = Shuffle(makeDeck())
+		gamePlayers[0].setHand(sortSuit("", cards[:10]))
+		if dealGame == "" {
+			break
+		}
+		player := gamePlayers[0].(*Player)
+		g := player.canWin(false)	
+		if g == dealGame {
+			break
+		}
+	}
 
 	oldCards = make([]Card, len(cards))
 	copy(oldCards, cards)
@@ -469,8 +482,13 @@ func declareAndPlay() int {
 
 	if issConnect {
 		if len(state.skat) == 2 && state.skat[0].Rank != "" {
-			fmt.Printf("sending trump %s and skat %v %v to server" , state.trump, state.skat[0], state.skat[1])
-			iss_declare(state.trump, state.skat)
+			if !handGame {
+				fmt.Printf("sending trump %s and skat %v %v to server" , state.trump, state.skat[0], state.skat[1])
+				iss_declare(state.trump, false, state.skat)
+			} else {
+				fmt.Printf("sending trump %s and Hand Game to server" , state.trump)
+				iss_declare(state.trump, true, state.skat)
+			}
 		}  
 	}
 
@@ -745,6 +763,7 @@ func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlay
 }
 
 
+var dealGame = ""
 
 func main() {
 	// COMMAND LINE FLAGS
@@ -769,6 +788,7 @@ func main() {
 	flag.StringVar(&issOpp1, "opp1", "xskat", "Opponent to play with at ISS skat server")
 	flag.StringVar(&issOpp2, "opp2", "xskat", "Opponent to play with at ISS skat server")
 	flag.IntVar(&issSentDelay, "issdelay", 0, "Delay (in ms) before sending an action to ISS server. Useful for debugging and for observing a game.")
+	flag.StringVar(&dealGame, "deal", "", "Force a specific game deal: Grand, Null")
 	flag.Parse()
 
 	if auto {

@@ -1,4 +1,4 @@
-package mcts
+package main
 
 import (
 	"math"

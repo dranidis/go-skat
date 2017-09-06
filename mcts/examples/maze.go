@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/dranidis/go-skat/mcts"
 	"fmt"
+	"log"
 )
 
 
@@ -33,6 +34,10 @@ func (ma MazeAction) Equals(a mcts.Action) bool {
 	return false
 }
 
+func (m *MazeState) StateId() uint64 {
+	return uint64(m.tile)
+}
+
 func (m *MazeState) FindNextState(a mcts.Action) mcts.State {
 	currentTile := m.tile
 	var nextTile int
@@ -46,6 +51,9 @@ func (m *MazeState) FindNextState(a mcts.Action) mcts.State {
 		nextTile = currentTile + 1
 	case l:
 		nextTile = currentTile - 1
+	}
+	if nextTile < 0 || nextTile > 14 {
+		log.Fatal("FindNextState, Out of bounds index, nextTile:", nextTile, " currentTile", currentTile, " action ", ma)
 	}
 	steps ++
 	var state mcts.State
@@ -63,9 +71,12 @@ func (m *MazeState) FindReward() float64 {
 }
 
 func (m *MazeState) FindLegals() []mcts.Action {
+	if m.tile < 0 || m.tile > 14 {
+		log.Fatal("FindLegals, Out of bounds index, m.tile:", m.tile)
+	}	
 	var actions []mcts.Action
-	for _, m := range moves[m.tile] {
-		actions = append(actions, MazeAction{m})
+	for _, move := range moves[m.tile] {
+		actions = append(actions, MazeAction{move})
 	}
 	return actions
 }
@@ -87,11 +98,13 @@ func makeMaze() {
 		[]int{l, r},
 		[]int{l, d},
 		[]int{d},
+
 		[]int{u,d,r},
 		[]int{l,r},
 		[]int{l,r},
 		[]int{l,u},
 		[]int{d,u},
+
 		[]int{r,u},
 		[]int{l,r},
 		[]int{l,r},
@@ -117,15 +130,25 @@ func makeMaze() {
 
 func main() {
 	makeMaze()
+
+	// s :=  MazeState{10}
+	// actions := s.FindLegals()
+	// for _, action := range actions {
+	// 	fmt.Println(action)
+	// 	s.FindNextState(action)
+	// }
+
+
 	var state mcts.State
 	initial := &MazeState{0}
 	state = initial
-	mcts.InitSubtree(state)
+	// mcts.InitSubtree(state)
 	// for ! state.IsTerminal() {
-	for i := 0; i < 10; i++ {
-		a := mcts.Uct(state, 10)
-		state = state.FindNextState(a)		
-		mcts.ChangeSubtree(a)
+	for i := 0; i < 100; i++ {
+		a := mcts.Uct(state, 3000)
 		fmt.Println("PERFORMING ACTION: ", a)		
+		state = state.FindNextState(a)		
+		// mcts.ChangeSubtree(a)
+		// fmt.Println("PERFORMING ACTION: ", a)		
 	}
 }

@@ -494,7 +494,7 @@ func pickUpSkat() {
 }
 
 
-func iss_declare(trump string, skat []Card) {
+func iss_declare(trump string, hand bool, skat []Card) {
 	game := ""
 	switch trump {
 	case CLUBS:
@@ -510,9 +510,16 @@ func iss_declare(trump string, skat []Card) {
 	case NULL:
 		game = "N"
 	}
-	card1 := cardString(skat[0])	
-	card2 := cardString(skat[1])	
-	sendToServer(fmt.Sprintf("table .%d %s play %s.%s.%s", tableNr, username, game, card1, card2))
+	if hand {
+		game += "H"
+	}
+	if !hand {
+		card1 := cardString(skat[0])	
+		card2 := cardString(skat[1])	
+		sendToServer(fmt.Sprintf("table .%d %s play %s.%s.%s", tableNr, username, game, card1, card2))
+	} else {
+		sendToServer(fmt.Sprintf("table .%d %s play %s", tableNr, username, game))
+	}
 }
 
 func sendToServer(s string) {

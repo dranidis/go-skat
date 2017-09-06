@@ -9,6 +9,7 @@ type Player struct {
 	firstCardPlay  bool
 	risky          bool
 	trumpToDeclare string
+	handGame bool
 }
 
 func makePlayer(hand []Card) Player {
@@ -17,6 +18,7 @@ func makePlayer(hand []Card) Player {
 		firstCardPlay:  false,
 		risky:          false,
 		trumpToDeclare: "",
+		handGame:	false,
 	}
 }
 
@@ -52,26 +54,75 @@ func (p Player) otherPlayersTrumps(s *SuitState) []Card {
 var TRYING = false
 
 func (p Player) nullPlayerTactic(s *SuitState, c []Card) Card {
+	cards := sortValueNull(c)
+	debugTacticsLog(".. cards: %v\n", cards)
 	// do not lead a 7-8-J suit
-	return c[0]
+
+	if len(s.trick) == 0 {
+		return cards[0]
+	}
+	lcards := filter(cards, func(card Card) bool {
+			return ! s.greater(card, s.trick...)
+		})
+	debugTacticsLog(".. Lower cards: %v\n", lcards)
+	if len(lcards) > 0 {
+		return lcards[len(lcards) - 1]
+	}
+
+	debugTacticsLog(".. No smaller: \n")
+	return cards[0]
 }
 
-func (p Player) canWinNull(afterSkat bool) bool {
+// Returns 
+//	-1: unplayable
+//	 0: Null
+//	 1: Null hand
+func (p Player) canWinNull(afterSkat bool) int {
 	safe := 0
 	risky := 0
-	foreHand := ( &p == players[0] )
+	quiterisky := 0
+	unplayable := 0
+
+	// foreHand := ( &p == players[0] )
 	
+	removed := 0
 	for _, s := range suits {
-		if p.nullRockSolidSuit(s, foreHand) {
-			safe++
-		} else if p.nullRisky(s) {
-			risky++
+		risk := p.nullSafeSuit(s, p.hand)
+		switch risk {
+			case 0: safe++
+			case 1: risky++
+			case 2: quiterisky++
+			default: unplayable++
+		}
+		if risk > 2 && !afterSkat {
+			//check if they can be discard it
+			cs := filter(p.hand, func (c Card) bool {
+				return c.Suit == s
+			})
+			cs = sortRankSpecial(cs, nullRanksRev)
+			for p.nullSafeSuit(s, cs) > 2 && removed < 3 {
+				last := cs[len(cs) - 1]
+				cs = remove(cs, last)
+				removed++
+				debugTacticsLog(".. If i discard %v ", last)
+			}
+			if p.nullSafeSuit(s, cs) < 3 {
+				debugTacticsLog(".. the suit is OK")
+				unplayable--
+				quiterisky++
+			}			
 		}
 	}
-	if risky > 2 {
-		return false
+	if unplayable > 0 {
+		return -1
 	}
-	return true
+	if risky + quiterisky > 2 {
+		return -1
+	}
+	if safe > 2 && risky < 2 {
+		return 0
+	}
+	return 1
 }
 
 func (p Player) nullRisky(s string) bool {
@@ -84,7 +135,30 @@ func (p Player) nullRisky(s string) bool {
 	return false
 }
 
-func (p Player) nullRockSolidSuit(s string, led bool) bool {
+func (p Player) nullSafeSuit(s string, cards []Card) int {
+	risk := 0
+	safe := 0
+
+	cs := filter(cards, func (c Card) bool {
+		return c.Suit == s
+		})
+
+	debugTacticsLog(".. NULL: examining suit: %v", cs)
+	for i := len(nullRanks) - 1; i >=0 && len(cs) > 0; i-- {
+		r := nullRanks[i]
+		if in(cs, Card{s, r}) {
+			safe++
+			cs = remove(cs, Card{s, r})
+		} else {
+			safe--
+			if safe < 0 {
+				risk++
+			}
+		}
+	}
+	debugTacticsLog(" risk: %d\n", risk)
+	return risk
+// }
 	// cs := filter(p.hand, func (c Card) bool {
 	// 	return c.Suit == s
 	// 	})
@@ -122,17 +196,27 @@ func (p Player) nullRockSolidSuit(s string, led bool) bool {
 	// if !led && in(cs, Card{s, "7"}, Card{s, "9"}, Card{s, "J"})  && len(cs) == 3 {
 	// 	return true
 	// }
-	return false
+	// return false
 }
 
 func (p Player) canWin(afterSkat bool) string {
-	// canWinNull := p.canWinNull(afterSkat)
+	p.handGame = false
 
+	cs := p.getHand()
+
+	debugTacticsLog("\n(%s) Considering NULL in Hand: %v\n", p.name, cs)
+
+	canWinNull := p.canWinNull(afterSkat) == 0
+	canWinNullHand := p.canWinNull(afterSkat) == 1
+
+	if canWinNullHand {
+		debugTacticsLog("\nwill play NULL Hand:\n")
+		return "NullHand"
+	}
 	// if canWinNull {
 	// 	return NULL
 	// }
 
-	cs := p.getHand()
 	assOtherThan := func(suit string) int {
 		asses := 0
 		for _, s := range suits {
@@ -218,6 +302,9 @@ func (p Player) canWin(afterSkat bool) string {
 	est := handEstimation(cs)
 	debugTacticsLog("Hand: %v, Estimation: %d\n", cs, est)
 	if prob < 80 {
+		if canWinNull {
+			return NULL
+		}
 		if est < 50 {
 			return ""
 		}
@@ -1160,13 +1247,17 @@ func (p *Player) calculateHighestBid(afterSkat bool) int {
 	case "GRAND":
 		p.trumpToDeclare = GRAND
 		p.highestBid = p.getGamevalue(p.trumpToDeclare)
-	// case NULL:
-	// 	p.trumpToDeclare = NULL
-	// 	p.highestBid = 23
+	case NULL:
+		p.trumpToDeclare = NULL
+		p.highestBid = 23
+	case "NullHand":
+		p.trumpToDeclare = NULL
+		p.highestBid = 35
+		p.handGame = true
 	default:
 		return 0
 	}
-	if !afterSkat {
+	if canWin != NULL && !afterSkat {
 		if matadors(p.trumpToDeclare, p.hand) < -1 {
 			// maybe you pick the CLUBS J from the skat 1/4
 			worstCaseScore := 2 * trumpBaseValue(p.trumpToDeclare)
@@ -1224,17 +1315,35 @@ func (p *Player) discardInSkat(skat []Card) {
 	newHbid := p.calculateHighestBid(true)
 	debugTacticsLog("New high bid %d\n", newHbid)
 
+	if p.trumpToDeclare == NULL {
+		hrisk := 0
+		hriskSuit := ""
 
-	// // TODO:
-	// // if after SKAT pick up bid less than score use the next suit
-	// trump := p.trumpToDeclare
+		for i := 0; i < 2 ; i++ {
+			cards := sortValueNull(p.hand)
+			for _, s := range suits {
+				risk := p.nullSafeSuit(s, cards)
+				if risk > hrisk {
+					hrisk = risk
+					hriskSuit = s
+				}
+			}
+			cs := filter(cards, func (c Card) bool {
+				return c.Suit == hriskSuit
+			})
+			card := cs[len(cs) - 1]
+			debugTacticsLog("Discarding %v\n", card)
+			skat[i] = card
+			p.hand = remove(p.hand, card)
+		}
+		return
 
+	}
 
-	// return trump	
 
 	most := mostCardsSuit(p.getHand())
 
-	if p.trumpToDeclare != GRAND {
+	if p.trumpToDeclare != GRAND && p.trumpToDeclare != NULL {
 		if p.getGamevalue(most) < p.declaredBid {
 			debugTacticsLog("Game Value: %d. Declared bid: %d. TO AVOID OVERBID I will play first trump %s and not new %s.\n",
 				p.getGamevalue(most), p.declaredBid, p.trumpToDeclare, most)
@@ -1393,6 +1502,10 @@ func (p *Player) discardInSkat(skat []Card) {
 }
 
 func (p *Player) pickUpSkat(skat []Card) bool {
+	if p.handGame {
+		return false
+	}
+	//TODO:> ISS
 	if issConnect {
 		pickUpSkat()
 		card1 := <-skatChannel

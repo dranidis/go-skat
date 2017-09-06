@@ -94,6 +94,7 @@ func getSuit(trump string, card Card) string {
 var suits = []string{CLUBS, SPADE, HEART, CARO}
 var ranks = []string{"J", "A", "10", "K", "D", "9", "8", "7"}
 var nullRanks = []string{"A", "K", "D", "J", "10", "9", "8", "7"}
+var nullRanksRev = []string{"7", "8", "9", "10", "J", "D", "K", "A"}
 
 func sortRankSpecial(cs []Card, ranks []string) []Card {
 	cards := []Card{}
