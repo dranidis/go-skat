@@ -126,11 +126,11 @@ func (p Player) nullRockSolidSuit(s string, led bool) bool {
 }
 
 func (p Player) canWin(afterSkat bool) string {
-	canWinNull := p.canWinNull(afterSkat)
+	// canWinNull := p.canWinNull(afterSkat)
 
-	if canWinNull {
-		return NULL
-	}
+	// if canWinNull {
+	// 	return NULL
+	// }
 
 	cs := p.getHand()
 	assOtherThan := func(suit string) int {
@@ -1160,9 +1160,9 @@ func (p *Player) calculateHighestBid(afterSkat bool) int {
 	case "GRAND":
 		p.trumpToDeclare = GRAND
 		p.highestBid = p.getGamevalue(p.trumpToDeclare)
-	case "NULL":
-		p.trumpToDeclare = NULL
-		p.highestBid = 23
+	// case NULL:
+	// 	p.trumpToDeclare = NULL
+	// 	p.highestBid = 23
 	default:
 		return 0
 	}

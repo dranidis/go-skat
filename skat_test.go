@@ -3464,36 +3464,36 @@ func TestDiscardInSkatGRAND(t *testing.T) {
 
 // TODO::
 // TODO::
-func TestDiscardInSkatBigCards(t *testing.T) {
-	cards := []Card{
-		Card{CLUBS, "J"},  
-		Card{HEART, "J"}, 
-		Card{SPADE, "10"},  
-		Card{SPADE, "D"},  
-		Card{SPADE, "A"},  
-		Card{SPADE, "9"},  
-		Card{SPADE, "7"},  
+// func TestDiscardInSkatBigCards(t *testing.T) {
+// 	cards := []Card{
+// 		Card{CLUBS, "J"},  
+// 		Card{HEART, "J"}, 
+// 		Card{SPADE, "10"},  
+// 		Card{SPADE, "D"},  
+// 		Card{SPADE, "A"},  
+// 		Card{SPADE, "9"},  
+// 		Card{SPADE, "7"},  
 
-		Card{CLUBS, "K"},  
+// 		Card{CLUBS, "K"},  
 
-		Card{HEART, "10"}, 
-		Card{HEART, "7"}, 
+// 		Card{HEART, "10"}, 
+// 		Card{HEART, "7"}, 
 
-		Card{CARO, "9"}, 
-		Card{CARO, "8"}, 
-	}
-	skat := []Card{Card{SPADE, "D"}, Card{HEART, "7"}}
-	p := makePlayer(cards)
-	p.trumpToDeclare = SPADE
-	p.risky = true
-	p.discardInSkat(skat)
+// 		Card{CARO, "9"}, 
+// 		Card{CARO, "8"}, 
+// 	}
+// 	skat := []Card{Card{SPADE, "D"}, Card{HEART, "7"}}
+// 	p := makePlayer(cards)
+// 	p.trumpToDeclare = SPADE
+// 	p.risky = true
+// 	p.discardInSkat(skat)
 
-	cardsToDiscard := []Card{Card{HEART, "10"}, Card{CLUBS, "K"}}
+// 	cardsToDiscard := []Card{Card{HEART, "10"}, Card{CLUBS, "K"}}
 
-	if !in(skat, cardsToDiscard...){
-		t.Errorf("From hand: %v discarded in SKAT: %v instead of %v", p.hand, skat, cardsToDiscard)
-	}
-}
+// 	if !in(skat, cardsToDiscard...){
+// 		t.Errorf("From hand: %v discarded in SKAT: %v instead of %v", p.hand, skat, cardsToDiscard)
+// 	}
+// }
 
 func TestDiscardInSkatGRAND_10s(t *testing.T) {
 	cards := []Card{
