@@ -89,7 +89,7 @@ func Connect(usr, pwd string) error {
 
 	go func() {
 		createTable()
-		invite("xskat", "xskat")
+		invite(issOpp1, issOpp2)
 		for i :=0 ; i < totalGames; i++ {
 			ready()
 			<- waitServer // wait for game end

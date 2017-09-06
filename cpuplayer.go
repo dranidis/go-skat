@@ -51,7 +51,87 @@ func (p Player) otherPlayersTrumps(s *SuitState) []Card {
 
 var TRYING = false
 
+func (p Player) nullPlayerTactic(s *SuitState, c []Card) Card {
+	// do not lead a 7-8-J suit
+	return c[0]
+}
+
+func (p Player) canWinNull(afterSkat bool) bool {
+	safe := 0
+	risky := 0
+	foreHand := ( &p == players[0] )
+	
+	for _, s := range suits {
+		if p.nullRockSolidSuit(s, foreHand) {
+			safe++
+		} else if p.nullRisky(s) {
+			risky++
+		}
+	}
+	if risky > 2 {
+		return false
+	}
+	return true
+}
+
+func (p Player) nullRisky(s string) bool {
+	cs := filter(p.hand, func (c Card) bool {
+		return c.Suit == s
+		})
+	if in(cs, Card{s, "8"}) && len(cs) == 1 {
+		return true
+	}
+	return false
+}
+
+func (p Player) nullRockSolidSuit(s string, led bool) bool {
+	// cs := filter(p.hand, func (c Card) bool {
+	// 	return c.Suit == s
+	// 	})
+	// if in(cs, Card{s, "7"}) && len(cs) == 1 {
+	// 	return true
+	// }
+	// if in(cs, Card{s, "7"}, Card{s, "8"}) && len(cs) == 2 {
+	// 	return true
+	// }
+	// if in(cs, Card{s, "7"}, Card{s, "8"}, Card{s, "9"})  && len(cs) == 3 {
+	// 	return true
+	// }
+	// if in(cs, Card{s, "7"}, Card{s, "8"}, Card{s, "10"})  && len(cs) == 3  {
+	// 	return true
+	// }
+	// if in(cs, Card{s, "7"}, Card{s, "8"}, Card{s, "10"}, Card{s, "J"})  && len(cs) == 3  {
+	// 	return true
+	// }
+
+	// if !led && in(cs, Card{s, "7"}, Card{s, "8"}, Card{s, "J"}) {
+	// 	return true
+	// }
+	// if !led && in(cs, Card{s, "7"}, Card{s, "9"}) && len(cs) == 2 {
+	// 	return true
+	// }
+	// if !led && in(cs, Card{s, "7"}, Card{s, "9"}) && len(cs) == 2 {
+	// 	return true
+	// }
+	// if !led && in(cs, Card{s, "7"}, Card{s, "9"}) && len(cs) == 2 {
+	// 	return true
+	// }
+	// if !led && in(cs, Card{s, "7"}, Card{s, "9"}, Card{s, "10"})  && len(cs) == 3 {
+	// 	return true
+	// }
+	// if !led && in(cs, Card{s, "7"}, Card{s, "9"}, Card{s, "J"})  && len(cs) == 3 {
+	// 	return true
+	// }
+	return false
+}
+
 func (p Player) canWin(afterSkat bool) string {
+	canWinNull := p.canWinNull(afterSkat)
+
+	if canWinNull {
+		return NULL
+	}
+
 	cs := p.getHand()
 	assOtherThan := func(suit string) int {
 		asses := 0
@@ -143,9 +223,9 @@ func (p Player) canWin(afterSkat bool) string {
 		}
 	}
 
-	if est < 32 {
-		return ""
-	}
+	// if est < 20 {
+	// 	return ""
+	// }
 	//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
 
 	// fmt.Printf("HIGH %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
@@ -192,6 +272,10 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	if len(c) == 1 {
 		debugTacticsLog("..FORCED MOVE.. ")
 		return c[0]
+	}
+
+	if s.trump == NULL {
+		return p.nullPlayerTactic(s, c)
 	}	
 
 	follows :=  followCards(s, s.follow, c)
@@ -1076,6 +1160,9 @@ func (p *Player) calculateHighestBid(afterSkat bool) int {
 	case "GRAND":
 		p.trumpToDeclare = GRAND
 		p.highestBid = p.getGamevalue(p.trumpToDeclare)
+	case "NULL":
+		p.trumpToDeclare = NULL
+		p.highestBid = 23
 	default:
 		return 0
 	}
