@@ -217,6 +217,11 @@ func (p Player) canWin(afterSkat bool) string {
 	// 	return NULL
 	// }
 
+
+	if canWinNull {
+		return NULL
+	}
+
 	assOtherThan := func(suit string) int {
 		asses := 0
 		for _, s := range suits {
@@ -1257,7 +1262,7 @@ func (p *Player) calculateHighestBid(afterSkat bool) int {
 	default:
 		return 0
 	}
-	if canWin != NULL && !afterSkat {
+	if p.trumpToDeclare != NULL && !afterSkat {
 		if matadors(p.trumpToDeclare, p.hand) < -1 {
 			// maybe you pick the CLUBS J from the skat 1/4
 			worstCaseScore := 2 * trumpBaseValue(p.trumpToDeclare)
@@ -1319,7 +1324,7 @@ func (p *Player) discardInSkat(skat []Card) {
 		hrisk := 0
 		hriskSuit := ""
 		discarded := 0
-		for discarded := 0; discarded < 2 ; discarded++ {
+		for discarded = 0; discarded < 2 ; discarded++ {
 			cards := sortValueNull(p.hand)
 			for _, s := range suits {
 				risk := p.nullSafeSuit(s, cards)

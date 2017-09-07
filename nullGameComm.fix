@@ -1,0 +1,75 @@
+RECV: table .3 goskat start 1 xskat:2 240.0 goskat 240.0 xskat 240.0
+You are player 1 in game: 1 with xskat and xskat:2 
+RECV: table .3 goskat go
+Unhandled server message:  table .3 goskat go
+RECV: table .3 goskat play w ??.??.??.??.??.??.??.??.??.??|HT.S8.CJ.S7.H8.SK.CQ.SQ.C9.ST|??.??.??.??.??.??.??.??.??.??|??.?? 240.0 240.0 240.0
+Your hand: [10 8 J 7 8 K D D 9 10]
+
+PLAYER ORDER: xskat:2 - goskat - xskat
+
+(xskat:2) vs (goskat)
+SENT: table .3 goskat play 18
+	(goskat) 18
+Waiting bid from xskat:2..RECV: table .3 goskat play 1 18 240.0 239.7 240.0
+Player: 1, Bidding: 18
+RECV: table .3 goskat play 0 y 240.0 239.7 240.0
+Player: 0, ACCEPTS
+ .. bid received y
+	(xskat:2) Yes
+SENT: table .3 goskat play 20
+	(goskat) 20
+Waiting bid from xskat:2..RECV: table .3 goskat play 1 20 240.0 239.2 240.0
+Player: 1, Bidding: 20
+RECV: table .3 goskat play 0 y 240.0 239.2 240.0
+Player: 0, ACCEPTS
+ .. bid received y
+	(xskat:2) Yes
+SENT: table .3 goskat play 22
+	(goskat) 22
+Waiting bid from xskat:2..RECV: table .3 goskat play 1 22 240.0 238.8 240.0
+Player: 1, Bidding: 22
+RECV: table .3 goskat play 0 y 240.0 238.8 240.0
+Player: 0, ACCEPTS
+ .. bid received y
+	(xskat:2) Yes
+SENT: table .3 goskat play 23
+	(goskat) 23
+Waiting bid from xskat:2..RECV: table .3 goskat play 1 23 240.0 238.4 240.0
+Player: 1, Bidding: 23
+RECV: table .3 goskat play 0 y 240.0 238.4 240.0
+Player: 0, ACCEPTS
+ .. bid received y
+	(xskat:2) Yes
+SENT: table .3 goskat play 24
+	(goskat) 24
+Waiting bid from xskat:2..RECV: table .3 goskat play 1 24 240.0 238.0 240.0
+Player: 1, Bidding: 24
+RECV: table .3 goskat play 0 y 240.0 238.0 240.0
+Player: 0, ACCEPTS
+ .. bid received y
+	(xskat:2) Yes
+SENT: table .3 goskat play 27
+	(goskat) 27
+Waiting bid from xskat:2..RECV: table .3 goskat play 1 27 240.0 237.5 240.0
+Player: 1, Bidding: 27
+RECV: table .3 goskat play 0 p 240.0 237.5 240.0
+Player: 0, PASS
+RECV: table .3 goskat play 2 p 240.0 237.5 240.0
+Player: 2, PASS
+ .. bid received p
+	(xskat:2) Pass
+(goskat) vs (xskat)
+Waiting bid from xskat.. .. bid received p
+	(xskat) Pass 
+(goskat) won the bidding
+
+(goskat) TRUMP: Null
+
+Trick: []
+(xskat:2) Waiting card up from xskat:2..RECV: table .3 goskat state 3 xskat xskat:2 goskat . xskat # 0 0 0 0 0 0 1 0 xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 true 1
+Unhandled server message:  table .3 goskat state 3 xskat xskat:2 goskat . xskat # 0 0 0 0 0 0 1 0 xskat:2 # 0 0 0 0 0 0 1 0 goskat . 0 0 0 0 0 0 1 0 . . 0 0 0 0 0 0 0 0 true 1
+RECV: tables + .1 3 12 . xskat:1 . -1
+Unhandled server message:  tables + .1 3 12 . xskat:1 . -1
+RECV: tables + .1 3 12 . . . -1
+Unhandled server message:  tables + .1 3 12 . . . -1
+RECV: tables - .1

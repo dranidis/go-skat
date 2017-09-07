@@ -9,6 +9,7 @@ import (
 
 type MazeState struct {
 	tile int
+	fromTile int
 }
 
 type MazeAction struct {
@@ -35,7 +36,7 @@ func (ma MazeAction) Equals(a mcts.Action) bool {
 }
 
 func (m *MazeState) StateId() uint64 {
-	return uint64(m.tile)
+	return uint64(m.tile * 100 + m.fromTile)
 }
 
 func (m *MazeState) FindNextState(a mcts.Action) mcts.State {
@@ -57,7 +58,7 @@ func (m *MazeState) FindNextState(a mcts.Action) mcts.State {
 	}
 	steps ++
 	var state mcts.State
-	state = &MazeState{nextTile}
+	state = &MazeState{nextTile, currentTile}
 	// fmt.Printf("Moving from tile %d to tile %d\n", currentTile, nextTile)
 	return state
 }
@@ -67,7 +68,9 @@ func (m *MazeState) IsTerminal() bool {
 }
 
 func (m *MazeState) FindReward() float64 {
-	return -1.0  * float64(steps)
+	reward := -1.0  * float64(steps)
+	steps = 0
+	return reward
 }
 
 func (m *MazeState) FindLegals() []mcts.Action {
@@ -140,7 +143,7 @@ func main() {
 
 
 	var state mcts.State
-	initial := &MazeState{0}
+	initial := &MazeState{0, 0}
 	state = initial
 	// mcts.InitSubtree(state)
 	// for ! state.IsTerminal() {

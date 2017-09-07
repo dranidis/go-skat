@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/fatih/color"
 	"log"
+	"runtime/debug"
 )
 
 const CLUBS = "CLUBS"
@@ -70,6 +71,8 @@ func trumpBaseValue(s string) int {
 	case GRAND:
 		return 24
 	case NULL:
+		debug.PrintStack()
+
 		log.Fatal("Error! No base value for NULL")
 	}
 	return 0

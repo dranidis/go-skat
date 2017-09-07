@@ -338,7 +338,7 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 				gs = -46
 			}
 		}
-		gameLog("SCORE %d\n", gs)
+		gameLog("SCORE %d\t", gs)
 	} else {
 		mat := matadors(state.trump, cs)
 		withMatadors = mat
@@ -390,7 +390,7 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 		} else {
 			gs = -2 * gs
 		}
-		gameLog("SCORE %d\n", gs)
+		gameLog("SCORE %d\t", gs)
 	}
 
 	scoreStruct := Score{
@@ -407,13 +407,12 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 		overbid,
 		0,0,0,
 	}
-
-
-
 	return scoreStruct
 }
 
 var grandGames = 0
+var nullGames = 0
+
 var state SuitState
 
 var oldCards []Card
@@ -500,6 +499,9 @@ func declareAndPlay() int {
 
 	if state.trump == GRAND {
 		grandGames++
+	}
+	if state.trump == NULL {
+		nullGames++
 	}
 	state.trumpsInGame = filter(makeDeck(), func(c Card) bool {
 		return getSuit(state.trump, c) == state.trump
@@ -945,7 +947,8 @@ func main() {
 		100*float64(player2.getWonAsDefenders())/float64(totalGames-passed-(player2.getLost()+player2.getWon())),
 		100*float64(player3.getWonAsDefenders())/float64(totalGames-passed-(player3.getLost()+player3.getWon())))
 	fmt.Printf("AVG  %3.1f, passed %d, won %d, lost %d / %d games\n", avg, passed, won, lost, totalGames)
-	fmt.Printf("Grand games %d, perc: %5.2f", grandGames, 100*float64(grandGames)/float64(totalGames))
+	fmt.Printf("Grand games %d, perc: %5.2f\n", grandGames, 100*float64(grandGames)/float64(totalGames))
+	fmt.Printf("Null games %d, perc: %5.2f\n", nullGames, 100*float64(nullGames)/float64(totalGames))
 }
 
 func printScore(players []PlayerI) {
