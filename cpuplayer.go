@@ -84,7 +84,7 @@ func (p Player) canWinNull(afterSkat bool) int {
 	unplayable := 0
 
 	// foreHand := ( &p == players[0] )
-	
+	debugTacticsLog("Evaluating safe suits\n")
 	removed := 0
 	for _, s := range suits {
 		risk := p.nullSafeSuit(s, p.hand)
@@ -100,11 +100,11 @@ func (p Player) canWinNull(afterSkat bool) int {
 				return c.Suit == s
 			})
 			cs = sortRankSpecial(cs, nullRanksRev)
-			for p.nullSafeSuit(s, cs) > 2 && removed < 3 {
+			for p.nullSafeSuit(s, cs) > 2 && removed < 2 {
 				last := cs[len(cs) - 1]
 				cs = remove(cs, last)
 				removed++
-				debugTacticsLog(".. If i discard %v ", last)
+				debugTacticsLog(".. If I discard %v (%d removed)", last, removed)
 			}
 			if p.nullSafeSuit(s, cs) < 3 {
 				debugTacticsLog(".. the suit is OK")
@@ -1318,8 +1318,8 @@ func (p *Player) discardInSkat(skat []Card) {
 	if p.trumpToDeclare == NULL {
 		hrisk := 0
 		hriskSuit := ""
-
-		for i := 0; i < 2 ; i++ {
+		discarded := 0
+		for discarded := 0; discarded < 2 ; discarded++ {
 			cards := sortValueNull(p.hand)
 			for _, s := range suits {
 				risk := p.nullSafeSuit(s, cards)
@@ -1328,16 +1328,27 @@ func (p *Player) discardInSkat(skat []Card) {
 					hriskSuit = s
 				}
 			}
-			cs := filter(cards, func (c Card) bool {
-				return c.Suit == hriskSuit
-			})
-			card := cs[len(cs) - 1]
+			if hrisk != 0 {
+				cs := filter(cards, func (c Card) bool {
+					return c.Suit == hriskSuit
+				})
+				card := cs[len(cs) - 1]
+				debugTacticsLog("Discarding %v\n", card)
+				skat[discarded] = card
+				p.hand = remove(p.hand, card)
+			}
+			hrisk = 0
+			hriskSuit = ""
+		}
+		for discarded < 2 {
+			cards := sortValueNull(p.hand)
+			card := cards[len(cards) - 1]
 			debugTacticsLog("Discarding %v\n", card)
-			skat[i] = card
+			skat[discarded] = card
 			p.hand = remove(p.hand, card)
+			discarded++			
 		}
 		return
-
 	}
 
 
