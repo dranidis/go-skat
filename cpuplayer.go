@@ -119,10 +119,10 @@ func (p Player) canWinNull(afterSkat bool) int {
 	if risky + quiterisky > 2 {
 		return -1
 	}
-	if safe > 2 && risky < 2 {
-		return 0
+	if safe == 4 {
+		return 1
 	}
-	return 1
+	return 0
 }
 
 func (p Player) nullRisky(s string) bool {

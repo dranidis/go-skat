@@ -484,13 +484,14 @@ func declareAndPlay() int {
 			if !handGame {
 				fmt.Printf("sending trump %s and skat %v %v to server" , state.trump, state.skat[0], state.skat[1])
 				iss_declare(state.trump, false, state.skat)
-			} else {
-				fmt.Printf("sending trump %s and Hand Game to server" , state.trump)
-				iss_declare(state.trump, true, state.skat)
-			}
+			} 
 		}  
 	}
 
+	if issConnect && handGame {
+		fmt.Printf("sending trump %s and Hand Game to server" , state.trump)
+		iss_declare(state.trump, true, state.skat)
+	}
 
 	if html {
 		htmlLog("Sending trump %v", state.trump)
