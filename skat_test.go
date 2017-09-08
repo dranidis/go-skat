@@ -1221,7 +1221,29 @@ func TestGame(t *testing.T) {
 	}
 	gamePlayers = []PlayerI{player1, &player2, &player3}
 	for i := 0; i < 10; i++ {
-		// _ = game()
+		_ = game()
+	}
+}
+
+func TestGame2(t *testing.T) {
+	// player1 is declared globally
+	player := makePlayer([]Card{})
+	player1 = &player
+
+	player2 := makeMinMaxPlayer([]Card{})
+	player3 := makePlayer([]Card{})
+	player3.firstCardPlay = true
+	player1.setName("NAME")
+	player2.setName("MINMAX")
+	if player1.getName() != "NAME" {
+		t.Errorf("Error in set/get name")
+	}
+	if player1.getTotalScore() != 0 {
+		t.Errorf("Error in get total score")
+	}
+	gamePlayers = []PlayerI{player1, &player2, &player3}
+	for i := 0; i < 10; i++ {
+		_ = game()
 	}
 }
 
@@ -2046,7 +2068,7 @@ func TestOpponentTacticFORE_StrongTrumps(t *testing.T) {
 	}
 
 	card := player.playerTactic(&s, validCards)
-	if !card.equals(Card{CLUBS, "J"}) {
+	if !card.equals(Card{CLUBS, "J"}) && !card.equals(Card{SPADE, "J"}) {
 		t.Errorf("Error validCards: %v, played %v",
 			validCards, card)
 	}

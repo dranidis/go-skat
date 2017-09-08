@@ -8,7 +8,6 @@ import (
 	"github.com/fatih/color"
 	"github.com/gorilla/mux"
 	_ "html/template"
-	"io"
 	"log"
 	"math/rand"
 	"net/http"
@@ -19,16 +18,14 @@ import (
 
 var r = rand.New(rand.NewSource(1))
 var _ = rand.New(rand.NewSource(time.Now().Unix()))
-var logFile io.Writer = nil
-var debugTacticsLogFlag = false
-var gameLogFlag = true
-var fileLogFlag = true
-var htmlLogFlag = false
+
 var delayMs = 1000
 var totalGames = 21
 var oficialScoring = false
-var logFileName = "gameLog.txt"
 
+/*
+channels for html and ISS comm
+*/
 var playChannel chan CardPlayed
 var trickChannel chan Card
 var skatChannel chan Card
@@ -42,45 +39,20 @@ var discardChannel chan Card
 var skatPositionChannel chan int
 
 var gameNr int
+
 var issConnect = false
 var issOpp1 = "xskat"
 var issOpp2 = "xskat"
 var issSentDelay = 0
 
-func logToFile(format string, a ...interface{}) {
-	if fileLogFlag && logFile != nil {
-		fmt.Fprintf(logFile, format, a...)
-	}
-}
+var gameIndex = 1
+var player1 PlayerI
+var player2 Player
+var player3 Player
+var html = false
 
-func bidLog(format string, a ...interface{}) {
-	if gameLogFlag {
-		fmt.Printf(format, a...)
-	}
-	logToFile(format, a...)
-}
-
-func gameLog(format string, a ...interface{}) {
-	if gameLogFlag {
-		fmt.Printf(format, a...)
-	}
-	logToFile(format, a...)
-}
-
-func htmlLog(format string, a ...interface{}) {
-	if htmlLogFlag {
-		red := color.New(color.Bold, color.FgYellow).SprintFunc()
-		s := fmt.Sprintf(format, a...)
-		fmt.Printf(red(s))
-	}
-}
-
-func debugTacticsLog(format string, a ...interface{}) {
-	if debugTacticsLogFlag {
-		fmt.Printf(format, a...)
-	}
-	logToFile(format, a...)
-}
+var players []PlayerI
+var gamePlayers []PlayerI
 
 type SuitState struct {
 	declarer PlayerI
@@ -252,10 +224,14 @@ func validCards(s SuitState, playerHand []Card) []Card {
 }
 
 func (s SuitState) valid(playerHand []Card, card Card) bool {
+	// debugTacticsLog(".. PLAYER HAND: %v\n", playerHand)
 	for _, c := range playerHand {
 		// if there is at least one card in your hand matching the followed suit
 		// your played card should follow
 		if s.follow == getSuit(s.trump, c) {
+			// if s.follow != getSuit(s.trump, card) {
+			// 	debugTacticsLog(".. INVALID CARD: %v. Valid in hand: %v\n", card, c)
+			// }
 			return s.follow == getSuit(s.trump, card)
 		}
 	}
@@ -656,18 +632,6 @@ func rotatePlayers(players []PlayerI) []PlayerI {
 	newPlayers = append(newPlayers, players[0])
 	return newPlayers
 }
-
-var gameIndex = 1
-var player1 PlayerI
-var player2 Player
-var player3 Player
-var html = false
-
-type V struct {
-}
-
-var players []PlayerI
-var gamePlayers []PlayerI
 
 func makeChannels() {
 	playChannel = make(chan CardPlayed)
@@ -1227,11 +1191,11 @@ func startServer() *mux.Router {
 		suit := mux.Vars(r)["suit"]
 		rank := mux.Vars(r)["rank"]
 		card := Card{suit, rank}
-		htmlLog("Received /playCard/%d/ %v \n", pl, card)
-		if state.valid(players[pl].getHand(), card) {
+		htmlLog("\nReceived /playCard/%d/ %v \n", pl, card)
+		if state.valid(gamePlayers[pl].getHand(), card) {
 			htmlLog("Sending %v to trickChannel...", card)
 			trickChannel <- card
-			htmlLog("sent\n", card)
+			htmlLog("sent %v\n", card)
 		} else {
 			htmlLog("Invalid card")
 			http.Error(w, "Invalid Card", http.StatusInternalServerError)

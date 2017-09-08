@@ -217,11 +217,6 @@ func (p Player) canWin(afterSkat bool) string {
 	// 	return NULL
 	// }
 
-
-	if canWinNull {
-		return NULL
-	}
-
 	assOtherThan := func(suit string) int {
 		asses := 0
 		for _, s := range suits {
@@ -285,6 +280,12 @@ func (p Player) canWin(afterSkat bool) string {
 		//return "GRAND"
 
 	}
+
+	if canWinNull {
+		return NULL
+	}
+
+
 
 	suit := mostCardsSuit(cs)
 	largest := len(trumpCards(suit, cs))
