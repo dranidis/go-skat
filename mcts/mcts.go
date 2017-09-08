@@ -9,6 +9,7 @@ import (
 )
 
 var SimulationRuns = 100
+var ExplorationParameter = 2.0
 var DEBUG = false
 
 func debugLog(format string, a ...interface{}) {
@@ -96,9 +97,11 @@ func Uct(state State, seconds int) Action {
 		elapsed = t.Sub(start)
 	}
 	// printTree(root, 0)
-	// return mostVisited(root.children).action
-	return mostVisitedAction(root)
-	// return mostUtilityAction(root)
+
+	// best := mostUtilityAction(root)
+	best := mostVisitedAction(root)
+	debugLog("\nRETURNING BEST MOVE: %v\n\n", best)
+	return best
 }
 
 var printed = make(map[uint64]*Node)
@@ -113,7 +116,7 @@ func printTree(node *Node, depth int) {
 	}
 
 	// action := ""
-	debugLog("%sState %d,Visits %v, Utility %.2f, Action %s\n", indent, node.state, node.visits, node.utility / float64(node.visits), node.action)
+	debugLog("%sState %s,Visits %v, Utility %.2f, Action %s\n", indent, node.state, node.visits, node.utility / float64(node.visits), node.action)
 	_, ok := printed[node.state.StateId()]
 	printed[node.state.StateId()] = node
 	if !ok {
@@ -211,7 +214,7 @@ func selectNode(node *Node, depth int) *Node {
 		}
 	}
 
-	debugLog(".. ALL visited. Selecting Highest score\n")
+	debugLog(".. ALL visited. Selecting Highest/Lowest score\n")
 
 	var score float64
 	if !node.state.IsOpponentTurn() {
@@ -238,20 +241,20 @@ func selectNode(node *Node, depth int) *Node {
 	}
 
 	for i := 0; i < len(node.children); i++ {
-		debugLog(".. Child: %d %v\n", i, node.children[i].state)
+		// debugLog(".. Child: %d %v\n", i, node.children[i].state)
 
 		_, ok := selected[node.children[i].state.StateId()]
 		if !ok {
 			if !node.state.IsOpponentTurn() {
 				newscore := selectfn(node.children[i], parentVisits, 2.0)
-				debugLog(".. Child: %d, %v score %v\n", i, node.children[i].state, newscore)
+				// debugLog(".. Child: %d, %v score %v\n", i, node.children[i].state, newscore)
 				if newscore > score { // MAX
 					score = newscore
 					result = node.children[i]
 				}
 			} else {
 				newscore := selectfn(node.children[i], parentVisits, -2.0)
-				debugLog(".. Child: %d, %v score %v\n", i, node.children[i].state, newscore)
+				// debugLog(".. Child: %d, %v score %v\n", i, node.children[i].state, newscore)
 				if newscore < score { //MIN
 					score = newscore
 					result = node.children[i]
@@ -264,6 +267,7 @@ func selectNode(node *Node, depth int) *Node {
 
 	}
 
+	debugLog(".. Selected:  %v\n", result.state)
 	return selectNode(result, depth+1)
 }
 
@@ -272,7 +276,7 @@ func selectfn(node *Node, parentVisits int, factor float64) float64 {
 	// pv := float64(node.parent.visits)
 	pv := float64(parentVisits)
 	nv := float64(node.visits)
-	return u + factor * math.Sqrt(math.Log(pv) / nv)
+	return u + ExplorationParameter * math.Sqrt(math.Log(pv) / nv)
 }
 
 
@@ -280,9 +284,9 @@ func expand(node *Node) { //*Node {
 	// actions := node.state.FindLegals(node.state.player)
 	actions := node.state.FindLegals()
 	for _, action := range actions {
-		debugLog("..Expanding ACTION %s\n", action)
+		// debugLog("..Expanding ACTION %s\n", action)
 		newState := node.state.FindNextState(action)
-		debugLog("..state %v\n", newState)
+		// debugLog("..state %v\n", newState)
 		// check if state is visited
 		stateId := newState.StateId()
 		visitedNode, ok := visitedStates[stateId]
@@ -296,13 +300,13 @@ func expand(node *Node) { //*Node {
 			reward := simulate(visitedNode.state)
 			backPropagate(visitedNode, reward)	
 		} else {
-			debugLog("..new state %v\n", newState)
+			// debugLog("..new state %v\n", newState)
 			newNode := &Node{newState, 0, 0, action, node, []*Node{}}
 			visitedStates[stateId] = newNode
 			node.children = append(node.children, newNode)
 			nNode = newNode
 
-			debugLog("..Simulation\n")
+			// debugLog("..Simulation\n")
 			for i :=0 ; i < SimulationRuns; i++ {
 				reward := simulate(nNode.state)
 				backPropagate(nNode, reward)	
@@ -323,11 +327,11 @@ func simulate(state State) float64 {
 	// for _, player := range newState.players {
 		// options := newState.FindLegals(player)
 		options := newState.FindLegals()
-		debugLog("Options: %v\n", options)
+		// debugLog("Options: %v\n", options)
 		best := rand.Intn(len(options))
 		newState = newState.FindNextState(options[best])
-		debugLog("Action: %v\n", options[best])
-		debugLog("%v", newState)
+		// debugLog("Action: %v\n", options[best])
+		// debugLog("%v", newState)
 	// } 
 	return simulate(newState)
 }

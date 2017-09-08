@@ -167,16 +167,29 @@ func main() {
 	randSeed := int64(r.Intn(9999))
 	rand.Seed(randSeed)
 
-	mcts.SimulationRuns = 100
-	var state mcts.State
-	initial := makeTTT()
-	state = &initial
-	for !state.IsTerminal() {
-		a := mcts.Uct(state, 500)
-		// fmt.Println("PERFORMING ACTION: ", a)		
-		state = state.FindNextState(a)	
-		fmt.Printf("%v\n\n", state)	
+	mcts.SimulationRuns = 500
+	mcts.ExplorationParameter = 2.0
+	mcts.DEBUG = false // You have to increase delay to 2000 if you are dedugging to give time for runs
+	runMilliseconds := 200
+
+	gameStats := []int{0,0,0}
+	for i := 0; i < 10; i++ {
+		fmt.Print(".")
+		var state mcts.State
+		initial := makeTTT()
+		state = &initial
+		for !state.IsTerminal() {
+			a := mcts.Uct(state, runMilliseconds)
+			// fmt.Println("PERFORMING ACTION: ", a)		
+			state = state.FindNextState(a)	
+			// fmt.Printf("%v\n\n", state)	
+		}
+		game := state.(*TTTState)
+		w := game.winner()
+		// fmt.Printf("Winner: %d\n", w)	
+		gameStats[w + 1] ++
 	}
-	game := state.(*TTTState)
-	fmt.Printf("Winner: %d\n", game.winner())
+
+	fmt.Println(gameStats)
+	
 }
