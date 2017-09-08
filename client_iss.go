@@ -25,7 +25,7 @@ var	waitServer chan string
 
 var connR io.Reader
 var connW io.Writer
-var real = true
+var real = false
 
 func Connect(usr, pwd string) error {
 	waitServer = make(chan string)
