@@ -170,6 +170,16 @@ func makeTTT() TTTState {
 	return TTTState{board, player}
 }
 
+// func makeTTT() TTTState {
+// 	board := []int{
+// 		0, 0, 0,
+// 		1, -1, 0,
+// 		1, -1, 0,	
+// 	}
+// 	player := 1
+// 	return TTTState{board, player}
+// }
+
 func main() {
 
 	// r := rand.New(rand.NewSource(time.Now().Unix()))
@@ -179,6 +189,7 @@ func main() {
 	// minimax.SimulationRuns = 500
 	// minimax.ExplorationParameter = 2.0
 	minimax.DEBUG = false 
+	// minimax.MAXDEPTH = 9999 
 	// runMilliseconds := 200
 
 	gameStats := []int{0,0,0}
@@ -188,13 +199,14 @@ func main() {
 		initial := makeTTT()
 		state = &initial
 		maximising := true;
-		// for !state.IsTerminal() {
-		for m := 0; m < 6; m++ {
-			if m == 3 { minimax.DEBUG = true } else { minimax.DEBUG = false}
-			a := minimax.Minimax(state, 9999, maximising)
+		for !state.IsTerminal() {
+		// for m := 0; m < 6; m++ {
+			// if m == 3 { minimax.DEBUG = true } else { minimax.DEBUG = false}
+			a := minimax.Minimax(state)
+			minimax.DEBUG = false
 			maximising = !maximising
 			// fmt.Println("PERFORMING ACTION: ", a)		
-			state = state.FindNextState(a)	
+			state = state.FindNextState(*a)	
 			fmt.Printf("%v\n\n", state)	
 		}
 		game := state.(*TTTState)
