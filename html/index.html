@@ -749,7 +749,7 @@
 		var el = document.getElementById("played");
 		trickRound++
 		if (gameFinished()) {
-			// console.log("Game finished");
+			console.log("Game finished. Getting score");
 			$("#previous").empty();
 			
 			getScore();
@@ -816,17 +816,23 @@
 				prevPlayerIndex[2] = playerIndex[2]
 
 				if (winner == "Bob") {
+					if (declarer = 1 && trump == "Null") {
+						lostNull = true;
+					}
 					playerIndex = [1, 2, 3];
 					youIndex = 2;
 					el.style["transform"] = "rotate(0deg) translate(-210px,30px) scale(0.4)";	
 				}
 				else if (winner == "Ana") {
+					if (declarer = 2 && trump == "Null") {
+						lostNull = true;
+					}
 					playerIndex = [2, 3, 1];
 					youIndex = 1;
 					el.style["transform"] = "rotate(0deg) translate(210px,30px) scale(0.4)";	
 				}
 				else {
-					if (trump == "Null") {
+					if (declarer = 0 && trump == "Null") {
 						lostNull = true;
 					}
 					playerIndex = [3, 1, 2];	

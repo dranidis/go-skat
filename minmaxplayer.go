@@ -93,13 +93,13 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) {
 	cards = remove(cards, s.trick...)
 	cards = remove(cards, p.hand...)
 
-	if p == s.declarer {
+	if p.getName() == s.declarer.getName() {
 		cards = remove(cards, s.skat...)
 	}
 
 	debugTacticsLog("ALL CARDS: %v\n", cards)
 
-	if p == s.declarer {
+	if p.getName() == s.declarer.getName() {
 		for _, suit := range suits {
 			cards = checkVoidOpp1(s, p, cards, suit)	
 			cards = checkVoidOpp2(s, p, cards, suit)	

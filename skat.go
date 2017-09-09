@@ -127,7 +127,7 @@ func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
 	s.leader = newPlayers[0]
 
 	if s.trump == NULL {
-		if winner == s.declarer {
+		if winner.getName() == s.declarer.getName() {
 			// declarer lost
 			return nil
 		}
