@@ -29,6 +29,10 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 	}
 
 	if len(p.hand) <= p.maxHandSize {
+
+
+
+
 		// minimax.DEBUG = true
 		cardsFreq := make(map[string]int)
 		cards := make(map[string]Card)
@@ -111,18 +115,20 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) {
 	// depending on the number of remaining cards
 	// limit the number of possible worlds.
 
+	// TODO, TODO
+
 
 	// shuffle the rest
 	cards = Shuffle(cards)
 
-	if p != s.declarer { // remove two random cards for the skat
+	if p.getName() != s.declarer.getName() { // remove two random cards for the skat
 		card1 := cards[0]
 		card2 := cards[1]
 		cards = remove(cards, card1, card2)
 	}
+	debugTacticsLog("REMAINING after SKAT REMOVE: %d cards: %v %v %v\n", len(cards), cards, p.p1Hand, p.p2Hand)
 
 	handSize := len(p.hand)
-	nextCard := 0
 
 	leader := 0
 	middle := 0
@@ -134,12 +140,16 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) {
 		leader = 1
 	}
 
+	nextCard := 0
+
 	for i := len(p.p1Hand); i < handSize - middle; i++ {
+		// debugTacticsLog("i: %d, handSize: %d, middle: %d, nextCard: %d\n", i, handSize, middle, nextCard)
 		p.p1Hand = append(p.p1Hand, cards[nextCard])
 		nextCard++
 	}
 
 	for i := len(p.p2Hand); i < handSize - leader; i++ {
+		// debugTacticsLog("i: %d, handSize: %d, leader: %d, nextCard: %d\n", i, handSize, leader, nextCard)
 		p.p2Hand = append(p.p2Hand, cards[nextCard])
 		nextCard++
 	}
@@ -238,6 +248,12 @@ func (m SkatState) IsOpponentTurn() bool {
 }
 
 func (m *SkatState) IsTerminal() bool {
+	if m.declScore > 60 {
+		return true
+	}
+	if m.oppScore > 59 {
+		return true
+	}
 	return len(m.playerHand[0]) + len(m.playerHand[1]) + len(m.playerHand[2]) == 0
 }
 

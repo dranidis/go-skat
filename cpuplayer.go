@@ -211,8 +211,12 @@ func (p Player) canWin(afterSkat bool) string {
 	canWinNullHand := p.canWinNull(afterSkat) == 1
 
 	if canWinNullHand {
-		debugTacticsLog("\nwill play NULL Hand:\n")
-		return "NullHand"
+		if !afterSkat {
+			debugTacticsLog("\nwill play NULL Hand\n")
+			return "NullHand"	
+		}
+		debugTacticsLog("\nwill play NULL\n")
+		return NULL	
 	}
 	// if canWinNull {
 	// 	return NULL
@@ -281,12 +285,6 @@ func (p Player) canWin(afterSkat bool) string {
 		//return "GRAND"
 
 	}
-
-	if canWinNull {
-		return NULL
-	}
-
-
 
 	suit := mostCardsSuit(cs)
 	largest := len(trumpCards(suit, cs))

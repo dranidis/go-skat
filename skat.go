@@ -183,7 +183,7 @@ func play(s *SuitState, p PlayerI) Card {
 	}
 	debugTacticsLog("(%v) HAND %v ", pName, p.getHand())
 	debugTacticsLog("valid: %v\n", valid)
-	if s.declarer != p {
+	if s.declarer.getName() != p.getName() {
 		debugTacticsLog("\tPrevious suit: %s:%v, %s:%v\n",
 			s.opp1.getName(), s.opp1.getPreviousSuit(),
 			s.opp2.getName(), s.opp2.getPreviousSuit())
@@ -993,7 +993,7 @@ func startServer() *mux.Router {
 
 		position := 0
 		for i, p := range players {
-			if player1 == p {
+			if player1.getName() == p.getName() {
 				position = i
 				break
 			}
@@ -1024,7 +1024,7 @@ func startServer() *mux.Router {
 
 		position := 0
 		for i, p := range players {
-			if player1 == p {
+			if player1.getName() == p.getName() {
 				position = i
 				break
 			}
