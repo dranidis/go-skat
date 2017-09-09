@@ -2,6 +2,7 @@ package main
 
 import (
 	 "fmt"
+	 "log"
 )
 
 type Player struct {
@@ -700,7 +701,7 @@ func (p *Player) playSuit(s *SuitState, c []Card) Card {
 
 func (p *Player) FindPreviousSuit(s *SuitState) string {
 	partnerFunc := func(p PlayerI) PlayerI {
-		if s.opp1 == p {
+		if s.opp1.getName() == p.getName() {
 			return s.opp2
 		}
 		return s.opp1
@@ -770,7 +771,7 @@ func (p *Player) opponentTacticNull(s *SuitState, c []Card) Card {
 	if len(s.trick) == 1 {
 		debugTacticsLog("NULL MIDHAND..")
 
-		if s.leader == s.declarer {
+		if s.leader.getName() == s.declarer.getName() {
 			debugTacticsLog("Declarer opened..")
 			// if s.greater(revValue[0], s.trick[0]) {
 			// 	return revValue[len(revValue)-1]
@@ -798,7 +799,7 @@ func (p *Player) opponentTacticNull(s *SuitState, c []Card) Card {
 	if len(s.trick) == 2 {
 		debugTacticsLog("NULL BACKHAND..")
 		debugTacticsLog("RevVal %v..", revValue)
-		if s.leader == s.declarer {
+		if s.leader.getName() == s.declarer.getName() {
 			debugTacticsLog("Declarer leads..")
 			if s.greater(revValue[0], s.trick[0]) || s.greater(s.trick[1], s.trick[0]) {
 				debugTacticsLog("Returning last %v...", revValue[len(revValue)-1])
@@ -907,7 +908,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 		}
 
 		var card Card
-		if s.opp2 == p {
+		if s.opp2.getName() == p.getName() {
 			debugTacticsLog("Declarer at MIDDLEHAND, playing LONG..")
 			debugTacticsLog("not full ones if trumps in play..")
 
@@ -969,7 +970,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	if len(s.trick) == 1 {
 		// OPPONENT MIDDLEHAND
 		debugTacticsLog("MIDDLEHAND..")
-		if s.leader == s.declarer {
+		if s.leader.getName() == s.declarer.getName() {
 			debugTacticsLog("Declarer leads %v..", s.trick[0])
 			// if declarer leads a low trump, and there are still HIGHER trumps
 			// smear the trick with a high value
@@ -1086,7 +1087,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	if len(s.trick) == 2 {
 		debugTacticsLog("OPP BACKHAND..\n")
 
-		if s.leader == s.declarer {
+		if s.leader.getName() == s.declarer.getName() {
 			// Player should try to win the trick to get the declarer
 			// at MIDDLEhand
 			// debugTacticsLog(" -- declarer leads --\n")
@@ -1158,11 +1159,26 @@ func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 	// 	return c[0]
 	// }
 	printCollectedInfo(s)
-	if s.declarer == p {
+
+	
+	if s.declarer.getName() == p.getName(){
 		card = p.declarerTactic(s, c)
-	} else {
+	} else if s.opp1.getName() == p.getName() || s.opp2.getName() == p.getName() {
 		card = p.opponentTactic(s, c)
+	} else {
+		log.Fatal(fmt.Sprintf("Unassigned player %v\n. Declarer: %v\n Opp1: %v\n Opp2: %v\n", p, s.declarer, s.opp1, s.opp2))
 	}
+
+
+	// if s.declarer == p {
+	// 	card = p.declarerTactic(s, c)
+	// } else if s.opp1 == p || s.opp2 == p {
+	// 	card = p.opponentTactic(s, c)
+	// } else {
+	// 	log.Fatal(fmt.Sprintf("Unassigned player %v\n. Declarer: %v\n Opp1: %v\n Opp2: %v\n", p, s.declarer, s.opp1, s.opp2))
+	// }
+
+
 	if issConnect {
 		playCard(card)
 	}	

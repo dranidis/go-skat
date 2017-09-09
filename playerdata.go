@@ -1,5 +1,9 @@
 package main
 
+import (
+	"fmt"
+)
+
 type PlayerData struct {
 	name         string
 	hand         []Card
@@ -37,8 +41,10 @@ func (p *PlayerData) getLost() int {
 	return p.lost
 }
 
+var randomNameNumber = 0
 func makePlayerData(hand []Card) PlayerData {
-	return PlayerData{"dummy",
+	randomNameNumber++
+	return PlayerData{"dummy" + fmt.Sprintf("%d", randomNameNumber),
 		//false,
 		// false,
 		hand, 0, 0, true, 0, "", 0, 0, 0, 0}

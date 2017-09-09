@@ -177,7 +177,7 @@ func main() {
 
 	for !state.IsTerminal() {
 		a := minimax.Minimax(state)
-		state = state.FindNextState(*a)	
+		state = state.FindNextState(a)	
 		fmt.Printf("%v\n\n", state)	
 	}
 	game := state.(*TTTState)

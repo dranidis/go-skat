@@ -48,7 +48,7 @@ var issSentDelay = 0
 var gameIndex = 1
 var player1 PlayerI
 var player2 Player
-var player3 Player
+var player3 MinMaxPlayer
 var html = false
 
 var players []PlayerI
@@ -72,7 +72,8 @@ type SuitState struct {
 }
 
 func makeSuitState() SuitState {
-	return SuitState{nil, nil, nil, "", nil, "", []Card{}, []Card{}, []Card{}, []Card{},
+	skat := make([]Card, 2)
+	return SuitState{nil, nil, nil, "", nil, "", []Card{}, skat, []Card{}, []Card{},
 		map[string]bool{
 			CLUBS: false,
 			SPADE: false,
@@ -177,7 +178,7 @@ func play(s *SuitState, p PlayerI) Card {
 	p.setHand(sortSuit(s.trump, p.getHand()))
 	gameLog("Trick: %v\n", s.trick)
 	pName := p.getName()
-	if s.declarer == p {
+	if s.declarer.getName() == p.getName() {
 		pName = red(pName)
 	}
 	debugTacticsLog("(%v) HAND %v ", pName, p.getHand())
@@ -187,7 +188,7 @@ func play(s *SuitState, p PlayerI) Card {
 			s.opp1.getName(), s.opp1.getPreviousSuit(),
 			s.opp2.getName(), s.opp2.getPreviousSuit())
 	}
-	if s.declarer == p {
+	if s.declarer.getName() == p.getName() {
 		gameLog("(%s) ", red(p.getName()))
 	} else {
 		gameLog("(%v) ", p.getName())
@@ -196,13 +197,13 @@ func play(s *SuitState, p PlayerI) Card {
 
 	// Player VOID on suit
 	if s.follow != "" && getSuit(s.trump, card) != s.follow {
-		if p == s.declarer {
+		if p.getName() == s.declarer.getName() {
 			s.declarerVoidSuit[s.follow] = true
 		}
-		if p == s.opp1 {
+		if p.getName() == s.opp1.getName() {
 			s.opp1VoidSuit[s.follow] = true
 		}
-		if p == s.opp2 {
+		if p.getName() == s.opp2.getName() {
 			s.opp2VoidSuit[s.follow] = true
 		}
 	}
@@ -219,20 +220,20 @@ func play(s *SuitState, p PlayerI) Card {
 // Returns a list of all cards that are playeable from the player's hand.
 func validCards(s SuitState, playerHand []Card) []Card {
 	return filter(playerHand, func(c Card) bool {
-		return s.valid(playerHand, c)
+		return valid(s.follow, s.trump, playerHand, c)
 	})
 }
 
-func (s SuitState) valid(playerHand []Card, card Card) bool {
+func valid(follow, trump string, playerHand []Card, card Card) bool {
 	// debugTacticsLog(".. PLAYER HAND: %v\n", playerHand)
 	for _, c := range playerHand {
 		// if there is at least one card in your hand matching the followed suit
 		// your played card should follow
-		if s.follow == getSuit(s.trump, c) {
+		if follow == getSuit(trump, c) {
 			// if s.follow != getSuit(s.trump, card) {
 			// 	debugTacticsLog(".. INVALID CARD: %v. Valid in hand: %v\n", card, c)
 			// }
-			return s.follow == getSuit(s.trump, card)
+			return follow == getSuit(trump, card)
 		}
 	}
 	// otherwise any card is playable
@@ -428,7 +429,6 @@ func SameCards() {
 
 func initState() {
 	state = makeSuitState()
-	state.skat = make([]Card, 2)
 }
 
 func initGame() {
@@ -569,18 +569,8 @@ type Score struct {
 	Total3 int
 }
 
-func bidPhase() int {
-	// BIDDING
-	bidDecl, declarer := bid(players)
-	if bidDecl == 0 {
-		gameLog("ALL PASSED\n")
-		return 0
-	}
-	debugTacticsLog("Declarer %v\n", declarer)
-	declarer.setDeclaredBid(bidDecl)
-
+func (s *SuitState) setDeclarerAndOpps(players []PlayerI, declarer PlayerI) {
 	state.declarer = declarer
-	gameLog("(%s) won the bidding\n", declarer.getName())
 
 	if declarer == players[0] {
 		state.opp1, state.opp2 = players[1], players[2]
@@ -592,7 +582,21 @@ func bidPhase() int {
 		state.opp1, state.opp2 = players[0], players[1]
 	}
 	state.opp1.setPartner(state.opp2)	
+}
 
+func bidPhase() int {
+	// BIDDING
+	bidDecl, declarer := bid(players)
+	if bidDecl == 0 {
+		gameLog("ALL PASSED\n")
+		return 0
+	}
+	debugTacticsLog("Declarer %v\n", declarer)
+	declarer.setDeclaredBid(bidDecl)
+
+	state.setDeclarerAndOpps(players, declarer)
+
+	gameLog("(%s) won the bidding\n", state.declarer.getName())
 	return bidDecl
 }
 
@@ -720,7 +724,7 @@ func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlay
 		delayMs = 500
 	}
 	player2 = makePlayer([]Card{})
-	player3 = makePlayer([]Card{})
+	player3 = makeMinMaxPlayer([]Card{})
 	player1.setName("You")
 	player2.setName("Bob")
 	player3.setName("Ana")
@@ -1192,7 +1196,7 @@ func startServer() *mux.Router {
 		rank := mux.Vars(r)["rank"]
 		card := Card{suit, rank}
 		htmlLog("\nReceived /playCard/%d/ %v \n", pl, card)
-		if state.valid(gamePlayers[pl].getHand(), card) {
+		if valid(state.follow, state.trump, gamePlayers[pl].getHand(), card) {
 			htmlLog("Sending %v to trickChannel...", card)
 			trickChannel <- card
 			htmlLog("sent %v\n", card)

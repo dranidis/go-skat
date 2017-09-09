@@ -32,9 +32,9 @@ type State interface {
 type Action interface {
 }
 
-func Minimax(state State) *Action {
+func Minimax(state State) Action {
 	action, _ := minimaxAlg(state, MAXDEPTH, "")
-	return action
+	return *action
 }
 
 func minimaxAlg(state State, depth int, tab string) (*Action, float64) {

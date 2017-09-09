@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+	"fmt"
 )
 
 func TestMain(m *testing.M) {
@@ -84,13 +85,13 @@ func TestValidPlay(t *testing.T) {
 }
 
 func validAux(t *testing.T, s SuitState, cards []Card, card Card) {
-	if !s.valid(cards, card) {
+	if !valid(s.follow, s.trump, cards, card) {
 		t.Errorf("TRUMP : %s  FOLLOW: %s. %v should be valid play. HAND: %v", s.trump, s.follow, card, cards)
 	}
 }
 
 func notValidAux(t *testing.T, s SuitState, cards []Card, card Card) {
-	if s.valid(cards, card) {
+	if valid(s.follow, s.trump, cards, card) {
 		t.Errorf("TRUMP : %s  FOLLOW: %s. %v should NOT be valid play. HAND: %v", s.trump, s.follow, card, cards)
 	}
 }
@@ -1220,7 +1221,7 @@ func TestGame(t *testing.T) {
 		t.Errorf("Error in get total score")
 	}
 	gamePlayers = []PlayerI{player1, &player2, &player3}
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 20; i++ {
 		_ = game()
 	}
 }
@@ -1243,7 +1244,7 @@ func TestGame2(t *testing.T) {
 	}
 	gamePlayers = []PlayerI{player1, &player2, &player3}
 	for i := 0; i < 10; i++ {
-		_ = game()
+		// _ = game()
 	}
 }
 
@@ -1253,11 +1254,13 @@ func TestOpponentTacticFOREFollowPreviousSuit3(t *testing.T) {
 	// started from you or your partner continue with it.
 
 	otherPlayer := makePlayer([]Card{})
-	//teamMate := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
 	player := makePlayer([]Card{})
 	s := makeSuitState()
 	s.leader = &player
 	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
 	s.trump = CLUBS
 	s.trick = []Card{}
 
@@ -1330,6 +1333,7 @@ func TestOpponentTacticFOREFollowPreviousSuit5(t *testing.T) {
 	s.leader = &player
 	s.declarer = &otherPlayer
 
+
 	s.trump = CLUBS
 	s.trick = []Card{}
 	teamMate.previousSuit = CARO
@@ -1367,6 +1371,8 @@ func TestOpponentTacticMIDTrump1(t *testing.T) {
 	s.trick = []Card{Card{CLUBS, "J"}}
 
 	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
 
 	s.leader = &otherPlayer
 	card := player.playerTactic(&s, validCards)
@@ -1447,11 +1453,13 @@ func TestOpponentTacticMIDTrump2(t *testing.T) {
 	// if declarer leads with a low trump
 	// to not waste your high trumps
 	otherPlayer := makePlayer([]Card{})
-	//teamMate := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
 	player := makePlayer([]Card{})
 	s := makeSuitState()
 	s.leader = &otherPlayer
 	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
 	s.trump = CLUBS
 	s.follow = CLUBS
 	s.trick = []Card{Card{CLUBS, "8"}}
@@ -1628,6 +1636,8 @@ func TestOpponentTacticMID(t *testing.T) {
 	s := makeSuitState()
 	s.leader = &teamMate
 	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
 
 	s.trump = CLUBS
 	s.trick = []Card{Card{SPADE, "7"}}
@@ -1680,6 +1690,8 @@ func TestOpponentTacticMIDFollow(t *testing.T) {
 	s := makeSuitState()
 	s.leader = &teamMate
 	s.declarer = &otherPlayer
+	s.opp1 = &teamMate
+	s.opp2 = &player
 
 	s.trump = CLUBS
 	s.trick = []Card{Card{SPADE, "7"}}
@@ -1736,6 +1748,8 @@ func TestOpponentTacticMIDPartnerLeadsVoidSuit_Trump(t *testing.T) {
 	s := makeSuitState()
 	s.leader = &teamMate
 	s.declarer = &otherPlayer
+	s.opp1 = &teamMate
+	s.opp2 = &player
 
 	s.trump = CARO
 	s.trick = []Card{Card{CLUBS, "K"}}
@@ -1777,6 +1791,8 @@ func TestOpponentTacticMIDPartnerLeadsVoidSuitWinner_SmearNoTrump(t *testing.T) 
 	s := makeSuitState()
 	s.leader = &teamMate
 	s.declarer = &otherPlayer
+	s.opp1 = &teamMate
+	s.opp2 = &player
 
 	s.trump = GRAND
 	s.trick = []Card{Card{SPADE, "K"}}
@@ -2082,6 +2098,8 @@ func TestOpponentTacticBACK_MateLeads(t *testing.T) {
 	s := makeSuitState()
 	s.leader = &teamMate
 	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
 
 	s.trump = CARO
 	s.trick = []Card{Card{CLUBS, "9"}, Card{CARO, "A"}}
@@ -2139,10 +2157,12 @@ func TestOpponentTacticBACK_PlayerLeads_PutPlayerInMiddleHand(t *testing.T) {
 	}
 	player := makePlayer(validCards)
 	otherPlayer := makePlayer([]Card{})
-	// teamMate := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
 	s := makeSuitState()
 	s.leader = &otherPlayer
 	s.declarer = &otherPlayer
+	s.opp1 = &teamMate
+	s.opp2 = &player
 
 	s.trump = CARO
 	s.trick = []Card{Card{CARO, "7"}, Card{CARO, "A"}}
@@ -2165,6 +2185,8 @@ func TestOpponentTacticBACK2(t *testing.T) {
 	s := makeSuitState()
 	s.leader = &teamMate
 	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
 
 	s.trump = CARO
 	s.trick = []Card{Card{CLUBS, "10"}, Card{CLUBS, "7"}}
@@ -2193,7 +2215,7 @@ func TestOpponentTacticBACK2(t *testing.T) {
 
 func TestOpponentTacticBACK_PlayHighTrumpWhenParterSMEARS(t *testing.T) {
 	otherPlayer := makePlayer([]Card{})
-	// teamMate := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
 	validCards := []Card{
 		Card{SPADE, "J"},
 		Card{SPADE, "9"},
@@ -2204,6 +2226,8 @@ func TestOpponentTacticBACK_PlayHighTrumpWhenParterSMEARS(t *testing.T) {
 	s := makeSuitState()
 	s.leader = &otherPlayer
 	s.declarer = &otherPlayer
+	s.opp1 = &teamMate
+	s.opp2 = &player
 
 	s.trump = SPADE
 	s.trick = []Card{Card{SPADE, "A"}, Card{SPADE, "10"}}
@@ -2220,7 +2244,7 @@ func TestOpponentTacticBACK_PlayHighTrumpWhenParterSMEARS(t *testing.T) {
 
 func TestOpponentTacticBACK_DoNotWasteHighTrump(t *testing.T) {
 	otherPlayer := makePlayer([]Card{})
-	// teamMate := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
 	validCards := []Card{
 		Card{SPADE, "J"},
 		Card{SPADE, "9"},
@@ -2231,6 +2255,8 @@ func TestOpponentTacticBACK_DoNotWasteHighTrump(t *testing.T) {
 	s := makeSuitState()
 	s.leader = &otherPlayer
 	s.declarer = &otherPlayer
+	s.opp1 = &teamMate
+	s.opp2 = &player
 
 	s.trump = SPADE
 	s.trick = []Card{Card{HEART, "K"}, Card{HEART, "D"}}
@@ -2247,7 +2273,7 @@ func TestOpponentTacticBACK_DoNotWasteHighTrump(t *testing.T) {
 
 func TestOpponentTacticBACK_DoNotWasteTrumpOnZeroValueTrickIfYouCanWinAnotherTrump(t *testing.T) {
 	otherPlayer := makePlayer([]Card{})
-	// teamMate := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
 	validCards := []Card{
 		Card{SPADE, "J"},
 		Card{CARO, "D"},
@@ -2256,6 +2282,8 @@ func TestOpponentTacticBACK_DoNotWasteTrumpOnZeroValueTrickIfYouCanWinAnotherTru
 	s := makeSuitState()
 	s.leader = &otherPlayer
 	s.declarer = &otherPlayer
+	s.opp1 = &teamMate
+	s.opp2 = &player
 
 	s.trump = SPADE
 	s.trick = []Card{Card{HEART, "8"}, Card{CARO, "7"}}
@@ -3868,12 +3896,46 @@ func TestGrandLosersJ7(t *testing.T) {
 	}
 }
 
-func TestOpponentTacticNULLBack(t *testing.T) {
+func TestOpponentTacticNULLBack1(t *testing.T) {
 	otherPlayer := makePlayer([]Card{})
-	//teamMate := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
 	player := makePlayer([]Card{})
 	s := makeSuitState()
+	s.leader = &otherPlayer
 	s.declarer = &otherPlayer
+	s.opp1 = &teamMate
+	s.opp2 = &player
+
+
+	s.trump = NULL
+	s.follow = HEART
+	s.trick = []Card{Card{HEART, "8"}, Card{HEART, "10"}}
+
+	validCards := []Card{
+		Card{HEART, "J"},
+		Card{HEART, "D"},
+		Card{HEART, "A"},
+	}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("NULL, In trick %v and valid %v, expected to play %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
+func TestOpponentTacticNULLBack2(t *testing.T) {
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+
+
 	s.trump = NULL
 	s.follow = HEART
 	s.trick = []Card{Card{HEART, "8"}, Card{HEART, "10"}}
@@ -3929,6 +3991,8 @@ func TestOpponentTacticNULLMIDDeclBack4(t *testing.T) {
 
 	s.declarer = &otherPlayer
 	s.leader = &teamMate
+	s.opp1 = &teamMate
+	s.opp2 = &player
 
 	s.trump = NULL
 	s.follow = HEART
@@ -3957,7 +4021,8 @@ func TestOpponentTacticNULLMIDDeclBack2(t *testing.T) {
 
 	s.declarer = &otherPlayer
 	s.leader = &teamMate
-	//s.opp1 = &player
+	s.opp1 = &teamMate
+	s.opp2 = &player
 
 	s.cardsPlayed = []Card{}
 	s.trump = NULL
@@ -3997,6 +4062,7 @@ func TestOpponentTacticNULLMIDDeclBack(t *testing.T) {
 	player := makePlayer([]Card{})
 	s := makeSuitState()
 
+	s.opp1 = &teamMate
 	s.opp2 = &player
 	s.declarer = &otherPlayer
 	s.leader = &teamMate
@@ -4021,9 +4087,11 @@ func TestOpponentTacticNULLMIDDeclBack(t *testing.T) {
 
 func TestOpponentTacticNULLMIDDeclBack1(t *testing.T) {
 	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
 	player := makePlayer([]Card{})
 	s := makeSuitState()
 
+	s.opp1 = &teamMate
 	s.opp2 = &player
 	s.declarer = &otherPlayer
 	s.leader = &otherPlayer
@@ -4052,6 +4120,8 @@ func TestOpponentTacticNULLMIDDeclBack3(t *testing.T) {
 	s := makeSuitState()
 
 	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
 	s.leader = &teamMate
 	s.trump = NULL
 	s.follow = HEART
@@ -4338,12 +4408,17 @@ func TestDeclarerVoidSuits(t *testing.T) {
 		Card{CARO, "9"},
 	}
 	player := makePlayer(cs)
+	opp1 := makePlayer([]Card{})
+	opp2 := makePlayer([]Card{})
+
 	s := makeSuitState()
 	s.declarer = &player
 	s.trump = NULL
 	s.follow = HEART
 	s.trick = []Card{Card{HEART, "10"}}
-
+	s.opp1 = &opp1
+	s.opp2 = &opp2
+	
 	play(&s, &player)
 
 	if !s.declarerVoidSuit[HEART] {
@@ -4888,4 +4963,398 @@ func TestOverbid(t *testing.T) {
 	if p.getGamevalue(trump) < p.declaredBid {
 		t.Errorf("OVERBID")
 	}
+}
+
+func TestCopySkatState(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{HEART, "A"},
+	}
+	dist[1] = []Card{
+		Card{HEART, "10"},
+		Card{CARO, "8"},
+		Card{SPADE, "A"},
+	}
+	dist[2] = []Card{
+		Card{CLUBS, "9"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+	}
+
+	skatState := SkatState{
+		CLUBS,
+		dist, 			
+		[]Card{}, 
+		0, 
+		0, 
+		30, 
+		45,
+	}
+
+	ss := copySkatState(skatState)
+
+	// fmt.Printf("%v\n", skatState)
+	// fmt.Printf("%v\n", ss)
+	if len(ss.playerHand[0]) != 3 && len(ss.playerHand[1]) != 3 && len(ss.playerHand[2]) != 3 {
+		t.Errorf("ERROR Copy: %v", ss)
+	}
+	if !in(ss.playerHand[0], skatState.playerHand[0]...) {
+		t.Errorf("ERROR Copy: %v %v", ss.playerHand[0], skatState.playerHand[0])
+	}
+	if !in(ss.playerHand[1], skatState.playerHand[1]...) {
+		t.Errorf("ERROR Copy: %v %v", ss.playerHand[1], skatState.playerHand[1])
+	}
+	if !in(ss.playerHand[2], skatState.playerHand[2]...) {
+		t.Errorf("ERROR Copy: %v %v", ss.playerHand[2], skatState.playerHand[2])
+	}
+}
+
+func TestFindLegals(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{HEART, "A"},
+	}
+	dist[1] = []Card{
+		Card{HEART, "10"},
+		Card{CARO, "8"},
+		Card{SPADE, "A"},
+	}
+	dist[2] = []Card{
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+	}
+
+	skatState := SkatState{
+		CLUBS,
+		dist, 			
+		[]Card{
+			Card{CLUBS, "9"},
+
+		}, 
+		0, // declarer
+		0, // turn
+		30, 
+		45,
+	}
+
+	actions := skatState.FindLegals()
+	cards := []Card{}
+	for _, action := range actions {
+		ma := action.(SkatAction)
+		cards = append(cards, ma.card)
+	}
+	fmt.Println(cards)
+	if !in(cards, Card{CLUBS, "J"}, Card{CLUBS, "8"}) {
+		t.Errorf("ERROR TestFindLegals: %v", actions)
+	}
+	if in(cards, Card{HEART, "A"}) {
+		t.Errorf("ERROR TestFindLegals: %v", actions)
+	}
+
+	ssa := skatState.FindNextState(actions[0])
+
+	ss := ssa.(*SkatState)
+	fmt.Println(skatState)
+	fmt.Println(ss)
+
+
+
+	if in(ss.playerHand[0], Card{CLUBS, "J"}) {
+		t.Errorf("ERROR TestFindLegals: %v", ss.playerHand[0])
+	}
+
+	if !ss.trick[1].equals(Card{CLUBS, "J"}) {
+		t.Errorf("ERROR TestFindLegals: %v", ss.trick)
+	}
+
+	if ss.turn != 1 {
+		t.Errorf("Error turn %d", ss.turn)
+	}
+
+	ssa1 := ss.FindNextState(SkatAction{Card{HEART, "10"}})
+	fmt.Println(ssa1)	
+
+	ss1 := ssa1.(*SkatState)
+
+	if ss1.declScore != 42 {
+		t.Errorf("Declarer score %d", ss1.declScore)
+	} 	
+	if ss1.oppScore != skatState.oppScore {
+		t.Errorf("Opponent score %d", ss1.declScore)
+	} 
+
+}
+
+func TestDealCardsMID(t *testing.T) {
+	p := makeMinMaxPlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{SPADE, "A"},
+	})
+	p.maxHandSize = 6
+
+	s := makeSuitState()
+	s.declarer = &p
+	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
+
+	s.trick = []Card{Card{CLUBS, "K"}}
+
+	notPlayedYet := []Card{
+		Card{CLUBS, "A"},
+		Card{CLUBS, "D"},
+		Card{SPADE, "10"},
+		Card{CARO, "10"},
+		Card{HEART, "10"},
+	}
+
+	s.cardsPlayed = makeDeck()
+	s.cardsPlayed = remove(s.cardsPlayed, s.skat...)
+	s.cardsPlayed = remove(s.cardsPlayed, s.trick...)
+	s.cardsPlayed = remove(s.cardsPlayed, p.hand...)
+	s.cardsPlayed = remove(s.cardsPlayed, notPlayedYet...)
+
+	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
+
+	for i := 0; i < 10; i++ {
+		p.p1Hand = []Card{}
+		p.p2Hand = []Card{}
+		p.dealCards(&s)
+		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
+
+		if len(p.p2Hand) != 2 {
+			t.Errorf("Wrong hand size for player who just opened the trick: %v", p.p2Hand)
+		}
+
+		if len(p.p1Hand) != 3 {
+			t.Errorf("Wrong hand size for next player: %v", p.p1Hand)
+		}
+
+		if in(p.p1Hand, s.cardsPlayed...) {
+			t.Errorf("Cards already played: %v", p.p1Hand)
+		}
+		if in(p.p2Hand, s.cardsPlayed...) {
+			t.Errorf("Cards already played: %v", p.p2Hand)
+		}
+	}
+
+	// VOID SUITS
+	void1 := CARO
+	void2 := CLUBS
+	s.opp1VoidSuit[CARO] = true
+	s.opp2VoidSuit[CLUBS] = true
+
+	for i := 0; i < 10; i++ {
+		p.p1Hand = []Card{}
+		p.p2Hand = []Card{}
+		p.dealCards(&s)
+		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
+
+		for _,c := range  makeSuitDeck(void1) {
+			if in(p.p1Hand, c) {
+				t.Errorf("Opp1 is VOID of %s: %v %v", p.p1Hand, c, void1)
+			}		
+		}
+		for _,c := range  makeSuitDeck(void2) {
+			if in(p.p2Hand, c) {
+				t.Errorf("Opp2 is VOID of %s: %v %v", p.p2Hand, c, void2)
+			}		
+		}
+
+		if len(p.p2Hand) != 2 {
+			t.Errorf("Wrong hand size for player who just opened the trick: %v", p.p2Hand)
+		}
+
+		if len(p.p1Hand) != 3 {
+			t.Errorf("Wrong hand size for next player: %v", p.p1Hand)
+		}	
+	}
+
+
+}
+
+func TestDealCardsLeader(t *testing.T) {
+	p := makeMinMaxPlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{SPADE, "A"},
+	})
+	p.maxHandSize = 6
+
+	s := makeSuitState()
+	s.declarer = &p
+	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
+
+	s.trick = []Card{}
+
+	notPlayedYet := []Card{
+		Card{CLUBS, "A"},
+		Card{CLUBS, "D"},
+		Card{SPADE, "10"},
+		Card{CARO, "10"},
+		Card{HEART, "10"},
+//
+		Card{CLUBS, "K"},
+	}
+
+	s.cardsPlayed = makeDeck()
+	s.cardsPlayed = remove(s.cardsPlayed, s.skat...)
+	s.cardsPlayed = remove(s.cardsPlayed, s.trick...)
+	s.cardsPlayed = remove(s.cardsPlayed, p.hand...)
+	s.cardsPlayed = remove(s.cardsPlayed, notPlayedYet...)
+
+	p1HandSize := 3
+	p2HandSize := 3
+
+	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
+
+	for i := 0; i < 10; i++ {
+		p.p1Hand = []Card{}
+		p.p2Hand = []Card{}
+		p.dealCards(&s)
+		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
+
+		if len(p.p2Hand) != p2HandSize {
+			t.Errorf("Wrong hand size for player who just opened the trick: %v", p.p2Hand)
+		}
+
+		if len(p.p1Hand) != p1HandSize {
+			t.Errorf("Wrong hand size for next player: %v", p.p1Hand)
+		}
+
+		if in(p.p1Hand, s.cardsPlayed...) {
+			t.Errorf("Cards already played: %v", p.p1Hand)
+		}
+		if in(p.p2Hand, s.cardsPlayed...) {
+			t.Errorf("Cards already played: %v", p.p2Hand)
+		}
+	}
+
+	// VOID SUITS
+	void1 := CARO
+	void2 := CLUBS
+	s.opp1VoidSuit[CARO] = true
+	s.opp2VoidSuit[CLUBS] = true
+
+	for i := 0; i < 10; i++ {
+		p.p1Hand = []Card{}
+		p.p2Hand = []Card{}
+		p.dealCards(&s)
+		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
+
+		for _,c := range  makeSuitDeck(void1) {
+			if in(p.p1Hand, c) {
+				t.Errorf("Opp1 is VOID of %s: %v %v", p.p1Hand, c, void1)
+			}		
+		}
+		for _,c := range  makeSuitDeck(void2) {
+			if in(p.p2Hand, c) {
+				t.Errorf("Opp2 is VOID of %s: %v %v", p.p2Hand, c, void2)
+			}		
+		}
+
+		if len(p.p2Hand) != p2HandSize {
+			t.Errorf("Wrong hand size for player who just opened the trick: %v", p.p2Hand)
+		}
+
+		if len(p.p1Hand) != p1HandSize {
+			t.Errorf("Wrong hand size for next player: %v", p.p1Hand)
+		}	
+	}
+
+
+}
+
+func TestDealCardsBack(t *testing.T) {
+	p := makeMinMaxPlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{SPADE, "A"},
+	})
+	p.maxHandSize = 6
+
+	s := makeSuitState()
+	s.declarer = &p
+	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
+
+	s.trick = []Card{Card{CLUBS, "K"},Card{CLUBS, "A"}}
+
+	notPlayedYet := []Card{
+		Card{CLUBS, "D"},
+		Card{SPADE, "10"},
+		Card{CARO, "10"},
+		Card{HEART, "10"},
+//
+		
+	}
+
+	s.cardsPlayed = makeDeck()
+	s.cardsPlayed = remove(s.cardsPlayed, s.skat...)
+	s.cardsPlayed = remove(s.cardsPlayed, s.trick...)
+	s.cardsPlayed = remove(s.cardsPlayed, p.hand...)
+	s.cardsPlayed = remove(s.cardsPlayed, notPlayedYet...)
+
+	p1HandSize := 2
+	p2HandSize := 2
+
+	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
+
+	for i := 0; i < 10; i++ {
+		p.p1Hand = []Card{}
+		p.p2Hand = []Card{}
+		p.dealCards(&s)
+		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
+
+		if len(p.p2Hand) != p2HandSize {
+			t.Errorf("Wrong hand size for player who just opened the trick: %v", p.p2Hand)
+		}
+
+		if len(p.p1Hand) != p1HandSize {
+			t.Errorf("Wrong hand size for next player: %v", p.p1Hand)
+		}
+
+		if in(p.p1Hand, s.cardsPlayed...) {
+			t.Errorf("Cards already played: %v", p.p1Hand)
+		}
+		if in(p.p2Hand, s.cardsPlayed...) {
+			t.Errorf("Cards already played: %v", p.p2Hand)
+		}
+	}
+
+	// VOID SUITS
+	void1 := CARO
+	void2 := CLUBS
+	s.opp1VoidSuit[CARO] = true
+	s.opp2VoidSuit[CLUBS] = true
+
+	for i := 0; i < 10; i++ {
+		p.p1Hand = []Card{}
+		p.p2Hand = []Card{}
+		p.dealCards(&s)
+		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
+
+		for _,c := range  makeSuitDeck(void1) {
+			if in(p.p1Hand, c) {
+				t.Errorf("Opp1 is VOID of %s: %v %v", p.p1Hand, c, void1)
+			}		
+		}
+		for _,c := range  makeSuitDeck(void2) {
+			if in(p.p2Hand, c) {
+				t.Errorf("Opp2 is VOID of %s: %v %v", p.p2Hand, c, void2)
+			}		
+		}
+
+		if len(p.p2Hand) != p2HandSize {
+			t.Errorf("Wrong hand size for player who just opened the trick: %v", p.p2Hand)
+		}
+
+		if len(p.p1Hand) != p1HandSize {
+			t.Errorf("Wrong hand size for next player: %v", p.p1Hand)
+		}	
+	}
+
+
 }

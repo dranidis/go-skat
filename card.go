@@ -630,6 +630,10 @@ func lessCardsSuit(cards []Card) string {
 }
 
 func (s SuitState) nullGreater(card1, card2 Card) bool {
+	return nullGreater(s.follow, card1, card2)
+}
+
+func nullGreater(sfollow string, card1, card2 Card) bool {
 	rank := map[string]int{
 		"A":  13,
 		"K":  12,
@@ -640,19 +644,20 @@ func (s SuitState) nullGreater(card1, card2 Card) bool {
 		"8":  7,
 		"7":  6,
 	}
-	if card1.Suit == s.follow {
-		if card2.Suit == s.follow {
+	if card1.Suit == sfollow {
+		if card2.Suit == sfollow {
 			return rank[card1.Rank] > rank[card2.Rank]
 		}
 		return true
 	}
 
-	if card2.Suit == s.follow {
+	if card2.Suit == sfollow {
 		return false
 	}
 
 	return rank[card1.Rank] > rank[card2.Rank]
 }
+
 
 func (s SuitState) greater(card1 Card, cards ...Card) bool {
 	for _, card2 := range cards {
@@ -664,9 +669,25 @@ func (s SuitState) greater(card1 Card, cards ...Card) bool {
 	return true
 }
 
+func greater(strump, sfollow string, card1 Card, cards ...Card) bool {
+	for _, card2 := range cards {
+		if greaterOne(strump, sfollow, card1, card2) {
+			continue
+		}
+		return false
+	}
+	return true
+}
+
+
+
 func (s SuitState) greaterOne(card1, card2 Card) bool {
-	if s.trump == NULL {
-		return s.nullGreater(card1, card2)
+	return greaterOne(s.trump, s.follow, card1, card2)
+}
+
+func greaterOne(strump, sfollow string, card1, card2 Card) bool {
+	if strump == NULL {
+		return nullGreater(sfollow, card1, card2)
 	}
 
 	rank := map[string]int{
@@ -696,25 +717,25 @@ func (s SuitState) greaterOne(card1, card2 Card) bool {
 		return false
 	}
 
-	if card1.Suit == s.trump {
-		if card2.Suit == s.trump {
+	if card1.Suit == strump {
+		if card2.Suit == strump {
 			return rank[card1.Rank] > rank[card2.Rank]
 		}
 		return true
 	}
 
-	if card2.Suit == s.trump {
+	if card2.Suit == strump {
 		return false
 	}
 
-	if card1.Suit == s.follow {
-		if card2.Suit == s.follow {
+	if card1.Suit == sfollow {
+		if card2.Suit == sfollow {
 			return rank[card1.Rank] > rank[card2.Rank]
 		}
 		return true
 	}
 
-	if card2.Suit == s.follow {
+	if card2.Suit == sfollow {
 		return false
 	}
 
