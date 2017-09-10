@@ -5152,7 +5152,9 @@ func TestDealCardsMID(t *testing.T) {
 	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
 
 	worlds := p.dealCards(&s)
-
+	if len(worlds) != 10  {
+		t.Errorf("Expecting 10 world, found %d: %v", len(worlds), worlds)
+	}
 	for i := 0; i < len(worlds); i++ {
 		// SET world
 		p.p1Hand = worlds[i][0]
@@ -5416,6 +5418,9 @@ func TestDealCardsBack(t *testing.T) {
 	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
 
 	worlds := p.dealCards(&s)
+	if len(worlds) != 6  {
+		t.Errorf("Expecting 6 world, found %d: %v", len(worlds), worlds)
+	}
 
 	for i := 0; i < len(worlds); i++ {
 		// SET world

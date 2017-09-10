@@ -48,6 +48,7 @@ var issSentDelay = 0
 var gameIndex = 1
 var player1 PlayerI
 var player2 MinMaxPlayer
+// var player2 Player
 var player3 Player
 var html = false
 
@@ -449,9 +450,12 @@ func initGame() {
 func declareAndPlay() int {
 	handGame := true
 
+	gameLog("... SKAT\n")
 	if state.declarer.pickUpSkat(state.skat) {
 		handGame = false
 	}
+
+	gameLog("... DECLARE GAME\n")
 
 	state.trump = state.declarer.declareTrump()
 

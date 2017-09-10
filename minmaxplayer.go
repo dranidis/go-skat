@@ -13,6 +13,7 @@ type MinMaxPlayer struct {
 	p1Hand []Card
 	p2Hand []Card
 	maxHandSize int
+	maxWorlds int
 	// schneiderGoal bool
 }
 
@@ -22,6 +23,7 @@ func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 		p1Hand: []Card{},
 		p2Hand: []Card{},
 		maxHandSize: 4,
+		maxWorlds: 12,
 		// schneiderGoal: false,
 	}
 }
@@ -38,7 +40,7 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 	worlds := p.dealCards(s)
 	debugTacticsLog("MINMAX: %d Worlds\n", len(worlds))
 
-	if len(p.hand) <= p.maxHandSize || len(worlds) < 10 {
+	if len(p.hand) <= p.maxHandSize || len(worlds) < p.maxWorlds {
 
 		// worlds := p.dealCards(s)
 		// if p.getName() == s.declarer.getName() {
@@ -190,12 +192,94 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 			}
 			return worlds
 		}
+		if len(cards) == 4 {
+			// STORE THE hands in order to restore them
+			originalP1 := make([]Card, len(p.p1Hand))
+			copy(originalP1, p.p1Hand)
+			originalP2 := make([]Card, len(p.p2Hand))
+			copy(originalP2, p.p2Hand)
+			originalCards := make([]Card, len(cards))
+			copy(originalCards, cards)
+
+			for i := 0; i < len(originalCards) - 1; i++ {
+				for j := i + 1 ; j < len(originalCards); j++ {
+					p.p1Hand = originalP1
+					p.p2Hand = originalP2
+					cards = originalCards
+
+					card1 := cards[i]
+					card2 := cards[j]
+					p.p1Hand = append(p.p1Hand, card1)
+					p.p1Hand = append(p.p1Hand, card2)
+					cards = remove(cards,  card1, card2)
+					// distribute the rest
+					p1H, p2H := p.distributeCards(s, cards)
+					world := [][]Card{p1H, p2H}
+					worlds = append(worlds, world)	
+				}
+			}
+			return worlds
+		}
+		if len(cards) == 5 {
+			var restoreHands func() 
+			var appendCards func(card1, card2 Card) 
+			// STORE THE hands in order to restore them
+			originalCards := make([]Card, len(cards))
+			copy(originalCards, cards)
+
+			if len(p.p1Hand) == max1 - 2 {
+				originalP1 := make([]Card, len(p.p1Hand))
+				copy(originalP1, p.p1Hand)
+				originalP2 := make([]Card, len(p.p2Hand))
+				copy(originalP2, p.p2Hand)
+				restoreHands = func() {
+					p.p1Hand = originalP1
+					p.p2Hand = originalP2
+					cards = originalCards
+				}
+				appendCards = func(card1, card2 Card) {
+					p.p1Hand = append(p.p1Hand, card1)
+					p.p1Hand = append(p.p1Hand, card2)
+				}
+			} else {
+				originalP1 := make([]Card, len(p.p2Hand))
+				copy(originalP1, p.p2Hand)
+				originalP2 := make([]Card, len(p.p1Hand))
+				copy(originalP2, p.p1Hand)
+				restoreHands = func() {
+					p.p2Hand = originalP1
+					p.p1Hand = originalP2
+					cards = originalCards
+				}
+				appendCards = func(card1, card2 Card) {
+					p.p2Hand = append(p.p2Hand, card1)
+					p.p2Hand = append(p.p2Hand, card2)
+				}
+			}
+
+			for i := 0; i < len(originalCards) - 1; i++ {
+				for j := i + 1 ; j < len(originalCards); j++ {
+					restoreHands()
+					card1 := cards[i]
+					card2 := cards[j]
+					appendCards(card1, card2)
+					cards = remove(cards,  card1, card2)
+					// distribute the rest
+					p1H, p2H := p.distributeCards(s, cards)
+					world := [][]Card{p1H, p2H}
+					worlds = append(worlds, world)	
+				}
+			}
+			return worlds
+		}
+
+
 
 	}
 
 	copycards := make([]Card, len(cards))
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < p.maxWorlds; i++ {
 		// shuffle the rest
 		copycards = ShuffleR(rminmax, cards)
 
@@ -232,17 +316,19 @@ func (p* MinMaxPlayer) distributeCards(s *SuitState, cards []Card) ([]Card, []Ca
 	}
 
 	nextCard := 0
-	// debugTacticsLog("cards to distribute: %v\n", cards)
+	debugTacticsLog("cards to distribute: %v\n", cards)
+	debugTacticsLog("hand1: %v\n", hand1)
+	debugTacticsLog("hand2: %v\n", hand2)
 
-	for i := len(hand1); i < handSize - middle; i++ {
-		debugTacticsLog("hand1: %v, i: %d, handSize: %d, middle: %d, nextCard: %d\n", hand1, i, handSize, middle, nextCard)
+	for i := len(hand1); i < handSize - leader; i++ {
+		debugTacticsLog("hand1: %v, i: %d, handSize: %d, middle: %d, nextCard: %d\n", hand1, i, handSize, leader, nextCard)
 		hand1 = append(hand1, cards[nextCard])
 		nextCard++
 	}
 	debugTacticsLog("completed hand1: %v\n", hand1)
 
-	for i := len(hand2); i < handSize - leader; i++ {
-		debugTacticsLog("hand2: %v, i: %d, handSize: %d, leader: %d, nextCard: %d\n", hand2, i, handSize, leader, nextCard)
+	for i := len(hand2); i < handSize - middle; i++ {
+		debugTacticsLog("hand2: %v, i: %d, handSize: %d, leader: %d, nextCard: %d\n", hand2, i, handSize, middle, nextCard)
 		hand2 = append(hand2, cards[nextCard])
 		nextCard++
 	}	
