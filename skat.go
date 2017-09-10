@@ -47,8 +47,8 @@ var issSentDelay = 0
 
 var gameIndex = 1
 var player1 PlayerI
-var player2 Player
-var player3 MinMaxPlayer
+var player2 MinMaxPlayer
+var player3 Player
 var html = false
 
 var players []PlayerI
@@ -723,8 +723,10 @@ func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlay
 		}
 		delayMs = 500
 	}
-	player2 = makePlayer([]Card{})
-	player3 = makeMinMaxPlayer([]Card{})
+	// player2 = makePlayer([]Card{})
+	player2 = makeMinMaxPlayer([]Card{})
+	player3 = makePlayer([]Card{})
+	// player3 = makeMinMaxPlayer([]Card{})
 	player1.setName("You")
 	player2.setName("Bob")
 	player3.setName("Ana")
@@ -771,7 +773,9 @@ func main() {
 		randSeed = r.Intn(9999)
 	}
 	fmt.Printf("SEED: %d\n", randSeed)
+	gameLog("SEED: %d\n", randSeed)
 	fmt.Printf("Game: %d\n", gameNr)
+	gameLog("Game: %d\n", gameNr)
 	r = rand.New(rand.NewSource(int64(randSeed)))
 
 	if fileLogFlag {
@@ -889,6 +893,7 @@ func main() {
 		if !auto {
 			fmt.Printf("\nGAME: %6d (%s) %5d     (%s) %5d     (%s) %5d\n", gameIndex, player1.getName(), player1.getTotalScore(), player2.getName(), player2.getTotalScore(), player3.getName(), player3.getTotalScore())
 		} else {
+			gameLog("\nGAME: %6d (%s) %5d     (%s) %5d     (%s) %5d\n", gameIndex, player1.getName(), player1.getTotalScore(), player2.getName(), player2.getTotalScore(), player3.getName(), player3.getTotalScore())
 			anim()
 		}
 	}

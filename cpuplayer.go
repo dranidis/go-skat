@@ -1330,16 +1330,18 @@ func (p *Player) declareTrump() string {
 // Grand games 1351, perc:  1.35
 
 func (p *Player) discardInSkat(skat []Card) {
+	debugTacticsLog("..DISCARDING\n")
 	debugTacticsLog("FULL HAND %v\n", sortSuit("", p.getHand()))
 
 	newHbid := p.calculateHighestBid(true)
 	debugTacticsLog("New high bid %d\n", newHbid)
 
 	if p.trumpToDeclare == NULL {
+		debugTacticsLog("..discard in Null %d\n", newHbid)
 		hrisk := 0
 		hriskSuit := ""
 		discarded := 0
-		for discarded = 0; discarded < 2 ; discarded++ {
+		for i := 0; i < 2 ; i++ {
 			cards := sortValueNull(p.hand)
 			for _, s := range suits {
 				risk := p.nullSafeSuit(s, cards)
@@ -1356,11 +1358,12 @@ func (p *Player) discardInSkat(skat []Card) {
 				debugTacticsLog("Discarding %v\n", card)
 				skat[discarded] = card
 				p.hand = remove(p.hand, card)
+				discarded++
 			}
 			hrisk = 0
 			hriskSuit = ""
 		}
-		for discarded < 2 {
+		for len(p.hand) > 10 {
 			cards := sortValueNull(p.hand)
 			card := cards[len(cards) - 1]
 			debugTacticsLog("Discarding %v\n", card)

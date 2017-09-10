@@ -7,6 +7,9 @@ import (
 	"os"
 	"testing"
 	"fmt"
+
+	"github.com/dranidis/go-skat/minimax"
+
 )
 
 func TestMain(m *testing.M) {
@@ -3488,6 +3491,33 @@ func TestDiscardInSkat(t *testing.T) {
 	}
 }
 
+func TestDiscardInSkatNULLNoRisk(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "7"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "D"},
+
+		Card{SPADE, "7"},
+		Card{SPADE, "8"},
+		Card{SPADE, "10"},
+		Card{SPADE, "D"},
+
+		Card{CARO, "7"},
+		Card{CARO, "8"},
+		Card{CARO, "J"},
+		Card{CARO, "D"},		
+
+	}
+	skat := []Card{Card{SPADE, "8"}, Card{SPADE, "D"}}
+	p := makePlayer(cards)
+	p.discardInSkat(skat)
+
+	if len(p.hand) != 10 {
+		t.Errorf("Not discarded (12 cards in hand): %v", p.hand)
+	}
+}
+
 func TestDiscardInSkatGRAND(t *testing.T) {
 	cards := []Card{
 		Card{HEART, "J"},  //L1
@@ -4418,7 +4448,7 @@ func TestDeclarerVoidSuits(t *testing.T) {
 	s.trick = []Card{Card{HEART, "10"}}
 	s.opp1 = &opp1
 	s.opp2 = &opp2
-	
+
 	play(&s, &player)
 
 	if !s.declarerVoidSuit[HEART] {
@@ -4991,6 +5021,7 @@ func TestCopySkatState(t *testing.T) {
 		0, 
 		30, 
 		45,
+		false,
 	}
 
 	ss := copySkatState(skatState)
@@ -5039,6 +5070,7 @@ func TestFindLegals(t *testing.T) {
 		0, // turn
 		30, 
 		45,
+		false,
 	}
 
 	actions := skatState.FindLegals()
@@ -5119,10 +5151,13 @@ func TestDealCardsMID(t *testing.T) {
 
 	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
 
-	for i := 0; i < 10; i++ {
-		p.p1Hand = []Card{}
-		p.p2Hand = []Card{}
-		p.dealCards(&s)
+	worlds := p.dealCards(&s)
+
+	for i := 0; i < len(worlds); i++ {
+		// SET world
+		p.p1Hand = worlds[i][0]
+		p.p2Hand = worlds[i][1]
+
 		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
 
 		if len(p.p2Hand) != 2 {
@@ -5140,6 +5175,38 @@ func TestDealCardsMID(t *testing.T) {
 			t.Errorf("Cards already played: %v", p.p2Hand)
 		}
 	}
+}
+
+
+func TestDealCardsMID2(t *testing.T) {
+	p := makeMinMaxPlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{SPADE, "A"},
+	})
+	p.maxHandSize = 6
+
+	s := makeSuitState()
+	s.declarer = &p
+	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
+
+	s.trick = []Card{Card{CLUBS, "K"}}
+
+	notPlayedYet := []Card{
+		Card{CLUBS, "A"},
+		Card{CLUBS, "D"},
+		Card{SPADE, "10"},
+		Card{CARO, "10"},
+		Card{HEART, "10"},
+	}
+
+	s.cardsPlayed = makeDeck()
+	s.cardsPlayed = remove(s.cardsPlayed, s.skat...)
+	s.cardsPlayed = remove(s.cardsPlayed, s.trick...)
+	s.cardsPlayed = remove(s.cardsPlayed, p.hand...)
+	s.cardsPlayed = remove(s.cardsPlayed, notPlayedYet...)
+
+	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
 
 	// VOID SUITS
 	void1 := CARO
@@ -5147,10 +5214,13 @@ func TestDealCardsMID(t *testing.T) {
 	s.opp1VoidSuit[CARO] = true
 	s.opp2VoidSuit[CLUBS] = true
 
-	for i := 0; i < 10; i++ {
-		p.p1Hand = []Card{}
-		p.p2Hand = []Card{}
-		p.dealCards(&s)
+	worlds := p.dealCards(&s)
+
+	for i := 0; i < len(worlds); i++ {
+		// SET world
+		p.p1Hand = worlds[i][0]
+		p.p2Hand = worlds[i][1]
+
 		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
 
 		for _,c := range  makeSuitDeck(void1) {
@@ -5211,10 +5281,13 @@ func TestDealCardsLeader(t *testing.T) {
 
 	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
 
-	for i := 0; i < 10; i++ {
-		p.p1Hand = []Card{}
-		p.p2Hand = []Card{}
-		p.dealCards(&s)
+	worlds := p.dealCards(&s)
+
+	for i := 0; i < len(worlds); i++ {
+		// SET world
+		p.p1Hand = worlds[i][0]
+		p.p2Hand = worlds[i][1]
+
 		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
 
 		if len(p.p2Hand) != p2HandSize {
@@ -5233,16 +5306,56 @@ func TestDealCardsLeader(t *testing.T) {
 		}
 	}
 
+}
+
+func TestDealCardsLeader3(t *testing.T) {
+	p := makeMinMaxPlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{SPADE, "A"},
+	})
+	p.maxHandSize = 6
+
+	s := makeSuitState()
+	s.declarer = &p
+	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
+
+	s.trick = []Card{}
+
+	notPlayedYet := []Card{
+		Card{CLUBS, "A"},
+		Card{CLUBS, "D"},
+		Card{SPADE, "10"},
+		Card{CARO, "10"},
+		Card{HEART, "10"},
+//
+		Card{CLUBS, "K"},
+	}
+
+	s.cardsPlayed = makeDeck()
+	s.cardsPlayed = remove(s.cardsPlayed, s.skat...)
+	s.cardsPlayed = remove(s.cardsPlayed, s.trick...)
+	s.cardsPlayed = remove(s.cardsPlayed, p.hand...)
+	s.cardsPlayed = remove(s.cardsPlayed, notPlayedYet...)
+
+	p1HandSize := 3
+	p2HandSize := 3
+
+	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)	
+
 	// VOID SUITS
 	void1 := CARO
 	void2 := CLUBS
 	s.opp1VoidSuit[CARO] = true
 	s.opp2VoidSuit[CLUBS] = true
 
-	for i := 0; i < 10; i++ {
-		p.p1Hand = []Card{}
-		p.p2Hand = []Card{}
-		p.dealCards(&s)
+	worlds := p.dealCards(&s)
+
+	for i := 0; i < len(worlds); i++ {
+		// SET world
+		p.p1Hand = worlds[i][0]
+		p.p2Hand = worlds[i][1]
+
 		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
 
 		for _,c := range  makeSuitDeck(void1) {
@@ -5302,10 +5415,13 @@ func TestDealCardsBack(t *testing.T) {
 
 	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
 
-	for i := 0; i < 10; i++ {
-		p.p1Hand = []Card{}
-		p.p2Hand = []Card{}
-		p.dealCards(&s)
+	worlds := p.dealCards(&s)
+
+	for i := 0; i < len(worlds); i++ {
+		// SET world
+		p.p1Hand = worlds[i][0]
+		p.p2Hand = worlds[i][1]
+
 		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
 
 		if len(p.p2Hand) != p2HandSize {
@@ -5323,6 +5439,41 @@ func TestDealCardsBack(t *testing.T) {
 			t.Errorf("Cards already played: %v", p.p2Hand)
 		}
 	}
+}
+
+func TestDealCardsBack2(t *testing.T) {
+	p := makeMinMaxPlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{SPADE, "A"},
+	})
+	p.maxHandSize = 6
+
+	s := makeSuitState()
+	s.declarer = &p
+	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
+
+	s.trick = []Card{Card{CLUBS, "K"},Card{CLUBS, "A"}}
+
+	notPlayedYet := []Card{
+		Card{CLUBS, "D"},
+		Card{SPADE, "10"},
+		Card{CARO, "10"},
+		Card{HEART, "10"},
+//
+		
+	}
+
+	s.cardsPlayed = makeDeck()
+	s.cardsPlayed = remove(s.cardsPlayed, s.skat...)
+	s.cardsPlayed = remove(s.cardsPlayed, s.trick...)
+	s.cardsPlayed = remove(s.cardsPlayed, p.hand...)
+	s.cardsPlayed = remove(s.cardsPlayed, notPlayedYet...)
+
+	p1HandSize := 2
+	p2HandSize := 2
+
+	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
 
 	// VOID SUITS
 	void1 := CARO
@@ -5330,10 +5481,13 @@ func TestDealCardsBack(t *testing.T) {
 	s.opp1VoidSuit[CARO] = true
 	s.opp2VoidSuit[CLUBS] = true
 
-	for i := 0; i < 10; i++ {
-		p.p1Hand = []Card{}
-		p.p2Hand = []Card{}
-		p.dealCards(&s)
+	worlds := p.dealCards(&s)
+
+	for i := 0; i < len(worlds); i++ {
+		// SET world
+		p.p1Hand = worlds[i][0]
+		p.p2Hand = worlds[i][1]
+
 		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
 
 		for _,c := range  makeSuitDeck(void1) {
@@ -5357,4 +5511,487 @@ func TestDealCardsBack(t *testing.T) {
 	}
 
 
+}
+
+func TestDealCardsLeader2(t *testing.T) {
+	p := makeMinMaxPlayer([]Card{
+		Card{CLUBS, "K"},
+		Card{SPADE, "K"},
+		Card{HEART, "8"},
+		Card{CARO, "7"},
+	})
+	p.maxHandSize = 6
+
+	s := makeSuitState()
+	s.declarer = &p
+	s.skat = []Card{Card{HEART, "10"}, Card{HEART, "9"}}
+	s.trump = HEART
+	s.trick = []Card{}
+
+	notPlayedYet := []Card{
+		Card{CLUBS, "10"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "8"},
+
+		Card{CARO, "10"},
+//
+		Card{HEART, "D"},
+		Card{HEART, "A"},
+		Card{HEART, "K"},
+		Card{HEART, "J"},
+	}
+
+	s.cardsPlayed = makeDeck()
+	s.cardsPlayed = remove(s.cardsPlayed, s.skat...)
+	s.cardsPlayed = remove(s.cardsPlayed, s.trick...)
+	s.cardsPlayed = remove(s.cardsPlayed, p.hand...)
+	s.cardsPlayed = remove(s.cardsPlayed, notPlayedYet...)
+
+	p1HandSize := 4
+	p2HandSize := 4
+
+	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
+
+	// VOID SUITS
+	void1 := CARO
+	void2 := CLUBS
+	s.opp1VoidSuit[void1] = true
+	s.opp2VoidSuit[void2] = true
+
+
+	worlds := p.dealCards(&s)
+
+	for i := 0; i < len(worlds); i++ {
+		// SET world
+		p.p1Hand = worlds[i][0]
+		p.p2Hand = worlds[i][1]
+
+		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
+
+		for _,c := range  makeSuitDeck(void1) {
+			if in(p.p1Hand, c) {
+				t.Errorf("Opp1 is VOID of %s: %v %v", p.p1Hand, c, void1)
+			}		
+		}
+		for _,c := range  makeSuitDeck(void2) {
+			if in(p.p2Hand, c) {
+				t.Errorf("Opp2 is VOID of %s: %v %v", p.p2Hand, c, void2)
+			}		
+		}
+		if len(p.p2Hand) != p2HandSize {
+			t.Errorf("Wrong hand size for player who just opened the trick: %v", p.p2Hand)
+		}
+
+		if len(p.p1Hand) != p1HandSize {
+			t.Errorf("Wrong hand size for next player: %v", p.p1Hand)
+		}	
+	}
+}
+
+func TestMiniMaxW(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card {
+		Card{SPADE, "J"},
+		Card{SPADE, "A"},
+		Card{SPADE, "K"},
+		Card{SPADE, "9"},
+	}
+	dist[1] = []Card {
+		Card{SPADE, "8"},
+		Card{CLUBS, "A"},
+		Card{HEART, "8"},
+		Card{CLUBS, "7"},
+	}
+	dist[2] = []Card {
+		Card{SPADE, "10"},
+		Card{SPADE, "7"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "9"},
+	}
+
+	skatState := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{}, // trick 
+		0, // declarer 
+		0, // who's turn is it
+		40, 
+		42,
+		true,
+	}
+	var skatStateP minimax.State
+	skatStateP = &skatState
+	// minimax.DEBUG = true
+	for !skatStateP.IsTerminal() {
+		a := minimax.Minimax(skatStateP)
+		ma := a.(SkatAction)
+		debugTacticsLog("TestAction: %v\n", ma)
+		skatStateP = skatStateP.FindNextState(a)	
+		debugTacticsLog("TestState: %v\n", skatStateP)
+	}
+
+	if false {t.Errorf("")}
+}
+
+func TestMiniMax2(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card {
+		Card{SPADE, "J"},
+		Card{SPADE, "A"},
+		// Card{SPADE, "K"},
+		Card{SPADE, "9"},
+	}
+	dist[1] = []Card {
+		Card{SPADE, "8"},
+		Card{CLUBS, "A"},
+		Card{HEART, "8"},
+		// Card{CLUBS, "7"},
+	}
+	dist[2] = []Card {
+		Card{SPADE, "10"},
+		Card{SPADE, "7"},
+		// Card{CLUBS, "8"},
+		Card{CLUBS, "9"},
+	}
+
+	skatState := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{}, // trick 
+		0, // declarer 
+		0, // who's turn is it
+		40, 
+		42,
+		false,
+	}
+	var skatStateP minimax.State
+	skatStateP = &skatState
+	// minimax.DEBUG = true
+	for !skatStateP.IsTerminal() {
+		a := minimax.Minimax(skatStateP)
+		ma := a.(SkatAction)
+		debugTacticsLog("Action: %v\n", ma)
+		skatStateP = skatStateP.FindNextState(a)	
+		debugTacticsLog("State: %v\n", skatStateP)
+	}
+
+	if false {t.Errorf("")}
+}
+
+// func TestMiniMax3A(t *testing.T) {
+// 	dist := make([][]Card, 3)
+// 	dist[0] = []Card {
+// 		Card{SPADE, "J"},
+// 		// Card{SPADE, "A"},
+// 		// Card{SPADE, "K"},
+// 		// Card{SPADE, "9"},
+// 	}
+// 	dist[1] = []Card {
+// 		// Card{SPADE, "8"},
+// 		Card{CLUBS, "A"},
+// 		Card{HEART, "8"},
+// 		// Card{CLUBS, "7"},
+// 	}
+// 	dist[2] = []Card {
+// 		// Card{SPADE, "10"},
+// 		// Card{SPADE, "7"},
+// 		// Card{CLUBS, "8"},
+// 		Card{CLUBS, "9"},
+// 	}
+
+// 	skatState := SkatState{
+// 		CARO, // trump
+// 		dist, 			
+// 		[]Card{}, // trick 
+// 		0, // declarer 
+// 		0, // who's turn is it
+// 		40, 
+// 		42,
+// 		false,
+// 	}
+// 	var skatStateP minimax.State
+// 	skatStateP = &skatState
+// 	// minimax.DEBUG = true
+// 	for !skatStateP.IsTerminal() {
+// 		a := minimax.Minimax(skatStateP)
+// 		ma := a.(SkatAction)
+// 		debugTacticsLog("Action: %v\n", ma)
+// 		skatStateP = skatStateP.FindNextState(a)	
+// 		debugTacticsLog("State: %v\n", skatStateP)
+// 	}
+
+// 	t.Errorf("")
+// }
+
+
+func TestMinMaxNextStateEndOfTrick(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card {
+		// Card{SPADE, "J"},
+		Card{SPADE, "A"},
+		Card{SPADE, "K"},
+		Card{SPADE, "9"},
+	}
+	dist[1] = []Card {
+		// Card{SPADE, "8"},
+		Card{CLUBS, "A"},
+		Card{HEART, "8"},
+		Card{CLUBS, "7"},
+	}
+	dist[2] = []Card {
+		Card{SPADE, "10"},
+		Card{SPADE, "7"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "9"},
+	}
+
+	skatState := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{Card{SPADE, "J"}, Card{SPADE, "8"}}, // trick 
+		0, // declarer 
+		2, // who's turn is it
+		40, 
+		42,
+		false,
+	}
+
+	action := SkatAction{Card{SPADE, "10"}}
+
+	var skatStateP minimax.State
+	skatStateP = &skatState
+	var a minimax.Action
+	a = action
+
+	skatStateN := skatStateP.FindNextState(a)
+	newState := skatStateN.(*SkatState)
+	debugTacticsLog("State: %v\n", newState)
+
+	if newState.declScore != skatState.declScore + 12 {
+		t.Errorf("Wrong declScore score. Is: %d", newState.declScore)
+	}	
+	if newState.oppScore != skatState.oppScore {
+		t.Errorf("Wrong oppScore score. Is: %d", newState.oppScore)
+	}	
+	if newState.turn != 0 {
+		t.Errorf("Wrong winner. Is: %d", newState.turn)
+	}	
+	
+
+}
+
+func TestMinMaxNextStateEndOfTrick2(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card {
+		// Card{SPADE, "J"},
+		// Card{SPADE, "A"},
+		Card{SPADE, "K"},
+		Card{SPADE, "9"},
+	}
+	dist[1] = []Card {
+		// Card{SPADE, "8"},
+		// Card{CLUBS, "A"},
+		Card{HEART, "8"},
+		Card{CLUBS, "7"},
+	}
+	dist[2] = []Card {
+		Card{SPADE, "10"},
+		Card{SPADE, "7"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "9"},
+	}
+
+	skatState := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{{SPADE, "A"}, Card{CLUBS, "A"}}, // trick 
+		0, // declarer 
+		2, // who's turn is it
+		52, 
+		42,
+		false,
+	}
+
+	action := SkatAction{Card{SPADE, "7"}}
+
+	var skatStateP minimax.State
+	skatStateP = &skatState
+	var a minimax.Action
+	a = action
+
+	skatStateN := skatStateP.FindNextState(a)
+	newState := skatStateN.(*SkatState)
+	debugTacticsLog("State: %v\n", newState)
+
+	if newState.declScore != skatState.declScore + 22 {
+		t.Errorf("Wrong declScore score. Is: %d", newState.declScore)
+	}	
+	if newState.oppScore != skatState.oppScore {
+		t.Errorf("Wrong oppScore score. Is: %d", newState.oppScore)
+	}	
+	if newState.turn != 0 {
+		t.Errorf("Wrong winner. Is: %d", newState.turn)
+	}	
+}
+
+func TestMinMaxNextStateEndOfTrick3(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card {
+		// Card{SPADE, "J"},
+		// Card{SPADE, "A"},
+		// Card{SPADE, "K"},
+		Card{SPADE, "9"},
+	}
+	dist[1] = []Card {
+		// Card{SPADE, "8"},
+		// Card{CLUBS, "A"},
+		// Card{HEART, "8"},
+		Card{CLUBS, "7"},
+	}
+	dist[2] = []Card {
+		Card{SPADE, "10"},
+		// Card{SPADE, "7"},
+		// Card{CLUBS, "8"},
+		Card{CLUBS, "9"},
+	}
+
+	skatState := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{{SPADE, "K"}, Card{SPADE, "8"}}, // trick 
+		0, // declarer 
+		2, // who's turn is it
+		52, 
+		42,
+		false,
+	}
+
+	action := SkatAction{Card{SPADE, "10"}}
+
+	var skatStateP minimax.State
+	skatStateP = &skatState
+	var a minimax.Action
+	a = action
+
+	skatStateN := skatStateP.FindNextState(a)
+	newState := skatStateN.(*SkatState)
+	debugTacticsLog("State: %v\n", newState)
+
+	if newState.declScore != skatState.declScore {
+		t.Errorf("Wrong declScore score. Is: %d", newState.declScore)
+	}	
+	if newState.oppScore != skatState.oppScore + 14{
+		t.Errorf("Wrong oppScore score. Is: %d", newState.oppScore)
+	}	
+	if newState.turn != 2 {
+		t.Errorf("Wrong winner. Is: %d", newState.turn)
+	}	
+}
+
+func TestMinMaxNextStateNewTrick(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card {
+		// Card{SPADE, "J"},
+		// Card{SPADE, "A"},
+		Card{SPADE, "K"},
+		Card{SPADE, "9"},
+	}
+	dist[1] = []Card {
+		// Card{SPADE, "8"},
+		// Card{CLUBS, "A"},
+		Card{HEART, "8"},
+		Card{CLUBS, "7"},
+	}
+	dist[2] = []Card {
+		Card{SPADE, "10"},
+		// Card{SPADE, "7"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "9"},
+	}
+
+	skatState := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{{SPADE, "A"}, Card{CLUBS, "A"}, Card{SPADE, "7"}}, // trick 
+		0, // declarer 
+		0, // who's turn is it
+		52, 
+		42,
+		false,
+	}
+
+	action := SkatAction{Card{SPADE, "K"}}
+
+	var skatStateP minimax.State
+	skatStateP = &skatState
+	var a minimax.Action
+	a = action
+
+	skatStateN := skatStateP.FindNextState(a)
+	newState := skatStateN.(*SkatState)
+	debugTacticsLog("State: %v\n", newState)
+
+	if len(newState.trick) != 1 {
+		t.Errorf("Wrong trick size. Is: %d %v", len(newState.trick), newState.trick)
+	}	
+	if !in(newState.trick, Card{SPADE, "K"}) {
+		t.Errorf("Wrong trick. Is: %v", newState.trick)
+	}	
+	if newState.turn != 1 {
+		t.Errorf("Wrong turn. Is: %d", newState.turn)
+	}	
+}
+
+
+func TestMinMaxIsOpponentTurn(t *testing.T) {
+	dist := make([][]Card, 3)
+
+	s := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{}, // trick 
+		0, // declarer 
+		0, // who's turn is it
+		40, 
+		42,
+		false,
+	}	
+
+	if s.IsOpponentTurn() { // YOU
+		t.Errorf("Error opponent")
+	}
+	s.turn = 1 // OPP1
+	if !s.IsOpponentTurn() {
+		t.Errorf("Error opponent")
+	}
+	s.turn = 2 // OPP2
+	if !s.IsOpponentTurn() {
+		t.Errorf("Error opponent")
+	}
+	s.declarer = 1
+	s.turn = 1
+	if !s.IsOpponentTurn() {
+		t.Errorf("Error opponent")
+	}
+	s.turn = 0 // YOU
+	if s.IsOpponentTurn() {
+		t.Errorf("Error opponent")
+	}
+	s.turn = 2 // YOUR PARTNER
+	if s.IsOpponentTurn() {
+		t.Errorf("Error opponent")
+	}
+	s.declarer = 2
+	s.turn = 2
+	if !s.IsOpponentTurn() {
+		t.Errorf("Error opponent")
+	}
+	s.turn = 0 // YOU 
+	if s.IsOpponentTurn() {
+		t.Errorf("Error opponent")
+	}
+	s.turn = 1 // YOUR PARTNET
+	if s.IsOpponentTurn() {
+		t.Errorf("Error opponent")
+	}
 }

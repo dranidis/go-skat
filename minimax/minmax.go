@@ -38,6 +38,8 @@ func Minimax(state State) Action {
 }
 
 func minimaxAlg(state State, depth int, tab string) (*Action, float64) {
+	treedepth := MAXDEPTH - depth
+	
 	if depth == 0  || state.IsTerminal() {
 		return nil, state.Heuristic()
 	}
@@ -50,23 +52,29 @@ func minimaxAlg(state State, depth int, tab string) (*Action, float64) {
 		bestValue = float64(math.MaxInt32)
 	}
 
+	debugStr := "MAX"
+	if state.IsOpponentTurn() {
+		debugStr = "MIN"
+	}
 	for _, action := range state.FindLegals() {
 		nextState := state.FindNextState(action)
-		debugLog("%saction %v :nextstate %v\n", tab, action, nextState)
+		debugLog("%4d %s(%s) Action %v :nextstate %v\n", treedepth, tab, debugStr, action, nextState)
 		_, value := minimaxAlg(nextState, depth - 1, tab + "....")
-		debugLog("%sVALUE of action %v : %.2f at state %v\n", tab, action, value, state)
+		debugLog("%4d %s(%s) VALUE of action %v : %.2f at state %v\n", treedepth, tab, debugStr, action, value, state)
 		if !state.IsOpponentTurn() { // MAX
 			if value > bestValue {
 				bestValue, bestAction = value, action
-				debugLog("%sbestValue %.2f, bestAction so far %s\n", tab, bestValue, bestAction)
+				debugLog("%4d %s(%s) bestValue %.2f, bestAction so far %s\n", treedepth, tab, debugStr, bestValue, bestAction)
 			}
 		} else { // MIN
 			if value < bestValue {
 				bestValue, bestAction = value, action
+				debugLog("%4d %s(%s) bestValue %.2f, bestAction so far %s\n", treedepth, tab, debugStr, bestValue, bestAction)
 			}
 		}
 	}
-	debugLog("%s action %s : %.2f at state %v\n", tab, bestAction, bestValue, state)
+
+	debugLog("%4d %s(%s) Best action %s : %.2f at state %v\n", treedepth, tab, debugStr, bestAction, bestValue, state)
 	return &bestAction, bestValue
 }
 

@@ -4,6 +4,7 @@ import (
 	"github.com/fatih/color"
 	"log"
 	"runtime/debug"
+	"math/rand"
 )
 
 const CLUBS = "CLUBS"
@@ -256,6 +257,17 @@ func sortSuit(trump string, cs []Card) []Card {
 }
 
 func Shuffle(cards []Card) []Card {
+	//r := rand.New(rand.NewSource(time.Now().Unix()))
+	ret := make([]Card, len(cards))
+	perm := r.Perm(len(cards))
+	for i, randIndex := range perm {
+		ret[i] = cards[randIndex]
+	}
+	return ret
+}
+
+
+func ShuffleR(r *rand.Rand, cards []Card) []Card {
 	//r := rand.New(rand.NewSource(time.Now().Unix()))
 	ret := make([]Card, len(cards))
 	perm := r.Perm(len(cards))
