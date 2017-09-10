@@ -174,14 +174,14 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 	// 6 (3,3) => 
 
 	if p.getName() == s.declarer.getName() {
-		if len(cards) < 2 || len(p.p1Hand) == max1 || len(p.p2Hand) == max1 {
+		if len(cards) < 2 || len(p.p1Hand) == max1 || len(p.p2Hand) == max2 {
 			p1H, p2H := p.distributeCards(s, cards)
 			world := [][]Card{p1H, p2H}
 			worlds = append(worlds, world)
 
 			return worlds
 		}	
-		if len(cards) < 4  || len(p.p1Hand) == max1 -1 || len(p.p2Hand) == max1 -1  {
+		if len(cards) < 4  || len(p.p1Hand) == max1 - 1 || len(p.p2Hand) == max2 - 1  {
 			for i := 0; i < len(cards); i++ {
 				p1H, p2H := p.distributeCards(s, cards)
 				world := [][]Card{p1H, p2H}
@@ -220,7 +220,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 			}
 			return worlds
 		}
-		if len(cards) == 5 {
+		if len(cards) == 5  || len(p.p1Hand) == max1 - 2 || len(p.p2Hand) == max2 - 2 {
 			var restoreHands func() 
 			var appendCards func(card1, card2 Card) 
 			// STORE THE hands in order to restore them
@@ -320,15 +320,20 @@ func (p* MinMaxPlayer) distributeCards(s *SuitState, cards []Card) ([]Card, []Ca
 	debugTacticsLog("hand1: %v\n", hand1)
 	debugTacticsLog("hand2: %v\n", hand2)
 
-	for i := len(hand1); i < handSize - leader; i++ {
-		debugTacticsLog("hand1: %v, i: %d, handSize: %d, middle: %d, nextCard: %d\n", hand1, i, handSize, leader, nextCard)
+	// p1 has more cards than p2 if you are in the middle: p2 you p1
+	// [] => you p1 p2
+	// [x] => p2 you p1
+	// [x,x] => p1 p2 you
+	
+	for i := len(hand1); i < handSize - middle; i++ {
+		debugTacticsLog("hand1: %v, i: %d, handSize: %d, middle: %d, nextCard: %d\n", hand1, i, handSize, middle, nextCard)
 		hand1 = append(hand1, cards[nextCard])
 		nextCard++
 	}
 	debugTacticsLog("completed hand1: %v\n", hand1)
 
-	for i := len(hand2); i < handSize - middle; i++ {
-		debugTacticsLog("hand2: %v, i: %d, handSize: %d, leader: %d, nextCard: %d\n", hand2, i, handSize, middle, nextCard)
+	for i := len(hand2); i < handSize - leader; i++ {
+		debugTacticsLog("hand2: %v, i: %d, handSize: %d, leader: %d, nextCard: %d\n", hand2, i, handSize, leader, nextCard)
 		hand2 = append(hand2, cards[nextCard])
 		nextCard++
 	}	
