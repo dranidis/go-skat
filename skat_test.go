@@ -5628,9 +5628,9 @@ func TestMiniMaxW(t *testing.T) {
 	skatStateP = &skatState
 	// minimax.DEBUG = true
 	for !skatStateP.IsTerminal() {
-		a := minimax.Minimax(skatStateP)
+		a, v := minimax.Minimax(skatStateP)
 		ma := a.(SkatAction)
-		debugTacticsLog("TestAction: %v\n", ma)
+		debugTacticsLog("TestAction: %v %v\n", ma, v)
 		skatStateP = skatStateP.FindNextState(a)	
 		debugTacticsLog("TestState: %v\n", skatStateP)
 	}
@@ -5673,9 +5673,53 @@ func TestMiniMax2(t *testing.T) {
 	skatStateP = &skatState
 	// minimax.DEBUG = true
 	for !skatStateP.IsTerminal() {
-		a := minimax.Minimax(skatStateP)
+		a, v := minimax.Minimax(skatStateP)
 		ma := a.(SkatAction)
-		debugTacticsLog("Action: %v\n", ma)
+		debugTacticsLog("Action: %v %v\n", ma, v)
+		skatStateP = skatStateP.FindNextState(a)	
+		debugTacticsLog("State: %v\n", skatStateP)
+	}
+
+	if false {t.Errorf("")}
+}
+
+func TestMiniMaxOpp(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card {
+		Card{HEART, "A"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "9"},
+	}
+	dist[1] = []Card {
+		Card{CARO, "10"},
+		Card{CLUBS, "7"},
+	}
+	dist[2] = []Card {
+		Card{HEART, "10"},
+		Card{HEART, "K"},
+	}
+
+	skatState := SkatState{
+		SPADE, // trump
+		dist, 			
+		[]Card{Card{CARO, "A"}, Card{SPADE, "K"}}, // trick 
+		2, // declarer 
+		0, // who's turn is it
+		24, 
+		42,
+		true,
+	}
+	var skatStateP minimax.State
+	skatStateP = &skatState
+
+	if ! skatState.IsOpponentTurn() {
+		t.Errorf("???!!")
+	}
+	// minimax.DEBUG = true
+	for !skatStateP.IsTerminal() {
+		a, v := minimax.Minimax(skatStateP)
+		ma := a.(SkatAction)
+		debugTacticsLog("Action: %v %v\n", ma, v)
 		skatStateP = skatStateP.FindNextState(a)	
 		debugTacticsLog("State: %v\n", skatStateP)
 	}
@@ -5975,28 +6019,28 @@ func TestMinMaxIsOpponentTurn(t *testing.T) {
 	}
 	s.declarer = 1
 	s.turn = 1
-	if !s.IsOpponentTurn() {
+	if s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.turn = 0 // YOU
-	if s.IsOpponentTurn() {
+	if !s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.turn = 2 // YOUR PARTNER
-	if s.IsOpponentTurn() {
+	if !s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.declarer = 2
 	s.turn = 2
-	if !s.IsOpponentTurn() {
+	if s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.turn = 0 // YOU 
-	if s.IsOpponentTurn() {
+	if !s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.turn = 1 // YOUR PARTNET
-	if s.IsOpponentTurn() {
+	if !s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 }

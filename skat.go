@@ -49,7 +49,8 @@ var gameIndex = 1
 var player1 PlayerI
 var player2 MinMaxPlayer
 // var player2 Player
-var player3 Player
+var player3 MinMaxPlayer
+// var player3 Player
 var html = false
 
 var players []PlayerI
@@ -710,6 +711,7 @@ func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlay
 			player1 = &player
 		} else if issConnect {
 			player := makePlayer([]Card{})
+			// player := makeMinMaxPlayer([]Card{})
 			player.risky = true
 			player1 = &player
 			player2 := makeISSPlayer([]Card{})
@@ -729,8 +731,8 @@ func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlay
 	}
 	// player2 = makePlayer([]Card{})
 	player2 = makeMinMaxPlayer([]Card{})
-	player3 = makePlayer([]Card{})
-	// player3 = makeMinMaxPlayer([]Card{})
+	// player3 = makePlayer([]Card{})
+	player3 = makeMinMaxPlayer([]Card{})
 	player1.setName("You")
 	player2.setName("Bob")
 	player3.setName("Ana")

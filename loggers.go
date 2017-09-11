@@ -48,3 +48,6 @@ func debugTacticsLog(format string, a ...interface{}) {
 	logToFile(format, a...)
 }
 
+func debugMinmaxLog(format string, a ...interface{}) {
+	debugTacticsLog("MM: " + format, a...)
+}

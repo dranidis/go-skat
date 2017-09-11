@@ -32,14 +32,14 @@ type State interface {
 type Action interface {
 }
 
-func Minimax(state State) Action {
-	action, _ := minimaxAlg(state, MAXDEPTH, "")
-	return *action
+func Minimax(state State) (Action, float64) {
+	action, value := minimaxAlg(state, MAXDEPTH, "")
+	return *action, value
 }
 
 func minimaxAlg(state State, depth int, tab string) (*Action, float64) {
 	treedepth := MAXDEPTH - depth
-	
+
 	if depth == 0  || state.IsTerminal() {
 		return nil, state.Heuristic()
 	}

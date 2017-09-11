@@ -350,6 +350,7 @@
 	var acceptedBid = "";
 	var playerHand= [];
 	var declarer =  -1;
+	var declarerPos = 0;
 	var lostNull = false;
 	var trump = "";
 	var handGame = true;
@@ -815,8 +816,10 @@
 				prevPlayerIndex[1] = playerIndex[1]
 				prevPlayerIndex[2] = playerIndex[2]
 
+				console.log(playerIndex[declarer])
+				console.log(declarerPos)
 				if (winner == "Bob") {
-					if (declarer = 1 && trump == "Null") {
+					if (declarerPos == 1 && trump == "Null") {
 						lostNull = true;
 					}
 					playerIndex = [1, 2, 3];
@@ -824,7 +827,7 @@
 					el.style["transform"] = "rotate(0deg) translate(-210px,30px) scale(0.4)";	
 				}
 				else if (winner == "Ana") {
-					if (declarer = 2 && trump == "Null") {
+					if (declarerPos == 2 && trump == "Null") {
 						lostNull = true;
 					}
 					playerIndex = [2, 3, 1];
@@ -832,7 +835,7 @@
 					el.style["transform"] = "rotate(0deg) translate(210px,30px) scale(0.4)";	
 				}
 				else {
-					if (declarer = 0 && trump == "Null") {
+					if (declarerPos == 3 && trump == "Null") {
 						lostNull = true;
 					}
 					playerIndex = [3, 1, 2];	
@@ -1016,7 +1019,7 @@
 			method: "GET",
 			success: function(rawdata) {
 				console.log("Declarer set:" + player + " BID: " + acceptedBid)
-
+				declarerPos = playerIndex[player]
 				var bid = document.getElementById("bid" + playerIndex[player])
 				// console.log("Setting: element: " + "bid" + playerIndex[player])
 				emptyBidDivsExcept(player);
