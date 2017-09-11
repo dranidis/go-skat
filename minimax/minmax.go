@@ -114,25 +114,25 @@ func alphaBetaAlg(state State, alpha, beta float64, depth int, tab string) (*Act
 		if !state.IsOpponentTurn() { // MAX
 			if value > bestValue {
 				bestValue, bestAction = value, action
-				debugLog("%4d %s(%s) bestValue %.2f, bestAction so far %s\n", treedepth, tab, debugStr, bestValue, bestAction)
+				debugLog("%4d %s(%s) Best Value so far: %.2f, Best Action so far: %s\n", treedepth, tab, debugStr, bestValue, bestAction)
 			}
 			if value > alpha {
 				alpha = value
 			}
 			if beta <= alpha {
-				debugLog("%4d %s(%s) Pruning at state %v and action %v\n", treedepth, tab, state, action)
+				debugLog("%4d %s(%s) Pruning at state %v and action %s\n", treedepth, tab, debugStr, state, action)
 				break
 			}
 		} else { // MIN
 			if value < bestValue {
 				bestValue, bestAction = value, action
-				debugLog("%4d %s(%s) bestValue %.2f, bestAction so far %s\n", treedepth, tab, debugStr, bestValue, bestAction)
+				debugLog("%4d %s(%s) Best Value so far: %.2f, Best Action so far: %s\n", treedepth, tab, debugStr, bestValue, bestAction)
 			}
 			if value < beta {
 				beta = value
 			}
 			if beta <= alpha {
-				debugLog("%4d %s(%s) Pruning at state %v and action %v\n", treedepth, tab, state, action)
+				debugLog("%4d %s(%s) Pruning at state %v and action %s\n", treedepth, tab, debugStr, state, action)
 				break
 			}
 		}

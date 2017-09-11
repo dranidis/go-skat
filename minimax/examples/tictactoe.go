@@ -175,6 +175,7 @@ func main() {
 	initial := makeTTT()
 	state = &initial
 
+	fmt.Println("MINIMAX algorithm\n\n")
 	for !state.IsTerminal() {
 		a, _ := minimax.Minimax(state)
 		state = state.FindNextState(a)	
@@ -186,6 +187,7 @@ func main() {
 
 	state = &initial
 
+	fmt.Println("ALPHA/BETA algorithm\n\n")
 	for !state.IsTerminal() {
 		a, _ := minimax.AlphaBeta(state)
 		state = state.FindNextState(a)	
@@ -195,6 +197,8 @@ func main() {
 	w = game.winner()
 	fmt.Printf("Winner: %d\n", w)	
 
+	fmt.Println("ALPHA/BETA algorithm: with DEBUG on\n\n")
+	minimax.DEBUG = true
 	fmt.Println("\nONE STEP")
 	state = &initial
 	minimax.AlphaBeta(state)

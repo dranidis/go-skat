@@ -75,14 +75,6 @@ func Connect(usr, pwd string) error {
 	} else {
 		connR = os.Stdin
 		connW = os.Stdout
-		// fmt.Println("Opening file iss.log")
-		// file, err := os.Open("iss.log") // For read access.
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }		
-		// connR = file
-		// connW = file
-		// defer file.Close()
 	}
 
 	username = usr
@@ -177,6 +169,7 @@ func parseServer(t string) {
 			// waitServer <- "OK"
 			return
 		}
+
 		if s[3] == "end" {
 			//
 			// TODO: get cards info to calculate score based on declarer cards and skat
@@ -189,9 +182,6 @@ func parseServer(t string) {
 			player := s[4]
 			action := s[5]
 			// fmt.Printf("Player: %s, Action: %s in [%s]\n", player, action, t)
-
-
-
 
 			if player != "w" && len(action) > 2 {
 				ss := strings.Split(action, ".")

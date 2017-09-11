@@ -18,6 +18,8 @@ func debugLog(format string, a ...interface{}) {
 	}
 }
 
+
+
 type Node struct {
 	state State
 	visits int
@@ -28,26 +30,56 @@ type Node struct {
 }
 
 type State interface {
+	// players []Player
 	FindLegals() []Action
 	FindNextState(Action) State
 	IsTerminal() bool
 	FindReward() float64
+	StateId() uint64
 	IsOpponentTurn() bool
 }
 
+// type Player interface {
+
+// }
+
 type Action interface {
+	Equals(Action) bool
 }
 
 var	rootNode *Node
+var visitedStates = make(map[uint64]*Node)
+
+// func InitSubtree(state State) {
+// 	rootNode = &Node{state, 0, 0, nil, nil, []*Node{}}
+// }
+
+// func ChangeSubtree(action Action) {
+// 	for _, child := range rootNode.children {
+// 		if action.Equals(child.action) {
+// 			rootNode = child
+// 			return
+// 		}
+// 	}
+// 	log.Fatal("Action not found")
+// }
 
 func Uct(state State, seconds int) (Action, float64) {
 	start := time.Now()
 
 	var root *Node
-	rootNode = &Node{state, 0, 0, nil, nil, []*Node{}}
-	root = rootNode
+	stateId := state.StateId()
+	visitedNode, ok := visitedStates[stateId]
+	if ok {
+		root = visitedNode
+	} else {
+		rootNode = &Node{state, 0, 0, nil, nil, []*Node{}}
+		root = rootNode
+		visitedStates[stateId] = rootNode
+	}	
 
 	var elapsed time.Duration
+	// rootNode := Node{state, 0, 0, nil, nil, []*Node{}}
 	for elapsed < time.Duration(seconds) * time.Millisecond {
 		// debugLog("Iteration: ", i)
 		debugLog("..Selection\n")
@@ -66,21 +98,34 @@ func Uct(state State, seconds int) (Action, float64) {
 	}
 	// printTree(root, 0)
 
-	// best, u := mostUtilityAction(root)
-	best, u := mostVisitedAction(root)
+	best, u := mostUtilityAction(root)
+	// best := mostVisitedAction(root)
 	debugLog("\nRETURNING BEST MOVE: %v\n\n", best)
 	return best, u
 }
 
+var printed = make(map[uint64]*Node)
+
 func printTree(node *Node, depth int) {
+	if depth == 0 {
+		printed = make(map[uint64]*Node)
+	}
 	indent := ""
 	for i := 0; i < depth ; i++ {
 		indent += "\t"
 	}
+
+	// action := ""
 	debugLog("%sState %s,Visits %v, Utility %.2f, Action %s\n", indent, node.state, node.visits, node.utility / float64(node.visits), node.action)
-	for _, child := range node.children {
-		printTree(child, depth + 1)
+	_, ok := printed[node.state.StateId()]
+	printed[node.state.StateId()] = node
+	if !ok {
+		for _, child := range node.children {
+			printTree(child, depth + 1)
+		}
 	}
+
+	printed[node.state.StateId()] = node
 }
 
 func mostVisited(nodes []*Node) *Node {
@@ -100,77 +145,64 @@ func mostVisited(nodes []*Node) *Node {
 }
 
 
-// func mostVisitedAction(node *Node) Action {
-// 	var best Action
-// 	most := math.MinInt64
-// 	actions := node.state.FindLegals()
-// 	for _, action := range actions {
-// 		s := node.state.FindNextState(action)
-// 		n, ok := visitedStates[s.StateId()]
-// 		if ok {
-// 			u := n.visits
-// 			// fmt.Printf(".. %s: Util: %f %d\n", action, u, n.visits)
-// 			if u > most {
-// 				most = u
-// 				best = action
-// 			}		
-// 		} else {
-// 			// fmt.Printf(".. %s: Not visited\n", action)
-// 		}	
-// 	}
-// 	return best
-// }
-func mostVisitedAction(node *Node) (Action, float64) {
-	// debugLog(len(nodes))
-	var bestAction Action
-	mostVisits := 0
-	mostU := -1.0
-	for _, child := range node.children {
-		if child.visits > mostVisits {
-			mostVisits = child.visits
-			bestAction = child.action
-			mostU = child.utility / float64(child.visits)
-		}
+func mostVisitedAction(node *Node) Action {
+	var best Action
+	most := math.MinInt64
+	actions := node.state.FindLegals()
+	for _, action := range actions {
+		s := node.state.FindNextState(action)
+		n, ok := visitedStates[s.StateId()]
+		if ok {
+			u := n.visits
+			// fmt.Printf(".. %s: Util: %f %d\n", action, u, n.visits)
+			if u > most {
+				most = u
+				best = action
+			}		
+		} else {
+			fmt.Printf(".. %s: Not visited\n", action)
+		}	
+
 	}
-	return bestAction, mostU 
+	return best
 }
 
 func mostUtilityAction(node *Node) (Action, float64) {
-	var bestAction Action
+	var best Action
 	most := float64(math.MinInt64)
-	for _, child := range node.children {
-		action := child.action
-		u := child.utility / float64(child.visits)
-		// fmt.Printf(".. %s: Util: %f %d\n", action, u, n.visits)
-		if u > most {
-			most = u
-			bestAction = action
-		}		
+	actions := node.state.FindLegals()
+	for _, action := range actions {
+		s := node.state.FindNextState(action)
+		n, ok := visitedStates[s.StateId()]
+		if ok {
+			u := n.utility / float64(n.visits)
+			// fmt.Printf(".. %s: Util: %f %d\n", action, u, n.visits)
+			if u > most {
+				most = u
+				best = action
+			}		
+		} else {
+			fmt.Printf(".. %s: Not visited\n", action)
+		}	
+
 	}
-	return bestAction, most
+	return best, most
 }
 
-// func mostUtilityAction(node *Node) (Action, float64) {
-// 	var best Action
-// 	most := float64(math.MinInt64)
-// 	actions := node.state.FindLegals()
-// 	for _, action := range actions {
-// 		s := node.state.FindNextState(action)
-// 		u := n.utility / float64(s.visits)
-// 		// fmt.Printf(".. %s: Util: %f %d\n", action, u, n.visits)
-// 		if u > most {
-// 			most = u
-// 			best = action
-// 		}		
-// 	}
-// 	return best, most
-// }
+
+var selected = make(map[uint64]*Node)
 
 func selectNode(node *Node, depth int) *Node {
 	debugLog("selectNode at: %v\n", node.state)
+	if depth == 0 {
+		selected = make(map[uint64]*Node)
+	}
+
+	selected[node.state.StateId()] = node
+	debugLog("SELECTED map : %v\n", selected)
 
 	if node.visits == 0 || node.children == nil || len(node.children) == 0 {
-		return node
+				return node
 	}
 	// debugLog(".. not visited")
 
@@ -193,10 +225,10 @@ func selectNode(node *Node, depth int) *Node {
 
 	result := node
 
-	// parentVisits := 0
-	// for _, child := range node.children {
-	// 	parentVisits += child.visits
-	// }
+	parentVisits := 0
+	for _, child := range node.children {
+		parentVisits += child.visits
+	}
 
 	// score := selectfn(node.children[0], parentVisits)
 	// result := node.children[0]
@@ -211,32 +243,42 @@ func selectNode(node *Node, depth int) *Node {
 	for i := 0; i < len(node.children); i++ {
 		// debugLog(".. Child: %d %v\n", i, node.children[i].state)
 
-		if !node.state.IsOpponentTurn() {
-			newscore := selectfn(node.children[i], 2.0)
-			// debugLog(".. Child: %d, %v score %v\n", i, node.children[i].state, newscore)
-			if newscore > score { // MAX
-				score = newscore
-				result = node.children[i]
+		_, ok := selected[node.children[i].state.StateId()]
+		if !ok {
+			if !node.state.IsOpponentTurn() {
+				newscore := selectfn(node.children[i], parentVisits, 2.0)
+				// debugLog(".. Child: %d, %v score %v\n", i, node.children[i].state, newscore)
+				if newscore > score { // MAX
+					score = newscore
+					result = node.children[i]
+				}
+			} else {
+				newscore := selectfn(node.children[i], parentVisits, -2.0)
+				// debugLog(".. Child: %d, %v score %v\n", i, node.children[i].state, newscore)
+				if newscore < score { //MIN
+					score = newscore
+					result = node.children[i]
+				}
 			}
+
 		} else {
-			newscore := selectfn(node.children[i], -2.0)
-			// debugLog(".. Child: %d, %v score %v\n", i, node.children[i].state, newscore)
-			if newscore < score { //MIN
-				score = newscore
-				result = node.children[i]
-			}
+			debugLog(".. already Visited. Selecting not visited child..\n" )
 		}
+
 	}
+
 	debugLog(".. Selected:  %v\n", result.state)
 	return selectNode(result, depth+1)
 }
 
-func selectfn(node *Node, factor float64) float64 {
+func selectfn(node *Node, parentVisits int, factor float64) float64 {
 	u := node.utility / float64(node.visits)
-	pv := float64(node.parent.visits)
+	// pv := float64(node.parent.visits)
+	pv := float64(parentVisits)
 	nv := float64(node.visits)
 	return u + ExplorationParameter * math.Sqrt(math.Log(pv) / nv)
 }
+
 
 func expand(node *Node) { //*Node {
 	// actions := node.state.FindLegals(node.state.player)
@@ -246,18 +288,35 @@ func expand(node *Node) { //*Node {
 		newState := node.state.FindNextState(action)
 		// debugLog("..state %v\n", newState)
 		// check if state is visited
+		stateId := newState.StateId()
+		visitedNode, ok := visitedStates[stateId]
 		var nNode *Node
-		// debugLog("..new state %v\n", newState)
-		newNode := &Node{newState, 0, 0, action, node, []*Node{}}
-		node.children = append(node.children, newNode)
-		nNode = newNode
+		if ok {
+			debugLog("..already visited %v\n", newState)
+			// visitedNode.action = action
+			node.children = append(node.children, visitedNode)
+			nNode = visitedNode
+			debugLog("..Propagation\n")
+			reward := simulate(visitedNode.state)
+			backPropagate(visitedNode, reward)	
+		} else {
+			// debugLog("..new state %v\n", newState)
+			newNode := &Node{newState, 0, 0, action, node, []*Node{}}
+			visitedStates[stateId] = newNode
+			node.children = append(node.children, newNode)
+			nNode = newNode
 
-		// debugLog("..Simulation\n")
-		for i :=0 ; i < SimulationRuns; i++ {
-			reward := simulate(nNode.state)
-			backPropagate(nNode, reward)	
-		}		
+			// debugLog("..Simulation\n")
+			for i :=0 ; i < SimulationRuns; i++ {
+				reward := simulate(nNode.state)
+				backPropagate(nNode, reward)	
+			}		
+
+		}
+		
 	}
+
+	// return node.children[0]
 }
 
 func simulate(state State) float64 {

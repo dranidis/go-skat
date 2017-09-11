@@ -1175,11 +1175,6 @@ func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 	// } else {
 	// 	log.Fatal(fmt.Sprintf("Unassigned player %v\n. Declarer: %v\n Opp1: %v\n Opp2: %v\n", p, s.declarer, s.opp1, s.opp2))
 	// }
-
-
-	if issConnect {
-		playCard(card)
-	}	
 	return card
 }
 

@@ -2,7 +2,9 @@ package main
 
 import (
 	"github.com/dranidis/go-skat/minimax"
+	"github.com/dranidis/go-skat/mcts"
 	"math/rand"
+	"time"
 )
 
 var rminmax = rand.New(rand.NewSource(1))
@@ -15,6 +17,7 @@ type MinMaxPlayer struct {
 	skat        []Card
 	maxHandSize int
 	maxWorlds   int
+	timeOutMs int
 	// schneiderGoal bool
 }
 
@@ -23,8 +26,9 @@ func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 		Player:      makePlayer(hand),
 		p1Hand:      []Card{},
 		p2Hand:      []Card{},
-		maxHandSize: 5,
+		maxHandSize: 6, // MINIMAX takes too long at 6, Will try MCTS
 		maxWorlds:   12,
+		timeOutMs: 30000,
 		// schneiderGoal: false,
 	}
 }
@@ -48,6 +52,9 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 	worlds := p.dealCards(s)
 	debugMinmaxLog("(%s) %d Worlds\n", p.name, len(worlds))
 
+	start := time.Now()
+
+
 	if len(p.hand) <= p.maxHandSize || len(worlds) < p.maxWorlds {
 		cardsFreq := make(map[string]int)
 		cardsTotal := make(map[string]float64)
@@ -66,17 +73,27 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 			if ok {
 				cardsFreq[card.String()] = v + 1
 				cardsTotal[card.String()] = cardsTotal[card.String()] + value
-				// if cardsFreq[card.String()] > len(worlds)/2 {
-				// 	// half of the worlds suggest this card
-				// 	debugMinmaxLog("..PRELIMINARY END!\n")
-				// 	break
-				// }
+				if cardsFreq[card.String()] > len(worlds)/2 && !p.losingScore(s, value) {
+					// half of the worlds suggest this card
+					debugMinmaxLog("..PRELIMINARY END!\n")
+					break
+				}
 			} else {
 				cardsFreq[card.String()] = 1
 				cardsTotal[card.String()] = value
 			}
 			cards[card.String()] = card
+
+			t := time.Now()
+			elapsed := t.Sub(start)
+			if elapsed > time.Duration(p.timeOutMs) * time.Millisecond { // ms
+				debugMinmaxLog("TIMEOUT\n")
+				break
+			}
 		}
+		t := time.Now()
+		elapsed := t.Sub(start)
+		debugMinmaxLog("Time: %v\n", elapsed)
 
 		mostFrequent := 0
 		mostFrequentKey := ""
@@ -103,19 +120,23 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 
 		}
 		if mostFrequent > 0 {
-			debugMinmaxLog("(%s) In hand %v, examined %d/%d worlds\n", p.name, p.hand, i, len(worlds))
-			if p.losingScore(s, cardsTotal[mostFrequentKey]) {
-				if p.losingScore(s, bestAvg) {
-					debugMinmaxLog("(%s) Losing AVG (BACK TO NORMAL TACTICS)\n", p.name)
-					return p.Player.playerTactic(s, c)
-				} 
-				debugMinmaxLog("(%s)Playing best AVG card: %v (%.0f)\n", p.name, bestAvgCard, bestAvg)
-				return bestAvgCard
-			} else {
-				debugMinmaxLog("(%s)Playing card: %v (at least %d times)\n", p.name, mostFrequentCard, mostFrequent)
-				return mostFrequentCard
-			}
+			debugMinmaxLog("(%s)Playing card: %v (at least %d times)\n", p.name, mostFrequentCard, mostFrequent)
+			return mostFrequentCard
 		}
+		// if mostFrequent > 0 {
+		// 	debugMinmaxLog("(%s) In hand %v, examined %d/%d worlds\n", p.name, p.hand, i, len(worlds))
+		// 	if p.losingScore(s, cardsTotal[mostFrequentKey]) {
+		// 		if p.losingScore(s, bestAvg) {
+		// 			debugMinmaxLog("(%s) Losing AVG (BACK TO NORMAL TACTICS)\n", p.name)
+		// 			return p.Player.playerTactic(s, c)
+		// 		} 
+		// 		debugMinmaxLog("(%s)Playing best AVG card: %v (%.0f)\n", p.name, bestAvgCard, bestAvg)
+		// 		return bestAvgCard
+		// 	} else {
+		// 		debugMinmaxLog("(%s)Playing card: %v (at least %d times)\n", p.name, mostFrequentCard, mostFrequent)
+		// 		return mostFrequentCard
+		// 	}
+		// }
 		// NO CARDS
 		debugMinmaxLog("MINMAX Failed.. back no normal tactics")
 	}
@@ -596,6 +617,8 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 		schneiderGoal,
 	}
 
+
+
 	// if skatState.IsTerminal() {
 	// 	debugMinmaxLog("##### !!!!!!! ~~~~~~ TERMINAL state.. back to player tactics!")
 	// 	return p.Player.playerTactic(s, c), 
@@ -605,14 +628,22 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 	// 	debugMinmaxLog("LEGAL action: %v\n", ma)
 	// }
 
-	a, value := minimax.Minimax(&skatState)
+	mcts.SimulationRuns = 500
+	mcts.ExplorationParameter = 2.0
+	mcts.DEBUG = false // You have to increase delay to 2000 if you are dedugging to give time for runs
+	runMilliseconds := 1000
+
+	a, value := mcts.Uct(&skatState, runMilliseconds)
+
+	// a, value := minimax.Minimax(&skatState)
 	// a, value := minimax.AlphaBeta(&skatState)
 	ma := a.(SkatAction)
 
-	debugMinmaxLog("Suggesting card: %v with value %.0f\n", ma.card, value)
+	debugMinmaxLog("Suggesting card: %v with value %.4f\n", ma.card, value)
 
 	return ma.card, value
 }
+
 
 // TODO:
 // refactor code above by calling this function

@@ -1,7 +1,8 @@
 package main 
 
 import (
-	"github.com/dranidis/go-skat/minimax"
+	// "github.com/dranidis/go-skat/minimax"
+	"github.com/dranidis/go-skat/mcts"
 )
 
 type SkatState struct {
@@ -104,15 +105,15 @@ func (m SkatState) validCards(cards []Card) []Card {
 	})
 }
 
-func (m *SkatState) FindLegals() []minimax.Action {
-	actions := []minimax.Action{}
+func (m *SkatState) FindLegals() []mcts.Action {
+	actions := []mcts.Action{}
 	for _, card := range m.validCards(m.playerHand[m.turn]) {
 		actions = append(actions, SkatAction{card})
 	}
 	return actions
 }
 
-func (m *SkatState) FindNextState(a minimax.Action) minimax.State {
+func (m *SkatState) FindNextState(a mcts.Action) mcts.State {
 	ma := a.(SkatAction)
 
 	// deep copy before you make any changes
@@ -164,7 +165,7 @@ func (m *SkatState) FindNextState(a minimax.Action) minimax.State {
 		}
 	}
 
-	var state minimax.State
+	var state mcts.State
 	state = &newState
 	return state
 }

@@ -44,6 +44,7 @@ var issConnect = false
 var issOpp1 = "xskat"
 var issOpp2 = "xskat"
 var issSentDelay = 0
+var issUsername string
 
 var gameIndex = 1
 var player1 PlayerI
@@ -170,6 +171,39 @@ func round(s *SuitState, players []PlayerI) []PlayerI {
 	return players
 }
 
+func analysePlay(s *SuitState, p PlayerI, card Card) {
+	// Player VOID on suit
+	if s.follow != "" && getSuit(s.trump, card) != s.follow {
+		if p.getName() == s.declarer.getName() {
+			s.declarerVoidSuit[s.follow] = true
+		}
+		if p.getName() == s.opp1.getName() {
+			s.opp1VoidSuit[s.follow] = true
+		}
+		if p.getName() == s.opp2.getName() {
+			s.opp2VoidSuit[s.follow] = true
+		}
+	}
+
+	if p.getName() != s.declarer.getName() {
+		if s.follow == s.trump {
+			if getSuit(s.trump, card) == s.trump && (card.Rank == "A" || card.Rank == "10") {
+				if isLosingTrick(s, p) {
+					// TODO:
+					debugTacticsLog("INFERENCE: **************************************")
+					debugTacticsLog("INFERENCE: Playing a full Trump on a losing trick")
+					debugTacticsLog("INFERENCE: Is the last of the player")
+					debugTacticsLog("INFERENCE: **************************************")
+				}
+			}
+		}
+	}
+}
+
+func isLosingTrick(s *SuitState, p PlayerI) bool {
+	return true // TODO!!!!
+}
+
 func play(s *SuitState, p PlayerI) Card {
 	red := color.New(color.Bold, color.FgRed).SprintFunc()
 	// if len(p.getHand()) == 0 {
@@ -197,18 +231,11 @@ func play(s *SuitState, p PlayerI) Card {
 	}
 	card := p.playerTactic(s, valid)
 
-	// Player VOID on suit
-	if s.follow != "" && getSuit(s.trump, card) != s.follow {
-		if p.getName() == s.declarer.getName() {
-			s.declarerVoidSuit[s.follow] = true
-		}
-		if p.getName() == s.opp1.getName() {
-			s.opp1VoidSuit[s.follow] = true
-		}
-		if p.getName() == s.opp2.getName() {
-			s.opp2VoidSuit[s.follow] = true
-		}
-	}
+	if issConnect && p.getName() == issUsername {
+		playCard(card)
+	}	
+
+	analysePlay(s, p, card)
 
 	p.setHand(remove(p.getHand(), card))
 	s.trick = append(s.trick, card)
@@ -710,8 +737,8 @@ func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlay
 			player := makeHtmlPlayer([]Card{})
 			player1 = &player
 		} else if issConnect {
-			player := makePlayer([]Card{})
-			// player := makeMinMaxPlayer([]Card{})
+			// player := makePlayer([]Card{})
+			player := makeMinMaxPlayer([]Card{})
 			player.risky = true
 			player1 = &player
 			player2 := makeISSPlayer([]Card{})
@@ -796,13 +823,13 @@ func main() {
 	makePlayers(auto, html, issConnect, analysis, analysisPlayer, analysisPlayerBid)
 
 	if issConnect {
-		usr := os.Getenv("ISS_USR")
+		issUsername = os.Getenv("ISS_USR")
 		pwd := os.Getenv("ISS_PWD")
-		if usr == "" || pwd == "" {
+		if issUsername == "" || pwd == "" {
 			log.Fatal("To connect to the ISS skat server, you have to set the ISS_USR and ISS_PWD environment variables.")
 		}
 
-		err := Connect(usr, pwd) // blocks
+		err := Connect(issUsername, pwd) // blocks
 		if err != nil {
 			log.Fatal("Error in server connection: ", err)
 			return
