@@ -606,6 +606,7 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 	// }
 
 	a, value := minimax.Minimax(&skatState)
+	// a, value := minimax.AlphaBeta(&skatState)
 	ma := a.(SkatAction)
 
 	debugMinmaxLog("Suggesting card: %v with value %.0f\n", ma.card, value)

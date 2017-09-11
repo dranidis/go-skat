@@ -176,11 +176,26 @@ func main() {
 	state = &initial
 
 	for !state.IsTerminal() {
-		a := minimax.Minimax(state)
+		a, _ := minimax.Minimax(state)
 		state = state.FindNextState(a)	
 		fmt.Printf("%v\n\n", state)	
 	}
 	game := state.(*TTTState)
 	w := game.winner()
 	fmt.Printf("Winner: %d\n", w)	
+
+	state = &initial
+
+	for !state.IsTerminal() {
+		a, _ := minimax.AlphaBeta(state)
+		state = state.FindNextState(a)	
+		fmt.Printf("%v\n\n", state)	
+	}
+	game = state.(*TTTState)
+	w = game.winner()
+	fmt.Printf("Winner: %d\n", w)	
+
+	fmt.Println("\nONE STEP")
+	state = &initial
+	minimax.AlphaBeta(state)
 }
