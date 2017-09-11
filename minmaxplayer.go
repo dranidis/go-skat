@@ -18,6 +18,7 @@ type MinMaxPlayer struct {
 	maxHandSize int
 	maxWorlds   int
 	timeOutMs int
+	mctsSimulationTimeMs int
 	// schneiderGoal bool
 }
 
@@ -26,9 +27,10 @@ func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 		Player:      makePlayer(hand),
 		p1Hand:      []Card{},
 		p2Hand:      []Card{},
-		maxHandSize: 6, // MINIMAX takes too long at 6, Will try MCTS
+		maxHandSize: 8, // MINIMAX takes too long at 6, Will try MCTS
 		maxWorlds:   12,
-		timeOutMs: 30000,
+		timeOutMs: 10000,
+		mctsSimulationTimeMs: 1000,
 		// schneiderGoal: false,
 	}
 }
@@ -96,27 +98,27 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 		debugMinmaxLog("Time: %v\n", elapsed)
 
 		mostFrequent := 0
-		mostFrequentKey := ""
-		var bestAvg float64
-		if p.name == s.declarer.getName() {
-			bestAvg = 0.0
-		} else 	{
-			bestAvg = 120.0
-		}
+		// mostFrequentKey := ""
+		// var bestAvg float64
+		// if p.name == s.declarer.getName() {
+		// 	bestAvg = 0.0
+		// } else 	{
+		// 	bestAvg = 120.0
+		// }
 		var mostFrequentCard Card
-		var bestAvgCard Card
+		// var bestAvgCard Card
 		for k, v := range cardsFreq {
 			if v > mostFrequent {
 				mostFrequent, mostFrequentCard = v, cards[k]
-				mostFrequentKey = k
+				// mostFrequentKey = k
 			}
 			cardsTotal[k] = cardsTotal[k]/float64(v)
-			if p.name == s.declarer.getName() && cardsTotal[k] > bestAvg {
-				bestAvg, bestAvgCard = cardsTotal[k], cards[k]
-			}
-			if p.name != s.declarer.getName() && cardsTotal[k] < bestAvg {
-				bestAvg, bestAvgCard = cardsTotal[k], cards[k]
-			}
+			// if p.name == s.declarer.getName() && cardsTotal[k] > bestAvg {
+			// 	// bestAvg, bestAvgCard = cardsTotal[k], cards[k]
+			// }
+			// if p.name != s.declarer.getName() && cardsTotal[k] < bestAvg {
+			// 	// bestAvg, bestAvgCard = cardsTotal[k], cards[k]
+			// }
 
 		}
 		if mostFrequent > 0 {
@@ -631,7 +633,7 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 	mcts.SimulationRuns = 500
 	mcts.ExplorationParameter = 2.0
 	mcts.DEBUG = false // You have to increase delay to 2000 if you are dedugging to give time for runs
-	runMilliseconds := 1000
+	runMilliseconds := p.mctsSimulationTimeMs
 
 	a, value := mcts.Uct(&skatState, runMilliseconds)
 
