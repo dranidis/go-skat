@@ -25,7 +25,8 @@ var	waitServer chan string
 
 var connR io.Reader
 var connW io.Writer
-var real = true
+var real = false
+
 
 func Connect(usr, pwd string) error {
 	waitServer = make(chan string)
@@ -274,7 +275,7 @@ func parseServer(t string) {
 					declareChannel <- issTrump
 				}
 
-				if len(s) == 3 { // SKAT
+				if len(s) == 3 { // SKAT // DEAD CODE?????
 					sk1 := s[1]
 					if sk1 != "??" {
 						issSkat = make([]Card, 2)
@@ -282,6 +283,8 @@ func parseServer(t string) {
 						sk2 := s[2]
 						issSkat[1], _ = parseCard(sk2)
 						fmt.Printf("SKAT: %v\n", issSkat)
+						state.skat = issSkat
+						fmt.Printf("THE SKAT IS: %v\n", state.skat)
 					}
 				}
 				return
@@ -355,6 +358,7 @@ func parseServer(t string) {
 						players = rotatePlayers(players)
 					}
 					initState()
+					
 					//DealCards()
 					initGame()
 					go (func () {

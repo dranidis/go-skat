@@ -1,8 +1,8 @@
 package main 
 
 import (
-	// "github.com/dranidis/go-skat/minimax"
-	"github.com/dranidis/go-skat/mcts"
+	"fmt"
+	"github.com/dranidis/go-skat/game"
 )
 
 type SkatState struct {
@@ -20,6 +20,15 @@ type SkatAction struct {
 	card Card
 }
 
+
+func (s SkatAction) String() string {
+	return fmt.Sprintf("%s", s.card)
+}
+
+func (s SkatState) String() string {
+	return fmt.Sprintf("%s, %v, TRICK: %v, %d, %d, SCORE: %d - %d, %v", s.trump, s.playerHand, s.trick, s.declarer, s.turn, s.declScore, s.oppScore, s.schneiderGoal)
+}
+
 func (m SkatState) Heuristic() float64 {
 	if m.IsTerminal() {
 		return m.FindRewardNum()
@@ -27,20 +36,6 @@ func (m SkatState) Heuristic() float64 {
 		return 0 /// ????????????????
 	}
 }
-
-// func (m SkatState) IsOpponentTurn() bool {
-// 	if m.declarer == 0 && m.turn == 0 {
-// 		return false
-// 	}
-// 	if m.declarer == 0 && m.turn != 0 {
-// 		return true
-// 	}
-// 	if m.declarer == m.turn {
-// 		return true
-// 	}
-// 	return false
-// }
-
 
 func (m SkatState) IsOpponentTurn() bool {
 	return m.declarer != m.turn
@@ -96,6 +91,7 @@ func (m *SkatState) FindReward() float64 {
 	return float64(1.0) // TODO
 }
 
+
 func (m SkatState) validCards(cards []Card) []Card {
 	if len(m.trick) == 0 {
 		return cards
@@ -105,15 +101,15 @@ func (m SkatState) validCards(cards []Card) []Card {
 	})
 }
 
-func (m *SkatState) FindLegals() []mcts.Action {
-	actions := []mcts.Action{}
+func (m *SkatState) FindLegals() []game.Action {
+	actions := []game.Action{}
 	for _, card := range m.validCards(m.playerHand[m.turn]) {
 		actions = append(actions, SkatAction{card})
 	}
 	return actions
 }
 
-func (m *SkatState) FindNextState(a mcts.Action) mcts.State {
+func (m *SkatState) FindNextState(a game.Action) game.State {
 	ma := a.(SkatAction)
 
 	// deep copy before you make any changes
@@ -165,7 +161,7 @@ func (m *SkatState) FindNextState(a mcts.Action) mcts.State {
 		}
 	}
 
-	var state mcts.State
+	var state game.State
 	state = &newState
 	return state
 }

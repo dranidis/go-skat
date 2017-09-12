@@ -302,6 +302,9 @@ func (p Player) canWin(afterSkat bool) string {
 	}
 	if largest > 6 {
 		prob = 99
+	}	
+	if largest > 6 && asses > 1  {
+		prob = 100
 	}
 
 	est := handEstimation(cs)
@@ -314,7 +317,9 @@ func (p Player) canWin(afterSkat bool) string {
 			return ""
 		}
 	}
-
+	if prob > 99 {
+		return "SUITHAND"
+	}
 	// if est < 20 {
 	// 	return ""
 	// }
@@ -1259,6 +1264,13 @@ func (p *Player) calculateHighestBid(afterSkat bool) int {
 		if !afterSkat {
 			p.trumpToDeclare = mostCardsSuit(p.getHand())
 		}
+	case "SUITHAND":
+		most := mostCardsSuit(p.getHand())
+		p.highestBid = p.getGamevalue(most)
+		if !afterSkat {
+			p.trumpToDeclare = mostCardsSuit(p.getHand())
+		}
+		p.handGame = true
 	case "GRAND":
 		p.trumpToDeclare = GRAND
 		p.highestBid = p.getGamevalue(p.trumpToDeclare)

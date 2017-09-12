@@ -98,21 +98,23 @@ func makeSuitState() SuitState {
 	}
 }
 
-func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
-	var newPlayers []PlayerI
-	var winner PlayerI
-	if len(s.trick) < 3 {
-		log.Fatal("Trick not full. SuitState: ", s, " Players ", players)
-	}
+func trickWinner(s *SuitState) int {
 	if s.greater(s.trick[0], s.trick[1]) && s.greater(s.trick[0], s.trick[2]) {
-		winner = players[0]
-		newPlayers = players
+		return 0
 	} else if s.greater(s.trick[1], s.trick[2]) {
-		winner = players[1]
-		newPlayers = []PlayerI{players[1], players[2], players[0]}
+		return 1
 	} else {
-		winner = players[2]
-		newPlayers = []PlayerI{players[2], players[0], players[1]}
+		return 2
+	}
+}
+
+func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
+	index := trickWinner(s)
+	var winner PlayerI
+
+	winner = players[index]
+	for i := 0; i < index; i++ {
+		players = rotatePlayers(players)
 	}
 
 	winner.setScore(winner.getScore() + sum(s.trick))
@@ -127,7 +129,7 @@ func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
 
 	winner.setSchwarz(false)
 	s.trick = []Card{}
-	s.leader = newPlayers[0]
+	s.leader = players[0]
 
 	if s.trump == NULL {
 		if winner.getName() == s.declarer.getName() {
@@ -136,7 +138,7 @@ func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
 		}
 	}
 
-	return newPlayers
+	return players
 }
 
 type CardPlayed struct {
@@ -173,34 +175,51 @@ func round(s *SuitState, players []PlayerI) []PlayerI {
 
 func analysePlay(s *SuitState, p PlayerI, card Card) {
 	// Player VOID on suit
-	if s.follow != "" && getSuit(s.trump, card) != s.follow {
+	if len(s.trick) > 0 && getSuit(s.trump, card) != getSuit(s.trump, s.trick[0]) {
+		debugTacticsLog("TRICK: %v, Card: %v\n", s.trick, card)
+		debugTacticsLog("INFERENCE: **************************************\n")
+		debugTacticsLog("INFERENCE: Not following tricks                  \n")
+		debugTacticsLog("INFERENCE: Void on suit                          \n")
+		debugTacticsLog("INFERENCE: **************************************\n")
 		if p.getName() == s.declarer.getName() {
-			s.declarerVoidSuit[s.follow] = true
+			s.declarerVoidSuit[getSuit(s.trump, s.trick[0])] = true
 		}
 		if p.getName() == s.opp1.getName() {
-			s.opp1VoidSuit[s.follow] = true
+			s.opp1VoidSuit[getSuit(s.trump, s.trick[0])] = true
 		}
 		if p.getName() == s.opp2.getName() {
-			s.opp2VoidSuit[s.follow] = true
+			s.opp2VoidSuit[getSuit(s.trump, s.trick[0])] = true
 		}
 	}
 
 	if p.getName() != s.declarer.getName() {
 		if s.follow == s.trump {
 			if getSuit(s.trump, card) == s.trump && (card.Rank == "A" || card.Rank == "10") {
-				if isLosingTrick(s, p) {
+				if isLosingTrick(s, p, card) {
 					// TODO:
-					debugTacticsLog("INFERENCE: **************************************")
-					debugTacticsLog("INFERENCE: Playing a full Trump on a losing trick")
-					debugTacticsLog("INFERENCE: Is the last of the player")
-					debugTacticsLog("INFERENCE: **************************************")
+					debugTacticsLog("INFERENCE: **************************************\n")
+					debugTacticsLog("INFERENCE: Playing a full Trump on a losing trick\n")
+					debugTacticsLog("INFERENCE: Is the last of the player             \n")
+					debugTacticsLog("INFERENCE: **************************************\n")
+
+					if p.getName() == s.opp1.getName() {
+						s.opp1VoidSuit[s.trump] = true
+					}
+					if p.getName() == s.opp2.getName() {
+						s.opp2VoidSuit[s.trump] = true
+					}
 				}
 			}
 		}
 	}
 }
 
-func isLosingTrick(s *SuitState, p PlayerI) bool {
+func isLosingTrick(s *SuitState, p PlayerI, card Card) bool {
+	for _, c := range s.trick {
+		if s.greater(card, c) {
+			return false
+		}
+	}
 	return true // TODO!!!!
 }
 
@@ -524,6 +543,12 @@ func declareAndPlay() int {
 	players[2].setHand(sortSuit(state.trump, players[2].getHand()))
 
 	gameLog("\n(%s) TRUMP: %s\n", red(state.declarer.getName()), state.trump)
+
+	if issConnect && state.declarer.getName() == "goskat" {
+		debugTacticsLog("SKAT: %v\n", state.skat)
+	}
+
+
 	declarerCards := make([]Card, len(state.declarer.getHand()))
 	copy(declarerCards, state.declarer.getHand())
 	declarerCards = append(declarerCards, state.skat...)
@@ -632,7 +657,7 @@ func bidPhase() int {
 	return bidDecl
 }
 
-func game() int {
+func skatGame() int {
 	gameLog("\n\nGAME %d/%d\n", gameIndex, totalGames)
 	initState()
 	DealCards()
@@ -865,7 +890,7 @@ func main() {
 		}		
 		gameLogFlag = false
 		gamePlayers = rotatePlayers(gamePlayers)
-		score := game()
+		score := skatGame()
 		s := score
 		// printScore(gamePlayers)
 		i := 0
@@ -914,7 +939,7 @@ func main() {
 	anim := animation()
 	for ; gameIndex <= totalGames; gameIndex++ {
 		gamePlayers = rotatePlayers(gamePlayers)
-		score := game()
+		score := skatGame()
 		if score == 0 {
 			passed++
 		}

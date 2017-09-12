@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/dranidis/go-skat/minimax"
-	"github.com/dranidis/go-skat/mcts"
+	"github.com/dranidis/go-skat/game/minimax"
+	// "github.com/dranidis/go-skat/game/mcts"
 	"math/rand"
 	"time"
 )
@@ -27,7 +27,7 @@ func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 		Player:      makePlayer(hand),
 		p1Hand:      []Card{},
 		p2Hand:      []Card{},
-		maxHandSize: 8, // MINIMAX takes too long at 6, Will try MCTS
+		maxHandSize: 5, // MINIMAX takes too long at 6, Will try MCTS
 		maxWorlds:   12,
 		timeOutMs: 10000,
 		mctsSimulationTimeMs: 1000,
@@ -46,16 +46,11 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 	if s.trump == NULL {
 		return p.Player.playerTactic(s, c)
 	}
-	// for the moment do not use minimax in defense
-	// if s.declarer.getName() != p.getName(){
-	// 	return p.opponentTactic(s, c)
-	// }
 
 	worlds := p.dealCards(s)
 	debugMinmaxLog("(%s) %d Worlds\n", p.name, len(worlds))
 
 	start := time.Now()
-
 
 	if len(p.hand) <= p.maxHandSize || len(worlds) < p.maxWorlds {
 		cardsFreq := make(map[string]int)
@@ -69,13 +64,14 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 			p.p2Hand = worlds[i][1]
 
 			debugMinmaxLog("MinMaxPlayer\n")
+
 			card, value := p.minmaxSkat(s, c)
-			// card := p.minMaxTactics(s, c)
+
 			v, ok := cardsFreq[card.String()]
 			if ok {
 				cardsFreq[card.String()] = v + 1
 				cardsTotal[card.String()] = cardsTotal[card.String()] + value
-				if cardsFreq[card.String()] > len(worlds)/2 && !p.losingScore(s, value) {
+				if cardsFreq[card.String()] > len(worlds) / 2 { //&& !p.losingScore(s, value) {
 					// half of the worlds suggest this card
 					debugMinmaxLog("..PRELIMINARY END!\n")
 					break
@@ -122,7 +118,8 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 
 		}
 		if mostFrequent > 0 {
-			debugMinmaxLog("(%s)Playing card: %v (at least %d times)\n", p.name, mostFrequentCard, mostFrequent)
+			debugMinmaxLog("(%s) Hand: %v, Playing card: %v (at least %d times)\n\n", p.name, p.hand, mostFrequentCard, mostFrequent)
+			debugMinmaxLog("\nTACTICS suggest: %v\n\n", p.Player.playerTactic(s, c))			
 			return mostFrequentCard
 		}
 		// if mostFrequent > 0 {
@@ -147,80 +144,88 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 	return p.Player.playerTactic(s, c)
 }
 
+func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
+	var player1 PlayerI
+	var player2 PlayerI
+	if len(s.trick) == 0 {
+		player1 = players[1]
+		player2 = players[2]
+	}
+	if len(s.trick) == 1 {
+		player1 = players[2]
+		player2 = players[0]
+	}
+	if len(s.trick) == 2 {
+		player1 = players[0]
+		player2 = players[1]
+	}
+	schneiderGoal := true
+
+	// from the point of view of the defender the skat is unknown
+	if s.declarer.getScore()+sum(s.trick) > 60 || s.opp1.getScore()+s.opp2.getScore() > 59 {
+		debugMinmaxLog("MIN_MAX: schneiderGoal\n")
+		schneiderGoal = true
+	}
+
+	var decl int // 0 is you, 1 is next player1, 2 is next player 2
+	if s.declarer.getName() == p.getName() {
+		decl = 0
+	} else if s.declarer.getName() == player1.getName() {
+		decl = 1
+	} else {
+		decl = 2
+	}
+
+	debugMinmaxLog("MINMAX: cards %s: %v, %s: %v, SKAT:%v\n", player1.getName(), p.p1Hand, player2.getName(), p.p2Hand, p.skat)
+	debugMinmaxLog("Decl: %d\n", decl)
+
+	strick := make([]Card, len(s.trick))
+	copy(strick, s.trick)
+
+	dist := make([][]Card, 3)
+	dist[0] = p.hand
+	dist[1] = p.p1Hand
+	dist[2] = p.p2Hand
+
+	declScore := s.declarer.getScore()
+	if p.name == s.declarer.getName() {
+		declScore += sum(s.skat)
+	}
+
+	skatState := SkatState{
+		s.trump,
+		dist,
+		strick,
+		decl,
+		0,
+		declScore,
+		s.opp1.getScore() + s.opp2.getScore(),
+		schneiderGoal,
+	}
+
+	// mcts.SimulationRuns = 500
+	// mcts.ExplorationParameter = 2.0
+	// mcts.DEBUG = false // You have to increase delay to 2000 if you are dedugging to give time for runs
+	// runMilliseconds := p.mctsSimulationTimeMs
+
+	// a, value := mcts.Uct(&skatState, runMilliseconds)
+
+	// a, value := minimax.Minimax(&skatState)
+	a, value := minimax.AlphaBeta(&skatState)
+
+	ma := a.(SkatAction)
+
+	debugMinmaxLog("Suggesting card: %v with value %.4f\n", ma.card, value)
+
+	return ma.card, value
+}
+
+
 func (p *MinMaxPlayer) losingScore(s *SuitState, score float64) bool {
 	if p.name == s.declarer.getName() {
 		return score < float64(61)
 	}
 	return score >= float64(61)
-}
-
-func checkVoidDecl(s *SuitState, p *MinMaxPlayer, cards []Card, suit string, IsDeclarerP1 bool) []Card {
-	if s.declarerVoidSuit[suit] {
-		debugMinmaxLog("..Declarer VOID in %s\n", suit)
-		suitCards := filter(cards, func(c Card) bool {
-			return getSuit(s.trump, c) == suit
-		})
-		if IsDeclarerP1 {
-			p.p2Hand = append(p.p2Hand, suitCards...)
-		} else {
-			p.p1Hand = append(p.p1Hand, suitCards...)
-		}
-
-		cards = remove(cards, suitCards...)
-	}
-	return cards
-}
-
-// FROM THE POINT OF VIEW of A DECLARER
-func checkVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
-	if s.opp1VoidSuit[suit] {
-		debugMinmaxLog("..Opponent 1 is VOID in %s\n", suit)
-		suitCards := filter(cards, func(c Card) bool {
-			return getSuit(s.trump, c) == suit
-		})
-		p.p2Hand = append(p.p2Hand, suitCards...)
-		cards = remove(cards, suitCards...)
-	}
-	return cards
-}
-
-func checkVoidOpp2(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
-	if s.opp2VoidSuit[suit] {
-		debugMinmaxLog("..Opponent 2 is VOID in %s\n", suit)
-		suitCards := filter(cards, func(c Card) bool {
-			return getSuit(s.trump, c) == suit
-		})
-		p.p1Hand = append(p.p1Hand, suitCards...)
-		cards = remove(cards, suitCards...)
-	}
-	return cards
-}
-
-// FROM THE POINT OF VIEW of A DEFENDER (OPPONENT)
-// When opp1 is void cards go to p1
-func partnerCheckVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
-	if s.opp1VoidSuit[suit] {
-		debugMinmaxLog("..Opponent 1 is VOID in %s\n", suit)
-		suitCards := filter(cards, func(c Card) bool {
-			return getSuit(s.trump, c) == suit
-		})
-		p.p1Hand = append(p.p1Hand, suitCards...)
-		cards = remove(cards, suitCards...)
-	}
-	return cards
-}
-
-// When opp2 is void cards go to p2
-func partnerCheckVoidOpp2(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
-	if s.opp2VoidSuit[suit] {
-		debugMinmaxLog("..Opponent 2 is VOID in %s\n", suit)
-		suitCards := filter(cards, func(c Card) bool {
-			return getSuit(s.trump, c) == suit
-		})
-		p.p2Hand = append(p.p2Hand, suitCards...)
-		cards = remove(cards, suitCards...)
-	}
-	return cards
 }
 
 func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
@@ -553,99 +558,74 @@ func (p *MinMaxPlayer) distributeCards(s *SuitState, cards []Card) ([]Card, []Ca
 	return hand1, hand2
 }
 
-func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
-	var player1 PlayerI
-	var player2 PlayerI
-	if len(s.trick) == 0 {
-		player1 = players[1]
-		player2 = players[2]
+func checkVoidDecl(s *SuitState, p *MinMaxPlayer, cards []Card, suit string, IsDeclarerP1 bool) []Card {
+	if s.declarerVoidSuit[suit] {
+		debugMinmaxLog("..Declarer VOID in %s\n", suit)
+		suitCards := filter(cards, func(c Card) bool {
+			return getSuit(s.trump, c) == suit
+		})
+		if IsDeclarerP1 {
+			p.p2Hand = append(p.p2Hand, suitCards...)
+		} else {
+			p.p1Hand = append(p.p1Hand, suitCards...)
+		}
+
+		cards = remove(cards, suitCards...)
 	}
-	if len(s.trick) == 1 {
-		player1 = players[2]
-		player2 = players[0]
-	}
-	if len(s.trick) == 2 {
-		player1 = players[0]
-		player2 = players[1]
-	}
-	schneiderGoal := true
-
-	// TODO:
-	// from the point of view of the defender the skat is unknown
-	// How can I add it the the evaluation function???
-	if s.declarer.getScore()+sum(s.trick) > 60 || s.opp1.getScore()+s.opp2.getScore() > 59 {
-		debugMinmaxLog("MIN_MAX: schneiderGoal\n")
-		schneiderGoal = true
-		// minimax.DEBUG = true
-	}
-
-	var decl int // 0 is you, 1 is next player1, 2 is next player 2
-	if s.declarer.getName() == p.getName() {
-		decl = 0
-	} else if s.declarer.getName() == player1.getName() {
-		decl = 1
-	} else {
-		decl = 2
-	}
-
-	debugMinmaxLog("MINMAX: cards %s: %v, %s: %v, SKAT:%v\n", player1.getName(), p.p1Hand, player2.getName(), p.p2Hand, p.skat)
-	debugMinmaxLog("Decl: %d\n", decl)
-
-	strick := make([]Card, len(s.trick))
-	copy(strick, s.trick)
-
-	dist := make([][]Card, 3)
-	dist[0] = p.hand
-	dist[1] = p.p1Hand
-	dist[2] = p.p2Hand
-
-	// debugMinmaxLog("CARDS: %v", dist)
-	// debugMinmaxLog("CARDS[0]: %v", dist[0])
-	// debugMinmaxLog("CARDS[1]: %v", dist[1])
-	// debugMinmaxLog("CARDS[2]: %v", dist[2])
-	declScore := s.declarer.getScore()
-	if p.name == s.declarer.getName() {
-		declScore += sum(s.skat)
-	}
-
-	skatState := SkatState{
-		s.trump,
-		dist,
-		strick,
-		decl,
-		0,
-		declScore,
-		s.opp1.getScore() + s.opp2.getScore(),
-		schneiderGoal,
-	}
-
-
-
-	// if skatState.IsTerminal() {
-	// 	debugMinmaxLog("##### !!!!!!! ~~~~~~ TERMINAL state.. back to player tactics!")
-	// 	return p.Player.playerTactic(s, c), 
-	// }
-	// for _, action := range skatState.FindLegals() {
-	// 	ma := action.(SkatAction)
-	// 	debugMinmaxLog("LEGAL action: %v\n", ma)
-	// }
-
-	mcts.SimulationRuns = 500
-	mcts.ExplorationParameter = 2.0
-	mcts.DEBUG = false // You have to increase delay to 2000 if you are dedugging to give time for runs
-	runMilliseconds := p.mctsSimulationTimeMs
-
-	a, value := mcts.Uct(&skatState, runMilliseconds)
-
-	// a, value := minimax.Minimax(&skatState)
-	// a, value := minimax.AlphaBeta(&skatState)
-	ma := a.(SkatAction)
-
-	debugMinmaxLog("Suggesting card: %v with value %.4f\n", ma.card, value)
-
-	return ma.card, value
+	return cards
 }
 
+// FROM THE POINT OF VIEW of A DECLARER
+func checkVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
+	if s.opp1VoidSuit[suit] {
+		debugMinmaxLog("..Opponent 1 is VOID in %s\n", suit)
+		suitCards := filter(cards, func(c Card) bool {
+			return getSuit(s.trump, c) == suit
+		})
+		p.p2Hand = append(p.p2Hand, suitCards...)
+		cards = remove(cards, suitCards...)
+	}
+	return cards
+}
+
+func checkVoidOpp2(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
+	if s.opp2VoidSuit[suit] {
+		debugMinmaxLog("..Opponent 2 is VOID in %s\n", suit)
+		suitCards := filter(cards, func(c Card) bool {
+			return getSuit(s.trump, c) == suit
+		})
+		p.p1Hand = append(p.p1Hand, suitCards...)
+		cards = remove(cards, suitCards...)
+	}
+	return cards
+}
+
+// FROM THE POINT OF VIEW of A DEFENDER (OPPONENT)
+// When opp1 is void cards go to p1
+func partnerCheckVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
+	if s.opp1VoidSuit[suit] {
+		debugMinmaxLog("..Opponent 1 is VOID in %s\n", suit)
+		suitCards := filter(cards, func(c Card) bool {
+			return getSuit(s.trump, c) == suit
+		})
+		p.p1Hand = append(p.p1Hand, suitCards...)
+		cards = remove(cards, suitCards...)
+	}
+	return cards
+}
+
+// When opp2 is void cards go to p2
+func partnerCheckVoidOpp2(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
+	if s.opp2VoidSuit[suit] {
+		debugMinmaxLog("..Opponent 2 is VOID in %s\n", suit)
+		suitCards := filter(cards, func(c Card) bool {
+			return getSuit(s.trump, c) == suit
+		})
+		p.p2Hand = append(p.p2Hand, suitCards...)
+		cards = remove(cards, suitCards...)
+	}
+	return cards
+}
 
 // TODO:
 // refactor code above by calling this function

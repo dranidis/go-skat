@@ -7,8 +7,10 @@ import (
 	"os"
 	"testing"
 	"fmt"
-
-	"github.com/dranidis/go-skat/minimax"
+	_ "time"
+	_ "github.com/dranidis/go-skat/game"
+	_ "github.com/dranidis/go-skat/game/minimax"
+	_ "github.com/dranidis/go-skat/game/mcts"
 
 )
 
@@ -1225,7 +1227,7 @@ func TestGame(t *testing.T) {
 	}
 	gamePlayers = []PlayerI{player1, &player2, &player3}
 	for i := 0; i < 20; i++ {
-		_ = game()
+		_ = skatGame()
 	}
 }
 
@@ -1247,7 +1249,7 @@ func TestGame2(t *testing.T) {
 	}
 	gamePlayers = []PlayerI{player1, &player2, &player3}
 	for i := 0; i < 10; i++ {
-		// _ = game()
+		// _ = skatGame()
 	}
 }
 
@@ -5593,157 +5595,369 @@ func TestDealCardsLeader2(t *testing.T) {
 	}
 }
 
-func TestMiniMaxW(t *testing.T) {
-	dist := make([][]Card, 3)
-	dist[0] = []Card {
-		Card{SPADE, "J"},
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "9"},
-	}
-	dist[1] = []Card {
-		Card{SPADE, "8"},
-		Card{CLUBS, "A"},
-		Card{HEART, "8"},
-		Card{CLUBS, "7"},
-	}
-	dist[2] = []Card {
-		Card{SPADE, "10"},
-		Card{SPADE, "7"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "9"},
-	}
-
-	skatState := SkatState{
-		CARO, // trump
-		dist, 			
-		[]Card{}, // trick 
-		0, // declarer 
-		0, // who's turn is it
-		40, 
-		42,
-		true,
-	}
-	var skatStateP minimax.State
-	skatStateP = &skatState
-	// minimax.DEBUG = true
-	for !skatStateP.IsTerminal() {
-		a, v := minimax.Minimax(skatStateP)
-		ma := a.(SkatAction)
-		debugTacticsLog("TestAction: %v %v\n", ma, v)
-		skatStateP = skatStateP.FindNextState(a)	
-		debugTacticsLog("TestState: %v\n", skatStateP)
-	}
-
-	if false {t.Errorf("")}
-}
-
-func TestMiniMax2(t *testing.T) {
-	dist := make([][]Card, 3)
-	dist[0] = []Card {
-		Card{SPADE, "J"},
-		Card{SPADE, "A"},
-		// Card{SPADE, "K"},
-		Card{SPADE, "9"},
-	}
-	dist[1] = []Card {
-		Card{SPADE, "8"},
-		Card{CLUBS, "A"},
-		Card{HEART, "8"},
-		// Card{CLUBS, "7"},
-	}
-	dist[2] = []Card {
-		Card{SPADE, "10"},
-		Card{SPADE, "7"},
-		// Card{CLUBS, "8"},
-		Card{CLUBS, "9"},
-	}
-
-	skatState := SkatState{
-		CARO, // trump
-		dist, 			
-		[]Card{}, // trick 
-		0, // declarer 
-		0, // who's turn is it
-		40, 
-		42,
-		false,
-	}
-	var skatStateP minimax.State
-	skatStateP = &skatState
-	// minimax.DEBUG = true
-	for !skatStateP.IsTerminal() {
-		a, v := minimax.Minimax(skatStateP)
-		ma := a.(SkatAction)
-		debugTacticsLog("Action: %v %v\n", ma, v)
-		skatStateP = skatStateP.FindNextState(a)	
-		debugTacticsLog("State: %v\n", skatStateP)
-	}
-
-	if false {t.Errorf("")}
-}
-
-func TestMiniMaxOpp(t *testing.T) {
-	dist := make([][]Card, 3)
-	dist[0] = []Card {
-		Card{HEART, "A"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "9"},
-	}
-	dist[1] = []Card {
-		Card{CARO, "10"},
-		Card{CLUBS, "7"},
-	}
-	dist[2] = []Card {
-		Card{HEART, "10"},
-		Card{HEART, "K"},
-	}
-
-	skatState := SkatState{
-		SPADE, // trump
-		dist, 			
-		[]Card{Card{CARO, "A"}, Card{SPADE, "K"}}, // trick 
-		2, // declarer 
-		0, // who's turn is it
-		24, 
-		42,
-		true,
-	}
-	var skatStateP minimax.State
-	skatStateP = &skatState
-
-	if ! skatState.IsOpponentTurn() {
-		t.Errorf("???!!")
-	}
-	// minimax.DEBUG = true
-	for !skatStateP.IsTerminal() {
-		a, v := minimax.Minimax(skatStateP)
-		ma := a.(SkatAction)
-		debugTacticsLog("Action: %v %v\n", ma, v)
-		skatStateP = skatStateP.FindNextState(a)	
-		debugTacticsLog("State: %v\n", skatStateP)
-	}
-
-	if false {t.Errorf("")}
-}
-
-// func TestMiniMax3A(t *testing.T) {
+// func TestMiniMax4C(t *testing.T) {
 // 	dist := make([][]Card, 3)
 // 	dist[0] = []Card {
 // 		Card{SPADE, "J"},
-// 		// Card{SPADE, "A"},
-// 		// Card{SPADE, "K"},
-// 		// Card{SPADE, "9"},
+// 		Card{SPADE, "A"},
+// 		Card{SPADE, "K"},
+// 		Card{SPADE, "9"},
 // 	}
 // 	dist[1] = []Card {
-// 		// Card{SPADE, "8"},
+// 		Card{SPADE, "8"},
+// 		Card{CLUBS, "A"},
+// 		Card{HEART, "8"},
+// 		Card{CLUBS, "7"},
+// 	}
+// 	dist[2] = []Card {
+// 		Card{SPADE, "10"},
+// 		Card{SPADE, "7"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "9"},
+// 	}
+
+// 	skatState := SkatState{
+// 		CARO, // trump
+// 		dist, 			
+// 		[]Card{}, // trick 
+// 		0, // declarer 
+// 		0, // who's turn is it
+// 		40, 
+// 		42,
+// 		true,
+// 	}
+// 	var skatStateP game.State
+// 	skatStateP = &skatState
+// 	// minimax.DEBUG = true
+// 	for !skatStateP.IsTerminal() {
+// 		a, v := minimax.Minimax(skatStateP)
+// 		ma := a.(SkatAction)
+// 		debugTacticsLog("TestAction: %v %v\n", ma, v)
+// 		skatStateP = skatStateP.FindNextState(a)	
+// 		debugTacticsLog("TestState: %v\n", skatStateP)
+// 	}
+
+// 	if false {t.Errorf("")}
+// }
+
+// func TestMiniMax5C(t *testing.T) {
+// 	dist := make([][]Card, 3)
+// 	dist[0] = []Card {
+// 		Card{HEART, "J"},
+// 		Card{SPADE, "J"},
+// 		Card{SPADE, "A"},
+// 		Card{SPADE, "K"},
+// 		Card{SPADE, "9"},
+// 	}
+// 	dist[1] = []Card {
+// 		Card{CARO, "10"},
+// 		Card{SPADE, "8"},
+// 		Card{CLUBS, "A"},
+// 		Card{HEART, "8"},
+// 		Card{CLUBS, "7"},
+// 	}
+// 	dist[2] = []Card {
+// 		Card{CLUBS, "J"},
+// 		Card{SPADE, "10"},
+// 		Card{SPADE, "7"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "9"},
+// 	}
+
+// 	skatState := SkatState{
+// 		CARO, // trump
+// 		dist, 			
+// 		[]Card{}, // trick 
+// 		0, // declarer 
+// 		0, // who's turn is it
+// 		33, 
+// 		35,
+// 		true,
+// 	}
+// 	var skatStateP game.State
+// 	skatStateP = &skatState
+// 	// minimax.DEBUG = true
+// 	for !skatStateP.IsTerminal() {
+// 		a, v := minimax.Minimax(skatStateP)
+// 		ma := a.(SkatAction)
+// 		debugTacticsLog("TestAction: %v %v: ", ma, v)
+// 		skatStateP = skatStateP.FindNextState(a)	
+// 		debugTacticsLog("TestState: %v\n", skatStateP)
+// 	}
+
+// 	if false {t.Errorf("")}
+// }
+
+// func TestMiniMax6C(t *testing.T) {
+// 	dist := make([][]Card, 3)
+// 	dist[0] = []Card {
+// 		Card{SPADE, "J"},
+// 		Card{HEART, "J"},
+// 		Card{CARO, "K"},
+// 		Card{SPADE, "A"},
+// 		Card{SPADE, "K"},
+// 		Card{SPADE, "9"},
+// 		Card{CARO, "10"},
+// 	}
+// 	dist[0] = Shuffle(dist[0])
+// 	dist[1] = []Card {
+// 		Card{CLUBS, "A"},
+// 		Card{HEART, "10"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "D"},
+// 		Card{SPADE, "8"},
+// 		Card{HEART, "8"},
+// 		Card{CLUBS, "7"},
+// 	}
+// 	dist[1] = Shuffle(dist[1])
+// 	dist[2] = []Card {
+// 		Card{CLUBS, "J"},
+// 		Card{SPADE, "10"},
+// 		Card{SPADE, "7"},
+// 		Card{HEART, "K"},
+// 		Card{CLUBS, "D"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "9"},
+// 	}
+// 	dist[2] = Shuffle(dist[2])
+
+// 	skatState := SkatState{
+// 		CARO, // trump
+// 		dist, 			
+// 		[]Card{}, // trick 
+// 		0, // declarer 
+// 		0, // who's turn is it
+// 		19, 
+// 		25,
+// 		true,
+// 	}
+
+// 	// runToEnd("mm", skatState)
+// 	// runToEnd("ab", skatState)
+// 	runToEnd("zw", skatState, 61.0)
+// 	runToEnd("zw", skatState, 62.0)
+// 	runToEnd("zw", skatState, 63.0)
+// 	runToEnd("zw", skatState, 64.0)
+// 	runToEnd("zw", skatState, 65.0)
+// 	runToEnd("zw", skatState, 85.0)
+// 	// runToEnd("uct", skatState)
+
+// 	if false {t.Errorf("")}
+// }
+
+// func runToEnd(alg string, skatState SkatState, zw float64) {
+// 	var skatStateP game.State
+// 	skatStateP = &skatState
+// 	// minimax.DEBUG = true
+// 	startWhole := time.Now()
+// 	// for !skatStateP.IsTerminal() {
+// 	for i := 0; i < 1; i++ {
+// 		start := time.Now()
+// 		var a game.Action
+// 		var v float64
+// 		switch alg {
+// 		case "mm":
+// 			a, v = minimax.Minimax(skatStateP)
+// 		case "ab":
+// 			a, v = minimax.AlphaBeta(skatStateP)
+// 		case "uct":
+// 			mcts.SimulationRuns = 1000
+// 			mcts.ExplorationParameter = 2.0
+// 			mcts.MostVisited = false
+
+// 			runMilliseconds := 3000			
+// 			a, v = mcts.Uct(skatStateP, runMilliseconds)
+// 		case "zw":
+// 			a, v = minimax.ZeroWindowAlg(skatStateP, zw)
+// 		}
+// 		t := time.Now()
+// 		elapsed := t.Sub(start)		
+// 		ma := a.(SkatAction)
+// 		debugTacticsLog("TestAction: %v %v: ", ma, v)
+// 		skatStateP = skatStateP.FindNextState(a)	
+// 		debugTacticsLog("TestState: %v\t%v\n", skatStateP, elapsed)
+// 	}	
+// 	t := time.Now()
+// 	elapsed := t.Sub(startWhole)		
+// 	debugTacticsLog("TOTAL %v\n", elapsed)
+// }
+
+// func TestMCTSW5C(t *testing.T) {
+// 	dist := make([][]Card, 3)
+// 	dist[0] = []Card {
+// 		Card{HEART, "J"},
+// 		Card{SPADE, "J"},
+// 		Card{SPADE, "A"},
+// 		Card{SPADE, "K"},
+// 		Card{SPADE, "9"},
+// 	}
+// 	dist[1] = []Card {
+// 		Card{CARO, "10"},
+// 		Card{SPADE, "8"},
+// 		Card{CLUBS, "A"},
+// 		Card{HEART, "8"},
+// 		Card{CLUBS, "7"},
+// 	}
+// 	dist[2] = []Card {
+// 		Card{CLUBS, "J"},
+// 		Card{SPADE, "10"},
+// 		Card{SPADE, "7"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "9"},
+// 	}
+
+// 	skatState := SkatState{
+// 		CARO, // trump
+// 		dist, 			
+// 		[]Card{}, // trick 
+// 		0, // declarer 
+// 		0, // who's turn is it
+// 		33, 
+// 		35,
+// 		true,
+// 	}
+// 	var skatStateP game.State
+// 	skatStateP = &skatState
+
+// 	mcts.SimulationRuns = 100
+// 	mcts.ExplorationParameter = 2.0
+// 	mcts.MostVisited = false
+
+// 	runMilliseconds := 2000
+// 	for !skatStateP.IsTerminal() {
+// 		a, v := mcts.Uct(skatStateP, runMilliseconds)
+// 		ma := a.(SkatAction)
+// 		debugTacticsLog("TestAction: %v %.3f: ", ma, v)
+// 		skatStateP = skatStateP.FindNextState(a)	
+// 		debugTacticsLog("TestState: %v\n", skatStateP)
+// 	}
+
+// 	if false {t.Errorf("")}
+// }
+
+// func TestMCTSW6C(t *testing.T) {
+// 	dist := make([][]Card, 3)
+// 	dist[0] = []Card {
+// 		Card{HEART, "J"},
+// 		Card{SPADE, "J"},
+// 		Card{CARO, "K"},
+// 		Card{SPADE, "A"},
+// 		Card{SPADE, "K"},
+// 		Card{SPADE, "9"},
+// 	}
+// 	dist[1] = []Card {
+// 		Card{CARO, "10"},
+// 		Card{SPADE, "8"},
+// 		Card{CLUBS, "A"},
+// 		Card{HEART, "8"},
+// 		Card{HEART, "10"},
+// 		Card{CLUBS, "7"},
+// 	}
+// 	dist[2] = []Card {
+// 		Card{CLUBS, "J"},
+// 		Card{SPADE, "10"},
+// 		Card{SPADE, "7"},
+// 		Card{CLUBS, "D"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "9"},
+// 	}
+
+// 	skatState := SkatState{
+// 		CARO, // trump
+// 		dist, 			
+// 		[]Card{}, // trick 
+// 		0, // declarer 
+// 		0, // who's turn is it
+// 		11, 
+// 		40,
+// 		true,
+// 	}
+// 	var skatStateP game.State
+// 	skatStateP = &skatState
+
+// 	mcts.SimulationRuns = 100
+// 	mcts.ExplorationParameter = 2.0
+// 	mcts.MostVisited = false
+
+// 	runMilliseconds := 2000
+// 	for !skatStateP.IsTerminal() {
+// 		a, v := mcts.Uct(skatStateP, runMilliseconds)
+// 		ma := a.(SkatAction)
+// 		debugTacticsLog("TestAction: %v %.3f: ", ma, v)
+// 		skatStateP = skatStateP.FindNextState(a)	
+// 		debugTacticsLog("TestState: %v\n", skatStateP)
+// 	}
+
+// 	if false {t.Errorf("")}
+// }
+
+// func TestMCTSW4C(t *testing.T) {
+// 	dist := make([][]Card, 3)
+// 	dist[0] = []Card {
+// 		Card{SPADE, "J"},
+// 		Card{SPADE, "A"},
+// 		Card{SPADE, "K"},
+// 		Card{SPADE, "9"},
+// 	}
+// 	dist[1] = []Card {
+// 		Card{SPADE, "8"},
+// 		Card{CLUBS, "A"},
+// 		Card{HEART, "8"},
+// 		Card{CLUBS, "7"},
+// 	}
+// 	dist[2] = []Card {
+// 		Card{SPADE, "10"},
+// 		Card{SPADE, "7"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "9"},
+// 	}
+
+// 	skatState := SkatState{
+// 		CARO, // trump
+// 		dist, 			
+// 		[]Card{}, // trick 
+// 		0, // declarer 
+// 		0, // who's turn is it
+// 		40, 
+// 		42,
+// 		true,
+// 	}
+// 	var skatStateP game.State
+// 	skatStateP = &skatState
+
+// 	mcts.SimulationRuns = 500
+// 	mcts.ExplorationParameter = 2.0
+// 	mcts.MostVisited = false
+
+// 	runMilliseconds := 5000
+// 	for !skatStateP.IsTerminal() {
+// 		a, v := mcts.Uct(skatStateP, runMilliseconds)
+// 		ma := a.(SkatAction)
+// 		debugTacticsLog("TestAction: %v %.3f\n", ma, v)
+// 		skatStateP = skatStateP.FindNextState(a)	
+// 		debugTacticsLog("TestState: %v\n", skatStateP)
+// 	}
+
+// 	if false {t.Errorf("")}
+// }
+
+// func TestMiniMax2(t *testing.T) {
+// 	dist := make([][]Card, 3)
+// 	dist[0] = []Card {
+// 		Card{SPADE, "J"},
+// 		Card{SPADE, "A"},
+// 		// Card{SPADE, "K"},
+// 		Card{SPADE, "9"},
+// 	}
+// 	dist[1] = []Card {
+// 		Card{SPADE, "8"},
 // 		Card{CLUBS, "A"},
 // 		Card{HEART, "8"},
 // 		// Card{CLUBS, "7"},
 // 	}
 // 	dist[2] = []Card {
-// 		// Card{SPADE, "10"},
-// 		// Card{SPADE, "7"},
+// 		Card{SPADE, "10"},
+// 		Card{SPADE, "7"},
 // 		// Card{CLUBS, "8"},
 // 		Card{CLUBS, "9"},
 // 	}
@@ -5758,289 +5972,107 @@ func TestMiniMaxOpp(t *testing.T) {
 // 		42,
 // 		false,
 // 	}
-// 	var skatStateP minimax.State
+// 	var skatStateP game.State
 // 	skatStateP = &skatState
 // 	// minimax.DEBUG = true
 // 	for !skatStateP.IsTerminal() {
-// 		a := minimax.Minimax(skatStateP)
+// 		a, v := minimax.Minimax(skatStateP)
 // 		ma := a.(SkatAction)
-// 		debugTacticsLog("Action: %v\n", ma)
+// 		debugTacticsLog("Action: %v %v\n", ma, v)
 // 		skatStateP = skatStateP.FindNextState(a)	
 // 		debugTacticsLog("State: %v\n", skatStateP)
 // 	}
 
-// 	t.Errorf("")
+// 	if false {t.Errorf("")}
 // }
 
+// func TestMiniMaxOpp(t *testing.T) {
+// 	dist := make([][]Card, 3)
+// 	dist[0] = []Card {
+// 		Card{HEART, "A"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "9"},
+// 	}
+// 	dist[1] = []Card {
+// 		Card{CARO, "10"},
+// 		Card{CLUBS, "7"},
+// 	}
+// 	dist[2] = []Card {
+// 		Card{HEART, "10"},
+// 		Card{HEART, "K"},
+// 	}
 
-func TestMinMaxNextStateEndOfTrick(t *testing.T) {
-	dist := make([][]Card, 3)
-	dist[0] = []Card {
-		// Card{SPADE, "J"},
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "9"},
-	}
-	dist[1] = []Card {
-		// Card{SPADE, "8"},
-		Card{CLUBS, "A"},
-		Card{HEART, "8"},
-		Card{CLUBS, "7"},
-	}
-	dist[2] = []Card {
-		Card{SPADE, "10"},
-		Card{SPADE, "7"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "9"},
-	}
+// 	skatState := SkatState{
+// 		SPADE, // trump
+// 		dist, 			
+// 		[]Card{Card{CARO, "A"}, Card{SPADE, "K"}}, // trick 
+// 		2, // declarer 
+// 		0, // who's turn is it
+// 		24, 
+// 		42,
+// 		true,
+// 	}
+// 	var skatStateP game.State
+// 	skatStateP = &skatState
 
-	skatState := SkatState{
-		CARO, // trump
-		dist, 			
-		[]Card{Card{SPADE, "J"}, Card{SPADE, "8"}}, // trick 
-		0, // declarer 
-		2, // who's turn is it
-		40, 
-		42,
-		false,
-	}
+// 	if ! skatState.IsOpponentTurn() {
+// 		t.Errorf("???!!")
+// 	}
+// 	// minimax.DEBUG = true
+// 	for !skatStateP.IsTerminal() {
+// 		a, v := minimax.Minimax(skatStateP)
+// 		ma := a.(SkatAction)
+// 		debugTacticsLog("Action: %v %v\n", ma, v)
+// 		skatStateP = skatStateP.FindNextState(a)	
+// 		debugTacticsLog("State: %v\n", skatStateP)
+// 	}
 
-	action := SkatAction{Card{SPADE, "10"}}
+// 	if false {t.Errorf("")}
+// }
 
-	var skatStateP minimax.State
-	skatStateP = &skatState
-	var a minimax.Action
-	a = action
+// // func TestMiniMax3A(t *testing.T) {
+// // 	dist := make([][]Card, 3)
+// // 	dist[0] = []Card {
+// // 		Card{SPADE, "J"},
+// // 		// Card{SPADE, "A"},
+// // 		// Card{SPADE, "K"},
+// // 		// Card{SPADE, "9"},
+// // 	}
+// // 	dist[1] = []Card {
+// // 		// Card{SPADE, "8"},
+// // 		Card{CLUBS, "A"},
+// // 		Card{HEART, "8"},
+// // 		// Card{CLUBS, "7"},
+// // 	}
+// // 	dist[2] = []Card {
+// // 		// Card{SPADE, "10"},
+// // 		// Card{SPADE, "7"},
+// // 		// Card{CLUBS, "8"},
+// // 		Card{CLUBS, "9"},
+// // 	}
 
-	skatStateN := skatStateP.FindNextState(a)
-	newState := skatStateN.(*SkatState)
-	debugTacticsLog("State: %v\n", newState)
+// // 	skatState := SkatState{
+// // 		CARO, // trump
+// // 		dist, 			
+// // 		[]Card{}, // trick 
+// // 		0, // declarer 
+// // 		0, // who's turn is it
+// // 		40, 
+// // 		42,
+// // 		false,
+// // 	}
+// // 	var skatStateP game.State
+// // 	skatStateP = &skatState
+// // 	// minimax.DEBUG = true
+// // 	for !skatStateP.IsTerminal() {
+// // 		a := minimax.Minimax(skatStateP)
+// // 		ma := a.(SkatAction)
+// // 		debugTacticsLog("Action: %v\n", ma)
+// // 		skatStateP = skatStateP.FindNextState(a)	
+// // 		debugTacticsLog("State: %v\n", skatStateP)
+// // 	}
 
-	if newState.declScore != skatState.declScore + 12 {
-		t.Errorf("Wrong declScore score. Is: %d", newState.declScore)
-	}	
-	if newState.oppScore != skatState.oppScore {
-		t.Errorf("Wrong oppScore score. Is: %d", newState.oppScore)
-	}	
-	if newState.turn != 0 {
-		t.Errorf("Wrong winner. Is: %d", newState.turn)
-	}	
-	
-
-}
-
-func TestMinMaxNextStateEndOfTrick2(t *testing.T) {
-	dist := make([][]Card, 3)
-	dist[0] = []Card {
-		// Card{SPADE, "J"},
-		// Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "9"},
-	}
-	dist[1] = []Card {
-		// Card{SPADE, "8"},
-		// Card{CLUBS, "A"},
-		Card{HEART, "8"},
-		Card{CLUBS, "7"},
-	}
-	dist[2] = []Card {
-		Card{SPADE, "10"},
-		Card{SPADE, "7"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "9"},
-	}
-
-	skatState := SkatState{
-		CARO, // trump
-		dist, 			
-		[]Card{{SPADE, "A"}, Card{CLUBS, "A"}}, // trick 
-		0, // declarer 
-		2, // who's turn is it
-		52, 
-		42,
-		false,
-	}
-
-	action := SkatAction{Card{SPADE, "7"}}
-
-	var skatStateP minimax.State
-	skatStateP = &skatState
-	var a minimax.Action
-	a = action
-
-	skatStateN := skatStateP.FindNextState(a)
-	newState := skatStateN.(*SkatState)
-	debugTacticsLog("State: %v\n", newState)
-
-	if newState.declScore != skatState.declScore + 22 {
-		t.Errorf("Wrong declScore score. Is: %d", newState.declScore)
-	}	
-	if newState.oppScore != skatState.oppScore {
-		t.Errorf("Wrong oppScore score. Is: %d", newState.oppScore)
-	}	
-	if newState.turn != 0 {
-		t.Errorf("Wrong winner. Is: %d", newState.turn)
-	}	
-}
-
-func TestMinMaxNextStateEndOfTrick3(t *testing.T) {
-	dist := make([][]Card, 3)
-	dist[0] = []Card {
-		// Card{SPADE, "J"},
-		// Card{SPADE, "A"},
-		// Card{SPADE, "K"},
-		Card{SPADE, "9"},
-	}
-	dist[1] = []Card {
-		// Card{SPADE, "8"},
-		// Card{CLUBS, "A"},
-		// Card{HEART, "8"},
-		Card{CLUBS, "7"},
-	}
-	dist[2] = []Card {
-		Card{SPADE, "10"},
-		// Card{SPADE, "7"},
-		// Card{CLUBS, "8"},
-		Card{CLUBS, "9"},
-	}
-
-	skatState := SkatState{
-		CARO, // trump
-		dist, 			
-		[]Card{{SPADE, "K"}, Card{SPADE, "8"}}, // trick 
-		0, // declarer 
-		2, // who's turn is it
-		52, 
-		42,
-		false,
-	}
-
-	action := SkatAction{Card{SPADE, "10"}}
-
-	var skatStateP minimax.State
-	skatStateP = &skatState
-	var a minimax.Action
-	a = action
-
-	skatStateN := skatStateP.FindNextState(a)
-	newState := skatStateN.(*SkatState)
-	debugTacticsLog("State: %v\n", newState)
-
-	if newState.declScore != skatState.declScore {
-		t.Errorf("Wrong declScore score. Is: %d", newState.declScore)
-	}	
-	if newState.oppScore != skatState.oppScore + 14{
-		t.Errorf("Wrong oppScore score. Is: %d", newState.oppScore)
-	}	
-	if newState.turn != 2 {
-		t.Errorf("Wrong winner. Is: %d", newState.turn)
-	}	
-}
-
-func TestMinMaxNextStateNewTrick(t *testing.T) {
-	dist := make([][]Card, 3)
-	dist[0] = []Card {
-		// Card{SPADE, "J"},
-		// Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "9"},
-	}
-	dist[1] = []Card {
-		// Card{SPADE, "8"},
-		// Card{CLUBS, "A"},
-		Card{HEART, "8"},
-		Card{CLUBS, "7"},
-	}
-	dist[2] = []Card {
-		Card{SPADE, "10"},
-		// Card{SPADE, "7"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "9"},
-	}
-
-	skatState := SkatState{
-		CARO, // trump
-		dist, 			
-		[]Card{{SPADE, "A"}, Card{CLUBS, "A"}, Card{SPADE, "7"}}, // trick 
-		0, // declarer 
-		0, // who's turn is it
-		52, 
-		42,
-		false,
-	}
-
-	action := SkatAction{Card{SPADE, "K"}}
-
-	var skatStateP minimax.State
-	skatStateP = &skatState
-	var a minimax.Action
-	a = action
-
-	skatStateN := skatStateP.FindNextState(a)
-	newState := skatStateN.(*SkatState)
-	debugTacticsLog("State: %v\n", newState)
-
-	if len(newState.trick) != 1 {
-		t.Errorf("Wrong trick size. Is: %d %v", len(newState.trick), newState.trick)
-	}	
-	if !in(newState.trick, Card{SPADE, "K"}) {
-		t.Errorf("Wrong trick. Is: %v", newState.trick)
-	}	
-	if newState.turn != 1 {
-		t.Errorf("Wrong turn. Is: %d", newState.turn)
-	}	
-}
+// // 	t.Errorf("")
+// // }
 
 
-func TestMinMaxIsOpponentTurn(t *testing.T) {
-	dist := make([][]Card, 3)
-
-	s := SkatState{
-		CARO, // trump
-		dist, 			
-		[]Card{}, // trick 
-		0, // declarer 
-		0, // who's turn is it
-		40, 
-		42,
-		false,
-	}	
-
-	if s.IsOpponentTurn() { // YOU
-		t.Errorf("Error opponent")
-	}
-	s.turn = 1 // OPP1
-	if !s.IsOpponentTurn() {
-		t.Errorf("Error opponent")
-	}
-	s.turn = 2 // OPP2
-	if !s.IsOpponentTurn() {
-		t.Errorf("Error opponent")
-	}
-	s.declarer = 1
-	s.turn = 1
-	if s.IsOpponentTurn() {
-		t.Errorf("Error opponent")
-	}
-	s.turn = 0 // YOU
-	if !s.IsOpponentTurn() {
-		t.Errorf("Error opponent")
-	}
-	s.turn = 2 // YOUR PARTNER
-	if !s.IsOpponentTurn() {
-		t.Errorf("Error opponent")
-	}
-	s.declarer = 2
-	s.turn = 2
-	if s.IsOpponentTurn() {
-		t.Errorf("Error opponent")
-	}
-	s.turn = 0 // YOU 
-	if !s.IsOpponentTurn() {
-		t.Errorf("Error opponent")
-	}
-	s.turn = 1 // YOUR PARTNET
-	if !s.IsOpponentTurn() {
-		t.Errorf("Error opponent")
-	}
-}

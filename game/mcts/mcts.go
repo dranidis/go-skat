@@ -6,11 +6,13 @@ import (
 	"fmt"
 	// "log"
 	"time"
+	"github.com/dranidis/go-skat/game"
 )
 
 var SimulationRuns = 100
 var ExplorationParameter = 2.0
 var DEBUG = false
+var MostVisited = true
 
 func debugLog(format string, a ...interface{}) {
 	if DEBUG {
@@ -19,28 +21,17 @@ func debugLog(format string, a ...interface{}) {
 }
 
 type Node struct {
-	state State
+	state game.State
 	visits int
 	utility float64
-	action Action
+	action game.Action
 	parent *Node
 	children []*Node
 }
 
-type State interface {
-	FindLegals() []Action
-	FindNextState(Action) State
-	IsTerminal() bool
-	FindReward() float64
-	IsOpponentTurn() bool
-}
-
-type Action interface {
-}
-
 var	rootNode *Node
 
-func Uct(state State, seconds int) (Action, float64) {
+func Uct(state game.State, seconds int) (game.Action, float64) {
 	start := time.Now()
 
 	var root *Node
@@ -65,11 +56,17 @@ func Uct(state State, seconds int) (Action, float64) {
 		elapsed = t.Sub(start)
 	}
 	// printTree(root, 0)
+	if MostVisited {
+		best, u := mostVisitedAction(root)
+		debugLog("\nRETURNING MOST VISITED MOVE: %v\n\n", best)
+		return best, u		
+	} else {
+		best, u := mostUtilityAction(root)
+		debugLog("\nRETURNING BEST MOVE: %v\n\n", best)
+		return best, u		
 
-	// best, u := mostUtilityAction(root)
-	best, u := mostVisitedAction(root)
-	debugLog("\nRETURNING BEST MOVE: %v\n\n", best)
-	return best, u
+	}
+
 }
 
 func printTree(node *Node, depth int) {
@@ -77,7 +74,7 @@ func printTree(node *Node, depth int) {
 	for i := 0; i < depth ; i++ {
 		indent += "\t"
 	}
-	debugLog("%sState %s,Visits %v, Utility %.2f, Action %s\n", indent, node.state, node.visits, node.utility / float64(node.visits), node.action)
+	debugLog("%sState %s,Visits %v, Utility %.2f, game.Action %s\n", indent, node.state, node.visits, node.utility / float64(node.visits), node.action)
 	for _, child := range node.children {
 		printTree(child, depth + 1)
 	}
@@ -100,8 +97,8 @@ func mostVisited(nodes []*Node) *Node {
 }
 
 
-// func mostVisitedAction(node *Node) Action {
-// 	var best Action
+// func mostVisitedAction(node *Node) game.Action {
+// 	var best game.Action
 // 	most := math.MinInt64
 // 	actions := node.state.FindLegals()
 // 	for _, action := range actions {
@@ -120,9 +117,9 @@ func mostVisited(nodes []*Node) *Node {
 // 	}
 // 	return best
 // }
-func mostVisitedAction(node *Node) (Action, float64) {
+func mostVisitedAction(node *Node) (game.Action, float64) {
 	// debugLog(len(nodes))
-	var bestAction Action
+	var bestAction game.Action
 	mostVisits := 0
 	mostU := -1.0
 	for _, child := range node.children {
@@ -135,8 +132,8 @@ func mostVisitedAction(node *Node) (Action, float64) {
 	return bestAction, mostU 
 }
 
-func mostUtilityAction(node *Node) (Action, float64) {
-	var bestAction Action
+func mostUtilityAction(node *Node) (game.Action, float64) {
+	var bestAction game.Action
 	most := float64(math.MinInt64)
 	for _, child := range node.children {
 		action := child.action
@@ -150,8 +147,8 @@ func mostUtilityAction(node *Node) (Action, float64) {
 	return bestAction, most
 }
 
-// func mostUtilityAction(node *Node) (Action, float64) {
-// 	var best Action
+// func mostUtilityAction(node *Node) (game.Action, float64) {
+// 	var best game.Action
 // 	most := float64(math.MinInt64)
 // 	actions := node.state.FindLegals()
 // 	for _, action := range actions {
@@ -260,7 +257,7 @@ func expand(node *Node) { //*Node {
 	}
 }
 
-func simulate(state State) float64 {
+func simulate(state game.State) float64 {
 	if state.IsTerminal() {
 		return state.FindReward()
 	}
@@ -271,7 +268,7 @@ func simulate(state State) float64 {
 		// debugLog("Options: %v\n", options)
 		best := rand.Intn(len(options))
 		newState = newState.FindNextState(options[best])
-		// debugLog("Action: %v\n", options[best])
+		// debugLog("game.Action: %v\n", options[best])
 		// debugLog("%v", newState)
 	// } 
 	return simulate(newState)
