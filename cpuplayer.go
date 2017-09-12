@@ -18,11 +18,16 @@ func makePlayer(hand []Card) Player {
 		PlayerData:     makePlayerData(hand),
 		firstCardPlay:  false,
 		risky:          false,
-		trumpToDeclare: "",
+		trumpToDeclare: "NOTRUMP",
 		handGame:	false,
 	}
 }
 
+func (p *Player) ResetPlayer() {
+	p.handGame = false
+	p.trumpToDeclare = "NOTRUMP"
+	p.PlayerData.ResetPlayer()
+}
 
 func (p *Player) setPartner(partner PlayerI) {
 

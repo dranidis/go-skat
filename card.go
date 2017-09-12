@@ -549,6 +549,7 @@ func LongestNonTrumpSuit(trump string, cards []Card) string {
 // }
 
 // With a preference to non-A suits
+//   unless there are at least 3 suit
 // and a preference to weaker cards (between A-suits)
 func mostCardsSuit(cards []Card) string {
 	asuits := 0
@@ -559,7 +560,7 @@ func mostCardsSuit(cards []Card) string {
 	}
 	acePenalty := 100
 	if asuits > 2 {
-		acePenalty = 0
+		acePenalty = -100
 	}
 	debugTacticsLog("..mostCardsSuit")
 	maxCount := 0
@@ -568,17 +569,13 @@ func mostCardsSuit(cards []Card) string {
 		cs := trumpCards(s, cards)
 		count := 200 * len(cs)
 		if !in(cards, Card{s, "A"}) {
-			count += acePenalty
 			count += sum(cs)
 			// if len(cs) > 4 {
 			// 	count += 100
 			// }
 		} else {
-			if acePenalty != 0 {
-				count -= sum(cs)
-			} else {
-				count += sum(cs)
-			}
+			count -= acePenalty
+			count -= sum(cs)
 		}
 		if count > maxCount {
 			maxCount = count
@@ -586,6 +583,7 @@ func mostCardsSuit(cards []Card) string {
 		}
 		debugTacticsLog(".%s %v: %d  ", s, cs, count)
 	}
+	debugTacticsLog("MOST: %s\n", suits[maxI])
 	return suits[maxI]
 }
 
@@ -618,14 +616,19 @@ func lessCardsSuitExcept(suitsToExclude []string, cards []Card) string {
 }
 
 func lessCardsSuit(cards []Card) string {
+	nonA := func(cs []Card) []Card {
+		return filter(cs, func(c Card) bool {
+			return c.Rank != "A"
+			})
+	}
 	clubs := nonTrumpCards(CLUBS, cards)
 	spades := nonTrumpCards(SPADE, cards)
 	hearts :=nonTrumpCards(HEART, cards)
 	caro := nonTrumpCards(CARO, cards)
-	c := 100 * len(clubs) - sum(clubs) // we want to discard higher value cards
-	s := 100 * len(spades) - sum(spades)
-	h := 100 * len(hearts) - sum(hearts)
-	k := 100 * len(caro) - sum(caro)
+	c := 100 * len(clubs) - sum(nonA(clubs)) // we want to discard higher value cards
+	s := 100 * len(spades) - sum(nonA(spades))
+	h := 100 * len(hearts) - sum(nonA(hearts))
+	k := 100 * len(caro) - sum(nonA(caro))
 
 	if c == 0 {
 		c = 9999 // no cards for comparison below

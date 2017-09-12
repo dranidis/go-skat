@@ -276,3 +276,130 @@ func TestIsOpponentTurn(t *testing.T) {
 		t.Errorf("Error opponent")
 	}
 }
+
+
+func TestCopySkatState(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{HEART, "A"},
+	}
+	dist[1] = []Card{
+		Card{HEART, "10"},
+		Card{CARO, "8"},
+		Card{SPADE, "A"},
+	}
+	dist[2] = []Card{
+		Card{CLUBS, "9"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+	}
+
+	skatState := SkatState{
+		CLUBS,
+		dist, 			
+		[]Card{}, 
+		0, 
+		0, 
+		30, 
+		45,
+		false,
+	}
+
+	ss := copySkatState(skatState)
+
+	// fmt.Printf("%v\n", skatState)
+	// fmt.Printf("%v\n", ss)
+	if len(ss.playerHand[0]) != 3 && len(ss.playerHand[1]) != 3 && len(ss.playerHand[2]) != 3 {
+		t.Errorf("ERROR Copy: %v", ss)
+	}
+	if !in(ss.playerHand[0], skatState.playerHand[0]...) {
+		t.Errorf("ERROR Copy: %v %v", ss.playerHand[0], skatState.playerHand[0])
+	}
+	if !in(ss.playerHand[1], skatState.playerHand[1]...) {
+		t.Errorf("ERROR Copy: %v %v", ss.playerHand[1], skatState.playerHand[1])
+	}
+	if !in(ss.playerHand[2], skatState.playerHand[2]...) {
+		t.Errorf("ERROR Copy: %v %v", ss.playerHand[2], skatState.playerHand[2])
+	}
+}
+
+func TestFindLegals(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "8"},
+		Card{HEART, "A"},
+	}
+	dist[1] = []Card{
+		Card{HEART, "10"},
+		Card{CARO, "8"},
+		Card{SPADE, "A"},
+	}
+	dist[2] = []Card{
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+	}
+
+	skatState := SkatState{
+		CLUBS,
+		dist, 			
+		[]Card{
+			Card{CLUBS, "9"},
+
+		}, 
+		0, // declarer
+		0, // turn
+		30, 
+		45,
+		false,
+	}
+
+	actions := skatState.FindLegals()
+	cards := []Card{}
+	for _, action := range actions {
+		ma := action.(SkatAction)
+		cards = append(cards, ma.card)
+	}
+	// fmt.Println(cards)
+	if !in(cards, Card{CLUBS, "J"}, Card{CLUBS, "8"}) {
+		t.Errorf("ERROR TestFindLegals: %v", actions)
+	}
+	if in(cards, Card{HEART, "A"}) {
+		t.Errorf("ERROR TestFindLegals: %v", actions)
+	}
+
+	ssa := skatState.FindNextState(actions[0])
+
+	ss := ssa.(*SkatState)
+	// fmt.Println(skatState)
+	// fmt.Println(ss)
+
+
+
+	if in(ss.playerHand[0], Card{CLUBS, "J"}) {
+		t.Errorf("ERROR TestFindLegals: %v", ss.playerHand[0])
+	}
+
+	if !ss.trick[1].equals(Card{CLUBS, "J"}) {
+		t.Errorf("ERROR TestFindLegals: %v", ss.trick)
+	}
+
+	if ss.turn != 1 {
+		t.Errorf("Error turn %d", ss.turn)
+	}
+
+	ssa1 := ss.FindNextState(SkatAction{Card{HEART, "10"}})
+	// fmt.Println(ssa1)	
+
+	ss1 := ssa1.(*SkatState)
+
+	if ss1.declScore != 42 {
+		t.Errorf("Declarer score %d", ss1.declScore)
+	} 	
+	if ss1.oppScore != skatState.oppScore {
+		t.Errorf("Opponent score %d", ss1.declScore)
+	} 
+
+}
