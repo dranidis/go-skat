@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"io"
+	"os"
+	"log"
 )
 
 var logFile io.Writer = nil
@@ -50,4 +52,12 @@ func debugTacticsLog(format string, a ...interface{}) {
 
 func debugMinmaxLog(format string, a ...interface{}) {
 	debugTacticsLog("MM: " + format, a...)
+}
+
+func createFile(logFileName string) *os.File {
+	file, err := os.Create(logFileName)
+	if err != nil {
+		log.Fatal("Cannot create file", err)
+	}
+	return file
 }

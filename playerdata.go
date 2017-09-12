@@ -18,6 +18,14 @@ type PlayerData struct {
 	declaredBid  int
 }
 
+
+func (p *PlayerData) ResetPlayer() {
+	p.setScore(0)
+	p.setSchwarz(true)
+	p.setPreviousSuit("")
+	p.setDeclaredBid(0)
+}
+
 func (p *PlayerData) setDeclaredBid(b int) {
 	p.declaredBid = b
 }

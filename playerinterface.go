@@ -28,5 +28,7 @@ type PlayerI interface {
 	setDeclaredBid(int)
 	getDeclaredBid() int
 	setPartner(p PlayerI)
+
+	ResetPlayer()
 }
 

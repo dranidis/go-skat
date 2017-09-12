@@ -551,6 +551,16 @@ func LongestNonTrumpSuit(trump string, cards []Card) string {
 // With a preference to non-A suits
 // and a preference to weaker cards (between A-suits)
 func mostCardsSuit(cards []Card) string {
+	asuits := 0
+	for _, s := range suits {
+		if in(cards, Card{s, "A"}) {
+			asuits++
+		}
+	}
+	acePenalty := 100
+	if asuits > 2 {
+		acePenalty = 0
+	}
 	debugTacticsLog("..mostCardsSuit")
 	maxCount := 0
 	maxI := -1
@@ -558,19 +568,23 @@ func mostCardsSuit(cards []Card) string {
 		cs := trumpCards(s, cards)
 		count := 200 * len(cs)
 		if !in(cards, Card{s, "A"}) {
-			count += 100
+			count += acePenalty
 			count += sum(cs)
 			// if len(cs) > 4 {
 			// 	count += 100
 			// }
 		} else {
-			count -= sum(cs)
+			if acePenalty != 0 {
+				count -= sum(cs)
+			} else {
+				count += sum(cs)
+			}
 		}
 		if count > maxCount {
 			maxCount = count
 			maxI = i
 		}
-		debugTacticsLog(".%s:%d  ", s, count)
+		debugTacticsLog(".%s %v: %d  ", s, cs, count)
 	}
 	return suits[maxI]
 }
@@ -592,13 +606,26 @@ func mostCardsSuit(cards []Card) string {
 // 	}
 // 	return suits[maxI]
 // }
-
+func lessCardsSuitExcept(suitsToExclude []string, cards []Card) string {
+	copyCards := filter(cards, func(c Card) bool {
+		for _, s := range suitsToExclude {
+			if c.Suit == s {
+				return false}
+		}
+		return true
+		})
+	return lessCardsSuit(copyCards)
+}
 
 func lessCardsSuit(cards []Card) string {
-	c := len(nonTrumpCards(CLUBS, cards))
-	s := len(nonTrumpCards(SPADE, cards))
-	h := len(nonTrumpCards(HEART, cards))
-	k := len(nonTrumpCards(CARO, cards))
+	clubs := nonTrumpCards(CLUBS, cards)
+	spades := nonTrumpCards(SPADE, cards)
+	hearts :=nonTrumpCards(HEART, cards)
+	caro := nonTrumpCards(CARO, cards)
+	c := 100 * len(clubs) - sum(clubs) // we want to discard higher value cards
+	s := 100 * len(spades) - sum(spades)
+	h := 100 * len(hearts) - sum(hearts)
+	k := 100 * len(caro) - sum(caro)
 
 	if c == 0 {
 		c = 9999 // no cards for comparison below
@@ -625,7 +652,7 @@ func lessCardsSuit(cards []Card) string {
 	if in(cards, Card{CARO, "A"}) {
 		k += 100
 	}
-	debugTacticsLog("...lessCardsSuit %v, %v, %v, %v...", c, s, h, k)
+	debugTacticsLog("...in cards %v,%v,%v,%v lessCardsSuit CLUBS: %v, SPADES: %v, HEARTS: %v, CARO: %v...", clubs, spades, hearts, caro, c, s, h, k)
 	if c != 0 && c < s && c < h && c < k {
 		return CLUBS
 	}

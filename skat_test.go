@@ -736,7 +736,9 @@ func TestGameScore(t *testing.T) {
 
 }
 
-func TestPickUpSkat(t *testing.T) {
+func TestPickUpSkat0(t *testing.T) {
+	player2 := makePlayer([]Card{})
+	player3 := makePlayer([]Card{})
 	player := makePlayer([]Card{
 		Card{CLUBS, "J"},
 		Card{SPADE, "J"},
@@ -749,6 +751,9 @@ func TestPickUpSkat(t *testing.T) {
 		Card{CARO, "9"},
 		Card{SPADE, "8"},
 	})
+
+	players = []PlayerI{&player, &player2, &player3}
+
 
 	skat := []Card{
 		Card{CARO, "D"},
@@ -831,12 +836,47 @@ func TestPickUpSkat2(t *testing.T) {
 	card2 := Card{SPADE, "8"}
 	// cc1 := skat[0].Suit != CARO || skat[0].Rank != "8"
 	// cc2 := skat[1].Suit != SPADE || skat[1].Rank != "8"
+
+	if player.trumpToDeclare != SPADE {
+		t.Errorf("Expected SPADE declaration, found: %s", player.trumpToDeclare)
+	}
+
 	if !in(skat, card1, card2) {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
 	}
 
 	if len(player.hand) != 10 {
 		t.Errorf("Wrong hand size after skat change: %d", len(player.hand))
+	}
+}
+
+func TestPickUpSkatAndDeclareNew(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{CARO, "J"},
+		Card{HEART, "J"},
+
+		Card{CLUBS, "9"},
+		Card{CLUBS, "7"},
+
+		Card{SPADE, "A"},
+		Card{SPADE, "10"},
+
+		Card{HEART, "A"},
+		Card{HEART, "7"},
+
+		Card{CARO, "A"},
+		Card{CARO, "K"},
+	})
+
+	skat := []Card{
+		Card{SPADE, "7"},
+		Card{CLUBS, "8"},
+	}
+
+	player.pickUpSkat(skat)
+
+	if player.trumpToDeclare != SPADE {
+		t.Errorf("Expected SPADE, found: ", player.trumpToDeclare)
 	}
 }
 
@@ -856,6 +896,10 @@ func TestPickUpSkatGrandWith4Aces(t *testing.T) {
 		Card{CARO, "A"},
 		Card{CARO, "D"},
 	})
+
+	p2 := makePlayer([]Card{})
+	p3 := makePlayer([]Card{})
+	players = []PlayerI{&player, &p2, &p3}
 
 	skat := []Card{
 		Card{CLUBS, "A"},
@@ -975,6 +1019,10 @@ func TestPickUpSkatGRandWITH4jS(t *testing.T) {
 		Card{CARO, "9"},
 	})
 
+	p2 := makePlayer([]Card{})
+	p3 := makePlayer([]Card{})
+	players = []PlayerI{&player, &p2, &p3}
+
 	skat := []Card{
 		Card{CARO, "7"},
 		Card{SPADE, "J"},
@@ -1034,7 +1082,6 @@ func TestPickUpSkat7(t *testing.T) {
 }
 
 func TestCalculateHighestBid(t *testing.T) {
-
 	player := makePlayer([]Card{
 		Card{CLUBS, "J"},
 		Card{SPADE, "J"},
@@ -1048,6 +1095,11 @@ func TestCalculateHighestBid(t *testing.T) {
 		Card{SPADE, "8"},// loser
 	})
 	player.risky = true
+
+	p2 := makePlayer([]Card{})
+	p3 := makePlayer([]Card{})
+	players = []PlayerI{&player, &p2, &p3}
+
 	player.calculateHighestBid(false)
 
 	act := player.highestBid
@@ -3493,6 +3545,67 @@ func TestDiscardInSkat(t *testing.T) {
 	}
 }
 
+func TestDiscardInSkatKeepLongSuit(t *testing.T) {
+	cards := []Card{
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+
+		Card{CARO, "A"},
+		Card{CARO, "10"},
+		Card{CARO, "8"},
+		Card{CARO, "7"},
+
+		Card{SPADE, "K"},
+		Card{SPADE, "D"},
+		Card{SPADE, "9"},
+
+		Card{CLUBS, "K"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "7"},
+	}
+	skat := []Card{Card{CARO, "7"}, Card{SPADE, "D"}}
+	p := makePlayer(cards)
+	p.trumpToDeclare = SPADE
+	p.declaredBid = 20
+
+	p.discardInSkat(skat)
+
+	fmt.Printf("SKAT: %v\n", skat)
+	if in(skat, Card{CARO, "A"}) || in(skat, Card{CARO, "10"}) || in(skat, Card{CARO, "8"})  || in(skat, Card{CARO, "7"}) {
+		t.Errorf("Cards from a long suit %v discarded in SKAT: %v", p.hand, skat)
+	}
+}
+
+func TestDiscardInSkatDiscart10s(t *testing.T) {
+	cards := []Card{
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+
+		Card{HEART, "A"},
+		Card{HEART, "D"},
+		Card{HEART, "8"},
+		Card{HEART, "7"},
+
+		Card{SPADE, "A"},
+		Card{SPADE, "7"},
+
+		Card{CARO, "K"},
+		Card{CARO, "7"},
+
+		Card{CLUBS, "10"},
+		Card{CLUBS, "8"},
+	}
+	skat := []Card{Card{CLUBS, "8"}, Card{CARO, "K"}}
+	p := makePlayer(cards)
+
+	p.discardInSkat(skat)
+
+	fmt.Printf("SKAT: %v\n", skat)
+	if !in(skat, Card{CLUBS, "10"}, Card{CLUBS, "8"}) {
+		t.Errorf("Cards from 10-X suit %v NOT discarded in SKAT: %v", p.hand, skat)
+	}
+}
+
 func TestDiscardInSkatNULLNoRisk(t *testing.T) {
 	cards := []Card{
 		Card{CLUBS, "7"},
@@ -3739,7 +3852,53 @@ func TestNextLowestCardsStillInPlay(t *testing.T) {
 // 	}
 // }
 
-func TestCanWinGRAND(t *testing.T) {
+func TestCanWinNULL1(t *testing.T) {
+	cards := []Card{
+		Card{HEART, "D"},
+		Card{HEART, "K"},
+
+		Card{CLUBS, "A"}, 
+		Card{CLUBS, "9"}, 
+		Card{CLUBS, "8"}, 
+		Card{CLUBS, "7"}, 		
+		Card{CARO, "10"}, 
+		Card{CARO, "9"}, 
+		Card{CARO, "K"}, 
+		Card{CARO, "7"}, 
+
+	}
+	p := makePlayer(cards)
+
+	canWin := p.canWin(false)
+	if canWin == NULL {
+		t.Errorf("Hand %v can not win NULL 2 cards to discard before SKAT pick up. Got: %v", p.hand, canWin)
+	}
+}
+
+func TestCanWinNULL2(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "D"},
+		Card{HEART, "K"},
+
+		Card{CLUBS, "A"}, 
+		Card{CLUBS, "9"}, 
+		Card{CLUBS, "8"}, 
+		Card{CLUBS, "7"}, 		
+		Card{CARO, "10"}, 
+		Card{CARO, "9"}, 
+		Card{CARO, "K"}, 
+		Card{CARO, "7"}, 
+
+	}
+	p := makePlayer(cards)
+
+	canWin := p.canWin(false)
+	if canWin != NULL {
+		t.Errorf("Hand %v can win NULL. 1 card to discard before SKAT pick up. Got: %v", p.hand, canWin)
+	}
+}
+
+func TestCanWinGRAND1(t *testing.T) {
 	cards := []Card{
 		Card{CLUBS, "J"},
 		Card{SPADE, "J"},
@@ -3754,7 +3913,11 @@ func TestCanWinGRAND(t *testing.T) {
 		Card{SPADE, "10"},
 	}
 	p := makePlayer(cards)
+	p2 := makePlayer(cards)
+	p3 := makePlayer(cards)
+	p.risky = true
 
+	players = []PlayerI{&p, &p2, &p3}
 	canWin := p.canWin(false)
 	if canWin != "GRAND" {
 		t.Errorf("Hand %v can win GRAND. Got: %v", p.hand, canWin)
@@ -3777,7 +3940,11 @@ func TestCanWinGRAND2(t *testing.T) {
 		Card{SPADE, "D"}, // LOSER
 	}
 	p := makePlayer(cards)
+	p2 := makePlayer(cards)
+	p3 := makePlayer(cards)
 	p.risky = true
+
+	players = []PlayerI{&p, &p2, &p3}
 
 	canWin := p.canWin(false)
 	if canWin != "GRAND" {

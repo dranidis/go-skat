@@ -25,7 +25,9 @@ var	waitServer chan string
 
 var connR io.Reader
 var connW io.Writer
-var real = false
+var serverLogFile *os.File
+var real = true
+
 
 
 func Connect(usr, pwd string) error {
@@ -73,6 +75,7 @@ func Connect(usr, pwd string) error {
 			return errors.New("Not logged in:" + message)
 		}
 
+		serverLogFile = createFile("server.log")
 	} else {
 		connR = os.Stdin
 		connW = os.Stdout
@@ -110,6 +113,7 @@ func readFromServer() {
 		// fmt.Println("..Waiting msg from server..")
 	  	for scanner.Scan() {
 	  		text = scanner.Text()
+			fmt.Fprintf(serverLogFile, "%s\n", text)
 		  	parseServer(text)
 			// fmt.Println("..Waiting msg from server..")
 	  	}
@@ -447,6 +451,7 @@ func ready() {
 
 func leaveTable() {
 	sendToServer(fmt.Sprintf("table .%d %s leave", tableNr, username))
+	serverLogFile.Close()
 }
 
 func playCard(card Card) {
@@ -483,7 +488,7 @@ func playBid(bid string) {
 
 // TODO
 // Declare and discard
-func pickUpSkat() {
+func sendPickUpSkat() {
 	sendToServer(fmt.Sprintf("table .%d %s play s", tableNr, username))
 }
 

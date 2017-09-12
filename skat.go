@@ -46,6 +46,9 @@ var issOpp2 = "xskat"
 var issSentDelay = 0
 var issUsername string
 
+var	minMaxPlayerFlag = false
+
+
 var gameIndex = 1
 var player1 PlayerI
 var player2 MinMaxPlayer
@@ -475,16 +478,33 @@ func SameCards() {
 	copy(state.skat, oldCards[30:32])
 }
 
+/*
+
+initstate()
+------------> skat.go
+				creates Suitstate state (GLOBAL)
+initGame()
+------------> skat.go
+				reset all players
+				player.calculateHighestBid(false)
+				    canWin(false)
+				    	p.handGame = false
+				    change p.handGame in a HandGame
+bidPhase()
+------------> skat.go
+				bid(players)
+declareAndPlay()
+------------> skat.go
+				state.declarer.pickUpSkat(state.skat)
+
+*/
 func initState() {
 	state = makeSuitState()
 }
 
 func initGame() {
 	for _, p := range players {
-		p.setScore(0)
-		p.setSchwarz(true)
-		p.setPreviousSuit("")
-		p.setDeclaredBid(0)
+		p.ResetPlayer()
 	}
 	for _, p := range players {
 		h := p.calculateHighestBid(false)
@@ -494,11 +514,28 @@ func initGame() {
 	gameLog("\nPLAYER ORDER: %s - %s - %s\n\n", players[0].getName(), players[1].getName(), players[2].getName())
 }
 
+func bidPhase() int {
+	// BIDDING
+	bidDecl, declarer := bid(players)
+	if bidDecl == 0 {
+		gameLog("ALL PASSED\n")
+		return 0
+	}
+	debugTacticsLog("Declarer %v\n", declarer)
+	declarer.setDeclaredBid(bidDecl)
+
+	state.setDeclarerAndOpps(players, declarer)
+
+	gameLog("(%s) won the bidding\n", state.declarer.getName())
+	return bidDecl
+}
+
 func declareAndPlay() int {
 	handGame := true
 
 	gameLog("... SKAT\n")
 	if state.declarer.pickUpSkat(state.skat) {
+		gameLog("... PICKED UP SKAT and DISCARDED\n")
 		handGame = false
 	}
 
@@ -542,7 +579,11 @@ func declareAndPlay() int {
 	players[1].setHand(sortSuit(state.trump, players[1].getHand()))
 	players[2].setHand(sortSuit(state.trump, players[2].getHand()))
 
-	gameLog("\n(%s) TRUMP: %s\n", red(state.declarer.getName()), state.trump)
+	handString := ""
+	if handGame {
+		handString = "(HAND)"
+	}
+	gameLog("\n(%s) TRUMP: %s %s\n", red(state.declarer.getName()), state.trump, handString)
 
 	if issConnect && state.declarer.getName() == "goskat" {
 		debugTacticsLog("SKAT: %v\n", state.skat)
@@ -578,10 +619,10 @@ func declareAndPlay() int {
 			state.declarer.incTotalScore(50)
 		}
 		if state.trump != NULL {
-			gameLog("VICTORY: %d - %d, SCORE: %d\n",
+			gameLog("%s VICTORY: %d - %d, SCORE: %d\n", state.declarer.getName(),
 				state.declarer.getScore(), state.opp1.getScore()+state.opp2.getScore(), gs)
 		} else {
-			gameLog("VICTORY: %d\n", gs)
+			gameLog("%s VICTORY: %d\n", state.declarer.getName(), gs)
 		}
 	} else {
 		if oficialScoring {
@@ -592,10 +633,10 @@ func declareAndPlay() int {
 		state.opp1.wonAsDefenders()
 		state.opp2.wonAsDefenders()
 		if state.trump != NULL {
-			gameLog("DEFEAT: %d - %d, SCORE: %d\n",
+			gameLog("%s DEFEAT: %d - %d, SCORE: %d\n", state.declarer.getName(),
 				state.declarer.getScore(), state.opp1.getScore()+state.opp2.getScore(), gs)
 		} else {
-			gameLog("DEFEAT: %d\n", gs)
+			gameLog("%s DEFEAT: %d\n", state.declarer.getName(), gs)
 		}
 
 	}
@@ -639,22 +680,6 @@ func (s *SuitState) setDeclarerAndOpps(players []PlayerI, declarer PlayerI) {
 		state.opp1, state.opp2 = players[0], players[1]
 	}
 	state.opp1.setPartner(state.opp2)	
-}
-
-func bidPhase() int {
-	// BIDDING
-	bidDecl, declarer := bid(players)
-	if bidDecl == 0 {
-		gameLog("ALL PASSED\n")
-		return 0
-	}
-	debugTacticsLog("Declarer %v\n", declarer)
-	declarer.setDeclaredBid(bidDecl)
-
-	state.setDeclarerAndOpps(players, declarer)
-
-	gameLog("(%s) won the bidding\n", state.declarer.getName())
-	return bidDecl
 }
 
 func skatGame() int {
@@ -762,10 +787,17 @@ func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlay
 			player := makeHtmlPlayer([]Card{})
 			player1 = &player
 		} else if issConnect {
-			// player := makePlayer([]Card{})
-			player := makeMinMaxPlayer([]Card{})
-			player.risky = true
-			player1 = &player
+			var player1 PlayerI
+			cpuplayer := makePlayer([]Card{})
+			cpuplayer.risky = true
+			player1 = &cpuplayer
+
+			if minMaxPlayerFlag {
+				debugTacticsLog("PLAYERS: Creating a MinMax player for ISS\n")
+				mmplayer := makeMinMaxPlayer([]Card{})
+				player1 = &mmplayer
+			}
+			// player1 = &player
 			player2 := makeISSPlayer([]Card{})
 			player3 := makeISSPlayer([]Card{})
 			player1.setName("")
@@ -816,6 +848,7 @@ func main() {
 	flag.BoolVar(&fileLogFlag, "log", true, "Saves log in a file")
 	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:3000")
 	flag.BoolVar(&issConnect, "iss", false, "Connects to ISS skat server")
+	flag.BoolVar(&minMaxPlayerFlag, "minmax", false, "Uses a MinMax CPU player a AI player at ISS")
 	flag.StringVar(&issOpp1, "opp1", "xskat", "Opponent to play with at ISS skat server")
 	flag.StringVar(&issOpp2, "opp2", "xskat", "Opponent to play with at ISS skat server")
 	flag.IntVar(&issSentDelay, "issdelay", 0, "Delay (in ms) before sending an action to ISS server. Useful for debugging and for observing a game.")

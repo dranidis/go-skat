@@ -23,6 +23,7 @@ func makePlayer(hand []Card) Player {
 	}
 }
 
+
 func (p *Player) setPartner(partner PlayerI) {
 
 }
@@ -59,7 +60,15 @@ func (p Player) nullPlayerTactic(s *SuitState, c []Card) Card {
 	debugTacticsLog(".. cards: %v\n", cards)
 	// do not lead a 7-8-J suit
 
+	// TODO:
+	// With an 8 suit, open with the 8 and the 7 will most likely fall
 	if len(s.trick) == 0 {
+		for _, suit := range suits {
+			if in(cards, Card{suit, "8"}) && !in(cards, Card{suit, "7"}) {
+				debugTacticsLog("Opening with the %v in hand %v\n", Card{suit, "8"}, p.hand)
+				return Card{suit, "8"}
+			}
+		}
 		return cards[0]
 	}
 	lcards := filter(cards, func(card Card) bool {
@@ -101,7 +110,8 @@ func (p Player) canWinNull(afterSkat bool) int {
 				return c.Suit == s
 			})
 			cs = sortRankSpecial(cs, nullRanksRev)
-			for p.nullSafeSuit(s, cs) > 2 && removed < 2 {
+			maxToRemove := 1
+			for p.nullSafeSuit(s, cs) > 2 && removed < maxToRemove {
 				last := cs[len(cs) - 1]
 				cs = remove(cs, last)
 				removed++
@@ -144,7 +154,7 @@ func (p Player) nullSafeSuit(s string, cards []Card) int {
 		return c.Suit == s
 		})
 
-	debugTacticsLog(".. NULL: examining suit: %v", cs)
+	debugTacticsLog(".. NULL: examining suit %s: %v", s, cs)
 	for i := len(nullRanks) - 1; i >=0 && len(cs) > 0; i-- {
 		r := nullRanks[i]
 		if in(cs, Card{s, r}) {
@@ -201,6 +211,7 @@ func (p Player) nullSafeSuit(s string, cards []Card) int {
 }
 
 func (p Player) canWin(afterSkat bool) string {
+	// MAKE SURE HANDGAME IS RESET IN current game!
 	p.handGame = false
 
 	cs := p.getHand()
@@ -222,31 +233,45 @@ func (p Player) canWin(afterSkat bool) string {
 	// 	return NULL
 	// }
 
-	assOtherThan := func(suit string) int {
-		asses := 0
+	acesOthenThan := func(suit string) int {
+		aces := 0
 		for _, s := range suits {
 			if s == suit {
 				continue
 			}
 			if in(cs, Card{s, "A"}) {
 				//	debugTacticsLog("(A %s) ", s)
-				asses++
+				aces++
+			}
+		}
+		return aces
+	}
+
+	sureFullOnesOtherThan := func(suit string) int {
+		fullOnes := 0
+		for _, s := range suits {
+			if s == suit {
+				continue
+			}
+			if in(cs, Card{s, "A"}) {
+				//	debugTacticsLog("(A %s) ", s)
+				fullOnes++
 				if in(cs, Card{s, "10"}) {
 					//		debugTacticsLog("(10 %s) ", s)
-					asses++
+					fullOnes++
 					// if in(p.getHand(), Card{s, "K"}) {
 					// 	debugTacticsLog("(K %s) ", s)
-					// 	asses++
+					// 	fullOnes++
 					// }
 				}
 			} else if in(cs, Card{s, "10"}) && tenIsSupported(cs, Card{s, "10"}) {
-				asses++
+				fullOnes++
 			}
 		}
-		return asses
+		return fullOnes
 	}
 
-	fullOnes := assOtherThan("")
+	fullOnes := sureFullOnesOtherThan("")
 	losers := len(grandLosers(cs)) + jackLosers(cs)
 	debugTacticsLog("\nLosers: %v, %d jacks\n", grandLosers(cs), jackLosers(cs))
 	debugTacticsLog("\nConsidering GRAND in Hand: %v, Full ones: %v, Losers: %v\n", cs, fullOnes, losers)
@@ -271,14 +296,14 @@ func (p Player) canWin(afterSkat bool) string {
 			return c.Rank == "J"
 		})
 		debugTacticsLog("Js %v, Asuits %d\n", Js, asuits)
-		if len(Js) > 1 {
-			debugTacticsLog("WILL PLAY GRAND with Jacks: %v\n", Js)
+		if len(Js) > 1 && p.getName() == players[0].getName() {
+			debugTacticsLog("WILL PLAY GRAND with %d Jacks in FOREHAND.\n", len(Js))
 			TRYING = false
 			return "GRAND"
 		}
-		if len(Js) == 1 {
+		if len(Js) == 2 || (len(Js) == 1 && p.getName() == players[0].getName() ) {
 			if asuits >= 4 {
-				debugTacticsLog("WILL PLAY GRAND with 1 Jack and 4 suits covered with A: %v\n", Js)
+				debugTacticsLog("WILL PLAY GRAND with %d Jack and 4 suits covered with A: %v\n", len(Js))
 				return "GRAND"
 			}
 		}
@@ -289,11 +314,11 @@ func (p Player) canWin(afterSkat bool) string {
 	suit := mostCardsSuit(cs)
 	largest := len(trumpCards(suit, cs))
 	debugTacticsLog("Longest suit %s, %d cards\n", suit, largest)
-	asses := assOtherThan(suit)
-	debugTacticsLog("Extra suits: %d\n", asses)
+	aces := acesOthenThan(suit)
+	debugTacticsLog("Extra suits: %d\n", aces)
 	prob := 0
 
-	if largest > 4 && asses > 0 {
+	if largest > 4 && aces > 0 {
 		prob = 80
 	}
 
@@ -303,7 +328,7 @@ func (p Player) canWin(afterSkat bool) string {
 	if largest > 6 {
 		prob = 99
 	}	
-	if largest > 6 && asses > 1  {
+	if largest > 6 && aces > 1  {
 		prob = 100
 	}
 
@@ -311,6 +336,7 @@ func (p Player) canWin(afterSkat bool) string {
 	debugTacticsLog("Hand: %v, Estimation: %d\n", cs, est)
 	if prob < 80 {
 		if canWinNull {
+			debugTacticsLog("Will play NULL\n")
 			return NULL
 		}
 		if est < 50 {
@@ -318,8 +344,10 @@ func (p Player) canWin(afterSkat bool) string {
 		}
 	}
 	if prob > 99 {
+		debugTacticsLog("Will play %s HAND with %d trumps and %d As \n", suit, largest, aces)
 		return "SUITHAND"
 	}
+	debugTacticsLog("Will play %s with %d trumps and %d As \n", suit, largest, aces)
 	// if est < 20 {
 	// 	return ""
 	// }
@@ -1468,16 +1496,18 @@ func (p *Player) discardInSkat(skat []Card) {
 		//	fmt.Printf("2nd %v\n", skat)
 		return
 	}
+
+
 	// Discard high cards in non-A suits with few colors
 	sranks := []string{"J", "A", "10", "K", "D", "7", "8", "9"}
 
-	lsuit := lessCardsSuit(p.getHand())
+	lsuit := lessCardsSuitExcept([]string{p.trumpToDeclare}, p.getHand())
 	debugTacticsLog("..Less cards suit %v..", lsuit)
 	if lsuit != "" {
 		lcards := sortRankSpecial(filter(p.getHand(), func(c Card) bool {
 			return c.Suit == lsuit && c.Rank != "A" && c.Rank != "J"
 		}), sranks)
-		debugTacticsLog(".. TRUMP to DECLARE [%s]..", p.trumpToDeclare)
+		// debugTacticsLog(".. TRUMP to DECLARE [%s]..", p.trumpToDeclare)
 		if lsuit != p.trumpToDeclare { //len(lcards) < 4 { // do not throw long fleets
 			debugTacticsLog("SUIT %v LESS %v\n", lsuit, lcards)
 
@@ -1548,7 +1578,7 @@ func (p *Player) pickUpSkat(skat []Card) bool {
 	}
 	//TODO:> ISS
 	if issConnect {
-		pickUpSkat()
+		sendPickUpSkat()
 		card1 := <-skatChannel
 		card2 := <-skatChannel
 		// skat = []Card{card1, card2}
