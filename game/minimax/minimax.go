@@ -135,3 +135,8 @@ func ZeroWindowAlg(state game.State, beta float64) (game.Action, float64) {
 	action, value := alphaBetaAlg(state, beta - 1.0, beta, MAXDEPTH, "")
 	return *action, value
 }
+
+func ABWindowAlg(state game.State, alpha, beta float64) (game.Action, float64) {
+	action, value := alphaBetaAlg(state, alpha, beta, MAXDEPTH, "")
+	return *action, value
+}

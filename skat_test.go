@@ -7,10 +7,10 @@ import (
 	"os"
 	"testing"
 	"fmt"
-	_ "time"
-	_ "github.com/dranidis/go-skat/game"
-	_ "github.com/dranidis/go-skat/game/minimax"
-	_ "github.com/dranidis/go-skat/game/mcts"
+	"time"
+	"github.com/dranidis/go-skat/game"
+	"github.com/dranidis/go-skat/game/minimax"
+	"github.com/dranidis/go-skat/game/mcts"
 
 )
 
@@ -2307,99 +2307,177 @@ func TestDealCardsLeader2(t *testing.T) {
 // 	if false {t.Errorf("")}
 // }
 
-// func TestMiniMax6C(t *testing.T) {
-// 	dist := make([][]Card, 3)
-// 	dist[0] = []Card {
-// 		Card{SPADE, "J"},
-// 		Card{HEART, "J"},
-// 		Card{CARO, "K"},
-// 		Card{SPADE, "A"},
-// 		Card{SPADE, "K"},
-// 		Card{SPADE, "9"},
-// 		Card{CARO, "10"},
-// 	}
-// 	dist[0] = Shuffle(dist[0])
-// 	dist[1] = []Card {
-// 		Card{CLUBS, "A"},
-// 		Card{HEART, "10"},
-// 		Card{CLUBS, "8"},
-// 		Card{CLUBS, "D"},
-// 		Card{SPADE, "8"},
-// 		Card{HEART, "8"},
-// 		Card{CLUBS, "7"},
-// 	}
-// 	dist[1] = Shuffle(dist[1])
-// 	dist[2] = []Card {
-// 		Card{CLUBS, "J"},
-// 		Card{SPADE, "10"},
-// 		Card{SPADE, "7"},
-// 		Card{HEART, "K"},
-// 		Card{CLUBS, "D"},
-// 		Card{CLUBS, "8"},
-// 		Card{CLUBS, "9"},
-// 	}
-// 	dist[2] = Shuffle(dist[2])
+func TestMiniMax6C(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card {
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "K"},
+		Card{SPADE, "A"},
+		Card{SPADE, "K"},
+		Card{SPADE, "9"},
+		Card{CARO, "10"},
+	}
+	dist[0] = Shuffle(dist[0])
+	dist[1] = []Card {
+		Card{CLUBS, "A"},
+		Card{HEART, "10"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "D"},
+		Card{SPADE, "8"},
+		Card{HEART, "8"},
+		Card{CLUBS, "7"},
+	}
+	dist[1] = Shuffle(dist[1])
+	dist[2] = []Card {
+		Card{CLUBS, "J"},
+		Card{SPADE, "10"},
+		Card{SPADE, "7"},
+		Card{HEART, "K"},
+		Card{CLUBS, "D"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "9"},
+	}
+	dist[2] = Shuffle(dist[2])
 
-// 	skatState := SkatState{
-// 		CARO, // trump
-// 		dist, 			
-// 		[]Card{}, // trick 
-// 		0, // declarer 
-// 		0, // who's turn is it
-// 		19, 
-// 		25,
-// 		true,
-// 	}
+	skatState := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{}, // trick 
+		0, // declarer 
+		0, // who's turn is it
+		19, 
+		25,
+		true,
+	}
 
-// 	// runToEnd("mm", skatState)
-// 	// runToEnd("ab", skatState)
-// 	runToEnd("zw", skatState, 61.0)
-// 	runToEnd("zw", skatState, 62.0)
-// 	runToEnd("zw", skatState, 63.0)
-// 	runToEnd("zw", skatState, 64.0)
-// 	runToEnd("zw", skatState, 65.0)
-// 	runToEnd("zw", skatState, 85.0)
-// 	// runToEnd("uct", skatState)
+	// runToEnd("mm", skatState)
+	runToEnd("ab", skatState, 0.0, 0.0)
+	runToEnd("abw", skatState, 60.0, 61.0)
+	runToEnd("abw", skatState, 89.0, 90.0)
+	runToEnd("abw", skatState, 61.0, 89.0)
+	// runToEnd("zw", skatState, 63.0)
+	// runToEnd("zw", skatState, 64.0)
+	// runToEnd("zw", skatState, 65.0)
+	// runToEnd("zw", skatState, 85.0)
+	// runToEnd("uct", skatState)
 
-// 	if false {t.Errorf("")}
-// }
+	if false {t.Errorf("")}
+}
 
-// func runToEnd(alg string, skatState SkatState, zw float64) {
-// 	var skatStateP game.State
-// 	skatStateP = &skatState
-// 	// minimax.DEBUG = true
-// 	startWhole := time.Now()
-// 	// for !skatStateP.IsTerminal() {
-// 	for i := 0; i < 1; i++ {
-// 		start := time.Now()
-// 		var a game.Action
-// 		var v float64
-// 		switch alg {
-// 		case "mm":
-// 			a, v = minimax.Minimax(skatStateP)
-// 		case "ab":
-// 			a, v = minimax.AlphaBeta(skatStateP)
-// 		case "uct":
-// 			mcts.SimulationRuns = 1000
-// 			mcts.ExplorationParameter = 2.0
-// 			mcts.MostVisited = false
+func TestMiniMax9C(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card {
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
 
-// 			runMilliseconds := 3000			
-// 			a, v = mcts.Uct(skatStateP, runMilliseconds)
-// 		case "zw":
-// 			a, v = minimax.ZeroWindowAlg(skatStateP, zw)
-// 		}
-// 		t := time.Now()
-// 		elapsed := t.Sub(start)		
-// 		ma := a.(SkatAction)
-// 		debugTacticsLog("TestAction: %v %v: ", ma, v)
-// 		skatStateP = skatStateP.FindNextState(a)	
-// 		debugTacticsLog("TestState: %v\t%v\n", skatStateP, elapsed)
-// 	}	
-// 	t := time.Now()
-// 	elapsed := t.Sub(startWhole)		
-// 	debugTacticsLog("TOTAL %v\n", elapsed)
-// }
+		Card{CARO, "K"},
+		Card{CARO, "10"},
+		Card{CARO, "9"},
+		Card{CARO, "8"},
+
+		Card{SPADE, "A"},
+		Card{SPADE, "K"},
+		Card{SPADE, "9"},
+	}
+	dist[0] = Shuffle(dist[0])
+	dist[1] = []Card {
+		Card{CARO, "J"},
+
+		Card{CARO, "A"},
+		Card{CARO, "7"},
+
+		Card{CLUBS, "A"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "D"},
+
+		Card{SPADE, "8"},
+
+		Card{HEART, "8"},
+		Card{HEART, "10"},
+	}
+	dist[1] = Shuffle(dist[1])
+	dist[2] = []Card {
+		Card{CLUBS, "J"},
+
+		Card{CARO, "D"},
+
+		Card{SPADE, "10"},
+		Card{SPADE, "7"},
+
+		Card{HEART, "K"},
+
+		Card{CLUBS, "D"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "7"},
+	}
+	dist[2] = Shuffle(dist[2])
+
+	skatState := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{}, // trick 
+		0, // declarer 
+		0, // who's turn is it
+		19, 
+		25,
+		true,
+	}
+
+	// runToEnd("mm", skatState)
+	// runToEnd("ab", skatState, 0.0, 0.0)
+	runToEnd("abw", skatState, 60.0, 61.0)
+	runToEnd("abw", skatState, 89.0, 90.0)
+	runToEnd("abw", skatState, 61.0, 65.0)
+	runToEnd("abw", skatState, 65.0, 70.0)
+	// runToEnd("zw", skatState, 63.0)
+	// runToEnd("zw", skatState, 64.0)
+	// runToEnd("zw", skatState, 65.0)
+	// runToEnd("zw", skatState, 85.0)
+	// runToEnd("uct", skatState)
+
+	if false {t.Errorf("")}
+}
+
+func runToEnd(alg string, skatState SkatState, al, b float64) {
+	var skatStateP game.State
+	skatStateP = &skatState
+	// minimax.DEBUG = true
+	startWhole := time.Now()
+	// for !skatStateP.IsTerminal() {
+	for i := 0; i < 1; i++ {
+		start := time.Now()
+		var a game.Action
+		var v float64
+		switch alg {
+		case "mm":
+			a, v = minimax.Minimax(skatStateP)
+		case "ab":
+			a, v = minimax.AlphaBeta(skatStateP)
+		case "uct":
+			mcts.SimulationRuns = 1000
+			mcts.ExplorationParameter = 2.0
+			mcts.MostVisited = false
+
+			runMilliseconds := 3000			
+			a, v = mcts.Uct(skatStateP, runMilliseconds)
+		case "zw":
+			a, v = minimax.ZeroWindowAlg(skatStateP, b)
+		case "abw":
+			a, v = minimax.ABWindowAlg(skatStateP, al, b)
+		}
+		t := time.Now()
+		elapsed := t.Sub(start)		
+		ma := a.(SkatAction)
+		debugTacticsLog("TestAction: %v %v: ", ma, v)
+		skatStateP = skatStateP.FindNextState(a)	
+		debugTacticsLog("TestState: %v\t%v\n", skatStateP, elapsed)
+	}	
+	t := time.Now()
+	elapsed := t.Sub(startWhole)		
+	debugTacticsLog("TOTAL %v\n", elapsed)
+}
 
 // func TestMCTSW5C(t *testing.T) {
 // 	dist := make([][]Card, 3)

@@ -29,7 +29,7 @@ func (s SkatState) String() string {
 	return fmt.Sprintf("%s, %v, TRICK: %v, %d, %d, SCORE: %d - %d, %v", s.trump, s.playerHand, s.trick, s.declarer, s.turn, s.declScore, s.oppScore, s.schneiderGoal)
 }
 
-unc (m SkatState) Heuristic() float64 {
+func (m SkatState) Heuristic() float64 {
 	if m.IsTerminal() {
 		return m.FindRewardNum()
 	} else {
@@ -37,18 +37,20 @@ unc (m SkatState) Heuristic() float64 {
 	}
 }
 
-func (m SkatState) playToTheEndWithTactics() {
+func (m *SkatState) playToTheEndWithTactics() float64 {
 
 	var copyplayers []PlayerI
 	// copy the current players in the copyplayers array in order to restore them after play
 	// TODO
 	_ = copyplayers
 
-	while !m.IsTerminal() {
+	var skatStateP game.State
+	skatStateP = m
+	for !skatStateP.IsTerminal() {
 		var a game.Action
-		skatAction = m.playWithTactics()
+		skatAction := m.playWithTactics()
 		a = &skatAction
-		m = m.FindNextState(a)	
+		skatStateP = skatStateP.FindNextState(a)	
 	}
 
 	// restore game players using copyplayers
@@ -75,9 +77,9 @@ func (m SkatState) playWithTactics() SkatAction {
 	}
 
 	// ...
+	valid := []Card{}
 
-
-	card := p.playerTactic(s, valid)
+	card := p.playerTactic(&s, valid)
 	return SkatAction{card}
 }
 	
