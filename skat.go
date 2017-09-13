@@ -47,7 +47,7 @@ var issSentDelay = 0
 var issUsername string
 
 var	minMaxPlayerFlag = false
-
+var maxHandSizeFlag = 4
 
 var gameIndex = 1
 var player1 PlayerI
@@ -178,12 +178,16 @@ func round(s *SuitState, players []PlayerI) []PlayerI {
 
 
 func isLosingTrick(s *SuitState, p PlayerI, card Card) bool {
-	for _, c := range s.trick {
-		if s.greater(card, c) {
-			return false
+	var c Card
+	for _, c = range s.trick {
+		if s.greater(c, card) {
+			return true
 		}
 	}
-	return true // TODO!!!!
+	// if noHigherCard(s, false, []Card{}, c) {
+	// 	return true
+	// }
+	return false // TODO!!!!
 }
 
 func play(s *SuitState, p PlayerI) Card {
@@ -465,8 +469,6 @@ func initState() {
 func initGame() {
 	for _, p := range players {
 		p.ResetPlayer()
-	}
-	for _, p := range players {
 		h := p.calculateHighestBid(false)
 		debugTacticsLog("(%v) hand: %v Bid up to: %d\n", p.getName(), p.getHand(), h)
 	}
@@ -812,6 +814,7 @@ func main() {
 	flag.StringVar(&issOpp1, "opp1", "xskat", "Opponent to play with at ISS skat server")
 	flag.StringVar(&issOpp2, "opp2", "xskat", "Opponent to play with at ISS skat server")
 	flag.IntVar(&issSentDelay, "issdelay", 0, "Delay (in ms) before sending an action to ISS server. Useful for debugging and for observing a game.")
+	flag.IntVar(&maxHandSizeFlag, "mm-max", 4, "Max hand size for the minimax player. Below that normal tactics are used.")
 	flag.StringVar(&dealGame, "deal", "", "Force a specific game deal: Grand, Null")
 	flag.Parse()
 
