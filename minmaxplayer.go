@@ -28,7 +28,7 @@ func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 		p1Hand:      []Card{},
 		p2Hand:      []Card{},
 		maxHandSize: 5, // MINIMAX takes too long at 6, Will try MCTS
-		maxWorlds:   12,
+		maxWorlds:   20,
 		timeOutMs: 10000,
 		mctsSimulationTimeMs: 1000,
 		// schneiderGoal: false,
@@ -52,7 +52,19 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 
 	start := time.Now()
 
-	if len(p.hand) <= p.maxHandSize || len(worlds) < p.maxWorlds {
+	minimax.MAXDEPTH = 3
+	if len(p.hand) < 8 {
+		minimax.MAXDEPTH = 6
+	}
+	if len(p.hand) < 7 {
+		minimax.MAXDEPTH = 9
+	}
+	if len(p.hand) < 6 {
+		minimax.MAXDEPTH = 9999
+	}
+
+	if true {
+	// if len(p.hand) <= p.maxHandSize || len(worlds) < p.maxWorlds {
 		cardsFreq := make(map[string]int)
 		cardsTotal := make(map[string]float64)
 		cards := make(map[string]Card)

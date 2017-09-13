@@ -2414,6 +2414,15 @@ func TestMiniMax9C(t *testing.T) {
 	}
 	dist[2] = Shuffle(dist[2])
 
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
 	skatState := SkatState{
 		CARO, // trump
 		dist, 			
@@ -2426,11 +2435,99 @@ func TestMiniMax9C(t *testing.T) {
 	}
 
 	// runToEnd("mm", skatState)
-	// runToEnd("ab", skatState, 0.0, 0.0)
-	runToEnd("abw", skatState, 60.0, 61.0)
-	runToEnd("abw", skatState, 89.0, 90.0)
-	runToEnd("abw", skatState, 61.0, 65.0)
-	runToEnd("abw", skatState, 65.0, 70.0)
+	runToEnd("ab", skatState, 0.0, 0.0)
+	// runToEnd("abw", skatState, 60.0, 61.0)
+	// runToEnd("abw", skatState, 89.0, 90.0)
+	// runToEnd("abw", skatState, 61.0, 65.0)
+	// runToEnd("abw", skatState, 65.0, 70.0)
+	// runToEnd("zw", skatState, 63.0)
+	// runToEnd("zw", skatState, 64.0)
+	// runToEnd("zw", skatState, 65.0)
+	// runToEnd("zw", skatState, 85.0)
+	// runToEnd("uct", skatState)
+
+	if false {t.Errorf("")}
+}
+
+func TestMiniMax10C(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card {
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+
+		Card{CARO, "K"},
+		Card{CARO, "10"},
+		Card{CARO, "9"},
+		Card{CARO, "8"},
+
+		Card{SPADE, "A"},
+		Card{SPADE, "K"},
+		Card{SPADE, "9"},
+
+		Card{CLUBS, "K"},
+	}
+	dist[0] = Shuffle(dist[0])
+	dist[1] = []Card {
+		Card{CARO, "J"},
+
+		Card{CARO, "A"},
+		Card{CARO, "7"},
+
+		Card{CLUBS, "A"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "D"},
+
+		Card{SPADE, "8"},
+		Card{SPADE, "D"},
+
+		Card{HEART, "8"},
+		Card{HEART, "10"},
+	}
+	dist[1] = Shuffle(dist[1])
+	dist[2] = []Card {
+		Card{CLUBS, "J"},
+
+		Card{CARO, "D"},
+
+		Card{SPADE, "10"},
+		Card{SPADE, "7"},
+
+		Card{HEART, "K"},
+		Card{HEART, "A"},
+
+		Card{CLUBS, "D"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "7"},
+	}
+	dist[2] = Shuffle(dist[2])
+
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
+	skatState := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{}, // trick 
+		0, // declarer 
+		0, // who's turn is it
+		10, // score because of skat  
+		0,
+		true,
+	}
+
+	// runToEnd("mm", skatState)
+	runToEnd("ab", skatState, 0.0, 0.0)
+	// runToEnd("abw", skatState, 60.0, 61.0)
+	// runToEnd("abw", skatState, 89.0, 90.0)
+	// runToEnd("abw", skatState, 61.0, 65.0)
+	// runToEnd("abw", skatState, 65.0, 70.0)
 	// runToEnd("zw", skatState, 63.0)
 	// runToEnd("zw", skatState, 64.0)
 	// runToEnd("zw", skatState, 65.0)
@@ -2445,8 +2542,28 @@ func runToEnd(alg string, skatState SkatState, al, b float64) {
 	skatStateP = &skatState
 	// minimax.DEBUG = true
 	startWhole := time.Now()
-	// for !skatStateP.IsTerminal() {
-	for i := 0; i < 1; i++ {
+	minimax.MAXDEPTH = 7
+	i := -1
+	for !skatStateP.IsTerminal() {
+		i++
+
+		if i%6 == 0 {
+			minimax.MAXDEPTH += 1
+		}
+
+		var ss *SkatState
+		ss = skatStateP.(*SkatState)
+		if len(ss.playerHand[0]) < 5 {
+			minimax.MAXDEPTH = 99999
+		}
+		if len(ss.playerHand[0]) >= 9 {
+			minimax.MAXDEPTH = 3
+
+		}
+		debugTacticsLog("MAXDEPTH %d\n", minimax.MAXDEPTH)
+
+
+	// for i := 0; i < 1; i++ {
 		start := time.Now()
 		var a game.Action
 		var v float64

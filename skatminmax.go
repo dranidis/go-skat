@@ -5,6 +5,17 @@ import (
 	"github.com/dranidis/go-skat/game"
 )
 
+// State representation:
+// Players are represented with the numbers: 0 1 2
+// 0 is the player who initiated the minimax algorithm
+// If 0 is the declarer then 	1 is opp1 	and 	2 is opp2
+// If 0 is the opp1 	then 	1 is opp2 	and 	2 is declarer
+// If 0 is the opp2 	then 	1 is declarer and 	2 is opp1
+// 
+// In the state we store the hands of the players: 0 1 2
+// Who is the declarer: 0, 1 or 2
+// And whose turn it is: 0, 1, or 2
+// 
 type SkatState struct {
 	trump         string
 	playerHand    [][]Card // YOU, 1, 2
@@ -42,47 +53,175 @@ func (m *SkatState) playToTheEndWithTactics() float64 {
 	var copyplayers []PlayerI
 	// copy the current players in the copyplayers array in order to restore them after play
 	// TODO
-	_ = copyplayers
-
-	var skatStateP game.State
-	skatStateP = m
-	for !skatStateP.IsTerminal() {
-		var a game.Action
-		skatAction := m.playWithTactics()
-		a = &skatAction
-		skatStateP = skatStateP.FindNextState(a)	
+	copyplayers = []PlayerI{
+		players[0].clone(),
+		players[1].clone(),
+		players[2].clone(),
 	}
 
-	// restore game players using copyplayers
-	return m.FindRewardNum()
-}
+	// debugTacticsLog("Current state %v\n", m)
 
-func (m SkatState) playWithTactics() SkatAction {
+
 	s := makeSuitState();
 	s.trump = m.trump
 
-	// m.playerhand[0] You
-	// m.playerhand[1] You
-	// m.playerhand[2] You
+	if len(m.trick) == 3 {
+		s.trick = []Card{}
+	} else {
+		s.trick = make([]Card, len(m.trick))
+		copy(s.trick, m.trick)
+	}
+	
+	p0 := makePlayer(m.playerHand[0]) 
+	p1 := makePlayer(m.playerHand[1]) 
+	p2 := makePlayer(m.playerHand[2]) 
 
-	p := makePlayer([]Card{}) // player whose turn it is
+	// can be refactored with an array [p0, p1, p2] and rotation m.declarer times.
+	players = []PlayerI{&p0, &p1, &p2}
 
-	s.trick = make([]Card, len(m.trick))
-	copy(s.trick, m.trick)
-
-	// s.declarer = ...
-
-	if len(m.trick) == 0 {
-		// s.leader = ...
+	if m.declarer == 0 {
+		s.declarer = &p0
+		s.opp1 = &p1
+		s.opp2 = &p2
+	}
+	if m.declarer == 1 {
+		s.declarer = &p1
+		s.opp1 = &p2
+		s.opp2 = &p0
+	}
+	if m.declarer == 2 {
+		s.declarer = &p2
+		s.opp1 = &p0
+		s.opp2 = &p1
 	}
 
-	// ...
-	valid := []Card{}
+	rotateTimes := m.turn - len(s.trick)
+	if rotateTimes < 0 {
+		rotateTimes += 3
+	}
+	for i := 0; i < rotateTimes; i++ {
+		players = rotatePlayers(players)
+	}
+	// we have reached the turn order in the current trick
 
-	card := p.playerTactic(&s, valid)
-	return SkatAction{card}
+	// debugTacticsLog("Players %v, trick %v\n", players, s.trick)
+	// playerNow := players[len(s.trick)]
+	s.leader = players[0]
+
+
+
+	f1 := debugTacticsLogFlag
+	f2 := gameLogFlag
+	f3 := fileLogFlag
+	debugTacticsLogFlag = false
+	gameLogFlag = false
+	fileLogFlag = false
+
+	for len(players[2].getHand()) > 0 {
+		players = moveOne(&s, players)
+	}
+
+	score := s.declarer.getScore() + m.declScore
+	debugTacticsLog("FINAL score: %d\n", score)
+	// var skatStateP game.State
+	// skatStateP = m
+	// for !skatStateP.IsTerminal() {
+	// // for i := 0; i < 1; i++ {
+	// 	var a game.Action
+	// 	skatAction := m.playWithTactics()
+	// 	a = skatAction
+	// 	debugTacticsLog("Action %v\n", skatAction)
+	// 	skatStateP = skatStateP.FindNextState(a)	
+	// 	debugTacticsLog("State %v\n", skatStateP)
+	// }
+
+	// restore game players using copyplayers
+	players = []PlayerI{
+		copyplayers[0],
+		copyplayers[1],
+		copyplayers[2],
+	}
+
+	debugTacticsLogFlag = f1
+	gameLogFlag = f2
+	fileLogFlag = f3
+
+
+	return float64(score)
+
+	// return m.FindRewardNum()
 }
+
+// func (m SkatState) playWithTactics() SkatAction {
+// 	s := makeSuitState();
+// 	s.trump = m.trump
 	
+// 	if len(m.trick) == 3 {
+// 		s.trick = []Card{}
+// 	} else {
+// 		s.trick = make([]Card, len(m.trick))
+// 		copy(s.trick, m.trick)
+// 	}
+	
+// 	p0 := makePlayer(m.playerHand[0]) 
+// 	p1 := makePlayer(m.playerHand[1]) 
+// 	p2 := makePlayer(m.playerHand[2]) 
+
+// 	// can be refactored with an array [p0, p1, p2] and rotation m.declarer times.
+// 	players = []PlayerI{&p0, &p1, &p2}
+
+// 	if m.declarer == 0 {
+// 		s.declarer = &p0
+// 		s.opp1 = &p1
+// 		s.opp2 = &p2
+// 	}
+// 	if m.declarer == 1 {
+// 		s.declarer = &p1
+// 		s.opp1 = &p2
+// 		s.opp2 = &p0
+// 	}
+// 	if m.declarer == 2 {
+// 		s.declarer = &p2
+// 		s.opp1 = &p0
+// 		s.opp2 = &p1
+// 	}
+
+// 	rotateTimes := m.turn - len(s.trick)
+// 	if rotateTimes < 0 {
+// 		rotateTimes += 3
+// 	}
+// 	for i := 0; i < rotateTimes; i++ {
+// 		players = rotatePlayers(players)
+// 	}
+// 	// we have reached the turn order in the current trick
+
+// 	debugTacticsLog("Players %v, trick %v\n", players, s.trick)
+// 	playerNow := players[len(s.trick)]
+
+// 	card := play(&s, playerNow)
+
+// 	return SkatAction{card}
+// }
+	
+func moveOne(s *SuitState, players []PlayerI) []PlayerI {
+	var card Card
+	if len(s.trick) == 0 {
+		card = play(s, players[0])
+		s.follow = getSuit(s.trump, s.trick[0])
+	}
+	if len(s.trick) == 1 {
+		card = play(s, players[1])
+	}
+	if len(s.trick) == 2 {
+		card = play(s, players[2])
+		players = setNextTrickOrder(s, players)
+		s.follow = ""
+	}
+	debugTacticsLog("Card played: %v\n", card)
+	return players
+}
+
+
 func (m SkatState) IsOpponentTurn() bool {
 	return m.declarer != m.turn
 }
