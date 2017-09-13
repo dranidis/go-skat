@@ -29,14 +29,58 @@ func (s SkatState) String() string {
 	return fmt.Sprintf("%s, %v, TRICK: %v, %d, %d, SCORE: %d - %d, %v", s.trump, s.playerHand, s.trick, s.declarer, s.turn, s.declScore, s.oppScore, s.schneiderGoal)
 }
 
-func (m SkatState) Heuristic() float64 {
+unc (m SkatState) Heuristic() float64 {
 	if m.IsTerminal() {
 		return m.FindRewardNum()
 	} else {
-		return 0 /// ????????????????
+		return m.playToTheEndWithTactics() 
 	}
 }
 
+func (m SkatState) playToTheEndWithTactics() {
+
+	var copyplayers []PlayerI
+	// copy the current players in the copyplayers array in order to restore them after play
+	// TODO
+	_ = copyplayers
+
+	while !m.IsTerminal() {
+		var a game.Action
+		skatAction = m.playWithTactics()
+		a = &skatAction
+		m = m.FindNextState(a)	
+	}
+
+	// restore game players using copyplayers
+	return m.FindRewardNum()
+}
+
+func (m SkatState) playWithTactics() SkatAction {
+	s := makeSuitState();
+	s.trump = m.trump
+
+	// m.playerhand[0] You
+	// m.playerhand[1] You
+	// m.playerhand[2] You
+
+	p := makePlayer([]Card{}) // player whose turn it is
+
+	s.trick = make([]Card, len(m.trick))
+	copy(s.trick, m.trick)
+
+	// s.declarer = ...
+
+	if len(m.trick) == 0 {
+		// s.leader = ...
+	}
+
+	// ...
+
+
+	card := p.playerTactic(s, valid)
+	return SkatAction{card}
+}
+	
 func (m SkatState) IsOpponentTurn() bool {
 	return m.declarer != m.turn
 }
