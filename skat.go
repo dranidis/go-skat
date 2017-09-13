@@ -47,7 +47,7 @@ var issSentDelay = 0
 var issUsername string
 
 var	minMaxPlayerFlag = false
-
+var maxHandSizeFlag = 4
 
 var gameIndex = 1
 var player1 PlayerI
@@ -177,6 +177,7 @@ func round(s *SuitState, players []PlayerI) []PlayerI {
 }
 
 func analysePlay(s *SuitState, p PlayerI, card Card) {
+	debugTacticsLog("PLAY ANALYSIS: %v, %s, Card: %v\n", s.trick, p.getName(), card)
 	// Player VOID on suit
 	if len(s.trick) > 0 && getSuit(s.trump, card) != getSuit(s.trump, s.trick[0]) {
 		debugTacticsLog("TRICK: %v, Card: %v\n", s.trick, card)
@@ -196,8 +197,11 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 	}
 
 	if p.getName() != s.declarer.getName() {
+		debugTacticsLog("PLAY ANALYSIS: OPP\n")
 		if s.follow == s.trump {
+			debugTacticsLog("PLAY ANALYSIS: TRUMP\n")
 			if getSuit(s.trump, card) == s.trump && (card.Rank == "A" || card.Rank == "10") {
+				debugTacticsLog("PLAY ANALYSIS: A/10\n")
 				if isLosingTrick(s, p, card) {
 					// TODO:
 					debugTacticsLog("INFERENCE: **************************************\n")
@@ -206,10 +210,10 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 					debugTacticsLog("INFERENCE: **************************************\n")
 
 					if p.getName() == s.opp1.getName() {
-						s.opp1VoidSuit[s.trump] = true
+					//	s.opp1VoidSuit[s.trump] = true
 					}
 					if p.getName() == s.opp2.getName() {
-						s.opp2VoidSuit[s.trump] = true
+					//	s.opp2VoidSuit[s.trump] = true
 					}
 				}
 			}
@@ -218,12 +222,16 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 }
 
 func isLosingTrick(s *SuitState, p PlayerI, card Card) bool {
-	for _, c := range s.trick {
-		if s.greater(card, c) {
-			return false
+	var c Card
+	for _, c = range s.trick {
+		if s.greater(c, card) {
+			return true
 		}
 	}
-	return true // TODO!!!!
+	// if noHigherCard(s, false, []Card{}, c) {
+	// 	return true
+	// }
+	return false // TODO!!!!
 }
 
 func play(s *SuitState, p PlayerI) Card {
@@ -505,8 +513,6 @@ func initState() {
 func initGame() {
 	for _, p := range players {
 		p.ResetPlayer()
-	}
-	for _, p := range players {
 		h := p.calculateHighestBid(false)
 		debugTacticsLog("(%v) hand: %v Bid up to: %d\n", p.getName(), p.getHand(), h)
 	}
@@ -852,6 +858,7 @@ func main() {
 	flag.StringVar(&issOpp1, "opp1", "xskat", "Opponent to play with at ISS skat server")
 	flag.StringVar(&issOpp2, "opp2", "xskat", "Opponent to play with at ISS skat server")
 	flag.IntVar(&issSentDelay, "issdelay", 0, "Delay (in ms) before sending an action to ISS server. Useful for debugging and for observing a game.")
+	flag.IntVar(&maxHandSizeFlag, "mm-max", 4, "Max hand size for the minimax player. Below that normal tactics are used.")
 	flag.StringVar(&dealGame, "deal", "", "Force a specific game deal: Grand, Null")
 	flag.Parse()
 
