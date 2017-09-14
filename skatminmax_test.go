@@ -2,8 +2,9 @@ package main
 
 import (
 	"testing"
+	"time"
 	"github.com/dranidis/go-skat/game"
-
+	"github.com/dranidis/go-skat/game/minimax"
 )
 
 func TestFindNextStateEndOfTrick(t *testing.T) {
@@ -251,28 +252,28 @@ func TestIsOpponentTurn(t *testing.T) {
 	}
 	s.declarer = 1
 	s.turn = 1
-	if s.IsOpponentTurn() {
+	if !s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.turn = 0 // YOU
-	if !s.IsOpponentTurn() {
+	if s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.turn = 2 // YOUR PARTNER
-	if !s.IsOpponentTurn() {
+	if s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.declarer = 2
 	s.turn = 2
-	if s.IsOpponentTurn() {
+	if !s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.turn = 0 // YOU 
-	if !s.IsOpponentTurn() {
+	if s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.turn = 1 // YOUR PARTNET
-	if !s.IsOpponentTurn() {
+	if s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 }
@@ -401,5 +402,230 @@ func TestFindLegals(t *testing.T) {
 	if ss1.oppScore != skatState.oppScore {
 		t.Errorf("Opponent score %d", ss1.declScore)
 	} 
+}
 
+func TestMoveOne(t *testing.T) {
+
+	p1 := makePlayer([]Card{
+		Card{CARO, "J"},
+		Card{SPADE, "A"},
+		})
+	p2 := makePlayer([]Card{
+		Card{CARO, "10"},
+		Card{SPADE, "10"},
+		})
+	p3 := makePlayer([]Card{
+		Card{HEART, "D"},
+		Card{CLUBS, "A"},
+		})
+
+	players := []PlayerI{&p1, &p2, &p3}
+
+	s := makeSuitState()
+	s.trump = CARO
+	s.declarer = &p1
+	s.leader = &p1
+	s.opp1 = &p2
+	s.opp2 = &p3
+
+	s.trick = []Card{
+	}
+
+	card, newplayers := moveOne(&s, players)
+
+	if len(s.trick) != 1 {
+		t.Errorf("Error moveone")
+	}
+
+	if !in(s.trick, card) {
+		t.Errorf("NOt in trick")
+	}
+
+	if newplayers[0] != players[0] {
+		t.Errorf("Wrong player order")
+	}
+}
+
+func TestAlphaBetaTactics2C(t *testing.T) {
+
+	h1 := []Card{
+		Card{CARO, "J"},
+		Card{SPADE, "A"},
+		}
+	h2 := []Card{
+		Card{CARO, "10"},
+		Card{SPADE, "10"},
+		}
+	h3 := []Card{
+		Card{HEART, "D"},
+		Card{CLUBS, "A"},
+		}
+
+	dist := [][]Card{h1, h2, h3}
+	skatState := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{}, // trick 
+		0, // declarer 
+		0, // who's turn is it
+		0, 
+		0,
+		true,
+	}
+
+	minimax.DEBUG = true
+
+	var skatStateP game.State
+	skatStateP = &skatState
+	var a game.Action
+	var v float64
+
+	if true {
+		a, v = minimax.AlphaBetaTactics(skatStateP)
+	}
+
+	debugTacticsLog("Action: %v, Value: %.4f\n", a, v)
+	if false {
+		t.Errorf("TEST")
+	}
+}
+
+func TestAlphaBetaTactics2CDef(t *testing.T) {
+
+	h1 := []Card{
+		Card{CARO, "J"},
+		Card{SPADE, "A"},
+		}
+	h2 := []Card{
+		Card{CARO, "10"},
+		Card{SPADE, "10"},
+		}
+	h3 := []Card{
+		Card{HEART, "D"},
+		Card{CLUBS, "A"},
+		}
+
+	dist := [][]Card{h1, h2, h3}
+	skatState := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{}, // trick 
+		1, // declarer 
+		0, // who's turn is it
+		0, 
+		0,
+		true,
+	}
+
+	minimax.DEBUG = true
+
+	var skatStateP game.State
+	skatStateP = &skatState
+	var a game.Action
+	var v float64
+
+	if (false) {
+ 		a, v = minimax.AlphaBetaTactics(skatStateP)
+	}
+	debugTacticsLog("Action: %v, Value: %.4f\n", a, v)
+	if false {
+		t.Errorf("TEST")
+	}
+}
+
+func TestAlphaBetaTactics10C(t *testing.T) {
+	dist := make([][]Card, 3)
+	dist[0] = []Card {
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+
+		Card{CARO, "K"},
+		Card{CARO, "10"},
+		Card{CARO, "9"},
+		Card{CARO, "8"},
+
+		Card{SPADE, "A"},
+		Card{SPADE, "K"},
+		Card{SPADE, "9"},
+
+		Card{CLUBS, "K"},
+	}
+	// dist[0] = Shuffle(dist[0])
+	dist[1] = []Card {
+		Card{CARO, "J"},
+
+		Card{CARO, "A"},
+		Card{CARO, "7"},
+
+		Card{CLUBS, "A"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "D"},
+
+		Card{SPADE, "8"},
+		Card{SPADE, "D"},
+
+		Card{HEART, "8"},
+		Card{HEART, "10"},
+	}
+	// dist[1] = Shuffle(dist[1])
+	dist[2] = []Card {
+		Card{CLUBS, "J"},
+
+		Card{CARO, "D"},
+
+		Card{SPADE, "10"},
+		Card{SPADE, "7"},
+
+		Card{HEART, "K"},
+		Card{HEART, "A"},
+
+		Card{CLUBS, "D"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "7"},
+	}
+	// dist[2] = Shuffle(dist[2])
+
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
+	skatState := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{}, // trick 
+		0, // declarer 
+		0, // who's turn is it
+		10, // score because of skat  
+		0,
+		true,
+	}
+
+	var skatStateP game.State
+	skatStateP = &skatState
+	var a game.Action
+	var v float64
+
+	minimax.MAXDEPTH = 9
+
+
+	startWhole := time.Now()
+
+	if (false) {
+ 		a, v = minimax.AlphaBetaTactics(skatStateP)
+	}
+	
+	ti := time.Now()
+	elapsed := ti.Sub(startWhole)		
+	debugTacticsLog("TOTAL %v\n", elapsed)
+
+	debugTacticsLog("Action: %v, Value: %.4f\n", a, v)
+	if false {
+		t.Errorf("TEST")
+	}
 }

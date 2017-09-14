@@ -150,6 +150,13 @@ func AlphaBetaTactics(state game.State) (game.Action, float64) {
 	return *action, value
 }
 
+
+// Player maximizes
+// Opponent uses tactics
+// For SKAT it needs adjustment, since when the player is a defender
+// then his partner (who is now considered also a player) maximizes, whereas 
+// he should also use tactics.
+//
 func alphaBetaTacticsAlg(state game.State, alpha, beta float64, depth int, tab string) (*game.Action, float64) {
 	treedepth := MAXDEPTH - depth
 
@@ -191,6 +198,7 @@ func alphaBetaTacticsAlg(state game.State, alpha, beta float64, depth int, tab s
 	} else { // Tactics
 		action := state.GetTacticsMove()
 		nextState := state.FindNextState(action)
+		debugLog("%4d %s(%s) game.Action %v :nextstate %v\n", treedepth, tab, debugStr, action, nextState)
 		_, value := alphaBetaTacticsAlg(nextState, alpha, beta, depth - 1, tab + "....")
 
 		bestValue, bestAction = value, action

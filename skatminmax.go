@@ -266,20 +266,23 @@ func (m *SkatState) playToTheEndWithTactics() float64 {
 // 	return SkatAction{card}
 // }
 	
+
+// TODO:
+// Replay all played tricks so that they get analysed
+// to be used by tactics.	
 func (m SkatState) GetTacticsMove() game.Action {
-	debugTacticsLog("Tactics move at state %v\n", m)
 
 // COPY PASTE FROM ABOVE
 	// NEEDS REFACTORING
 
-	var copyplayers []PlayerI
-	// copy the current players in the copyplayers array in order to restore them after play
-	// TODO
-	copyplayers = []PlayerI{
-		players[0].clone(),
-		players[1].clone(),
-		players[2].clone(),
-	}
+	// var copyplayers []PlayerI
+	// // copy the current players in the copyplayers array in order to restore them after play
+	// // TODO
+	// copyplayers = []PlayerI{
+	// 	players[0].clone(),
+	// 	players[1].clone(),
+	// 	players[2].clone(),
+	// }
 
 
 
@@ -334,19 +337,19 @@ func (m SkatState) GetTacticsMove() game.Action {
 	f1 := debugTacticsLogFlag
 	f2 := gameLogFlag
 	f3 := fileLogFlag
-	// debugTacticsLogFlag = false
-	// gameLogFlag = false
-	// fileLogFlag = false
+	debugTacticsLogFlag = false
+	gameLogFlag = false
+	fileLogFlag = false
 // END OF COPY PASTE
 
 	card, _ := moveOne(&s, players)
 
 // COPY PASTE
-	players = []PlayerI{
-		copyplayers[0],
-		copyplayers[1],
-		copyplayers[2],
-	}
+	// players = []PlayerI{
+	// 	copyplayers[0],
+	// 	copyplayers[1],
+	// 	copyplayers[2],
+	// }
 
 	debugTacticsLogFlag = f1
 	gameLogFlag = f2
@@ -358,27 +361,42 @@ func (m SkatState) GetTacticsMove() game.Action {
 }
 
 func moveOne(s *SuitState, players []PlayerI) (Card, []PlayerI) {
+	l := len(s.trick)
 	var card Card
-	if len(s.trick) == 0 {
+	if l == 0 {
 		card = play(s, players[0])
 		s.follow = getSuit(s.trump, s.trick[0])
-	}
-	if len(s.trick) == 1 {
+	} 
+	if l == 1 { 					// USING else if bevause play changes the s.trick
+		debugTacticsLog("moveOne: %v\n", s.trick)
 		card = play(s, players[1])
-	}
-	if len(s.trick) == 2 {
+	} 
+	if l == 2 {
+		debugTacticsLog("moveOne: %v\n", s.trick)
 		card = play(s, players[2])
 		players = setNextTrickOrder(s, players)
 		s.follow = ""
 	}
-	debugTacticsLog("Card played: %v\n", card)
 	return card, players
 }
 
 
+// func (m SkatState) IsOpponentTurn() bool {
+// 	return m.declarer != m.turn
+// }
+
 func (m SkatState) IsOpponentTurn() bool {
-	return m.declarer != m.turn
-}
+ 	if m.declarer == 0 && m.turn == 0 {
+ 		return false
+ 	}
+ 	if m.declarer == 0 && m.turn != 0 {
+ 		return true
+ 	}
+ 	if m.declarer == m.turn {
+ 		return true
+ 	}
+ 	return false
+ }
 
 func (m *SkatState) IsTerminal() bool {
 	if !m.schneiderGoal {
@@ -408,7 +426,8 @@ func (m *SkatState) FindRewardNum() float64 {
 	// if m.declScore > winsScore - 1 {
 	// 	return float64(0.0)
 	// }
-	return float64(m.declScore) // TODO
+	// return float64(m.declScore) // TODO
+	return float64(m.declScore - m.oppScore)  // TODO
 }
 
 func (m *SkatState) FindReward() float64 {

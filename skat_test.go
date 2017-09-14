@@ -2351,9 +2351,10 @@ func TestMiniMax6C(t *testing.T) {
 		true,
 	}
 
-	minimax.DEBUG = true
+	_ = skatState
+	// minimax.DEBUG = true
 	// runToEnd("mm", skatState)
-	runToEnd("abt", skatState, 0.0, 0.0)
+	// runToEnd("abt", skatState, 0.0, 0.0)
 	// runToEnd("ab", skatState, 0.0, 0.0)
 	// runToEnd("abw", skatState, 60.0, 61.0)
 	// runToEnd("abw", skatState, 89.0, 90.0)
@@ -2436,8 +2437,9 @@ func TestMiniMax9C(t *testing.T) {
 		true,
 	}
 
+	_ = skatState
 	// runToEnd("mm", skatState)
-	runToEnd("ab", skatState, 0.0, 0.0)
+	// runToEnd("ab", skatState, 0.0, 0.0)
 	// runToEnd("abw", skatState, 60.0, 61.0)
 	// runToEnd("abw", skatState, 89.0, 90.0)
 	// runToEnd("abw", skatState, 61.0, 65.0)
@@ -2524,8 +2526,12 @@ func TestMiniMax10C(t *testing.T) {
 		true,
 	}
 
+	_ = skatState
+
+
 	// runToEnd("mm", skatState)
-	runToEnd("ab", skatState, 0.0, 0.0)
+	// runToEnd("ab", skatState, 0.0, 0.0)
+	// runToEnd("abt", skatState, 0.0, 0.0)
 	// runToEnd("abw", skatState, 60.0, 61.0)
 	// runToEnd("abw", skatState, 89.0, 90.0)
 	// runToEnd("abw", skatState, 61.0, 65.0)
