@@ -2466,7 +2466,7 @@ func TestMiniMax10C(t *testing.T) {
 
 		Card{CLUBS, "K"},
 	}
-	dist[0] = Shuffle(dist[0])
+	// dist[0] = Shuffle(dist[0])
 	dist[1] = []Card {
 		Card{CARO, "J"},
 
@@ -2483,7 +2483,7 @@ func TestMiniMax10C(t *testing.T) {
 		Card{HEART, "8"},
 		Card{HEART, "10"},
 	}
-	dist[1] = Shuffle(dist[1])
+	// dist[1] = Shuffle(dist[1])
 	dist[2] = []Card {
 		Card{CLUBS, "J"},
 
@@ -2500,7 +2500,7 @@ func TestMiniMax10C(t *testing.T) {
 		Card{CLUBS, "9"},
 		Card{CLUBS, "7"},
 	}
-	dist[2] = Shuffle(dist[2])
+	// dist[2] = Shuffle(dist[2])
 
 	p1 := makePlayer(dist[0])
 	p2 := makePlayer(dist[1])
@@ -2544,7 +2544,8 @@ func runToEnd(alg string, skatState SkatState, al, b float64) {
 	startWhole := time.Now()
 	minimax.MAXDEPTH = 7
 	i := -1
-	for !skatStateP.IsTerminal() {
+	// for !skatStateP.IsTerminal() {
+	for j := 0; j < 1; j++ {
 		i++
 
 		if i%6 == 0 {
@@ -2563,7 +2564,6 @@ func runToEnd(alg string, skatState SkatState, al, b float64) {
 		debugTacticsLog("MAXDEPTH %d\n", minimax.MAXDEPTH)
 
 
-	// for i := 0; i < 1; i++ {
 		start := time.Now()
 		var a game.Action
 		var v float64

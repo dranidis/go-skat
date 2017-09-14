@@ -45,6 +45,7 @@ var issOpp1 = "xskat"
 var issOpp2 = "xskat"
 var issSentDelay = 0
 var issUsername string
+var issDEBUG = false
 
 var	minMaxPlayerFlag = false
 var maxHandSizeFlag = 4
@@ -854,6 +855,7 @@ func main() {
 	flag.BoolVar(&fileLogFlag, "log", true, "Saves log in a file")
 	flag.BoolVar(&html, "html", false, "Starts an HTTP server at localhost:3000")
 	flag.BoolVar(&issConnect, "iss", false, "Connects to ISS skat server")
+	flag.BoolVar(&issDEBUG, "issDEBUG", false, "Fakes the responses of the skat server for debugging.")
 	flag.BoolVar(&minMaxPlayerFlag, "minmax", false, "Uses a MinMax CPU player a AI player at ISS")
 	flag.StringVar(&issOpp1, "opp1", "xskat", "Opponent to play with at ISS skat server")
 	flag.StringVar(&issOpp2, "opp2", "xskat", "Opponent to play with at ISS skat server")

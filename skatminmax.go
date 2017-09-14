@@ -121,6 +121,69 @@ func (m *SkatState) playToTheEndWithTactics() float64 {
 		players = moveOne(&s, players)
 	}
 
+
+	// minimax chooses cards with high value at the beginning 
+	// in order to maximize the gain.
+	// For example it might prefer to play an A over a low trump (if both win) 
+	// in the first trick since it 
+	// adds 11 to the score. Instead if it plays a low trump 0 is added.
+	//
+	// create a test:
+	// trick = DA
+	// hand = J J K D 8 7     8     A 9 7
+	// MINIMAX plays highest Jack. 7 could win and keep the Jack
+
+// Another issue:
+//	
+// Trick: []
+// (xskat) HAND [] valid: []
+// 	Previous suit: xskat:SPADE, xskat:2:CARO
+// (xskat) PLAY ANALYSIS: [], xskat, Card: 8
+// PLAY ANALYSIS: OPP
+// Trick: [8]
+// (xskat:2) HAND [] valid: []
+// 	Previous suit: xskat:CARO, xskat:2:CARO
+// (xskat:2) PLAY ANALYSIS: [8], xskat:2, Card: 9
+// PLAY ANALYSIS: OPP
+// Trick: [8 9] both CARO
+// (goskat) HAND [10 CLubs D 9 Heart ] valid: [10 D 9]
+// (goskat) MM: ALL REMAINING CARDS (4): [K D 9 K]
+// MM: ..Opponent 2 is VOID in CLUBS
+// MM: REMAINING after void: 4 cards: [K D 9 SPADE K HEART ] [] []
+// MM: (goskat) 6 Worlds
+// MM: MinMaxPlayer
+// MM: MINMAX: cards xskat: [K D], xskat:2: [9 K], SKAT:[10 10]
+// MM: Decl: 0
+// MM: Suggesting card: D with value 68.0000
+// MM: MinMaxPlayer
+// MM: MINMAX: cards xskat: [K 9], xskat:2: [D K], SKAT:[10 10]
+// MM: Decl: 0
+// MM: Suggesting card: D with value 68.0000
+// MM: MinMaxPlayer
+// MM: MINMAX: cards xskat: [K K], xskat:2: [D 9], SKAT:[10 10]
+// MM: Decl: 0
+// MM: Suggesting card: D with value 72.0000
+// MM: MinMaxPlayer
+// MM: MINMAX: cards xskat: [D 9], xskat:2: [K K], SKAT:[10 10]
+// MM: Decl: 0
+// MM: Suggesting card: D with value 69.0000
+// MM: ..PRELIMINARY END!
+// MM: Time: 2.35922ms
+// MM: (goskat) Hand: [10 D 9], Playing card: D (at least 4 times) 
+
+	// WHY GIVE 3 points away??
+	// Although it does not change the outcome of the game
+	// D would be lost anyway in next trick (taken by K)
+
+// 	goskat: void:SPADE 
+// 	xskat: void:
+// 	xskat:2: void:CLUBS 
+// DECLARER ..sure winners: [10]BACKHAND TRUMP OR No cards of suit played...ZERO valued trick. DO not trump!...LOSING Cards (last)[D 9]
+// MM: 
+// TACTICS suggest: 9
+
+
+
 	score := s.declarer.getScore() + m.declScore
 	debugTacticsLog("FINAL score: %d\n", score)
 	// var skatStateP game.State
