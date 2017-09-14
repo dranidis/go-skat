@@ -2351,11 +2351,13 @@ func TestMiniMax6C(t *testing.T) {
 		true,
 	}
 
+	minimax.DEBUG = true
 	// runToEnd("mm", skatState)
-	runToEnd("ab", skatState, 0.0, 0.0)
-	runToEnd("abw", skatState, 60.0, 61.0)
-	runToEnd("abw", skatState, 89.0, 90.0)
-	runToEnd("abw", skatState, 61.0, 89.0)
+	runToEnd("abt", skatState, 0.0, 0.0)
+	// runToEnd("ab", skatState, 0.0, 0.0)
+	// runToEnd("abw", skatState, 60.0, 61.0)
+	// runToEnd("abw", skatState, 89.0, 90.0)
+	// runToEnd("abw", skatState, 61.0, 89.0)
 	// runToEnd("zw", skatState, 63.0)
 	// runToEnd("zw", skatState, 64.0)
 	// runToEnd("zw", skatState, 65.0)
@@ -2544,8 +2546,8 @@ func runToEnd(alg string, skatState SkatState, al, b float64) {
 	startWhole := time.Now()
 	minimax.MAXDEPTH = 7
 	i := -1
-	// for !skatStateP.IsTerminal() {
-	for j := 0; j < 1; j++ {
+	for !skatStateP.IsTerminal() {
+	// for j := 0; j < 1; j++ {
 		i++
 
 		if i%6 == 0 {
@@ -2561,6 +2563,8 @@ func runToEnd(alg string, skatState SkatState, al, b float64) {
 			minimax.MAXDEPTH = 3
 
 		}
+
+		minimax.MAXDEPTH = 99999		
 		debugTacticsLog("MAXDEPTH %d\n", minimax.MAXDEPTH)
 
 
@@ -2572,6 +2576,9 @@ func runToEnd(alg string, skatState SkatState, al, b float64) {
 			a, v = minimax.Minimax(skatStateP)
 		case "ab":
 			a, v = minimax.AlphaBeta(skatStateP)
+		case "abt":
+			debugTacticsLog("Calling ABT\n")
+			a, v = minimax.AlphaBetaTactics(skatStateP)
 		case "uct":
 			mcts.SimulationRuns = 1000
 			mcts.ExplorationParameter = 2.0

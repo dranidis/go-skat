@@ -118,7 +118,7 @@ func (m *SkatState) playToTheEndWithTactics() float64 {
 	fileLogFlag = false
 
 	for len(players[2].getHand()) > 0 {
-		players = moveOne(&s, players)
+		_, players = moveOne(&s, players)
 	}
 
 
@@ -266,7 +266,98 @@ func (m *SkatState) playToTheEndWithTactics() float64 {
 // 	return SkatAction{card}
 // }
 	
-func moveOne(s *SuitState, players []PlayerI) []PlayerI {
+func (m SkatState) GetTacticsMove() game.Action {
+	debugTacticsLog("Tactics move at state %v\n", m)
+
+// COPY PASTE FROM ABOVE
+	// NEEDS REFACTORING
+
+	var copyplayers []PlayerI
+	// copy the current players in the copyplayers array in order to restore them after play
+	// TODO
+	copyplayers = []PlayerI{
+		players[0].clone(),
+		players[1].clone(),
+		players[2].clone(),
+	}
+
+
+
+	s := makeSuitState();
+	s.trump = m.trump
+
+	if len(m.trick) == 3 {
+		s.trick = []Card{}
+	} else {
+		s.trick = make([]Card, len(m.trick))
+		copy(s.trick, m.trick)
+	}
+	
+	p0 := makePlayer(m.playerHand[0]) 
+	p1 := makePlayer(m.playerHand[1]) 
+	p2 := makePlayer(m.playerHand[2]) 
+
+	// can be refactored with an array [p0, p1, p2] and rotation m.declarer times.
+	players = []PlayerI{&p0, &p1, &p2}
+
+	if m.declarer == 0 {
+		s.declarer = &p0
+		s.opp1 = &p1
+		s.opp2 = &p2
+	}
+	if m.declarer == 1 {
+		s.declarer = &p1
+		s.opp1 = &p2
+		s.opp2 = &p0
+	}
+	if m.declarer == 2 {
+		s.declarer = &p2
+		s.opp1 = &p0
+		s.opp2 = &p1
+	}
+
+	rotateTimes := m.turn - len(s.trick)
+	if rotateTimes < 0 {
+		rotateTimes += 3
+	}
+	for i := 0; i < rotateTimes; i++ {
+		players = rotatePlayers(players)
+	}
+	// we have reached the turn order in the current trick
+
+	// debugTacticsLog("Players %v, trick %v\n", players, s.trick)
+	// playerNow := players[len(s.trick)]
+	s.leader = players[0]
+
+
+
+	f1 := debugTacticsLogFlag
+	f2 := gameLogFlag
+	f3 := fileLogFlag
+	// debugTacticsLogFlag = false
+	// gameLogFlag = false
+	// fileLogFlag = false
+// END OF COPY PASTE
+
+	card, _ := moveOne(&s, players)
+
+// COPY PASTE
+	players = []PlayerI{
+		copyplayers[0],
+		copyplayers[1],
+		copyplayers[2],
+	}
+
+	debugTacticsLogFlag = f1
+	gameLogFlag = f2
+	fileLogFlag = f3
+
+// END OF COPY PASTE
+
+	return SkatAction{card}
+}
+
+func moveOne(s *SuitState, players []PlayerI) (Card, []PlayerI) {
 	var card Card
 	if len(s.trick) == 0 {
 		card = play(s, players[0])
@@ -281,7 +372,7 @@ func moveOne(s *SuitState, players []PlayerI) []PlayerI {
 		s.follow = ""
 	}
 	debugTacticsLog("Card played: %v\n", card)
-	return players
+	return card, players
 }
 
 
