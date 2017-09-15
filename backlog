@@ -1,0 +1,6 @@
+World generation
+	Generate 1000 valid worlds
+	Choose 20 from these
+	At every move if you find a world is no more valid, make it invalid so that it is not picked up
+
+	

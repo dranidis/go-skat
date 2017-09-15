@@ -65,12 +65,18 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 			minimax.MAXDEPTH = 9999
 		}	
 	case "abt":
-		minimax.MAXDEPTH = 9
+		minimax.MAXDEPTH = 6
+		if len(p.hand) < 10 {
+			minimax.MAXDEPTH = 6
+		}		
+		if len(p.hand) < 9 {
+			minimax.MAXDEPTH = 9
+		}
 		if len(p.hand) < 8 {
-			minimax.MAXDEPTH = 15
+			minimax.MAXDEPTH = 12
 		}
 		if len(p.hand) < 7 {
-			minimax.MAXDEPTH = 9999
+			minimax.MAXDEPTH = 15
 		}
 		if len(p.hand) < 6 {
 			minimax.MAXDEPTH = 9999
@@ -240,6 +246,7 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 	// a, value := minimax.Minimax(&skatState)
 	// a, value := minimax.AlphaBeta(&skatState)
 
+	start := time.Now()
 	var a game.Action
 	var value float64
 	switch MINIMAX_ALG {
@@ -251,6 +258,9 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 			// debugTacticsLog("Calling ABT\n")
 			a, value = minimax.AlphaBetaTactics(&skatState)
 	}
+	end := time.Now()
+	elapsed := end.Sub(start)
+	debugMinmaxLog("Hand size: %d, MAXDEPTH: %d, Time: %8.6f sec\n", len(p.hand), minimax.MAXDEPTH, elapsed.Seconds())
 
 	ma := a.(SkatAction)
 

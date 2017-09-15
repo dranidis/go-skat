@@ -23,6 +23,7 @@ var delayMs = 1000
 var totalGames = 21
 var oficialScoring = false
 
+var verbose = false
 /*
 channels for html and ISS comm
 */
@@ -360,10 +361,13 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 	ouvert := false
 	gs := 0
 
+	scoringString := ""
 	if state.trump == NULL {
-		gameLog("\nSCORING\n\tNULL ")
+		scoringString += fmt.Sprintf("\nGame: %d\tNULL ", gameIndex)
+		// gameLog("\nSCORING\n\tNULL ")
 		if handGame {
-			gameLog("HAND \n")
+			scoringString += fmt.Sprintf("HAND \n")
+			// gameLog("HAND \n")
 			if state.declarer.isSchwarz() {
 				gs = 35
 			} else {
@@ -376,7 +380,8 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 				gs = -46
 			}
 		}
-		gameLog("SCORE %d\t", gs)
+		scoringString += fmt.Sprintf("SCORE %d\t", gs)
+		// gameLog("SCORE %d\t", gs)
 	} else {
 		mat := matadors(state.trump, cs)
 		withMatadors = mat
@@ -386,28 +391,33 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 		multiplier := mat + 1
 
 		if withMatadors > 0 {
-			gameLog("\nSCORING\n\t%s, With %d ", state.trump, mat)
+			scoringString += fmt.Sprintf("\nGame: %d\t%s, With %d ", gameIndex, state.trump, mat)
+			// gameLog("\nSCORING\n\t%s, With %d ", state.trump, mat)
 		} else {
-			gameLog("\nSCORING\n\t%s, Without %d ", state.trump, mat)
+			scoringString += fmt.Sprintf("\nGame: %d\t%s, Without %d ", gameIndex, state.trump, mat)
+			// gameLog("\nSCORING\n\t%s, Without %d ", state.trump, mat)
 		}
 
 		base := trumpBaseValue(state.trump)
 
 		if handGame {
 			multiplier++
-			gameLog("Hand ")
+			scoringString += fmt.Sprintf("Hand ")
+			// gameLog("Hand ")
 		}
 		// Schneider?
 		if state.declarer.getScore() > 89 || state.declarer.getScore() < 31 {
 			multiplier++
 			schneider = true
-			gameLog("Schneider ")
+			scoringString += fmt.Sprintf("Schneider ")
+			// gameLog("Schneider ")
 		}
 
 		if state.declarer.isSchwarz() || (state.opp1.isSchwarz() && state.opp2.isSchwarz()) {
 			multiplier++
 			schwarz = true
-			gameLog("Schwarz ")
+			scoringString += fmt.Sprintf("Schwarz ")
+			// gameLog("Schwarz ")
 		}
 		//gameLog("\n\n")
 		gs = multiplier * base
@@ -415,7 +425,8 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 		// OVERBID?
 		if gs < state.declarer.getDeclaredBid() {
 			fmt.Printf(" --OVERBID!!! Game Value: %d < Bid: %d-- ", gs, state.declarer.getDeclaredBid())
-			gameLog(" --OVERBID!!! Game Value: %d < Bid: %d-- ", gs, state.declarer.getDeclaredBid())
+			scoringString += fmt.Sprintf(" --OVERBID!!! Game Value: %d < Bid: %d-- ", gs, state.declarer.getDeclaredBid())
+			// gameLog(" --OVERBID!!! Game Value: %d < Bid: %d-- ", gs, state.declarer.getDeclaredBid())
 			overbid = true
 			leastMult := 0
 			for leastMult*base < state.declarer.getDeclaredBid() {
@@ -428,7 +439,14 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 		} else {
 			gs = -2 * gs
 		}
-		gameLog("SCORE %d\t", gs)
+		scoringString += fmt.Sprintf("SCORE %d\t", gs)
+		// gameLog("SCORE %d\t", gs)
+	}
+
+	gameLog(scoringString)
+
+	if verbose {
+		fmt.Printf(scoringString)
 	}
 
 	scoreStruct := Score{
@@ -622,15 +640,19 @@ func declareAndPlay() int {
 
 	state.declarer.incTotalScore(gs)
 
+	scoreString := ""
 	if gs > 0 {
 		if oficialScoring {
 			state.declarer.incTotalScore(50)
 		}
 		if state.trump != NULL {
-			gameLog("%s VICTORY: %d - %d, SCORE: %d\n", state.declarer.getName(),
+			scoreString = fmt.Sprintf("%s VICTORY: %d - %d, SCORE: %d\n", state.declarer.getName(),
 				state.declarer.getScore(), state.opp1.getScore()+state.opp2.getScore(), gs)
+			// gameLog("%s VICTORY: %d - %d, SCORE: %d\n", state.declarer.getName(),
+			// 	state.declarer.getScore(), state.opp1.getScore()+state.opp2.getScore(), gs)
 		} else {
-			gameLog("%s VICTORY: %d\n", state.declarer.getName(), gs)
+			scoreString = fmt.Sprintf("%s VICTORY: %d\n", state.declarer.getName(), gs)
+			// gameLog("%s VICTORY: %d\n", state.declarer.getName(), gs)
 		}
 	} else {
 		if oficialScoring {
@@ -641,13 +663,20 @@ func declareAndPlay() int {
 		state.opp1.wonAsDefenders()
 		state.opp2.wonAsDefenders()
 		if state.trump != NULL {
-			gameLog("%s DEFEAT: %d - %d, SCORE: %d\n", state.declarer.getName(),
+			scoreString = fmt.Sprintf("%s DEFEAT: %d - %d, SCORE: %d\n", state.declarer.getName(),
 				state.declarer.getScore(), state.opp1.getScore()+state.opp2.getScore(), gs)
+			// gameLog("%s DEFEAT: %d - %d, SCORE: %d\n", state.declarer.getName(),
+			// 	state.declarer.getScore(), state.opp1.getScore()+state.opp2.getScore(), gs)
 		} else {
-			gameLog("%s DEFEAT: %d\n", state.declarer.getName(), gs)
+			scoreString = fmt.Sprintf("%s DEFEAT: %d\n", state.declarer.getName(), gs)
+			// gameLog("%s DEFEAT: %d\n", state.declarer.getName(), gs)
 		}
-
 	}
+	gameLog(scoreString)
+	if verbose {
+		fmt.Printf(scoreString)
+	}
+
 	gameSc.Total1 = gamePlayers[0].getTotalScore()
 	gameSc.Total2 = gamePlayers[1].getTotalScore()
 	gameSc.Total3 = gamePlayers[2].getTotalScore()
@@ -849,6 +878,7 @@ func main() {
 	flag.IntVar(&totalGames, "n", 36, "total number of games, default 36")
 	flag.IntVar(&randSeed, "r", 0, "Seed for random number generator. A value of 0 generates a random number to be used as a seed.")
 	flag.BoolVar(&auto, "auto", false, "Runs with CPU players only")
+	flag.BoolVar(&verbose, "v", false, "More info in auto mode.")
 	flag.BoolVar(&analysis, "analysis", false, "Exhaustively tries out all the moves of a player in a repeated game")
 	flag.BoolVar(&winAnalysis, "win", true, "Win or Lose target of the analysed player")
 	flag.IntVar(&analysisPlayer, "player", 1, "The player whose moves are being analysed")
