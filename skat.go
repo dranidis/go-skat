@@ -893,7 +893,7 @@ func main() {
 	flag.BoolVar(&issDEBUG, "issDEBUG", false, "Fakes the responses of the skat server for debugging.")
 	flag.BoolVar(&minMaxPlayerFlag, "minmax", false, "Uses a MinMax CPU player a AI player at ISS")
 	flag.BoolVar(&minmax2Flag, "minmax2", false, "Uses a MinMax CPU player as 2nd player in auto and html.")
-	flag.BoolVar(&minmax3Flag, "minmax2", false, "Uses a MinMax CPU player as 3rd player in auto and html.")
+	flag.BoolVar(&minmax3Flag, "minmax3", false, "Uses a MinMax CPU player as 3rd player in auto and html.")
 	flag.StringVar(&MINIMAX_ALG, "mmalg", "abt", "Algorithm used by minmax player: ab alphabeta, abt alphabeta with tactics for opponents")
 	flag.StringVar(&issOpp1, "opp1", "xskat", "Opponent to play with at ISS skat server")
 	flag.StringVar(&issOpp2, "opp2", "xskat", "Opponent to play with at ISS skat server")

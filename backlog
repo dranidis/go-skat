@@ -27,6 +27,16 @@ REFACTORING
 	Move players array into SuitState
 	Maybe also gamePlayers array
 
+
+
+Find out why MINMAX Tactics player is losing:
+	go build; go install; go-skat -auto -n 12  -v  -r 15 -minmax2
+
+
+
+-------------------------------------------------------------------------
+DONE:
+
 FLAGS
 	Allow customization of auto players:
 	e.g -minmax1 Make 1st player minmax

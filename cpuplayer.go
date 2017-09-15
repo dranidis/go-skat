@@ -186,45 +186,6 @@ func (p Player) nullSafeSuit(s string, cards []Card) int {
 	}
 	debugTacticsLog(" risk: %d\n", risk)
 	return risk
-// }
-	// cs := filter(p.hand, func (c Card) bool {
-	// 	return c.Suit == s
-	// 	})
-	// if in(cs, Card{s, "7"}) && len(cs) == 1 {
-	// 	return true
-	// }
-	// if in(cs, Card{s, "7"}, Card{s, "8"}) && len(cs) == 2 {
-	// 	return true
-	// }
-	// if in(cs, Card{s, "7"}, Card{s, "8"}, Card{s, "9"})  && len(cs) == 3 {
-	// 	return true
-	// }
-	// if in(cs, Card{s, "7"}, Card{s, "8"}, Card{s, "10"})  && len(cs) == 3  {
-	// 	return true
-	// }
-	// if in(cs, Card{s, "7"}, Card{s, "8"}, Card{s, "10"}, Card{s, "J"})  && len(cs) == 3  {
-	// 	return true
-	// }
-
-	// if !led && in(cs, Card{s, "7"}, Card{s, "8"}, Card{s, "J"}) {
-	// 	return true
-	// }
-	// if !led && in(cs, Card{s, "7"}, Card{s, "9"}) && len(cs) == 2 {
-	// 	return true
-	// }
-	// if !led && in(cs, Card{s, "7"}, Card{s, "9"}) && len(cs) == 2 {
-	// 	return true
-	// }
-	// if !led && in(cs, Card{s, "7"}, Card{s, "9"}) && len(cs) == 2 {
-	// 	return true
-	// }
-	// if !led && in(cs, Card{s, "7"}, Card{s, "9"}, Card{s, "10"})  && len(cs) == 3 {
-	// 	return true
-	// }
-	// if !led && in(cs, Card{s, "7"}, Card{s, "9"}, Card{s, "J"})  && len(cs) == 3 {
-	// 	return true
-	// }
-	// return false
 }
 
 func (p Player) canWin(afterSkat bool) string {
@@ -1205,12 +1166,8 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 
 func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 	var card Card
-	// if p.firstCardPlay {
-	// 	debugTacticsLog("(%s) FIRST CARD PLAY\n", p.name)
-	// 	return c[0]
-	// }
-	printCollectedInfo(s)
 
+	printCollectedInfo(s)
 	
 	if s.declarer.getName() == p.getName(){
 		card = p.declarerTactic(s, c)
@@ -1219,15 +1176,6 @@ func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 	} else {
 		log.Fatal(fmt.Sprintf("Unassigned player %v\n. Declarer: %v\n Opp1: %v\n Opp2: %v\n", p, s.declarer, s.opp1, s.opp2))
 	}
-
-
-	// if s.declarer == p {
-	// 	card = p.declarerTactic(s, c)
-	// } else if s.opp1 == p || s.opp2 == p {
-	// 	card = p.opponentTactic(s, c)
-	// } else {
-	// 	log.Fatal(fmt.Sprintf("Unassigned player %v\n. Declarer: %v\n Opp1: %v\n Opp2: %v\n", p, s.declarer, s.opp1, s.opp2))
-	// }
 	return card
 }
 
@@ -1348,20 +1296,6 @@ func (p *Player) calculateHighestBid(afterSkat bool) int {
 
 func (p *Player) declareTrump() string {
 	return p.trumpToDeclare
-	// if p.trumpToDeclare == GRAND {
-	// 	return GRAND
-	// }
-
-	// // TODO:
-	// // if after SKAT pick up bid less than score use the next suit
-	// trump := mostCardsSuit(p.getHand())
-
-	// if p.getGamevalue(trump) < p.declaredBid {
-	// 	debugTacticsLog("Game Value: %d. Declared bid: %d. TO AVOID OVERBID I will play first trump %s and not new %s.\n",
-	// 		p.getGamevalue(trump), p.declaredBid, p.trumpToDeclare, trump)
-	// 	trump = p.trumpToDeclare
-	// }
-	// return trump
 }
 
 //         You     Bob     Ana
