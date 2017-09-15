@@ -13,6 +13,7 @@ type Player struct {
 	handGame bool
 }
 
+
 func makePlayer(hand []Card) Player {
 	return Player{
 		PlayerData:     makePlayerData(hand),
@@ -21,6 +22,17 @@ func makePlayer(hand []Card) Player {
 		trumpToDeclare: "NOTRUMP",
 		handGame:	false,
 	}
+}
+
+func (p *Player) clone() PlayerI {
+	newPlayer := makePlayer([]Card{})
+
+	newPlayer.PlayerData = p.PlayerData.clone()
+	newPlayer.firstCardPlay = p.firstCardPlay
+	newPlayer.risky = p.risky
+	newPlayer.trumpToDeclare = p.trumpToDeclare
+	newPlayer.handGame = p.handGame
+	return &newPlayer
 }
 
 func (p *Player) ResetPlayer() {
@@ -647,7 +659,10 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 					return c.Suit == s.follow && c.Rank != "J"
 					}))
 				debugTacticsLog(".. %d %s cards still in play..", fs, s.follow)
-				if fs > 4 {
+				if fs > 4 && len(sortedValueNoTrumps) > 0 {
+					// this became an empty array 
+					// need to think what will happen in that case
+					// as an alternative
 					return sortedValueNoTrumps[len(sortedValueNoTrumps) - 1]
 				}
 			} 

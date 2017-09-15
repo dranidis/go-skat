@@ -19,6 +19,14 @@ func makeISSPlayer(hand []Card) ISSPlayer {
 	}
 }
 
+func (p *ISSPlayer) clone() PlayerI {
+	newPlayer := makeISSPlayer([]Card{})
+
+	newPlayer.PlayerData = p.PlayerData.clone()
+	newPlayer.shortcut = p.shortcut
+	return &newPlayer
+}
+
 func (p *ISSPlayer) setPartner(partner PlayerI) {
 
 }

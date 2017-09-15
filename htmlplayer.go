@@ -10,6 +10,14 @@ type HtmlPlayer struct {
 	handGame bool
 }
 
+func (p *HtmlPlayer) clone() PlayerI {
+	newPlayer := makeHtmlPlayer([]Card{})
+
+	newPlayer.PlayerData = p.PlayerData.clone()
+	newPlayer.handGame = p.handGame
+	return &newPlayer
+}
+
 func makeHtmlPlayer(hand []Card) HtmlPlayer {
 	return HtmlPlayer{
 		PlayerData: makePlayerData(hand)}

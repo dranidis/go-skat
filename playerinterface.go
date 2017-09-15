@@ -30,5 +30,6 @@ type PlayerI interface {
 	setPartner(p PlayerI)
 
 	ResetPlayer()
+	clone() PlayerI
 }
 

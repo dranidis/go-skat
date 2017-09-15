@@ -26,7 +26,6 @@ var	waitServer chan string
 var connR io.Reader
 var connW io.Writer
 var serverLogFile *os.File
-var real = true
 
 
 
@@ -34,7 +33,7 @@ func Connect(usr, pwd string) error {
 	waitServer = make(chan string)
 
 	// connect to server socket
-	if real {
+	if ! issDEBUG {
 		var conniss io.ReadWriter
 		var err error
 		if conniss, err = net.Dial("tcp", "skatgame.net:7000"); err != nil {
@@ -522,7 +521,7 @@ func iss_declare(trump string, hand bool, skat []Card) {
 }
 
 func sendToServer(s string) {
-	if real {
+	if !issDEBUG {
 		time.Sleep(time.Duration(issSentDelay) * time.Millisecond)
 	} else {
 		time.Sleep(time.Duration(1000) * time.Millisecond)		

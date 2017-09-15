@@ -19,6 +19,29 @@ type PlayerData struct {
 }
 
 
+func (p *PlayerData) clone() PlayerData{
+	newPlayerData := makePlayerData([]Card{})
+
+	newPlayerData.name = p.name
+	newHand := make([]Card, len(p.hand))
+	copy(newHand, p.hand)
+
+	newPlayerData.hand = newHand
+	newPlayerData.highestBid = p.highestBid
+	newPlayerData.score  = p.score
+	newPlayerData.schwarz = p.schwarz
+	newPlayerData.totalScore = p.totalScore
+	newPlayerData.previousSuit = p.previousSuit
+	newPlayerData.won = p.won
+	newPlayerData.lost = p.lost
+	newPlayerData.defWon = p.defWon
+	newPlayerData.declaredBid = p.declaredBid
+
+	return newPlayerData
+}
+
+
+
 func (p *PlayerData) ResetPlayer() {
 	p.setScore(0)
 	p.setSchwarz(true)

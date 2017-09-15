@@ -17,6 +17,14 @@ func makeHumanPlayer(hand []Card) HumanPlayer {
 		PlayerData: makePlayerData(hand)}
 }
 
+func (p *HumanPlayer) clone() PlayerI {
+	newPlayer := makeHumanPlayer([]Card{})
+
+	newPlayer.PlayerData = p.PlayerData.clone()
+	newPlayer.handGame = p.handGame
+	return &newPlayer
+}
+
 func (p *HumanPlayer) setPartner(partner PlayerI) {
 
 }

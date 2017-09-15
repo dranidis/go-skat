@@ -8,3 +8,4 @@
 *.check
 *logfile
 .tmp
+go-skat
