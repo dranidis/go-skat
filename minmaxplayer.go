@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/dranidis/go-skat/game"
 	"github.com/dranidis/go-skat/game/minimax"
 	// "github.com/dranidis/go-skat/game/mcts"
 	"math/rand"
@@ -51,17 +52,31 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 	debugMinmaxLog("(%s) %d Worlds\n", p.name, len(worlds))
 
 	start := time.Now()
-
-	minimax.MAXDEPTH = 3
-	if len(p.hand) < 8 {
-		minimax.MAXDEPTH = 6
-	}
-	if len(p.hand) < 7 {
+	switch MINIMAX_ALG {
+	case "ab":
+		minimax.MAXDEPTH = 3
+		if len(p.hand) < 8 {
+			minimax.MAXDEPTH = 6
+		}
+		if len(p.hand) < 7 {
+			minimax.MAXDEPTH = 9
+		}
+		if len(p.hand) < 6 {
+			minimax.MAXDEPTH = 9999
+		}	
+	case "abt":
 		minimax.MAXDEPTH = 9
+		if len(p.hand) < 8 {
+			minimax.MAXDEPTH = 15
+		}
+		if len(p.hand) < 7 {
+			minimax.MAXDEPTH = 9999
+		}
+		if len(p.hand) < 6 {
+			minimax.MAXDEPTH = 9999
+		}	
 	}
-	if len(p.hand) < 6 {
-		minimax.MAXDEPTH = 9999
-	}
+	
 
 	if true {
 	// if len(p.hand) <= p.maxHandSize || len(worlds) < p.maxWorlds {
@@ -223,7 +238,19 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 	// a, value := mcts.Uct(&skatState, runMilliseconds)
 
 	// a, value := minimax.Minimax(&skatState)
-	a, value := minimax.AlphaBeta(&skatState)
+	// a, value := minimax.AlphaBeta(&skatState)
+
+	var a game.Action
+	var value float64
+	switch MINIMAX_ALG {
+		case "mm":
+			a, value = minimax.Minimax(&skatState)
+		case "ab":
+			a, value = minimax.AlphaBeta(&skatState)
+		case "abt":
+			// debugTacticsLog("Calling ABT\n")
+			a, value = minimax.AlphaBetaTactics(&skatState)
+	}
 
 	ma := a.(SkatAction)
 

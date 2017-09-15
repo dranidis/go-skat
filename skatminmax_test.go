@@ -405,11 +405,12 @@ func TestFindLegals(t *testing.T) {
 }
 
 func TestMoveOne(t *testing.T) {
-
-	p1 := makePlayer([]Card{
+	p1Hand := []Card{
 		Card{CARO, "J"},
 		Card{SPADE, "A"},
-		})
+		}
+
+	p1 := makePlayer(p1Hand)
 	p2 := makePlayer([]Card{
 		Card{CARO, "10"},
 		Card{SPADE, "10"},
@@ -444,6 +445,90 @@ func TestMoveOne(t *testing.T) {
 	if newplayers[0] != players[0] {
 		t.Errorf("Wrong player order")
 	}
+
+	if !in(p1Hand, card) {
+		t.Errorf("Wrong card")
+	}
+
+}
+
+
+func TestGetGameSuitStateAndPlayers(t *testing.T) {
+
+	h1 := []Card{
+		Card{CARO, "J"},
+		Card{SPADE, "A"},
+		}
+	h2 := []Card{
+		Card{CARO, "10"},
+		Card{SPADE, "10"},
+		}
+	h3 := []Card{
+		Card{HEART, "D"},
+		Card{CLUBS, "A"},
+		}
+
+	dist := [][]Card{h1, h2, h3}
+	skatState := SkatState{
+		CARO, // trump
+		dist, 			
+		[]Card{}, // trick 
+		0, // declarer 
+		0, // who's turn is it
+		5, 
+		6,
+		true,
+	}
+
+	s, players := skatState.getGameSuitStateAndPlayers()
+
+	debugTacticsLog("Suitstate %v\n", *s)
+	debugTacticsLog("Player[0] %v\n", players[0])
+	// if players[0].getScore() != 5 {
+	// 	t.Errorf("Wrong declarer score: ", players[0].getScore())
+	// }
+	if s.trump != skatState.trump {
+		t.Errorf("Wrong trump")
+	}
+
+	if s.declarer != players[0] && s.opp1 != players[1] && s.opp2 != players[2] {
+		t.Errorf("Wrong turn order")
+	}
+
+	// new test case
+	skatState.declarer = 2
+	s, players = skatState.getGameSuitStateAndPlayers()
+
+	if s.declarer != players[2] && s.opp1 != players[0] && s.opp2 != players[1] {
+		t.Errorf("Wrong turn order, when declarer is 2")
+	}
+
+	// new test case
+	skatState.declarer = 1
+	s, players = skatState.getGameSuitStateAndPlayers()
+
+	if s.declarer != players[1] && s.opp1 != players[2] && s.opp2 != players[0] {
+		t.Errorf("Wrong turn order, when declarer is 1")
+	}
+
+	// new test case
+	skatState.trick = []Card{Card{CARO, "K"}}
+	// new test case
+	skatState.declarer = 0
+	s, players = skatState.getGameSuitStateAndPlayers()
+
+	if s.declarer != players[1] && s.opp1 != players[2] && s.opp2 != players[0] {
+		t.Errorf("Wrong turn order, when declarer is 0 and trick len 1")
+	}
+
+	// new test case
+	skatState.turn = 2
+	s, players = skatState.getGameSuitStateAndPlayers()
+
+	if s.declarer != players[2] && s.opp1 != players[0] && s.opp2 != players[1] {
+		t.Errorf("Wrong turn order, when declarer is 0 and trick len 1, and turn 2")
+	}
+
 }
 
 func TestAlphaBetaTactics2C(t *testing.T) {
@@ -468,8 +553,8 @@ func TestAlphaBetaTactics2C(t *testing.T) {
 		[]Card{}, // trick 
 		0, // declarer 
 		0, // who's turn is it
-		0, 
-		0,
+		5, 
+		15,
 		true,
 	}
 

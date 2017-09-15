@@ -49,6 +49,7 @@ var issDEBUG = false
 
 var	minMaxPlayerFlag = false
 var maxHandSizeFlag = 4
+var MINIMAX_ALG = "abt"
 
 var gameIndex = 1
 var player1 PlayerI
@@ -857,12 +858,14 @@ func main() {
 	flag.BoolVar(&issConnect, "iss", false, "Connects to ISS skat server")
 	flag.BoolVar(&issDEBUG, "issDEBUG", false, "Fakes the responses of the skat server for debugging.")
 	flag.BoolVar(&minMaxPlayerFlag, "minmax", false, "Uses a MinMax CPU player a AI player at ISS")
+	flag.StringVar(&MINIMAX_ALG, "mmalg", "abt", "Algorithm used by minmax player: ab alphabeta, abt alphabeta with tactics for opponents")
 	flag.StringVar(&issOpp1, "opp1", "xskat", "Opponent to play with at ISS skat server")
 	flag.StringVar(&issOpp2, "opp2", "xskat", "Opponent to play with at ISS skat server")
 	flag.IntVar(&issSentDelay, "issdelay", 0, "Delay (in ms) before sending an action to ISS server. Useful for debugging and for observing a game.")
 	flag.IntVar(&maxHandSizeFlag, "mm-max", 4, "Max hand size for the minimax player. Below that normal tactics are used.")
 	flag.StringVar(&dealGame, "deal", "", "Force a specific game deal: Grand, Null")
 	flag.Parse()
+
 
 	if auto {
 		gameLogFlag = false

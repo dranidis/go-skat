@@ -2340,6 +2340,15 @@ func TestMiniMax6C(t *testing.T) {
 	}
 	dist[2] = Shuffle(dist[2])
 
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
 	skatState := SkatState{
 		CARO, // trump
 		dist, 			
