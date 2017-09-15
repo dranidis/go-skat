@@ -335,14 +335,14 @@ func (p Player) canWin(afterSkat bool) string {
 	debugTacticsLog("Extra suits: %d\n", aces)
 	prob := 0
 
-	if largest > 4 && aces > 0 {
+	if largest > 4 && aces > 2 {
 		prob = 80
 	}
 
-	if largest > 5 {
+	if largest > 5 && aces > 1  {
 		prob = 85
 	}
-	if largest > 6 {
+	if largest > 6 && aces > 0   {
 		prob = 99
 	}	
 	if largest > 6 && aces > 1  {

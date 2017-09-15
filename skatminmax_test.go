@@ -252,28 +252,28 @@ func TestIsOpponentTurn(t *testing.T) {
 	}
 	s.declarer = 1
 	s.turn = 1
-	if !s.IsOpponentTurn() {
+	if s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.turn = 0 // YOU
-	if s.IsOpponentTurn() {
+	if !s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.turn = 2 // YOUR PARTNER
-	if s.IsOpponentTurn() {
+	if !s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.declarer = 2
 	s.turn = 2
-	if !s.IsOpponentTurn() {
+	if s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.turn = 0 // YOU 
-	if s.IsOpponentTurn() {
+	if !s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 	s.turn = 1 // YOUR PARTNET
-	if s.IsOpponentTurn() {
+	if !s.IsOpponentTurn() {
 		t.Errorf("Error opponent")
 	}
 }

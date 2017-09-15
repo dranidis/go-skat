@@ -3,4 +3,15 @@ World generation
 	Choose 20 from these
 	At every move if you find a world is no more valid, make it invalid so that it is not picked up
 
-	
+
+Analysis of games played
+	Type of game played
+	Player
+	Percentages
+
+	e.g.
+	GRAND/NULL/SUIT/GRAND H/NULL H/SUIT H
+	You Bob Ana
+	10% 12% 13% declared
+	68% 72% 65% won
+	XX% XX% XX%  lost

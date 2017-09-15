@@ -338,22 +338,22 @@ func moveOne(s *SuitState, players []PlayerI) (Card, []PlayerI) {
 }
 
 
-// func (m SkatState) IsOpponentTurn() bool {
-// 	return m.declarer != m.turn
-// }
-
 func (m SkatState) IsOpponentTurn() bool {
- 	if m.declarer == 0 && m.turn == 0 {
- 		return false
- 	}
- 	if m.declarer == 0 && m.turn != 0 {
- 		return true
- 	}
- 	if m.declarer == m.turn {
- 		return true
- 	}
- 	return false
- }
+	return m.declarer != m.turn
+}
+
+// func (m SkatState) IsOpponentTurn() bool {
+//  	if m.declarer == 0 && m.turn == 0 {
+//  		return false
+//  	}
+//  	if m.declarer == 0 && m.turn != 0 {
+//  		return true
+//  	}
+//  	if m.declarer == m.turn {
+//  		return true
+//  	}
+//  	return false
+//  }
 
 func (m *SkatState) IsTerminal() bool {
 	if !m.schneiderGoal {

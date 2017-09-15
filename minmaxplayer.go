@@ -48,6 +48,11 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 		return p.Player.playerTactic(s, c)
 	}
 
+	if p.getName() != s.declarer.getName() {
+		debugTacticsLog("CURRENTLY PLAYING MINMAX only for declarer!!!!\n")
+		return p.Player.playerTactic(s, c)
+	}
+
 	worlds := p.dealCards(s)
 	debugMinmaxLog("(%s) %d Worlds\n", p.name, len(worlds))
 
