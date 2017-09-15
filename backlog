@@ -15,3 +15,18 @@ Analysis of games played
 	10% 12% 13% declared
 	68% 72% 65% won
 	XX% XX% XX%  lost
+
+INFERENCE
+	For each suit count the cards played to conclude about the SKAT cards
+	7 cards of each suit.
+	1st trick 3 cards
+	2nd trick 3 cards
+	High probability that card in the skat (if you don't have it)
+
+REFACTORING
+	Move players array into SuitState
+	Maybe also gamePlayers array
+
+FLAGS
+	Allow customization of auto players:
+	e.g -minmax1 Make 1st player minmax

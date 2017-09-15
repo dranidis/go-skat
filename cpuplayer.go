@@ -18,7 +18,7 @@ func makePlayer(hand []Card) Player {
 	return Player{
 		PlayerData:     makePlayerData(hand),
 		firstCardPlay:  false,
-		risky:          false,
+		risky:          true,
 		trumpToDeclare: "NOTRUMP",
 		handGame:	false,
 	}

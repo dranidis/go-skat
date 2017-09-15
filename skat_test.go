@@ -848,7 +848,7 @@ func TestFindBlankCards(t *testing.T) {
 func TestGame(t *testing.T) {
 	// player1 is declared globally
 	player := makePlayer([]Card{})
-	player1 = &player
+	player1 := &player
 
 	player2 := makePlayer([]Card{})
 	player3 := makePlayer([]Card{})
