@@ -12,7 +12,7 @@ var logFile io.Writer = nil
 var debugTacticsLogFlag = false
 var gameLogFlag = true
 var fileLogFlag = true
-var htmlLogFlag = false
+var htmlLogFlag = true
 var logFileName = "gameLog.txt"
 
 func logToFile(format string, a ...interface{}) {

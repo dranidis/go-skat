@@ -53,6 +53,7 @@ var maxHandSizeFlag = 4
 var MINIMAX_ALG = "abt"
 var minmax2Flag = false
 var minmax3Flag = false
+var	minimaxSearching = false
 
 var gameIndex = 1
 var player1 PlayerI
@@ -129,7 +130,7 @@ func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
 		gameLog("TRICK %v\n", s.trick)
 		debugTacticsLog("%d points: %d - %d\n", sum(s.trick), s.declarer.getScore(), s.opp1.getScore()+s.opp2.getScore())
 	}
-	if html {
+	if html && !minimaxSearching {
 		winnerChannel <- winner.getName()
 	}
 

@@ -250,10 +250,10 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 
 	// a, value := minimax.Minimax(&skatState)
 	// a, value := minimax.AlphaBeta(&skatState)
-
 	start := time.Now()
 	var a game.Action
 	var value float64
+	minimaxSearching = true
 	switch MINIMAX_ALG {
 		case "mm":
 			a, value = minimax.Minimax(&skatState)
@@ -263,6 +263,7 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 			// debugTacticsLog("Calling ABT\n")
 			a, value = minimax.AlphaBetaTactics(&skatState)
 	}
+	minimaxSearching = false
 	end := time.Now()
 	elapsed := end.Sub(start)
 	debugMinmaxLog("Hand size: %d, MAXDEPTH: %d, Time: %8.6f sec\n", len(p.hand), minimax.MAXDEPTH, elapsed.Seconds())
