@@ -2349,7 +2349,15 @@ func TestMiniMax6C(t *testing.T) {
 
 	players = []PlayerI{&p1, &p2, &p3}
 
+	ss := makeSuitState()
+	ss.trump = CARO
+	ss.declarer = &p1
+	ss.opp1 = &p2
+	ss.opp2 = &p3
+	ss.leader = &p1
+
 	skatState := SkatState{
+		ss,
 		CARO, // trump
 		dist, 			
 		[]Card{}, // trick 
@@ -2377,182 +2385,182 @@ func TestMiniMax6C(t *testing.T) {
 	if false {t.Errorf("")}
 }
 
-func TestMiniMax9C(t *testing.T) {
-	dist := make([][]Card, 3)
-	dist[0] = []Card {
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
+// func TestMiniMax9C(t *testing.T) {
+// 	dist := make([][]Card, 3)
+// 	dist[0] = []Card {
+// 		Card{SPADE, "J"},
+// 		Card{HEART, "J"},
 
-		Card{CARO, "K"},
-		Card{CARO, "10"},
-		Card{CARO, "9"},
-		Card{CARO, "8"},
+// 		Card{CARO, "K"},
+// 		Card{CARO, "10"},
+// 		Card{CARO, "9"},
+// 		Card{CARO, "8"},
 
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "9"},
-	}
-	dist[0] = Shuffle(dist[0])
-	dist[1] = []Card {
-		Card{CARO, "J"},
+// 		Card{SPADE, "A"},
+// 		Card{SPADE, "K"},
+// 		Card{SPADE, "9"},
+// 	}
+// 	dist[0] = Shuffle(dist[0])
+// 	dist[1] = []Card {
+// 		Card{CARO, "J"},
 
-		Card{CARO, "A"},
-		Card{CARO, "7"},
+// 		Card{CARO, "A"},
+// 		Card{CARO, "7"},
 
-		Card{CLUBS, "A"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "D"},
+// 		Card{CLUBS, "A"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "D"},
 
-		Card{SPADE, "8"},
+// 		Card{SPADE, "8"},
 
-		Card{HEART, "8"},
-		Card{HEART, "10"},
-	}
-	dist[1] = Shuffle(dist[1])
-	dist[2] = []Card {
-		Card{CLUBS, "J"},
+// 		Card{HEART, "8"},
+// 		Card{HEART, "10"},
+// 	}
+// 	dist[1] = Shuffle(dist[1])
+// 	dist[2] = []Card {
+// 		Card{CLUBS, "J"},
 
-		Card{CARO, "D"},
+// 		Card{CARO, "D"},
 
-		Card{SPADE, "10"},
-		Card{SPADE, "7"},
+// 		Card{SPADE, "10"},
+// 		Card{SPADE, "7"},
 
-		Card{HEART, "K"},
+// 		Card{HEART, "K"},
 
-		Card{CLUBS, "D"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "7"},
-	}
-	dist[2] = Shuffle(dist[2])
+// 		Card{CLUBS, "D"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "9"},
+// 		Card{CLUBS, "7"},
+// 	}
+// 	dist[2] = Shuffle(dist[2])
 
-	p1 := makePlayer(dist[0])
-	p2 := makePlayer(dist[1])
-	p3 := makePlayer(dist[2])
-	p1.name = "Decl"
-	p2.name = "Opp1"
-	p3.name = "Opp2"
+// 	p1 := makePlayer(dist[0])
+// 	p2 := makePlayer(dist[1])
+// 	p3 := makePlayer(dist[2])
+// 	p1.name = "Decl"
+// 	p2.name = "Opp1"
+// 	p3.name = "Opp2"
 
-	players = []PlayerI{&p1, &p2, &p3}
+// 	players = []PlayerI{&p1, &p2, &p3}
 
-	skatState := SkatState{
-		CARO, // trump
-		dist, 			
-		[]Card{}, // trick 
-		0, // declarer 
-		0, // who's turn is it
-		19, 
-		25,
-		true,
-	}
+// 	skatState := SkatState{
+// 		CARO, // trump
+// 		dist, 			
+// 		[]Card{}, // trick 
+// 		0, // declarer 
+// 		0, // who's turn is it
+// 		19, 
+// 		25,
+// 		true,
+// 	}
 
-	_ = skatState
-	// runToEnd("mm", skatState)
-	// runToEnd("ab", skatState, 0.0, 0.0)
-	// runToEnd("abw", skatState, 60.0, 61.0)
-	// runToEnd("abw", skatState, 89.0, 90.0)
-	// runToEnd("abw", skatState, 61.0, 65.0)
-	// runToEnd("abw", skatState, 65.0, 70.0)
-	// runToEnd("zw", skatState, 63.0)
-	// runToEnd("zw", skatState, 64.0)
-	// runToEnd("zw", skatState, 65.0)
-	// runToEnd("zw", skatState, 85.0)
-	// runToEnd("uct", skatState)
+// 	_ = skatState
+// 	// runToEnd("mm", skatState)
+// 	// runToEnd("ab", skatState, 0.0, 0.0)
+// 	// runToEnd("abw", skatState, 60.0, 61.0)
+// 	// runToEnd("abw", skatState, 89.0, 90.0)
+// 	// runToEnd("abw", skatState, 61.0, 65.0)
+// 	// runToEnd("abw", skatState, 65.0, 70.0)
+// 	// runToEnd("zw", skatState, 63.0)
+// 	// runToEnd("zw", skatState, 64.0)
+// 	// runToEnd("zw", skatState, 65.0)
+// 	// runToEnd("zw", skatState, 85.0)
+// 	// runToEnd("uct", skatState)
 
-	if false {t.Errorf("")}
-}
+// 	if false {t.Errorf("")}
+// }
 
-func TestMiniMax10C(t *testing.T) {
-	dist := make([][]Card, 3)
-	dist[0] = []Card {
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
+// func TestMiniMax10C(t *testing.T) {
+// 	dist := make([][]Card, 3)
+// 	dist[0] = []Card {
+// 		Card{SPADE, "J"},
+// 		Card{HEART, "J"},
 
-		Card{CARO, "K"},
-		Card{CARO, "10"},
-		Card{CARO, "9"},
-		Card{CARO, "8"},
+// 		Card{CARO, "K"},
+// 		Card{CARO, "10"},
+// 		Card{CARO, "9"},
+// 		Card{CARO, "8"},
 
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "9"},
+// 		Card{SPADE, "A"},
+// 		Card{SPADE, "K"},
+// 		Card{SPADE, "9"},
 
-		Card{CLUBS, "K"},
-	}
-	// dist[0] = Shuffle(dist[0])
-	dist[1] = []Card {
-		Card{CARO, "J"},
+// 		Card{CLUBS, "K"},
+// 	}
+// 	// dist[0] = Shuffle(dist[0])
+// 	dist[1] = []Card {
+// 		Card{CARO, "J"},
 
-		Card{CARO, "A"},
-		Card{CARO, "7"},
+// 		Card{CARO, "A"},
+// 		Card{CARO, "7"},
 
-		Card{CLUBS, "A"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "D"},
+// 		Card{CLUBS, "A"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "D"},
 
-		Card{SPADE, "8"},
-		Card{SPADE, "D"},
+// 		Card{SPADE, "8"},
+// 		Card{SPADE, "D"},
 
-		Card{HEART, "8"},
-		Card{HEART, "10"},
-	}
-	// dist[1] = Shuffle(dist[1])
-	dist[2] = []Card {
-		Card{CLUBS, "J"},
+// 		Card{HEART, "8"},
+// 		Card{HEART, "10"},
+// 	}
+// 	// dist[1] = Shuffle(dist[1])
+// 	dist[2] = []Card {
+// 		Card{CLUBS, "J"},
 
-		Card{CARO, "D"},
+// 		Card{CARO, "D"},
 
-		Card{SPADE, "10"},
-		Card{SPADE, "7"},
+// 		Card{SPADE, "10"},
+// 		Card{SPADE, "7"},
 
-		Card{HEART, "K"},
-		Card{HEART, "A"},
+// 		Card{HEART, "K"},
+// 		Card{HEART, "A"},
 
-		Card{CLUBS, "D"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "7"},
-	}
-	// dist[2] = Shuffle(dist[2])
+// 		Card{CLUBS, "D"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "9"},
+// 		Card{CLUBS, "7"},
+// 	}
+// 	// dist[2] = Shuffle(dist[2])
 
-	p1 := makePlayer(dist[0])
-	p2 := makePlayer(dist[1])
-	p3 := makePlayer(dist[2])
-	p1.name = "Decl"
-	p2.name = "Opp1"
-	p3.name = "Opp2"
+// 	p1 := makePlayer(dist[0])
+// 	p2 := makePlayer(dist[1])
+// 	p3 := makePlayer(dist[2])
+// 	p1.name = "Decl"
+// 	p2.name = "Opp1"
+// 	p3.name = "Opp2"
 
-	players = []PlayerI{&p1, &p2, &p3}
+// 	players = []PlayerI{&p1, &p2, &p3}
 
-	skatState := SkatState{
-		CARO, // trump
-		dist, 			
-		[]Card{}, // trick 
-		0, // declarer 
-		0, // who's turn is it
-		10, // score because of skat  
-		0,
-		true,
-	}
+// 	skatState := SkatState{
+// 		CARO, // trump
+// 		dist, 			
+// 		[]Card{}, // trick 
+// 		0, // declarer 
+// 		0, // who's turn is it
+// 		10, // score because of skat  
+// 		0,
+// 		true,
+// 	}
 
-	_ = skatState
+// 	_ = skatState
 
 
-	// runToEnd("mm", skatState)
-	// runToEnd("ab", skatState, 0.0, 0.0)
-	// runToEnd("abt", skatState, 0.0, 0.0)
-	// runToEnd("abw", skatState, 60.0, 61.0)
-	// runToEnd("abw", skatState, 89.0, 90.0)
-	// runToEnd("abw", skatState, 61.0, 65.0)
-	// runToEnd("abw", skatState, 65.0, 70.0)
-	// runToEnd("zw", skatState, 63.0)
-	// runToEnd("zw", skatState, 64.0)
-	// runToEnd("zw", skatState, 65.0)
-	// runToEnd("zw", skatState, 85.0)
-	// runToEnd("uct", skatState)
+// 	// runToEnd("mm", skatState)
+// 	// runToEnd("ab", skatState, 0.0, 0.0)
+// 	// runToEnd("abt", skatState, 0.0, 0.0)
+// 	// runToEnd("abw", skatState, 60.0, 61.0)
+// 	// runToEnd("abw", skatState, 89.0, 90.0)
+// 	// runToEnd("abw", skatState, 61.0, 65.0)
+// 	// runToEnd("abw", skatState, 65.0, 70.0)
+// 	// runToEnd("zw", skatState, 63.0)
+// 	// runToEnd("zw", skatState, 64.0)
+// 	// runToEnd("zw", skatState, 65.0)
+// 	// runToEnd("zw", skatState, 85.0)
+// 	// runToEnd("uct", skatState)
 
-	if false {t.Errorf("")}
-}
+// 	if false {t.Errorf("")}
+// }
 
 func runToEnd(alg string, skatState SkatState, al, b float64) {
 	var skatStateP game.State

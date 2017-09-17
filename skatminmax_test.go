@@ -28,7 +28,24 @@ func TestFindNextStateEndOfTrick(t *testing.T) {
 		Card{CLUBS, "9"},
 	}
 
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
+	ss := makeSuitState()
+	ss.trump = CARO
+	ss.declarer = &p1
+	ss.opp1 = &p2
+	ss.opp2 = &p3
+	ss.leader = &p3
+
 	skatState := SkatState{
+		ss,
 		CARO, // trump
 		dist, 			
 		[]Card{Card{SPADE, "J"}, Card{SPADE, "8"}}, // trick 
@@ -84,7 +101,25 @@ func TestFindNextStateEndOfTrick2(t *testing.T) {
 		Card{CLUBS, "9"},
 	}
 
+
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
+	ss := makeSuitState()
+	ss.trump = CARO
+	ss.declarer = &p1
+	ss.opp1 = &p2
+	ss.opp2 = &p3
+	ss.leader = &p3
+
 	skatState := SkatState{
+		ss,
 		CARO, // trump
 		dist, 			
 		[]Card{{SPADE, "A"}, Card{CLUBS, "A"}}, // trick 
@@ -138,7 +173,24 @@ func TestFindNextStateEndOfTrick3(t *testing.T) {
 		Card{CLUBS, "9"},
 	}
 
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
+	ss := makeSuitState()
+	ss.trump = CARO
+	ss.declarer = &p1
+	ss.opp1 = &p2
+	ss.opp2 = &p3
+	ss.leader = &p3
+
 	skatState := SkatState{
+		ss,
 		CARO, // trump
 		dist, 			
 		[]Card{{SPADE, "K"}, Card{SPADE, "8"}}, // trick 
@@ -192,7 +244,24 @@ func TestFindNextStateNewTrick(t *testing.T) {
 		Card{CLUBS, "9"},
 	}
 
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
+	ss := makeSuitState()
+	ss.trump = CARO
+	ss.declarer = &p1
+	ss.opp1 = &p2
+	ss.opp2 = &p3
+	ss.leader = &p1
+
 	skatState := SkatState{
+		ss,
 		CARO, // trump
 		dist, 			
 		[]Card{{SPADE, "A"}, Card{CLUBS, "A"}, Card{SPADE, "7"}}, // trick 
@@ -228,7 +297,24 @@ func TestFindNextStateNewTrick(t *testing.T) {
 func TestIsOpponentTurn(t *testing.T) {
 	dist := make([][]Card, 3)
 
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
+	ss := makeSuitState()
+	ss.trump = CARO
+	ss.declarer = &p1
+	ss.opp1 = &p2
+	ss.opp2 = &p3
+	ss.leader = &p1
+
 	s := SkatState{
+		ss,
 		CARO, // trump
 		dist, 			
 		[]Card{}, // trick 
@@ -297,7 +383,25 @@ func TestCopySkatState(t *testing.T) {
 		Card{CARO, "K"},
 	}
 
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
+	sst := makeSuitState()
+	sst.trump = CARO
+	sst.declarer = &p1
+	sst.opp1 = &p2
+	sst.opp2 = &p3
+	sst.leader = &p1
+
+
 	skatState := SkatState{
+		sst,
 		CLUBS,
 		dist, 			
 		[]Card{}, 
@@ -308,7 +412,7 @@ func TestCopySkatState(t *testing.T) {
 		false,
 	}
 
-	ss := copySkatState(skatState)
+	ss := skatState.copySkatState()
 
 	// fmt.Printf("%v\n", skatState)
 	// fmt.Printf("%v\n", ss)
@@ -343,7 +447,24 @@ func TestFindLegals(t *testing.T) {
 		Card{CARO, "K"},
 	}
 
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
+	sst := makeSuitState()
+	sst.trump = CARO
+	sst.declarer = &p1
+	sst.opp1 = &p2
+	sst.opp2 = &p3
+	sst.leader = &p1
+
 	skatState := SkatState{
+		sst,
 		CLUBS,
 		dist, 			
 		[]Card{
@@ -469,7 +590,26 @@ func TestGetGameSuitStateAndPlayers(t *testing.T) {
 		}
 
 	dist := [][]Card{h1, h2, h3}
+
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
+	sst := makeSuitState()
+	sst.trump = CARO
+	sst.declarer = &p1
+	sst.opp1 = &p2
+	sst.opp2 = &p3
+	sst.leader = &p1
+
+
 	skatState := SkatState{
+		sst,
 		CARO, // trump
 		dist, 			
 		[]Card{}, // trick 
@@ -492,7 +632,9 @@ func TestGetGameSuitStateAndPlayers(t *testing.T) {
 	}
 
 	if s.declarer != players[0] && s.opp1 != players[1] && s.opp2 != players[2] {
-		t.Errorf("Wrong turn order")
+		t.Errorf("Wrong turn order. Expecting: Decl:%s=%s, O1:%s=%s, O2:%s=%s ",
+			s.declarer.getName(), players[0].getName(), 
+			s.opp1.getName(), players[1].getName(), s.opp2.getName(), players[2].getName())
 	}
 
 	// new test case
@@ -547,7 +689,26 @@ func TestAlphaBetaTactics2C(t *testing.T) {
 		}
 
 	dist := [][]Card{h1, h2, h3}
+
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
+	sst := makeSuitState()
+	sst.trump = CARO
+	sst.declarer = &p1
+	sst.opp1 = &p2
+	sst.opp2 = &p3
+	sst.leader = &p1
+
+
 	skatState := SkatState{
+		sst,
 		CARO, // trump
 		dist, 			
 		[]Card{}, // trick 
@@ -591,7 +752,25 @@ func TestAlphaBetaTactics2CDef(t *testing.T) {
 		}
 
 	dist := [][]Card{h1, h2, h3}
+
+	p1 := makePlayer(dist[0])
+	p2 := makePlayer(dist[1])
+	p3 := makePlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+
+	sst := makeSuitState()
+	sst.trump = CARO
+	sst.declarer = &p2
+	sst.opp1 = &p3
+	sst.opp2 = &p1
+	sst.leader = &p1
+
 	skatState := SkatState{
+		sst,
 		CARO, // trump
 		dist, 			
 		[]Card{}, // trick 
@@ -680,7 +859,16 @@ func TestAlphaBetaTactics10C(t *testing.T) {
 
 	players = []PlayerI{&p1, &p2, &p3}
 
+	sst := makeSuitState()
+	sst.trump = CARO
+	sst.declarer = &p1
+	sst.opp1 = &p2
+	sst.opp2 = &p3
+	sst.leader = &p1
+
+
 	skatState := SkatState{
+		sst,
 		CARO, // trump
 		dist, 			
 		[]Card{}, // trick 

@@ -6,6 +6,7 @@ import (
 	// "github.com/dranidis/go-skat/game/mcts"
 	"math/rand"
 	"time"
+	"fmt"
 )
 
 var rminmax = rand.New(rand.NewSource(1))
@@ -23,6 +24,29 @@ type MinMaxPlayer struct {
 	// schneiderGoal bool
 }
 
+
+func (p *MinMaxPlayer) clone() PlayerI {
+	newPlayer := makeMinMaxPlayer([]Card{})
+
+	pl := p.Player.clone()
+	var clone = pl.(*Player)
+	newPlayer.Player = *clone	
+
+	newPlayer.p1Hand = p.p1Hand
+	newPlayer.p2Hand = p.p2Hand
+	newPlayer.skat = p.skat
+	newPlayer.maxHandSize = p.maxHandSize
+	newPlayer.maxWorlds = p.maxWorlds
+	newPlayer.timeOutMs = p.timeOutMs
+	newPlayer.mctsSimulationTimeMs = p.mctsSimulationTimeMs
+
+	return &newPlayer
+}
+
+func (p MinMaxPlayer) String() string {
+	return fmt.Sprintf("(%s):%v", p.name, p.hand)
+}
+
 func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 	return MinMaxPlayer{
 		Player:      makePlayer(hand),
@@ -38,7 +62,7 @@ func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 
 func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 
-	minimax.DEBUG = false
+	minimax.DEBUG = true
 
 	if len(c) == 1 {
 		debugMinmaxLog("..FORCED MOVE.. ")
@@ -197,13 +221,13 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 		player1 = players[0]
 		player2 = players[1]
 	}
-	schneiderGoal := true
+	// schneiderGoal := true
 
 	// from the point of view of the defender the skat is unknown
-	if s.declarer.getScore()+sum(s.trick) > 60 || s.opp1.getScore()+s.opp2.getScore() > 59 {
-		debugMinmaxLog("MIN_MAX: schneiderGoal\n")
-		schneiderGoal = true
-	}
+	// if s.declarer.getScore()+sum(s.trick) > 60 || s.opp1.getScore()+s.opp2.getScore() > 59 {
+	// 	debugMinmaxLog("MIN_MAX: schneiderGoal\n")
+	// 	// schneiderGoal = true
+	// }
 
 	var decl int // 0 is you, 1 is next player1, 2 is next player 2
 	if s.declarer.getName() == p.getName() {
@@ -217,29 +241,61 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 	debugMinmaxLog("MINMAX: cards %s: %v, %s: %v, SKAT:%v\n", player1.getName(), p.p1Hand, player2.getName(), p.p2Hand, p.skat)
 	debugMinmaxLog("Decl: %d\n", decl)
 
-	strick := make([]Card, len(s.trick))
-	copy(strick, s.trick)
-
-	dist := make([][]Card, 3)
-	dist[0] = p.hand
-	dist[1] = p.p1Hand
-	dist[2] = p.p2Hand
-
-	declScore := s.declarer.getScore()
-	if p.name == s.declarer.getName() {
-		declScore += sum(s.skat)
-	}
-
+// WORKING::::
+	mmPlayers := make([]MinMaxPlayer, 3)
+	for i := 0; i < 3; i++ {
+		mmPlayers[i] = makeMinMaxPlayer(players[i].getHand())
+		mmPlayers[i].name = players[i].getName() 
+		mmPlayers[i].name += "-MM" 
+	}	
 	skatState := SkatState{
-		s.trump,
-		dist,
-		strick,
-		decl,
-		0,
-		declScore,
-		s.opp1.getScore() + s.opp2.getScore(),
-		schneiderGoal,
+		s.cloneSuitStateNotPlayers(),
+		mmPlayers,
 	}
+	for i := 0; i < 3; i++ {
+		if s.declarer.getName() == players[i].getName() {
+			skatState.declarer = &mmPlayers[i]
+		}
+		if s.opp1.getName() == players[i].getName() {
+			skatState.opp1 = &mmPlayers[i]
+		}
+		if s.opp2.getName() == players[i].getName() {
+			skatState.opp2 = &mmPlayers[i]
+		}
+		if s.leader.getName() == players[i].getName() {
+			skatState.leader = &mmPlayers[i]
+		}
+	}
+
+	debugTacticsLog("Created skatsState: %v\n", skatState)
+	debugTacticsLog("IsOppTurn: %v\n", skatState.IsOpponentTurn())
+// ::::: WORKING
+
+	// strick := make([]Card, len(s.trick))
+	// copy(strick, s.trick)
+
+	// dist := make([][]Card, 3)
+	// dist[0] = p.hand
+	// dist[1] = p.p1Hand
+	// dist[2] = p.p2Hand
+
+	// declScore := s.declarer.getScore()
+	// if p.name == s.declarer.getName() {
+	// 	declScore += sum(s.skat)
+	// }
+
+
+	// skatState := SkatState{
+	// 	s.cloneSuitState(),
+	// 	s.trump,
+	// 	dist,
+	// 	strick,
+	// 	decl,
+	// 	0,
+	// 	declScore,
+	// 	s.opp1.getScore() + s.opp2.getScore(),
+	// 	schneiderGoal,
+	// }
 
 	// mcts.SimulationRuns = 500
 	// mcts.ExplorationParameter = 2.0

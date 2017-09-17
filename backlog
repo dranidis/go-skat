@@ -30,7 +30,7 @@ REFACTORING
 
 
 Find out why MINMAX Tactics player is losing:
-	go build; go install; go-skat -auto -n 12  -v  -r 15 -minmax2
+	go build; go install; go-skat -auto -n 10  -v  -r 15 -minmax2
 
 
 

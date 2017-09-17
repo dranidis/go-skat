@@ -81,6 +81,64 @@ type SuitState struct {
 	opp2VoidSuit  map[string]bool
 }
 
+func (s SuitState) String() string {
+	str := "("
+	voidString := func(m map[string]bool) string {
+		for k, v := range m {
+			if v {
+				str += k
+				str += ","
+			}
+		}
+		str += ")"
+		return str
+	}
+	return fmt.Sprintf("D:%s, O1:%s, O2:%s, T:%s, Leads:%s, Fol: %s, TRICK:%v, SKAT:%v, InGame: %v, Played: %v, D_VOID:%s,O1_VOID:%s,O2_VOID:%s\n", 
+		s.declarer.getName(), s.opp1.getName(), s.opp2.getName(), s.trump, s.leader.getName(), s.follow, s.trick, 
+		s.skat, s.trumpsInGame, s.cardsPlayed, 
+		voidString(s.declarerVoidSuit), voidString(s.opp1VoidSuit), voidString(s.opp2VoidSuit))
+}
+
+func (s *SuitState) cloneSuitStateNotPlayers() SuitState {
+	newSS := makeSuitState()
+	newSS.declarer = s.declarer //is it necessary?
+	newSS.opp1 = s.opp1 // swallow copy, will be replaced anyway
+	newSS.opp2 = s.opp2 // swallow copy, will be replaced anyway 
+	newSS.trump = s.trump
+	newSS.leader = s.leader // swallow copy, will be replaced anyway 
+	newSS.follow = s.follow
+	newTrick := make([]Card, len(s.trick))
+	copy(newTrick, s.trick)
+	newSS.skat = s.skat // Does not change. No need to clone
+
+	newtrumpsInGame := make([]Card, len(s.trumpsInGame))
+	copy(newtrumpsInGame, s.trumpsInGame)
+	
+	newcardsPlayed := make([]Card, len(s.cardsPlayed))
+	copy(newcardsPlayed, s.cardsPlayed)
+		
+	newSS.declarerVoidSuit = map[string]bool{
+			CLUBS: s.declarerVoidSuit[CLUBS],
+			SPADE: s.declarerVoidSuit[SPADE],
+			HEART: s.declarerVoidSuit[HEART],
+			CARO:  s.declarerVoidSuit[CARO],
+		}
+	newSS.opp1VoidSuit = map[string]bool{
+			CLUBS: s.opp1VoidSuit[CLUBS],
+			SPADE: s.opp1VoidSuit[SPADE],
+			HEART: s.opp1VoidSuit[HEART],
+			CARO:  s.opp1VoidSuit[CARO],
+		}
+	newSS.opp2VoidSuit = map[string]bool{
+			CLUBS: s.opp2VoidSuit[CLUBS],
+			SPADE: s.opp2VoidSuit[SPADE],
+			HEART: s.opp2VoidSuit[HEART],
+			CARO:  s.opp2VoidSuit[CARO],
+		}
+
+		return newSS
+}
+
 func makeSuitState() SuitState {
 	skat := make([]Card, 2)
 	return SuitState{nil, nil, nil, "", nil, "", []Card{}, skat, []Card{}, []Card{},
@@ -240,9 +298,6 @@ func isLosingTrick(s *SuitState, p PlayerI, card Card) bool {
 
 func play(s *SuitState, p PlayerI) Card {
 	red := color.New(color.Bold, color.FgRed).SprintFunc()
-	// if len(p.getHand()) == 0 {
-	// 	log.Fatal("EMPTY HAND")
-	// }
 	valid := sortSuit(s.trump, validCards(*s, p.getHand()))
 
 	p.setHand(sortSuit(s.trump, p.getHand()))
@@ -263,6 +318,7 @@ func play(s *SuitState, p PlayerI) Card {
 	} else {
 		gameLog("(%v) ", p.getName())
 	}
+
 	card := p.playerTactic(s, valid)
 
 	if issConnect && p.getName() == issUsername {
