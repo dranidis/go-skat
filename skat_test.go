@@ -7,10 +7,10 @@ import (
 	"os"
 	"testing"
 	"fmt"
-	"time"
-	"github.com/dranidis/go-skat/game"
-	"github.com/dranidis/go-skat/game/minimax"
-	"github.com/dranidis/go-skat/game/mcts"
+	// "time"
+	// "github.com/dranidis/go-skat/game"
+	// "github.com/dranidis/go-skat/game/minimax"
+	// "github.com/dranidis/go-skat/game/mcts"
 
 )
 
@@ -2307,83 +2307,83 @@ func TestDealCardsLeader2(t *testing.T) {
 // 	if false {t.Errorf("")}
 // }
 
-func TestMiniMax6C(t *testing.T) {
-	dist := make([][]Card, 3)
-	dist[0] = []Card {
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "K"},
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "9"},
-		Card{CARO, "10"},
-	}
-	dist[0] = Shuffle(dist[0])
-	dist[1] = []Card {
-		Card{CLUBS, "A"},
-		Card{HEART, "10"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "D"},
-		Card{SPADE, "8"},
-		Card{HEART, "8"},
-		Card{CLUBS, "7"},
-	}
-	dist[1] = Shuffle(dist[1])
-	dist[2] = []Card {
-		Card{CLUBS, "J"},
-		Card{SPADE, "10"},
-		Card{SPADE, "7"},
-		Card{HEART, "K"},
-		Card{CLUBS, "D"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "9"},
-	}
-	dist[2] = Shuffle(dist[2])
+// func TestMiniMax6C(t *testing.T) {
+// 	dist := make([][]Card, 3)
+// 	dist[0] = []Card {
+// 		Card{SPADE, "J"},
+// 		Card{HEART, "J"},
+// 		Card{CARO, "K"},
+// 		Card{SPADE, "A"},
+// 		Card{SPADE, "K"},
+// 		Card{SPADE, "9"},
+// 		Card{CARO, "10"},
+// 	}
+// 	dist[0] = Shuffle(dist[0])
+// 	dist[1] = []Card {
+// 		Card{CLUBS, "A"},
+// 		Card{HEART, "10"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "D"},
+// 		Card{SPADE, "8"},
+// 		Card{HEART, "8"},
+// 		Card{CLUBS, "7"},
+// 	}
+// 	dist[1] = Shuffle(dist[1])
+// 	dist[2] = []Card {
+// 		Card{CLUBS, "J"},
+// 		Card{SPADE, "10"},
+// 		Card{SPADE, "7"},
+// 		Card{HEART, "K"},
+// 		Card{CLUBS, "D"},
+// 		Card{CLUBS, "8"},
+// 		Card{CLUBS, "9"},
+// 	}
+// 	dist[2] = Shuffle(dist[2])
 
-	p1 := makePlayer(dist[0])
-	p2 := makePlayer(dist[1])
-	p3 := makePlayer(dist[2])
-	p1.name = "Decl"
-	p2.name = "Opp1"
-	p3.name = "Opp2"
+// 	p1 := makePlayer(dist[0])
+// 	p2 := makePlayer(dist[1])
+// 	p3 := makePlayer(dist[2])
+// 	p1.name = "Decl"
+// 	p2.name = "Opp1"
+// 	p3.name = "Opp2"
 
-	players = []PlayerI{&p1, &p2, &p3}
+// 	players = []PlayerI{&p1, &p2, &p3}
 
-	ss := makeSuitState()
-	ss.trump = CARO
-	ss.declarer = &p1
-	ss.opp1 = &p2
-	ss.opp2 = &p3
-	ss.leader = &p1
+// 	ss := makeSuitState()
+// 	ss.trump = CARO
+// 	ss.declarer = &p1
+// 	ss.opp1 = &p2
+// 	ss.opp2 = &p3
+// 	ss.leader = &p1
 
-	skatState := SkatState{
-		ss,
-		CARO, // trump
-		dist, 			
-		[]Card{}, // trick 
-		0, // declarer 
-		0, // who's turn is it
-		19, 
-		25,
-		true,
-	}
+// 	skatState := SkatState{
+// 		ss,
+// 		CARO, // trump
+// 		dist, 			
+// 		[]Card{}, // trick 
+// 		0, // declarer 
+// 		0, // who's turn is it
+// 		19, 
+// 		25,
+// 		true,
+// 	}
 
-	_ = skatState
-	// minimax.DEBUG = true
-	// runToEnd("mm", skatState)
-	// runToEnd("abt", skatState, 0.0, 0.0)
-	// runToEnd("ab", skatState, 0.0, 0.0)
-	// runToEnd("abw", skatState, 60.0, 61.0)
-	// runToEnd("abw", skatState, 89.0, 90.0)
-	// runToEnd("abw", skatState, 61.0, 89.0)
-	// runToEnd("zw", skatState, 63.0)
-	// runToEnd("zw", skatState, 64.0)
-	// runToEnd("zw", skatState, 65.0)
-	// runToEnd("zw", skatState, 85.0)
-	// runToEnd("uct", skatState)
+// 	_ = skatState
+// 	// minimax.DEBUG = true
+// 	// runToEnd("mm", skatState)
+// 	// runToEnd("abt", skatState, 0.0, 0.0)
+// 	// runToEnd("ab", skatState, 0.0, 0.0)
+// 	// runToEnd("abw", skatState, 60.0, 61.0)
+// 	// runToEnd("abw", skatState, 89.0, 90.0)
+// 	// runToEnd("abw", skatState, 61.0, 89.0)
+// 	// runToEnd("zw", skatState, 63.0)
+// 	// runToEnd("zw", skatState, 64.0)
+// 	// runToEnd("zw", skatState, 65.0)
+// 	// runToEnd("zw", skatState, 85.0)
+// 	// runToEnd("uct", skatState)
 
-	if false {t.Errorf("")}
-}
+// 	if false {t.Errorf("")}
+// }
 
 // func TestMiniMax9C(t *testing.T) {
 // 	dist := make([][]Card, 3)
@@ -2562,69 +2562,69 @@ func TestMiniMax6C(t *testing.T) {
 // 	if false {t.Errorf("")}
 // }
 
-func runToEnd(alg string, skatState SkatState, al, b float64) {
-	var skatStateP game.State
-	skatStateP = &skatState
-	// minimax.DEBUG = true
-	startWhole := time.Now()
-	minimax.MAXDEPTH = 7
-	i := -1
-	for !skatStateP.IsTerminal() {
-	// for j := 0; j < 1; j++ {
-		i++
+// func runToEnd(alg string, skatState SkatState, al, b float64) {
+// 	var skatStateP game.State
+// 	skatStateP = &skatState
+// 	// minimax.DEBUG = true
+// 	startWhole := time.Now()
+// 	minimax.MAXDEPTH = 7
+// 	i := -1
+// 	for !skatStateP.IsTerminal() {
+// 	// for j := 0; j < 1; j++ {
+// 		i++
 
-		if i%6 == 0 {
-			minimax.MAXDEPTH += 1
-		}
+// 		if i%6 == 0 {
+// 			minimax.MAXDEPTH += 1
+// 		}
 
-		var ss *SkatState
-		ss = skatStateP.(*SkatState)
-		if len(ss.playerHand[0]) < 5 {
-			minimax.MAXDEPTH = 99999
-		}
-		if len(ss.playerHand[0]) >= 9 {
-			minimax.MAXDEPTH = 3
+// 		var ss *SkatState
+// 		ss = skatStateP.(*SkatState)
+// 		if len(ss.playerHand[0]) < 5 {
+// 			minimax.MAXDEPTH = 99999
+// 		}
+// 		if len(ss.playerHand[0]) >= 9 {
+// 			minimax.MAXDEPTH = 3
 
-		}
+// 		}
 
-		minimax.MAXDEPTH = 99999		
-		debugTacticsLog("MAXDEPTH %d\n", minimax.MAXDEPTH)
+// 		minimax.MAXDEPTH = 99999		
+// 		debugTacticsLog("MAXDEPTH %d\n", minimax.MAXDEPTH)
 
 
-		start := time.Now()
-		var a game.Action
-		var v float64
-		switch alg {
-		case "mm":
-			a, v = minimax.Minimax(skatStateP)
-		case "ab":
-			a, v = minimax.AlphaBeta(skatStateP)
-		case "abt":
-			debugTacticsLog("Calling ABT\n")
-			a, v = minimax.AlphaBetaTactics(skatStateP)
-		case "uct":
-			mcts.SimulationRuns = 1000
-			mcts.ExplorationParameter = 2.0
-			mcts.MostVisited = false
+// 		start := time.Now()
+// 		var a game.Action
+// 		var v float64
+// 		switch alg {
+// 		case "mm":
+// 			a, v = minimax.Minimax(skatStateP)
+// 		case "ab":
+// 			a, v = minimax.AlphaBeta(skatStateP)
+// 		case "abt":
+// 			debugTacticsLog("Calling ABT\n")
+// 			a, v = minimax.AlphaBetaTactics(skatStateP)
+// 		case "uct":
+// 			mcts.SimulationRuns = 1000
+// 			mcts.ExplorationParameter = 2.0
+// 			mcts.MostVisited = false
 
-			runMilliseconds := 3000			
-			a, v = mcts.Uct(skatStateP, runMilliseconds)
-		case "zw":
-			a, v = minimax.ZeroWindowAlg(skatStateP, b)
-		case "abw":
-			a, v = minimax.ABWindowAlg(skatStateP, al, b)
-		}
-		t := time.Now()
-		elapsed := t.Sub(start)		
-		ma := a.(SkatAction)
-		debugTacticsLog("TestAction: %v %v: ", ma, v)
-		skatStateP = skatStateP.FindNextState(a)	
-		debugTacticsLog("TestState: %v\t%v\n", skatStateP, elapsed)
-	}	
-	t := time.Now()
-	elapsed := t.Sub(startWhole)		
-	debugTacticsLog("TOTAL %v\n", elapsed)
-}
+// 			runMilliseconds := 3000			
+// 			a, v = mcts.Uct(skatStateP, runMilliseconds)
+// 		case "zw":
+// 			a, v = minimax.ZeroWindowAlg(skatStateP, b)
+// 		case "abw":
+// 			a, v = minimax.ABWindowAlg(skatStateP, al, b)
+// 		}
+// 		t := time.Now()
+// 		elapsed := t.Sub(start)		
+// 		ma := a.(SkatAction)
+// 		debugTacticsLog("TestAction: %v %v: ", ma, v)
+// 		skatStateP = skatStateP.FindNextState(a)	
+// 		debugTacticsLog("TestState: %v\t%v\n", skatStateP, elapsed)
+// 	}	
+// 	t := time.Now()
+// 	elapsed := t.Sub(startWhole)		
+// 	debugTacticsLog("TOTAL %v\n", elapsed)
+// }
 
 // func TestMCTSW5C(t *testing.T) {
 // 	dist := make([][]Card, 3)

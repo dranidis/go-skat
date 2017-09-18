@@ -44,7 +44,7 @@ func (p *MinMaxPlayer) clone() PlayerI {
 }
 
 func (p MinMaxPlayer) String() string {
-	return fmt.Sprintf("(%s):%v", p.name, p.hand)
+	return fmt.Sprintf("(%s):%v [%d]", p.name, p.hand, p.score)
 }
 
 func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
@@ -62,7 +62,7 @@ func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 
 func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 
-	minimax.DEBUG = true
+	// minimax.DEBUG = true
 
 	if len(c) == 1 {
 		debugMinmaxLog("..FORCED MOVE.. ")
@@ -78,7 +78,7 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 	}
 
 	worlds := p.dealCards(s)
-	debugMinmaxLog("(%s) %d Worlds\n", p.name, len(worlds))
+	debugMinmaxLog("(%s) %d Worlds, %s\n", p.name, len(worlds), MINIMAX_ALG)
 
 	start := time.Now()
 	switch MINIMAX_ALG {
@@ -243,14 +243,16 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 
 // WORKING::::
 	mmPlayers := make([]MinMaxPlayer, 3)
+	miPlayers := make([]PlayerI, 3)
 	for i := 0; i < 3; i++ {
 		mmPlayers[i] = makeMinMaxPlayer(players[i].getHand())
 		mmPlayers[i].name = players[i].getName() 
 		mmPlayers[i].name += "-MM" 
+		miPlayers[i] = &mmPlayers[i]
 	}	
 	skatState := SkatState{
 		s.cloneSuitStateNotPlayers(),
-		mmPlayers,
+		miPlayers,
 	}
 	for i := 0; i < 3; i++ {
 		if s.declarer.getName() == players[i].getName() {
@@ -316,7 +318,8 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 		case "ab":
 			a, value = minimax.AlphaBeta(&skatState)
 		case "abt":
-			// debugTacticsLog("Calling ABT\n")
+			minimax.DEBUG = true
+			debugTacticsLog("Calling ABT\n")
 			a, value = minimax.AlphaBetaTactics(&skatState)
 	}
 	minimaxSearching = false

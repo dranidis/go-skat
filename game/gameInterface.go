@@ -7,6 +7,7 @@ type State interface {
 	IsOpponentTurn() bool
 	Heuristic() float64
 	GetTacticsMove() Action
+	FindReward() float64
 }
 
 type Action interface {

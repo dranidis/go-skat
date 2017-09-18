@@ -82,8 +82,8 @@ type SuitState struct {
 }
 
 func (s SuitState) String() string {
-	str := "("
 	voidString := func(m map[string]bool) string {
+		str := "("
 		for k, v := range m {
 			if v {
 				str += k
@@ -109,6 +109,9 @@ func (s *SuitState) cloneSuitStateNotPlayers() SuitState {
 	newSS.follow = s.follow
 	newTrick := make([]Card, len(s.trick))
 	copy(newTrick, s.trick)
+
+	newSS.trick = newTrick
+
 	newSS.skat = s.skat // Does not change. No need to clone
 
 	newtrumpsInGame := make([]Card, len(s.trumpsInGame))
@@ -177,6 +180,7 @@ func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
 	index := trickWinner(s)
 	var winner PlayerI
 
+	debugTacticsLog("PLAYERS: %v %d\n", players, index)
 	winner = players[index]
 	for i := 0; i < index; i++ {
 		players = rotatePlayers(players)
@@ -239,7 +243,7 @@ func round(s *SuitState, players []PlayerI) []PlayerI {
 }
 
 func analysePlay(s *SuitState, p PlayerI, card Card) {
-	debugTacticsLog("PLAY ANALYSIS: %v, %s, Card: %v\n", s.trick, p.getName(), card)
+	// debugTacticsLog("PLAY ANALYSIS: %v, %s, Card: %v\n", s.trick, p.getName(), card)
 	// Player VOID on suit
 	if len(s.trick) > 0 && getSuit(s.trump, card) != getSuit(s.trump, s.trick[0]) {
 		debugTacticsLog("TRICK: %v, Card: %v\n", s.trick, card)
@@ -259,11 +263,11 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 	}
 
 	if p.getName() != s.declarer.getName() {
-		debugTacticsLog("PLAY ANALYSIS: OPP\n")
+		// debugTacticsLog("PLAY ANALYSIS: OPP\n")
 		if s.follow == s.trump {
-			debugTacticsLog("PLAY ANALYSIS: TRUMP\n")
+			// debugTacticsLog("PLAY ANALYSIS: TRUMP\n")
 			if getSuit(s.trump, card) == s.trump && (card.Rank == "A" || card.Rank == "10") {
-				debugTacticsLog("PLAY ANALYSIS: A/10\n")
+				// debugTacticsLog("PLAY ANALYSIS: A/10\n")
 				if isLosingTrick(s, p, card) {
 					// TODO:
 					debugTacticsLog("INFERENCE: **************************************\n")
