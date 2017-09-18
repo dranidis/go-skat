@@ -51,13 +51,14 @@ var issDEBUG = false
 var	minMaxPlayerFlag = false
 var maxHandSizeFlag = 4
 var MINIMAX_ALG = "abt"
+var minmax2Flag = false
+var minmax3Flag = false
+var	minimaxSearching = false
 
 var gameIndex = 1
 var player1 PlayerI
-var player2 MinMaxPlayer
-// var player2 Player
-// var player3 MinMaxPlayer
-var player3 Player
+var player2 PlayerI
+var player3 PlayerI
 var html = false
 
 var players []PlayerI
@@ -78,6 +79,67 @@ type SuitState struct {
 	declarerVoidSuit map[string]bool
 	opp1VoidSuit  map[string]bool
 	opp2VoidSuit  map[string]bool
+}
+
+func (s SuitState) String() string {
+	voidString := func(m map[string]bool) string {
+		str := "("
+		for k, v := range m {
+			if v {
+				str += k
+				str += ","
+			}
+		}
+		str += ")"
+		return str
+	}
+	return fmt.Sprintf("D:%s, O1:%s, O2:%s, T:%s, Leads:%s, Fol: %s, TRICK:%v, SKAT:%v, InGame: %v, Played: %v, D_VOID:%s,O1_VOID:%s,O2_VOID:%s\n", 
+		s.declarer.getName(), s.opp1.getName(), s.opp2.getName(), s.trump, s.leader.getName(), s.follow, s.trick, 
+		s.skat, s.trumpsInGame, s.cardsPlayed, 
+		voidString(s.declarerVoidSuit), voidString(s.opp1VoidSuit), voidString(s.opp2VoidSuit))
+}
+
+func (s *SuitState) cloneSuitStateNotPlayers() SuitState {
+	newSS := makeSuitState()
+	newSS.declarer = s.declarer //is it necessary?
+	newSS.opp1 = s.opp1 // swallow copy, will be replaced anyway
+	newSS.opp2 = s.opp2 // swallow copy, will be replaced anyway 
+	newSS.trump = s.trump
+	newSS.leader = s.leader // swallow copy, will be replaced anyway 
+	newSS.follow = s.follow
+	newTrick := make([]Card, len(s.trick))
+	copy(newTrick, s.trick)
+
+	newSS.trick = newTrick
+
+	newSS.skat = s.skat // Does not change. No need to clone
+
+	newtrumpsInGame := make([]Card, len(s.trumpsInGame))
+	copy(newtrumpsInGame, s.trumpsInGame)
+	
+	newcardsPlayed := make([]Card, len(s.cardsPlayed))
+	copy(newcardsPlayed, s.cardsPlayed)
+		
+	newSS.declarerVoidSuit = map[string]bool{
+			CLUBS: s.declarerVoidSuit[CLUBS],
+			SPADE: s.declarerVoidSuit[SPADE],
+			HEART: s.declarerVoidSuit[HEART],
+			CARO:  s.declarerVoidSuit[CARO],
+		}
+	newSS.opp1VoidSuit = map[string]bool{
+			CLUBS: s.opp1VoidSuit[CLUBS],
+			SPADE: s.opp1VoidSuit[SPADE],
+			HEART: s.opp1VoidSuit[HEART],
+			CARO:  s.opp1VoidSuit[CARO],
+		}
+	newSS.opp2VoidSuit = map[string]bool{
+			CLUBS: s.opp2VoidSuit[CLUBS],
+			SPADE: s.opp2VoidSuit[SPADE],
+			HEART: s.opp2VoidSuit[HEART],
+			CARO:  s.opp2VoidSuit[CARO],
+		}
+
+		return newSS
 }
 
 func makeSuitState() SuitState {
@@ -118,6 +180,7 @@ func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
 	index := trickWinner(s)
 	var winner PlayerI
 
+	// debugTacticsLog("PLAYERS: %v %d\n", players, index)
 	winner = players[index]
 	for i := 0; i < index; i++ {
 		players = rotatePlayers(players)
@@ -129,7 +192,7 @@ func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
 		gameLog("TRICK %v\n", s.trick)
 		debugTacticsLog("%d points: %d - %d\n", sum(s.trick), s.declarer.getScore(), s.opp1.getScore()+s.opp2.getScore())
 	}
-	if html {
+	if html && !minimaxSearching {
 		winnerChannel <- winner.getName()
 	}
 
@@ -179,6 +242,50 @@ func round(s *SuitState, players []PlayerI) []PlayerI {
 	return players
 }
 
+func analysePlay(s *SuitState, p PlayerI, card Card) {
+	// debugTacticsLog("PLAY ANALYSIS: %v, %s, Card: %v\n", s.trick, p.getName(), card)
+	// Player VOID on suit
+	if len(s.trick) > 0 && getSuit(s.trump, card) != getSuit(s.trump, s.trick[0]) {
+		debugTacticsLog("TRICK: %v, Card: %v\n", s.trick, card)
+		debugTacticsLog("INFERENCE: **************************************\n")
+		debugTacticsLog("INFERENCE: Not following tricks                  \n")
+		debugTacticsLog("INFERENCE: Void on suit                          \n")
+		debugTacticsLog("INFERENCE: **************************************\n")
+		if p.getName() == s.declarer.getName() {
+			s.declarerVoidSuit[getSuit(s.trump, s.trick[0])] = true
+		}
+		if p.getName() == s.opp1.getName() {
+			s.opp1VoidSuit[getSuit(s.trump, s.trick[0])] = true
+		}
+		if p.getName() == s.opp2.getName() {
+			s.opp2VoidSuit[getSuit(s.trump, s.trick[0])] = true
+		}
+	}
+
+	if p.getName() != s.declarer.getName() {
+		// debugTacticsLog("PLAY ANALYSIS: OPP\n")
+		if s.follow == s.trump {
+			// debugTacticsLog("PLAY ANALYSIS: TRUMP\n")
+			if getSuit(s.trump, card) == s.trump && (card.Rank == "A" || card.Rank == "10") {
+				// debugTacticsLog("PLAY ANALYSIS: A/10\n")
+				if isLosingTrick(s, p, card) {
+					// TODO:
+					debugTacticsLog("INFERENCE: **************************************\n")
+					debugTacticsLog("INFERENCE: Playing a full Trump on a losing trick\n")
+					debugTacticsLog("INFERENCE: Is the last of the player             \n")
+					debugTacticsLog("INFERENCE: **************************************\n")
+
+					if p.getName() == s.opp1.getName() {
+					//	s.opp1VoidSuit[s.trump] = true
+					}
+					if p.getName() == s.opp2.getName() {
+					//	s.opp2VoidSuit[s.trump] = true
+					}
+				}
+			}
+		}
+	}
+}
 
 func isLosingTrick(s *SuitState, p PlayerI, card Card) bool {
 	var c Card
@@ -195,10 +302,11 @@ func isLosingTrick(s *SuitState, p PlayerI, card Card) bool {
 
 func play(s *SuitState, p PlayerI) Card {
 	red := color.New(color.Bold, color.FgRed).SprintFunc()
-	// if len(p.getHand()) == 0 {
-	// 	log.Fatal("EMPTY HAND")
-	// }
 	valid := sortSuit(s.trump, validCards(*s, p.getHand()))
+
+	// if len(valid) == 0 {
+	// 	log.Fatal(fmt.Sprintf("Empty valid: %v, Player: %v\n", valid, p))
+	// }
 
 	p.setHand(sortSuit(s.trump, p.getHand()))
 	gameLog("Trick: %v\n", s.trick)
@@ -218,6 +326,7 @@ func play(s *SuitState, p PlayerI) Card {
 	} else {
 		gameLog("(%v) ", p.getName())
 	}
+
 	card := p.playerTactic(s, valid)
 
 	if issConnect && p.getName() == issUsername {
@@ -633,9 +742,13 @@ func declareAndPlay() int {
 		fmt.Printf(scoreString)
 	}
 
-	gameSc.Total1 = gamePlayers[0].getTotalScore()
-	gameSc.Total2 = gamePlayers[1].getTotalScore()
-	gameSc.Total3 = gamePlayers[2].getTotalScore()
+	if player1 != nil && player2 != nil && player3 != nil {
+		gameSc.Total1 = player1.getTotalScore()
+		gameSc.Total2 = player2.getTotalScore()
+		gameSc.Total3 = player3.getTotalScore()
+	} else {
+		debugTacticsLog("NIL players: %v %v %v\n", player1, player2, player3)
+	}
 	//fmt.Println("%v\n", gameSc)
 	if html {
 		scoreChannel <- gameSc
@@ -734,37 +847,28 @@ func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlay
 		}
 		switch analysisPl {
 		case 1:
-			player1 := makeAPlayer([]Card{})
-			player1.forcedBid = analysisPlayerBid
-			player2 := makePlayer([]Card{})
-			player3 := makePlayer([]Card{})
-			gamePlayers = []PlayerI{&player1, &player2, &player3}
-			player1.risky = true
-			player2.risky = true
-			player3.risky = false
+			lplayer1 := makeAPlayer([]Card{})
+			lplayer1.forcedBid = analysisPlayerBid
+			lplayer2 := makePlayer([]Card{})
+			lplayer3 := makePlayer([]Card{})
+			gamePlayers = []PlayerI{&lplayer1, &lplayer2, &lplayer3}
 		case 2:
-			player1 := makePlayer([]Card{})
-			player2 := makeAPlayer([]Card{})
-			player2.forcedBid = analysisPlayerBid
-			player3 := makePlayer([]Card{})
-			gamePlayers = []PlayerI{&player1, &player2, &player3}
-			player1.risky = true
-			player2.risky = true
-			player3.risky = false
+			lplayer1 := makePlayer([]Card{})
+			lplayer2 := makeAPlayer([]Card{})
+			lplayer2.forcedBid = analysisPlayerBid
+			lplayer3 := makePlayer([]Card{})
+			gamePlayers = []PlayerI{&lplayer1, &lplayer2, &lplayer3}
 		case 3:
-			player1 := makePlayer([]Card{})
-			player2 := makePlayer([]Card{})
-			player3 := makeAPlayer([]Card{})
-			player3.forcedBid = analysisPlayerBid
-			gamePlayers = []PlayerI{&player1, &player2, &player3}
-			player1.risky = true
-			player2.risky = true
-			player3.risky = false
+			lplayer1 := makePlayer([]Card{})
+			lplayer2 := makePlayer([]Card{})
+			lplayer3 := makeAPlayer([]Card{})
+			lplayer3.forcedBid = analysisPlayerBid
+			gamePlayers = []PlayerI{&lplayer1, &lplayer2, &lplayer3}
 		}
 		delayMs = 0
 
 		gamePlayers[0].setName("You")
-		gamePlayers[1].setName("Bob")
+		player2.setName("Bob")
 		gamePlayers[2].setName("Ana")
 		fmt.Printf("Analysed player: %s\n", gamePlayers[analysisPl-1].getName())
 		return
@@ -773,30 +877,28 @@ func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlay
 		debugTacticsLog("Creating CPU players only\n")
 		player := makePlayer([]Card{})
 		player1 = &player
-		player.risky = true
 		delayMs = 0
 	} else {
 		if html {
 			player := makeHtmlPlayer([]Card{})
 			player1 = &player
 		} else if issConnect {
-			var player1 PlayerI
+			var lplayer1 PlayerI
 			cpuplayer := makePlayer([]Card{})
-			cpuplayer.risky = true
-			player1 = &cpuplayer
+			lplayer1 = &cpuplayer
 
 			if minMaxPlayerFlag {
 				debugTacticsLog("PLAYERS: Creating a MinMax player for ISS\n")
 				mmplayer := makeMinMaxPlayer([]Card{})
-				player1 = &mmplayer
+				lplayer1 = &mmplayer
 			}
 			// player1 = &player
-			player2 := makeISSPlayer([]Card{})
-			player3 := makeISSPlayer([]Card{})
-			player1.setName("")
-			player2.setName("ISS1") // this will change by ISS
-			player3.setName("ISS2") // this will change by ISS
-			gamePlayers = []PlayerI{player1, &player2, &player3} // this will change by ISS
+			issplayer2 := makeISSPlayer([]Card{})
+			issplayer3 := makeISSPlayer([]Card{})
+			lplayer1.setName("")
+			issplayer2.setName("ISS1") // this will change by ISS
+			issplayer3.setName("ISS2") // this will change by ISS
+			gamePlayers = []PlayerI{lplayer1, &issplayer2, &issplayer3} // this will change by ISS
 			delayMs = 0
 
 			return			
@@ -806,16 +908,27 @@ func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlay
 		}
 		delayMs = 500
 	}
-	// player2 = makePlayer([]Card{})
-	player2 = makeMinMaxPlayer([]Card{})
-	player3 = makePlayer([]Card{})
-	// player3 = makeMinMaxPlayer([]Card{})
+
+	if minmax2Flag {
+		p2 := makeMinMaxPlayer([]Card{})
+		player2 = &p2
+	} else {
+		p2 := makePlayer([]Card{})
+		player2 = &p2
+	}
+
+	if minmax3Flag {
+		p3 := makeMinMaxPlayer([]Card{})
+		player3 = &p3
+	} else {
+		p3 := makePlayer([]Card{})
+		player3 = &p3
+	}
+
 	player1.setName("You")
 	player2.setName("Bob")
 	player3.setName("Ana")
-	player2.risky = true
-	player3.risky = false
-	gamePlayers = []PlayerI{player1, &player2, &player3}
+	gamePlayers = []PlayerI{player1, player2, player3}
 }
 
 
@@ -844,6 +957,8 @@ func main() {
 	flag.BoolVar(&issConnect, "iss", false, "Connects to ISS skat server")
 	flag.BoolVar(&issDEBUG, "issDEBUG", false, "Fakes the responses of the skat server for debugging.")
 	flag.BoolVar(&minMaxPlayerFlag, "minmax", false, "Uses a MinMax CPU player a AI player at ISS")
+	flag.BoolVar(&minmax2Flag, "minmax2", false, "Uses a MinMax CPU player as 2nd player in auto and html.")
+	flag.BoolVar(&minmax3Flag, "minmax3", false, "Uses a MinMax CPU player as 3rd player in auto and html.")
 	flag.StringVar(&MINIMAX_ALG, "mmalg", "abt", "Algorithm used by minmax player: ab alphabeta, abt alphabeta with tactics for opponents")
 	flag.StringVar(&issOpp1, "opp1", "xskat", "Opponent to play with at ISS skat server")
 	flag.StringVar(&issOpp2, "opp2", "xskat", "Opponent to play with at ISS skat server")
@@ -856,11 +971,12 @@ func main() {
 	if auto {
 		gameLogFlag = false
 	}
-	//fmt.Println(fileLogFlag)
+
 	if randSeed == 0 {
 		r = rand.New(rand.NewSource(time.Now().Unix()))
 		randSeed = r.Intn(9999)
 	}
+
 	fmt.Printf("SEED: %d\n", randSeed)
 	gameLog("SEED: %d\n", randSeed)
 	fmt.Printf("Game: %d\n", gameNr)
@@ -980,35 +1096,35 @@ func main() {
 			lost++
 		}
 		if !auto {
-			fmt.Printf("\nGAME: %6d (%s) %5d     (%s) %5d     (%s) %5d\n", gameIndex, player1.getName(), player1.getTotalScore(), player2.getName(), player2.getTotalScore(), player3.getName(), player3.getTotalScore())
+			fmt.Printf("\nGAME: %6d (%s) %5d     (%s) %5d     (%s) %5d\n", gameIndex, gamePlayers[0].getName(), gamePlayers[0].getTotalScore(), gamePlayers[1].getName(), gamePlayers[1].getTotalScore(), gamePlayers[2].getName(), gamePlayers[2].getTotalScore())
 		} else {
-			gameLog("\nGAME: %6d (%s) %5d     (%s) %5d     (%s) %5d\n", gameIndex, player1.getName(), player1.getTotalScore(), player2.getName(), player2.getTotalScore(), player3.getName(), player3.getTotalScore())
+			gameLog("\nGAME: %6d (%s) %5d     (%s) %5d     (%s) %5d\n", gameIndex, gamePlayers[0].getName(), gamePlayers[0].getTotalScore(), gamePlayers[1].getName(), gamePlayers[1].getTotalScore(), gamePlayers[2].getName(), gamePlayers[2].getTotalScore())
 			anim()
 		}
 	}
 
-	avg := float64(player1.getTotalScore()+player2.getTotalScore()+player3.getTotalScore()) / float64(totalGames-passed)
+	avg := float64(gamePlayers[0].getTotalScore()+gamePlayers[1].getTotalScore()+gamePlayers[2].getTotalScore()) / float64(totalGames-passed)
 
-	money1 := float64(2.0*player1.getTotalScore()-player2.getTotalScore()-player3.getTotalScore()) / 100.0
-	money2 := float64(2.0*player2.getTotalScore()-player1.getTotalScore()-player3.getTotalScore()) / 100.0
-	money3 := float64(2.0*player3.getTotalScore()-player1.getTotalScore()-player2.getTotalScore()) / 100.0
+	money1 := float64(2.0*gamePlayers[0].getTotalScore()-gamePlayers[1].getTotalScore()-gamePlayers[2].getTotalScore()) / 100.0
+	money2 := float64(2.0*gamePlayers[1].getTotalScore()-gamePlayers[0].getTotalScore()-gamePlayers[2].getTotalScore()) / 100.0
+	money3 := float64(2.0*gamePlayers[2].getTotalScore()-gamePlayers[0].getTotalScore()-gamePlayers[1].getTotalScore()) / 100.0
 
-	fmt.Printf("\t%s\t%s\t%s\n", player1.getName(), player2.getName(), player3.getName())
+	fmt.Printf("\t%s\t%s\t%s\n", gamePlayers[0].getName(), gamePlayers[1].getName(), gamePlayers[2].getName())
 	fmt.Printf("EURO %5.2f\t%5.2f\t%5.2f\n", money1, money2, money3)
-	fmt.Printf("WON  %5d\t%5d\t%5d\n", player1.getWon(), player2.getWon(), player3.getWon())
-	fmt.Printf("LOST %5d\t%5d\t%5d\t\n", player1.getLost(), player2.getLost(), player3.getLost())
+	fmt.Printf("WON  %5d\t%5d\t%5d\n", gamePlayers[0].getWon(), gamePlayers[1].getWon(), gamePlayers[2].getWon())
+	fmt.Printf("LOST %5d\t%5d\t%5d\t\n", gamePlayers[0].getLost(), gamePlayers[1].getLost(), gamePlayers[2].getLost())
 	fmt.Printf("bidp %5.0f\t%5.0f\t%5.0f\t\n",
-		100*float64(player1.getLost()+player1.getWon())/float64(totalGames-passed),
-		100*float64(player2.getLost()+player2.getWon())/float64(totalGames-passed),
-		100*float64(player3.getLost()+player3.getWon())/float64(totalGames-passed))
+		100*float64(gamePlayers[0].getLost()+gamePlayers[0].getWon())/float64(totalGames-passed),
+		100*float64(gamePlayers[1].getLost()+gamePlayers[1].getWon())/float64(totalGames-passed),
+		100*float64(gamePlayers[2].getLost()+gamePlayers[2].getWon())/float64(totalGames-passed))
 	fmt.Printf("pcw  %5.0f\t%5.0f\t%5.0f\t\n",
-		100*float64(player1.getWon())/float64(player1.getLost()+player1.getWon()),
-		100*float64(player2.getWon())/float64(player2.getLost()+player2.getWon()),
-		100*float64(player3.getWon())/float64(player3.getLost()+player3.getWon()))
+		100*float64(gamePlayers[0].getWon())/float64(gamePlayers[0].getLost()+gamePlayers[0].getWon()),
+		100*float64(gamePlayers[1].getWon())/float64(gamePlayers[1].getLost()+gamePlayers[1].getWon()),
+		100*float64(gamePlayers[2].getWon())/float64(gamePlayers[2].getLost()+gamePlayers[2].getWon()))
 	fmt.Printf("pcwd %5.0f\t%5.0f\t%5.0f\t\n",
-		100*float64(player1.getWonAsDefenders())/float64(totalGames-passed-(player1.getLost()+player1.getWon())),
-		100*float64(player2.getWonAsDefenders())/float64(totalGames-passed-(player2.getLost()+player2.getWon())),
-		100*float64(player3.getWonAsDefenders())/float64(totalGames-passed-(player3.getLost()+player3.getWon())))
+		100*float64(gamePlayers[0].getWonAsDefenders())/float64(totalGames-passed-(gamePlayers[0].getLost()+gamePlayers[0].getWon())),
+		100*float64(gamePlayers[1].getWonAsDefenders())/float64(totalGames-passed-(gamePlayers[1].getLost()+gamePlayers[1].getWon())),
+		100*float64(gamePlayers[2].getWonAsDefenders())/float64(totalGames-passed-(gamePlayers[2].getLost()+gamePlayers[2].getWon())))
 	fmt.Printf("AVG  %3.1f, passed %d, won %d, lost %d / %d games\n", avg, passed, won, lost, totalGames)
 	fmt.Printf("Grand games %d, perc: %5.2f\n", grandGames, 100*float64(grandGames)/float64(totalGames))
 	fmt.Printf("Null games %d, perc: %5.2f\n", nullGames, 100*float64(nullGames)/float64(totalGames))

@@ -180,7 +180,7 @@ func alphaBetaTacticsAlg(state game.State, alpha, beta float64, depth int, tab s
 	if !state.IsOpponentTurn() { // MAX
 		for _, action := range state.FindLegals() {
 			nextState := state.FindNextState(action)
-			debugLog("%4d %s(%s) game.Action %v :nextstate %v\n", treedepth, tab, debugStr, action, nextState)
+			debugLog("%4d %s(%s) Action %v :nextstate %v\n", treedepth, tab, debugStr, action, nextState)
 			_, value := alphaBetaTacticsAlg(nextState, alpha, beta, depth - 1, tab + "....")
 			debugLog("%4d %s(%s) VALUE of action %v : %.2f at state %v\n", treedepth, tab, debugStr, action, value, state)
 			if value > bestValue {
@@ -198,12 +198,14 @@ func alphaBetaTacticsAlg(state game.State, alpha, beta float64, depth int, tab s
 	} else { // Tactics
 		action := state.GetTacticsMove()
 		nextState := state.FindNextState(action)
-		debugLog("%4d %s(%s) game.Action %v :nextstate %v\n", treedepth, tab, debugStr, action, nextState)
+		debugLog("%4d %s(%s) Action %v :nextstate %v\n", treedepth, tab, debugStr, action, nextState)
 		_, value := alphaBetaTacticsAlg(nextState, alpha, beta, depth - 1, tab + "....")
 
 		bestValue, bestAction = value, action
 	}
-	debugLog("%4d %s(%s) Best action %s : %.2f at state %v\n", treedepth, tab, debugStr, bestAction, bestValue, state)
+	if !state.IsOpponentTurn() { // MAX
+		debugLog("%4d %s(%s) Best action %s : %.2f at state %v\n", treedepth, tab, debugStr, bestAction, bestValue, state)
+	}
 	return &bestAction, bestValue
 
 }

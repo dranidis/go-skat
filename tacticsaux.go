@@ -40,7 +40,9 @@ func highestValueWinnerORlowestValueLoser(s *SuitState, c []Card) Card {
 	if s.trump == s.follow {
 		trumpRanks := []string{"A", "10", "J", "K", "D", "9", "8", "7"}
 		cards := sortRankSpecial(c, trumpRanks)
-		return cards[len(cards)-1]
+		if len(cards) > 0 {
+			return cards[len(cards)-1]
+		}
 	}
 
 	sortedValue := sortValue(c)
