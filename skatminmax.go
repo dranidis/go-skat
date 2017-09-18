@@ -31,8 +31,8 @@ func (s SkatAction) String() string {
 }
 
 func (s SkatState) String() string {
-	return fmt.Sprintf("%v, %s, %v, TRICK: %v, SCORE: %d - %d", 
-		s.SuitState, s.trump, s.players, s.trick, 
+	return fmt.Sprintf("%v, %s, %v %T, TRICK: %v, SCORE: %d - %d", 
+		s.SuitState, s.trump, s.players, s.players[0], s.trick, 
 		s.declarer.getScore(), s.opp1.getScore() + s.opp2.getScore())
 }
 
@@ -45,11 +45,49 @@ func (m SkatState) Heuristic() float64 {
 	}
 }
 
+// type PlayerData struct {
+// 	name         string
+// 	hand         []Card
+// 	highestBid   int
+// 	score        int
+// 	schwarz      bool
+// 	totalScore   int
+// 	previousSuit string
+// 	won          int
+// 	lost         int
+// 	defWon       int
+// 	declaredBid  int
+// }
+func copyPlayer(p PlayerI) Player {
+	player := makePlayer(p.getHand())
+	player.name = p.getName() 
+	player.score = p.getScore() 	
+	player.previousSuit = p.getPreviousSuit() 	
+	player.schwarz = p.isSchwarz() 	
+	// player.highestBid = p.getHighestBid() 	
+	player.declaredBid = p.getDeclaredBid() 	
+	return player
+}
+
+func copyPlayerMM(p PlayerI) MinMaxPlayer {
+	player := makeMinMaxPlayer(p.getHand())
+	player.name = p.getName() 
+	player.score = p.getScore() 	
+	player.previousSuit = p.getPreviousSuit() 	
+	player.schwarz = p.isSchwarz() 	
+	// player.highestBid = p.getHighestBid() 	
+	player.declaredBid = p.getDeclaredBid() 	
+	debugTacticsLog("copyPlayerMM: %v %v\n", p, player)
+	return player
+}
+
 func (m *SkatState) playToTheEndWithTactics() {
 	cpuPlayers := make([]Player, 3)
 	for i := 0; i < 3; i++ {
-		cpuPlayers[i] = makePlayer(m.players[i].getHand())
-		cpuPlayers[i].name = m.players[i].getName() 
+		cpuPlayers[i] = copyPlayer(m.players[i])
+		// cpuPlayers[i] = makePlayer(m.players[i].getHand())
+		// cpuPlayers[i].name = m.players[i].getName() 
+		// cpuPlayers[i].score = m.players[i].getScore() 
 		// cpuPlayers[i].name += "-TAC" 
 		if m.declarer.getName() == m.players[i].getName() {
 			m.declarer = &cpuPlayers[i]
@@ -63,15 +101,17 @@ func (m *SkatState) playToTheEndWithTactics() {
 		if m.leader.getName() == m.players[i].getName() {
 			m.leader = &cpuPlayers[i]
 		}
-		debugTacticsLog("CPU Player %v - %v\n", cpuPlayers[i], m.players[i])
+		// debugTacticsLog("CPU Player %v - %v\n", cpuPlayers[i], m.players[i])
+		m.players[i] = &cpuPlayers[i]
+		// debugTacticsLog("CPU Player %v - %v\n", cpuPlayers[i], m.players[i])
 	}
 
 	f1 := debugTacticsLogFlag
 	f2 := gameLogFlag
 	f3 := fileLogFlag
-	// debugTacticsLogFlag = false
-	// gameLogFlag = false
-	// fileLogFlag = false
+	debugTacticsLogFlag = false
+	gameLogFlag = false
+	fileLogFlag = false
 
 	for len(m.players[2].getHand()) > 0 {
 		_ = m.moveOne()
@@ -227,6 +267,7 @@ func (m SkatState) GetTacticsMove() game.Action {
 }
 
 func (m *SkatState) moveOne() Card {
+	// debugTacticsLog("MOVEONE %v\n", m)
 	l := len(m.trick)
 	var card Card
 	if l == 0 {
@@ -246,6 +287,8 @@ func (m *SkatState) moveOne() Card {
 		// }
 		m.follow = ""
 	}
+	// debugTacticsLog("MOVEONE card %v\n", card)
+
 	return card
 }
 
@@ -321,7 +364,7 @@ func (m *SkatState) FindNextState(a game.Action) game.State {
 
 	if len(newState.trick) == 3 {
 		// var players = []PlayerI{&newState.players[0], &newState.players[1], &newState.players[2]}
-		debugTacticsLog("Players: %v\n", players)
+		// debugTacticsLog("Players: %v\n", players)
 		newState.players = setNextTrickOrder(&newState.SuitState, newState.players)
 		// fmt.Printf("PLAYERS: %v\n", players)
 		// fmt.Printf("PLAYER[0]: %v\n", players[0])

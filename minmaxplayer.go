@@ -6,7 +6,7 @@ import (
 	// "github.com/dranidis/go-skat/game/mcts"
 	"math/rand"
 	"time"
-	"fmt"
+	// "fmt"
 )
 
 var rminmax = rand.New(rand.NewSource(1))
@@ -41,10 +41,6 @@ func (p *MinMaxPlayer) clone() PlayerI {
 	newPlayer.mctsSimulationTimeMs = p.mctsSimulationTimeMs
 
 	return &newPlayer
-}
-
-func (p MinMaxPlayer) String() string {
-	return fmt.Sprintf("(%s):%v [%d]", p.name, p.hand, p.score)
 }
 
 func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
@@ -242,13 +238,44 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 	debugMinmaxLog("Decl: %d\n", decl)
 
 // WORKING::::
-	mmPlayers := make([]MinMaxPlayer, 3)
+	// mmPlayers := make([]MinMaxPlayer, 3)
 	miPlayers := make([]PlayerI, 3)
 	for i := 0; i < 3; i++ {
-		mmPlayers[i] = makeMinMaxPlayer(players[i].getHand())
-		mmPlayers[i].name = players[i].getName() 
-		mmPlayers[i].name += "-MM" 
-		miPlayers[i] = &mmPlayers[i]
+		mmplayer := copyPlayerMM(players[i])
+		// mmPlayers[i] = makeMinMaxPlayer(players[i].getHand())
+		// mmPlayers[i].name = players[i].getName() 
+		// mmPlayers[i].name += "-MM" 
+		mmplayer.name += "-MM"
+		// miPlayers[i] = &mmPlayers[i]
+
+
+		if len(s.trick) == 0 {
+			if i == 1 {
+				mmplayer.hand = p.p1Hand
+			}
+			if i == 2 {
+				mmplayer.hand = p.p2Hand
+			}
+		}
+		if len(s.trick) == 1 {
+			if i == 2 {
+				mmplayer.hand = p.p1Hand
+			}
+			if i == 0 {
+				mmplayer.hand = p.p2Hand
+			}
+		}
+		if len(s.trick) == 2 {
+			if i == 0 {
+				mmplayer.hand = p.p1Hand
+			}
+			if i == 1 {
+				mmplayer.hand = p.p2Hand
+			}
+		}
+
+
+		miPlayers[i] = &mmplayer
 	}	
 	skatState := SkatState{
 		s.cloneSuitStateNotPlayers(),
@@ -256,16 +283,16 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 	}
 	for i := 0; i < 3; i++ {
 		if s.declarer.getName() == players[i].getName() {
-			skatState.declarer = &mmPlayers[i]
+			skatState.declarer = miPlayers[i]
 		}
 		if s.opp1.getName() == players[i].getName() {
-			skatState.opp1 = &mmPlayers[i]
+			skatState.opp1 = miPlayers[i]
 		}
 		if s.opp2.getName() == players[i].getName() {
-			skatState.opp2 = &mmPlayers[i]
+			skatState.opp2 = miPlayers[i]
 		}
 		if s.leader.getName() == players[i].getName() {
-			skatState.leader = &mmPlayers[i]
+			skatState.leader = miPlayers[i]
 		}
 	}
 
@@ -318,7 +345,7 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 		case "ab":
 			a, value = minimax.AlphaBeta(&skatState)
 		case "abt":
-			minimax.DEBUG = true
+			// minimax.DEBUG = true
 			debugTacticsLog("Calling ABT\n")
 			a, value = minimax.AlphaBetaTactics(&skatState)
 	}

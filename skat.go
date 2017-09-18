@@ -180,7 +180,7 @@ func setNextTrickOrder(s *SuitState, players []PlayerI) []PlayerI {
 	index := trickWinner(s)
 	var winner PlayerI
 
-	debugTacticsLog("PLAYERS: %v %d\n", players, index)
+	// debugTacticsLog("PLAYERS: %v %d\n", players, index)
 	winner = players[index]
 	for i := 0; i < index; i++ {
 		players = rotatePlayers(players)
@@ -303,6 +303,10 @@ func isLosingTrick(s *SuitState, p PlayerI, card Card) bool {
 func play(s *SuitState, p PlayerI) Card {
 	red := color.New(color.Bold, color.FgRed).SprintFunc()
 	valid := sortSuit(s.trump, validCards(*s, p.getHand()))
+
+	// if len(valid) == 0 {
+	// 	log.Fatal(fmt.Sprintf("Empty valid: %v, Player: %v\n", valid, p))
+	// }
 
 	p.setHand(sortSuit(s.trump, p.getHand()))
 	gameLog("Trick: %v\n", s.trick)

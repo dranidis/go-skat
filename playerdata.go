@@ -40,6 +40,9 @@ func (p *PlayerData) clone() PlayerData{
 	return newPlayerData
 }
 
+func (p PlayerData) String() string {
+	return fmt.Sprintf("(%s):%v [%d]", p.name, p.hand, p.score)
+}
 
 
 func (p *PlayerData) ResetPlayer() {
