@@ -40,4 +40,45 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 			}
 		}
 	}
+
+	if len(s.trick) == 2 {
+		condition1 := s.trick[0].Rank == "A" && s.greater(s.trick[0], s.trick[1]) && players[0].getName() == partner(s, p).getName()
+		condition2 := s.trick[1].equals(Card{s.follow, "A"}) && s.greater(s.trick[1], s.trick[0]) &&  players[1].getName() == partner(s, p).getName()
+		if condition1 || condition2 {
+			if !card.equals(Card{s.follow, "10"}) {
+				debugTacticsLog("INFERENCE: **************************************\n")
+				debugTacticsLog("INFERENCE: Player does not have the %v           \n", Card{s.follow, "10"})
+				debugTacticsLog("INFERENCE: **************************************\n")
+				if p.getName() == s.opp1.getName() {
+					s.opp1VoidCards = append(s.opp1VoidCards, Card{s.follow, "10"})
+				}
+				if p.getName() == s.opp2.getName() {
+					s.opp2VoidCards = append(s.opp2VoidCards, Card{s.follow, "10"})
+				}
+			} 
+		}	
+	}
+	if len(s.trick) > 0 {
+		if p.getName() == s.declarer.getName() && card.equals(Card{s.follow, "10"}) && !s.greater(card, s.trick...) {
+			debugTacticsLog("INFERENCE: **************************************\n")
+			debugTacticsLog("INFERENCE: Declarer void on suit %v              \n", s.follow)
+			debugTacticsLog("INFERENCE: **************************************\n")
+			s.declarerVoidSuit[s.follow] = true
+		}
+	}
 }
+
+func isLosingTrick(s *SuitState, p PlayerI, card Card) bool {
+	for i, c := range s.trick {
+		if s.greater(c, card) && players[i].getName() == s.declarer.getName() {
+			if len(s.trick) == 1 && noHigherCard(s, false, p.getHand(), c) {
+				return true
+			}
+			if len(s.trick) == 2 {
+				return true
+			}
+		}
+	}
+	return false 
+}
+

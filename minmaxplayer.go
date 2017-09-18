@@ -296,8 +296,8 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 		}
 	}
 
-	debugTacticsLog("Created skatsState: %v\n", skatState)
-	debugTacticsLog("IsOppTurn: %v\n", skatState.IsOpponentTurn())
+	// debugTacticsLog("Created skatsState: %v\n", skatState)
+	// debugTacticsLog("IsOppTurn: %v\n", skatState.IsOpponentTurn())
 // ::::: WORKING
 
 	// strick := make([]Card, len(s.trick))
@@ -346,7 +346,7 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 			a, value = minimax.AlphaBeta(&skatState)
 		case "abt":
 			// minimax.DEBUG = true
-			debugTacticsLog("Calling ABT\n")
+			// debugTacticsLog("Calling ABT\n")
 			a, value = minimax.AlphaBetaTactics(&skatState)
 	}
 	minimaxSearching = false
@@ -713,6 +713,7 @@ func checkVoidDecl(s *SuitState, p *MinMaxPlayer, cards []Card, suit string, IsD
 
 		cards = remove(cards, suitCards...)
 	}
+	cards = remove(cards, s.declarerVoidCards...)
 	return cards
 }
 
@@ -726,6 +727,8 @@ func checkVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []C
 		p.p2Hand = append(p.p2Hand, suitCards...)
 		cards = remove(cards, suitCards...)
 	}
+	cards = remove(cards, s.opp1VoidCards...)
+	
 	return cards
 }
 
@@ -738,6 +741,7 @@ func checkVoidOpp2(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []C
 		p.p1Hand = append(p.p1Hand, suitCards...)
 		cards = remove(cards, suitCards...)
 	}
+	cards = remove(cards, s.opp2VoidCards...)
 	return cards
 }
 
@@ -752,6 +756,7 @@ func partnerCheckVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit stri
 		p.p1Hand = append(p.p1Hand, suitCards...)
 		cards = remove(cards, suitCards...)
 	}
+	cards = remove(cards, s.opp1VoidCards...)
 	return cards
 }
 
@@ -765,6 +770,7 @@ func partnerCheckVoidOpp2(s *SuitState, p *MinMaxPlayer, cards []Card, suit stri
 		p.p2Hand = append(p.p2Hand, suitCards...)
 		cards = remove(cards, suitCards...)
 	}
+	cards = remove(cards, s.opp2VoidCards...)
 	return cards
 }
 

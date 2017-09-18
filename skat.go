@@ -79,6 +79,9 @@ type SuitState struct {
 	declarerVoidSuit map[string]bool
 	opp1VoidSuit  map[string]bool
 	opp2VoidSuit  map[string]bool
+	declarerVoidCards  []Card
+	opp1VoidCards []Card
+	opp2VoidCards []Card
 }
 
 func (s SuitState) String() string {
@@ -93,10 +96,12 @@ func (s SuitState) String() string {
 		str += ")"
 		return str
 	}
-	return fmt.Sprintf("D:%s, O1:%s, O2:%s, T:%s, Leads:%s, Fol: %s, TRICK:%v, SKAT:%v, InGame: %v, Played: %v, D_VOID:%s,O1_VOID:%s,O2_VOID:%s\n", 
+	return fmt.Sprintf("D:%s, O1:%s, O2:%s, T:%s, Leads:%s, Fol: %s, TRICK:%v, SKAT:%v, InGame: %v, Played: %v, D_VOID:%s,%v,O1_VOID:%s, %v,O2_VOID:%s, %v\n", 
 		s.declarer.getName(), s.opp1.getName(), s.opp2.getName(), s.trump, s.leader.getName(), s.follow, s.trick, 
 		s.skat, s.trumpsInGame, s.cardsPlayed, 
-		voidString(s.declarerVoidSuit), voidString(s.opp1VoidSuit), voidString(s.opp2VoidSuit))
+		voidString(s.declarerVoidSuit), s.declarerVoidCards, 
+		voidString(s.opp1VoidSuit), s.opp1VoidCards, 
+		voidString(s.opp2VoidSuit), s.opp2VoidCards)
 }
 
 func (s *SuitState) cloneSuitStateNotPlayers() SuitState {
@@ -139,7 +144,16 @@ func (s *SuitState) cloneSuitStateNotPlayers() SuitState {
 			CARO:  s.opp2VoidSuit[CARO],
 		}
 
-		return newSS
+	newSS.declarerVoidCards = make([]Card, len(s.declarerVoidCards))
+	copy(newSS.declarerVoidCards, s.declarerVoidCards)
+
+	newSS.opp1VoidCards = make([]Card, len(s.opp1VoidCards))
+	copy(newSS.opp1VoidCards, s.opp1VoidCards)
+
+	newSS.opp2VoidCards = make([]Card, len(s.opp2VoidCards))
+	copy(newSS.opp2VoidCards, s.opp2VoidCards)
+
+	return newSS
 }
 
 func makeSuitState() SuitState {
@@ -163,6 +177,7 @@ func makeSuitState() SuitState {
 			HEART: false,
 			CARO:  false,
 		},
+		[]Card{}, []Card{}, []Card{},
 	}
 }
 
@@ -240,64 +255,6 @@ func round(s *SuitState, players []PlayerI) []PlayerI {
 	players = setNextTrickOrder(s, players)
 	s.follow = ""
 	return players
-}
-
-func analysePlay(s *SuitState, p PlayerI, card Card) {
-	// debugTacticsLog("PLAY ANALYSIS: %v, %s, Card: %v\n", s.trick, p.getName(), card)
-	// Player VOID on suit
-	if len(s.trick) > 0 && getSuit(s.trump, card) != getSuit(s.trump, s.trick[0]) {
-		debugTacticsLog("TRICK: %v, Card: %v\n", s.trick, card)
-		debugTacticsLog("INFERENCE: **************************************\n")
-		debugTacticsLog("INFERENCE: Not following tricks                  \n")
-		debugTacticsLog("INFERENCE: Void on suit                          \n")
-		debugTacticsLog("INFERENCE: **************************************\n")
-		if p.getName() == s.declarer.getName() {
-			s.declarerVoidSuit[getSuit(s.trump, s.trick[0])] = true
-		}
-		if p.getName() == s.opp1.getName() {
-			s.opp1VoidSuit[getSuit(s.trump, s.trick[0])] = true
-		}
-		if p.getName() == s.opp2.getName() {
-			s.opp2VoidSuit[getSuit(s.trump, s.trick[0])] = true
-		}
-	}
-
-	if p.getName() != s.declarer.getName() {
-		// debugTacticsLog("PLAY ANALYSIS: OPP\n")
-		if s.follow == s.trump {
-			// debugTacticsLog("PLAY ANALYSIS: TRUMP\n")
-			if getSuit(s.trump, card) == s.trump && (card.Rank == "A" || card.Rank == "10") {
-				// debugTacticsLog("PLAY ANALYSIS: A/10\n")
-				if isLosingTrick(s, p, card) {
-					// TODO:
-					debugTacticsLog("INFERENCE: **************************************\n")
-					debugTacticsLog("INFERENCE: Playing a full Trump on a losing trick\n")
-					debugTacticsLog("INFERENCE: Is the last of the player             \n")
-					debugTacticsLog("INFERENCE: **************************************\n")
-
-					if p.getName() == s.opp1.getName() {
-					//	s.opp1VoidSuit[s.trump] = true
-					}
-					if p.getName() == s.opp2.getName() {
-					//	s.opp2VoidSuit[s.trump] = true
-					}
-				}
-			}
-		}
-	}
-}
-
-func isLosingTrick(s *SuitState, p PlayerI, card Card) bool {
-	var c Card
-	for _, c = range s.trick {
-		if s.greater(c, card) {
-			return true
-		}
-	}
-	// if noHigherCard(s, false, []Card{}, c) {
-	// 	return true
-	// }
-	return false // TODO!!!!
 }
 
 func play(s *SuitState, p PlayerI) Card {

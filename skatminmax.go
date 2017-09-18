@@ -77,7 +77,7 @@ func copyPlayerMM(p PlayerI) MinMaxPlayer {
 	player.schwarz = p.isSchwarz() 	
 	// player.highestBid = p.getHighestBid() 	
 	player.declaredBid = p.getDeclaredBid() 	
-	debugTacticsLog("copyPlayerMM: %v %v\n", p, player)
+	// debugTacticsLog("copyPlayerMM: %v %v\n", p, player)
 	return player
 }
 
@@ -106,20 +106,13 @@ func (m *SkatState) playToTheEndWithTactics() {
 		// debugTacticsLog("CPU Player %v - %v\n", cpuPlayers[i], m.players[i])
 	}
 
-	f1 := debugTacticsLogFlag
-	f2 := gameLogFlag
-	f3 := fileLogFlag
-	debugTacticsLogFlag = false
-	gameLogFlag = false
-	fileLogFlag = false
+	disableLogs()
 
 	for len(m.players[2].getHand()) > 0 {
 		_ = m.moveOne()
 	}
 
-	debugTacticsLogFlag = f1
-	gameLogFlag = f2
-	fileLogFlag = f3
+	restoreLogs()
 }
 
 // func (m SkatState) playWithTactics() SkatAction {
@@ -250,18 +243,11 @@ func (m SkatState) GetTacticsMove() game.Action {
 		}
 	}
 
-	f1 := debugTacticsLogFlag
-	f2 := gameLogFlag
-	f3 := fileLogFlag
-	debugTacticsLogFlag = false
-	gameLogFlag = false
-	fileLogFlag = false
+	disableLogs()
 
 	card := tmpState.moveOne()
 
-	debugTacticsLogFlag = f1
-	gameLogFlag = f2
-	fileLogFlag = f3
+	restoreLogs()
 
 	return SkatAction{card}
 }
@@ -334,6 +320,7 @@ func (m *SkatState) FindLegals() []game.Action {
 }
 
 func (m *SkatState) FindNextState(a game.Action) game.State {
+	disableLogs()
 	// debugTacticsLog("STATE: %v\n", m)
 	ma := a.(SkatAction)
 
@@ -342,7 +329,9 @@ func (m *SkatState) FindNextState(a game.Action) game.State {
 
 	currentP := newState.players[len(newState.trick)]
 	// p := &currentP 
+
 	analysePlay(&newState.SuitState, currentP, ma.card)
+
 
 	currentP.setHand(remove(currentP.getHand(), ma.card))
 	newState.players[len(newState.trick)] = currentP // STRANGE!!
@@ -412,6 +401,7 @@ func (m *SkatState) FindNextState(a game.Action) game.State {
 	var state game.State
 	state = &newState
 	// debugTacticsLog("NEWSTATE: %v\n", state)
+	restoreLogs()
 	return state
 }
 

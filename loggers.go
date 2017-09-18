@@ -9,10 +9,17 @@ import (
 )
 
 var logFile io.Writer = nil
+
 var debugTacticsLogFlag = false
 var gameLogFlag = true
 var fileLogFlag = true
-var htmlLogFlag = true
+
+var debugTacticsLogFlagStored = false
+var gameLogFlagStored = true
+var fileLogFlagStored = true
+
+
+var htmlLogFlag = false
 var logFileName = "gameLog.txt"
 
 func logToFile(format string, a ...interface{}) {
@@ -60,4 +67,20 @@ func createFile(logFileName string) *os.File {
 		log.Fatal("Cannot create file", err)
 	}
 	return file
+}
+
+
+func disableLogs() {
+	debugTacticsLogFlagStored = debugTacticsLogFlag
+	gameLogFlagStored = gameLogFlag
+	fileLogFlagStored = fileLogFlag
+	debugTacticsLogFlag = false
+	gameLogFlag = false
+	fileLogFlag = false
+}
+
+func restoreLogs() {
+	debugTacticsLogFlag = debugTacticsLogFlagStored
+	gameLogFlag = gameLogFlagStored
+	fileLogFlag = fileLogFlagStored
 }

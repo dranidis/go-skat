@@ -709,19 +709,18 @@ func (p *Player) playSuit(s *SuitState, c []Card) Card {
 	return sortedValue[len(sortedValue)-1]	
 }
 
-
+func partner(s *SuitState, p PlayerI) PlayerI {
+	if s.opp1.getName() == p.getName() {
+		return s.opp2
+	}
+	return s.opp1
+}
 
 func (p *Player) FindPreviousSuit(s *SuitState) string {
-	partnerFunc := func(p PlayerI) PlayerI {
-		if s.opp1.getName() == p.getName() {
-			return s.opp2
-		}
-		return s.opp1
-	}
 	if p.getPreviousSuit() != "" {
 		return p.getPreviousSuit()
-	} else if partnerFunc(p).getPreviousSuit() != "" {
-		return partnerFunc(p).getPreviousSuit()
+	} else if partner(s, p).getPreviousSuit() != "" {
+		return partner(s, p).getPreviousSuit()
 	}
 	return ""
 }
