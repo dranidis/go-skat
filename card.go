@@ -225,6 +225,40 @@ func singletons(cs []Card) []Card {
 	return singles
 }
 
+func similar(s *SuitState, cards []Card) []Card {
+	sim := []Card{}
+	cards = sortSuit(s.trump, cards)
+	if len(cards) == 0 {
+		return sim
+	}
+	card := cards[0]
+	next := nextCard(s.trump, card)
+	for in(s.cardsPlayed, next) && next.Rank != "A" && next.Rank != "K" && next.Rank != "9" {
+		next = nextCard(s.trump, next)
+	}
+	sim = append(sim, card)
+	for i := 1; i < len(cards); i++ {
+		if cards[i].Rank == "A" || cards[i].Rank == "K" || cards[i].Rank == "9" {
+			card = cards[i]
+			sim = append(sim, card)
+			next = nextCard(s.trump, card)
+			for in(s.cardsPlayed, next) && next.Rank != "A" && next.Rank != "K" && next.Rank != "9" {
+				next = nextCard(s.trump, next)
+			}		
+		} else 	if cards[i].equals(next)  {
+			continue
+		} else {
+			card = cards[i]
+			sim = append(sim, card)
+			next = nextCard(s.trump, card)
+			for in(s.cardsPlayed, next) && next.Rank != "A" && next.Rank != "K" && next.Rank != "9" {
+				next = nextCard(s.trump, next)
+			}		
+		}
+	}
+	return sim
+}
+
 func nextCard(trump string, c Card) Card {
 	if c.equals(Card{CLUBS, "J"}) {
 		return Card{SPADE, "J"}

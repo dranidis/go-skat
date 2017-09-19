@@ -148,3 +148,105 @@ func TestRemove3(t *testing.T) {
 		t.Errorf("Last Card not removed")
 	}
 }
+
+func TestNextCard(t *testing.T) {
+	p := Card{CLUBS, "J"}
+	c := nextCard(CARO, Card{CLUBS, "J"})
+	debugTacticsLog("next of %v is %v\n", p, c)
+	if !c.equals(Card{SPADE, "J"}) {
+		t.Errorf("Wrong next card: %v", c)
+	}
+}
+
+func TestEquivalent1(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "K"},
+		Card{CLUBS, "D"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "7"},
+	}
+	s := makeSuitState()
+	s.trump = CLUBS
+
+	equiv := similar(&s, cards)
+
+	if len(equiv) != 5 {
+		t.Errorf("Wrong similar cards %v", equiv)
+	}
+	if !in(equiv, Card{CLUBS, "J"}, Card{HEART, "J"}, Card{CLUBS, "A"}, Card{CLUBS, "K"}, Card{CLUBS, "8"}) {
+		t.Errorf("Wrong similar cards %v", equiv)
+	}
+	if in(equiv, Card{CARO, "J"}) || in(equiv, Card{CLUBS, "10"}) || in(equiv, Card{CLUBS, "D"}) || in(equiv, Card{CLUBS, "7"}) {
+		t.Errorf("Wrong similar cards %v", equiv)
+	}
+}
+
+func TestEquivalent2(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "D"},
+		Card{CLUBS, "7"},
+		Card{SPADE, "A"},
+		Card{SPADE, "10"},
+		Card{SPADE, "K"},
+		Card{HEART, "9"},
+		Card{HEART, "7"},
+	}
+
+	s := makeSuitState()
+	s.trump = CLUBS
+
+	equiv := similar(&s, cards)
+
+	if len(equiv) != 8 {
+		t.Errorf("Wrong similar cards %v", equiv)
+	}
+	if !in(equiv, Card{CLUBS, "J"}, Card{CLUBS, "10"}, Card{CLUBS, "D"}, Card{CLUBS, "7"}, Card{SPADE, "A"}, Card{SPADE, "K"}, Card{HEART, "9"}, Card{HEART, "7"}) {
+		t.Errorf("Wrong similar cards %v", equiv)
+	}
+	if in(equiv, Card{SPADE, "J"}) || in(equiv, Card{SPADE, "10"})  {
+		t.Errorf("Wrong similar cards %v", equiv)
+	}
+}
+
+func TestEquivalent3(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{CARO, "J"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "D"},
+		Card{CLUBS, "7"},
+		Card{SPADE, "A"},
+		Card{SPADE, "10"},
+		Card{SPADE, "K"},
+		Card{HEART, "9"},
+		Card{HEART, "7"},
+	}
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.cardsPlayed = []Card{
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{HEART, "8"},
+	}
+
+	equiv := similar(&s, cards)
+
+	if len(equiv) != 7 {
+		t.Errorf("Wrong similar cards %v", equiv)
+	}
+	if !in(equiv, Card{CLUBS, "J"}, Card{CLUBS, "10"}, Card{CLUBS, "D"}, Card{CLUBS, "7"}, Card{SPADE, "A"}, Card{SPADE, "K"}, Card{HEART, "9"}) {
+		t.Errorf("Wrong similar cards %v", equiv)
+	}
+	if in(equiv, Card{CARO, "J"}) || in(equiv, Card{SPADE, "10"}, Card{HEART, "7"})  {
+		t.Errorf("Wrong similar cards %v", equiv)
+	}
+}

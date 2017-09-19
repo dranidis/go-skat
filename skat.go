@@ -492,7 +492,9 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 }
 
 var grandGames = 0
+var wonGrandGames = 0
 var nullGames = 0
+var wonNullGames = 0
 
 var state SuitState
 
@@ -671,11 +673,15 @@ func declareAndPlay() int {
 			state.declarer.incTotalScore(50)
 		}
 		if state.trump != NULL {
+			if state.trump == GRAND {
+				wonGrandGames++
+			}
 			scoreString = fmt.Sprintf("%s VICTORY: %d - %d, SCORE: %d\n", state.declarer.getName(),
 				state.declarer.getScore(), state.opp1.getScore()+state.opp2.getScore(), gs)
 			// gameLog("%s VICTORY: %d - %d, SCORE: %d\n", state.declarer.getName(),
 			// 	state.declarer.getScore(), state.opp1.getScore()+state.opp2.getScore(), gs)
 		} else {
+			wonNullGames++
 			scoreString = fmt.Sprintf("%s VICTORY: %d\n", state.declarer.getName(), gs)
 			// gameLog("%s VICTORY: %d\n", state.declarer.getName(), gs)
 		}
@@ -1094,9 +1100,16 @@ func main() {
 		100*float64(gamePlayers[0].getWonAsDefenders())/float64(totalGames-passed-(gamePlayers[0].getLost()+gamePlayers[0].getWon())),
 		100*float64(gamePlayers[1].getWonAsDefenders())/float64(totalGames-passed-(gamePlayers[1].getLost()+gamePlayers[1].getWon())),
 		100*float64(gamePlayers[2].getWonAsDefenders())/float64(totalGames-passed-(gamePlayers[2].getLost()+gamePlayers[2].getWon())))
-	fmt.Printf("AVG  %3.1f, passed %d, won %d, lost %d / %d games\n", avg, passed, won, lost, totalGames)
-	fmt.Printf("Grand games %d, perc: %5.2f\n", grandGames, 100*float64(grandGames)/float64(totalGames))
-	fmt.Printf("Null games %d, perc: %5.2f\n", nullGames, 100*float64(nullGames)/float64(totalGames))
+	fmt.Printf("AVG  %3.1f, played %d, passed %d, won %d, lost %d / %d games\n", avg, won+lost,passed, won, lost, totalGames)
+	fmt.Printf("Games       %5d, (%3.0f%%), Won: %5d (%3.0f%%)\n", 
+		won+lost, 100*float64(won+lost)/float64(totalGames), 
+		won, 100 *float64(won)/float64(won+lost))
+	fmt.Printf("Grand games %5d, (%3.0f%%), Won: %5d (%3.0f%%)\n", 
+		grandGames, 100*float64(grandGames)/float64(totalGames), 
+		wonGrandGames, 100 *float64(wonGrandGames)/float64(grandGames))
+	fmt.Printf("Null games  %5d, (%3.0f%%), Won: %5d (%3.0f%%)\n", 
+		nullGames, 100*float64(nullGames)/float64(totalGames),
+		wonNullGames, 100 *float64(wonNullGames)/float64(nullGames))
 }
 
 func printScore(players []PlayerI) {

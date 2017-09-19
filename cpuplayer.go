@@ -1,8 +1,8 @@
 package main
 
 import (
-	 "fmt"
-	 "log"
+	"fmt"
+	"log"
 )
 
 type Player struct {
@@ -10,9 +10,8 @@ type Player struct {
 	firstCardPlay  bool
 	risky          bool
 	trumpToDeclare string
-	handGame bool
+	handGame       bool
 }
-
 
 func makePlayer(hand []Card) Player {
 	return Player{
@@ -20,7 +19,7 @@ func makePlayer(hand []Card) Player {
 		firstCardPlay:  false,
 		risky:          true,
 		trumpToDeclare: "NOTRUMP",
-		handGame:	false,
+		handGame:       false,
 	}
 }
 
@@ -70,8 +69,6 @@ func (p Player) otherPlayersTrumps(s *SuitState) []Card {
 	})
 }
 
-var TRYING = false
-
 func (p Player) nullPlayerTactic(s *SuitState, c []Card) Card {
 	cards := sortValueNull(c)
 	debugTacticsLog(".. cards: %v\n", cards)
@@ -89,18 +86,18 @@ func (p Player) nullPlayerTactic(s *SuitState, c []Card) Card {
 		return cards[0]
 	}
 	lcards := filter(cards, func(card Card) bool {
-			return ! s.greater(card, s.trick...)
-		})
+		return !s.greater(card, s.trick...)
+	})
 	debugTacticsLog(".. Lower cards: %v\n", lcards)
 	if len(lcards) > 0 {
-		return lcards[len(lcards) - 1]
+		return lcards[len(lcards)-1]
 	}
 
 	debugTacticsLog(".. No smaller: \n")
 	return cards[0]
 }
 
-// Returns 
+// Returns
 //	-1: unplayable
 //	 0: Null
 //	 1: Null hand
@@ -116,20 +113,24 @@ func (p Player) canWinNull(afterSkat bool) int {
 	for _, s := range suits {
 		risk := p.nullSafeSuit(s, p.hand)
 		switch risk {
-			case 0: safe++
-			case 1: risky++
-			case 2: quiterisky++
-			default: unplayable++
+		case 0:
+			safe++
+		case 1:
+			risky++
+		case 2:
+			quiterisky++
+		default:
+			unplayable++
 		}
 		if risk > 2 && !afterSkat {
 			//check if they can be discard it
-			cs := filter(p.hand, func (c Card) bool {
+			cs := filter(p.hand, func(c Card) bool {
 				return c.Suit == s
 			})
 			cs = sortRankSpecial(cs, nullRanksRev)
 			maxToRemove := 1
 			for p.nullSafeSuit(s, cs) > 2 && removed < maxToRemove {
-				last := cs[len(cs) - 1]
+				last := cs[len(cs)-1]
 				cs = remove(cs, last)
 				removed++
 				debugTacticsLog(".. If I discard %v (%d removed)", last, removed)
@@ -138,13 +139,13 @@ func (p Player) canWinNull(afterSkat bool) int {
 				debugTacticsLog(".. the suit is OK")
 				unplayable--
 				quiterisky++
-			}			
+			}
 		}
 	}
 	if unplayable > 0 {
 		return -1
 	}
-	if risky + quiterisky > 2 {
+	if risky+quiterisky > 2 {
 		return -1
 	}
 	if safe == 4 {
@@ -154,9 +155,9 @@ func (p Player) canWinNull(afterSkat bool) int {
 }
 
 func (p Player) nullRisky(s string) bool {
-	cs := filter(p.hand, func (c Card) bool {
+	cs := filter(p.hand, func(c Card) bool {
 		return c.Suit == s
-		})
+	})
 	if in(cs, Card{s, "8"}) && len(cs) == 1 {
 		return true
 	}
@@ -167,12 +168,12 @@ func (p Player) nullSafeSuit(s string, cards []Card) int {
 	risk := 0
 	safe := 0
 
-	cs := filter(cards, func (c Card) bool {
+	cs := filter(cards, func(c Card) bool {
 		return c.Suit == s
-		})
+	})
 
 	debugTacticsLog(".. NULL: examining suit %s: %v", s, cs)
-	for i := len(nullRanks) - 1; i >=0 && len(cs) > 0; i-- {
+	for i := len(nullRanks) - 1; i >= 0 && len(cs) > 0; i-- {
 		r := nullRanks[i]
 		if in(cs, Card{s, r}) {
 			safe++
@@ -202,14 +203,11 @@ func (p Player) canWin(afterSkat bool) string {
 	if canWinNullHand {
 		if !afterSkat {
 			debugTacticsLog("\nwill play NULL Hand\n")
-			return "NullHand"	
+			return "NullHand"
 		}
 		debugTacticsLog("\nwill play NULL\n")
-		return NULL	
+		return NULL
 	}
-	// if canWinNull {
-	// 	return NULL
-	// }
 
 	acesOthenThan := func(suit string) int {
 		aces := 0
@@ -218,7 +216,6 @@ func (p Player) canWin(afterSkat bool) string {
 				continue
 			}
 			if in(cs, Card{s, "A"}) {
-				//	debugTacticsLog("(A %s) ", s)
 				aces++
 			}
 		}
@@ -232,15 +229,9 @@ func (p Player) canWin(afterSkat bool) string {
 				continue
 			}
 			if in(cs, Card{s, "A"}) {
-				//	debugTacticsLog("(A %s) ", s)
 				fullOnes++
 				if in(cs, Card{s, "10"}) {
-					//		debugTacticsLog("(10 %s) ", s)
 					fullOnes++
-					// if in(p.getHand(), Card{s, "K"}) {
-					// 	debugTacticsLog("(K %s) ", s)
-					// 	fullOnes++
-					// }
 				}
 			} else if in(cs, Card{s, "10"}) && tenIsSupported(cs, Card{s, "10"}) {
 				fullOnes++
@@ -259,34 +250,104 @@ func (p Player) canWin(afterSkat bool) string {
 		losers -= 2
 	}
 
-	if fullOnes >= losers  || (p.risky && fullOnes + 1 >= losers) {
-		if fullOnes < losers {
-			TRYING = true
-		}
-	// if fullOnes >= losers  {
-		asuits := 0
-		for _, s := range suits {
-			if in(cs, Card{s, "A"}) {
-				asuits++
-			}
-		}
-		Js := filter(cs, func(c Card) bool {
-			return c.Rank == "J"
-		})
-		debugTacticsLog("Js %v, Asuits %d\n", Js, asuits)
-		if len(Js) > 1 && p.getName() == players[0].getName() {
-			debugTacticsLog("WILL PLAY GRAND with %d Jacks in FOREHAND.\n", len(Js))
-			TRYING = false
+	Js := filter(cs, func(c Card) bool {
+		return c.Rank == "J"
+	})
+
+	asuits := filter(cs, func(c Card) bool {
+		return c.Rank == "A"
+	})
+
+	if fullOnes + 1 >= losers {
+	// .........# 	Bob	Ana	You
+	// EURO -12.22	91.19	-78.97
+	// WON   1605	 1651	 1528
+	// LOST   307	  274	  251	
+	// bidp    34	   34	   32	
+	// pcw     84	   86	   86	
+	// pcwd    14	   15	   15	
+	// AVG  31.0, played 5616, passed 4384, won 4784, lost 832 / 10000 games
+	// Games        5616, ( 56%), Won:  4784 ( 85%)
+	// Grand games  1959, ( 20%), Won:  1717 ( 88%)
+	// Null games    682, (  7%), Won:   467 ( 68%)
+		if len(Js) + fullOnes >= 6 {
 			return "GRAND"
 		}
-		if len(Js) == 2 || (len(Js) == 1 && p.getName() == players[0].getName() ) {
-			if asuits >= 4 {
+
+		debugTacticsLog("Js %v, Asuits %d\n", Js, len(asuits))
+		if len(Js) > 1 && p.getName() == players[0].getName() {
+			debugTacticsLog("WILL PLAY GRAND with %d Jacks in FOREHAND.\n", len(Js))
+			return "GRAND"
+		}
+		if len(Js) == 2 || (len(Js) == 1 && p.getName() == players[0].getName()) {
+			if len(asuits) >= 4 {
 				debugTacticsLog("WILL PLAY GRAND with %d Jack and 4 suits covered with A: %v\n", len(Js))
 				return "GRAND"
 			}
 		}
-		//return "GRAND"
+	}
 
+// .........# 	Bob	Ana	You
+// EURO 33.69	39.99	-73.68
+// WON   1533	 1573	 1435
+// LOST   253	  238	  219	
+// bidp    34	   34	   31	
+// pcw     86	   87	   87	
+// pcwd    13	   14	   14	
+// AVG  26.4, played 5251, passed 4749, won 4541, lost 710 / 10000 games
+// Games        5251, ( 53%), Won:  4541 ( 86%)
+// Grand games   650, (  6%), Won:   598 ( 92%)
+// Null games    774, (  8%), Won:   533 ( 69%)
+
+
+
+
+	// when to consider SUITHAND?
+	//
+// .........# 	Bob	Ana	You
+// EURO 39.96	36.51	-76.47
+// WON   1540	 1579	 1441
+// LOST   252	  238	  219	
+// bidp    34	   34	   32	
+// pcw     86	   87	   87	
+// pcwd    13	   14	   14	
+// AVG  26.5, played 5269, passed 4731, won 4560, lost 709 / 10000 games
+// Games        5269, ( 53%), Won:  4560 ( 87%)
+// Grand games   651, (  7%), Won:   599 ( 92%)
+// Null games    772, (  8%), Won:   533 ( 69%)
+
+	if len(Js) == 4 {
+		return "SUIT"
+	}
+// .........# 	Bob	Ana	You
+// EURO 38.16	27.45	-65.61
+// WON   1605	 1646	 1519
+// LOST   250	  239	  222	
+// bidp    34	   34	   32	
+// pcw     87	   87	   87	
+// pcwd    13	   13	   13	
+// AVG  27.5, played 5481, passed 4519, won 4770, lost 711 / 10000 games
+// Games        5481, ( 55%), Won:  4770 ( 87%)
+// Grand games   668, (  7%), Won:   615 ( 92%)
+// Null games    749, (  7%), Won:   518 ( 69%)
+	if len(Js) == 3 && !in(cs, Card{CARO, "J"}) {
+		return "SUIT"
+	}
+
+// .........# 	Bob	Ana	You
+// EURO -11.23	91.73	-80.50
+// WON   1608	 1656	 1532
+// LOST   307	  275	  253	
+// bidp    34	   34	   32	
+// pcw     84	   86	   86	
+// pcwd    14	   15	   15	
+// AVG  31.0, played 5631, passed 4369, won 4796, lost 835 / 10000 games
+// Games        5631, ( 56%), Won:  4796 ( 85%)
+// Grand games  1964, ( 20%), Won:  1721 ( 88%)
+// Null games    681, (  7%), Won:   466 ( 68%)
+
+	if len(Js) == 2 && len(asuits) > 2 {
+		return "SUIT"
 	}
 
 	suit := mostCardsSuit(cs)
@@ -294,57 +355,69 @@ func (p Player) canWin(afterSkat bool) string {
 	debugTacticsLog("Longest suit %s, %d cards\n", suit, largest)
 	aces := acesOthenThan(suit)
 	debugTacticsLog("Extra suits: %d\n", aces)
-	prob := 0
-// CONSERVATIVE
-	// if largest > 4 && aces > 2 {
-	// 	prob = 80
-	// }
 
-	// if largest > 5 && aces > 1  {
-	// 	prob = 85
-	// }
-	// if largest > 6 && aces > 0   {
-	// 	prob = 99
-	// }	
-	// if largest > 6 && aces > 1  {
-	// 	prob = 100
-	// }
-	if largest > 4 && aces > 1 {
-		prob = 80
+// .........# 	Bob	Ana	You
+// EURO 11.78	79.58	-91.36
+// WON   2518	 2547	 2448
+// LOST   694	  675	  676	
+// bidp    34	   34	   33	
+// pcw     78	   79	   78	
+// pcwd    21	   22	   21	
+// AVG  20.8, played 9558, passed 442, won 7513, lost 2045 / 10000 games
+// Games        9558, ( 96%), Won:  7513 ( 79%)
+// Grand games  2613, ( 26%), Won:  2256 ( 86%)
+// Null games    307, (  3%), Won:   209 ( 68%)
+
+
+	if largest + aces >= 6 { // 7
+		debugTacticsLog("Will play %s with %d trumps and %d As \n", suit, largest, aces)
+		return "SUIT"
 	}
 
-	if largest > 5 && aces > 0  {
-		prob = 85
+// .........# 	Bob	Ana	You
+// EURO -26.12	89.95	-63.83
+// WON   1613	 1660	 1544
+// LOST   312	  279	  255	
+// bidp    34	   34	   32	
+// pcw     84	   86	   86	
+// pcwd    14	   15	   15	
+// AVG  30.9, played 5663, passed 4337, won 4817, lost 846 / 10000 games
+// Games        5663, ( 57%), Won:  4817 ( 85%)
+// Grand games  1986, ( 20%), Won:  1737 ( 87%)
+// Null games    680, (  7%), Won:   465 ( 68%)
+
+	if largest + sureFullOnesOtherThan(suit) >= 7 { // 8
+		debugTacticsLog("Will play %s with %d trumps and %d As & 10s \n", suit, largest, sureFullOnesOtherThan(suit))
+		return "SUIT"
 	}
-	if largest > 6 && aces > 0   {
-		prob = 99
-	}	
-	if largest > 6 && aces > 1  {
-		prob = 100
-	}
+
+
 	est := handEstimation(cs)
 	debugTacticsLog("Hand: %v, Estimation: %d\n", cs, est)
-	if prob < 80 {
-		if canWinNull {
-			debugTacticsLog("Will play NULL\n")
-			return NULL
-		}
-		if est < 50 {
-			return ""
-		}
+	if canWinNull {
+		debugTacticsLog("Will play NULL\n")
+		return NULL
 	}
-	if prob > 99 {
-		debugTacticsLog("Will play %s HAND with %d trumps and %d As \n", suit, largest, aces)
-		return "SUITHAND"
-	}
-	debugTacticsLog("Will play %s with %d trumps and %d As \n", suit, largest, aces)
-	// if est < 20 {
-	// 	return ""
-	// }
-	//	fmt.Printf("LOW %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
 
-	// fmt.Printf("HIGH %d %v\n", p.handEstimation(), sortSuit(p.getHand()))
-	return "SUIT"
+// Game: 1
+// .........# 	Bob	Ana	You
+// EURO -60.55	127.07	-66.52
+// WON   1678	 1750	 1591
+// LOST   327	  294	  259	
+// bidp    34	   35	   31	
+// pcw     84	   86	   86	
+// pcwd    14	   15	   15	
+// AVG  30.8, played 5899, passed 4101, won 5019, lost 880 / 10000 games
+// Games        5899, ( 59%), Won:  5019 ( 85%)
+// Grand games  2107, ( 21%), Won:  1839 ( 87%)
+// Null games    666, (  7%), Won:   451 ( 68%)
+	if len(asuits) == 4 {
+		return "GRAND"
+	}
+	if est > 50 {
+		return "SUIT"
+	}
+	return ""
 }
 
 func (p Player) strongestLowestNotAor10(s *SuitState, cs []Card) Card {
@@ -376,7 +449,7 @@ func (p Player) enoughTrumps(s *SuitState) bool {
 		return card.Rank == "J" || card.Suit == s.trump
 	}))
 	otherTrumps := p.otherPlayersTrumps(s)
-	if len(ownTrumps) * 2 < len(otherTrumps) + 2 || (len(ownTrumps) == 3 && len(otherTrumps) == 4) {
+	if len(ownTrumps)*2 < len(otherTrumps)+2 || (len(ownTrumps) == 3 && len(otherTrumps) == 4) {
 		return false
 	}
 	return true
@@ -391,9 +464,9 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 
 	if s.trump == NULL {
 		return p.nullPlayerTactic(s, c)
-	}	
+	}
 
-	follows :=  followCards(s, s.follow, c)
+	follows := followCards(s, s.follow, c)
 	ownTrumps := sortRank(filter(p.hand, func(card Card) bool {
 		return card.Rank == "J" || card.Suit == s.trump
 	}))
@@ -404,7 +477,7 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 
 	// calculating sure winners and 2nd losers
 	sureWinners := []Card{}
-	for _,t := range ownTrumps {
+	for _, t := range ownTrumps {
 		if noHigherCard(s, true, p.hand, t) {
 			sureWinners = append(sureWinners, t)
 		}
@@ -421,11 +494,8 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 			debugTacticsLog("..other TRUMPS in game: %v", otherTrumps)
 			debugTacticsLog("..own TRUMPS: %v", ownTrumps)
 
-
-
-
 			highLosers := []Card{}
-			for _,t := range ownTrumps {
+			for _, t := range ownTrumps {
 				if in(sureWinners, t) {
 					continue
 				}
@@ -449,7 +519,7 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				}
 			}
 			// if len(ownTrumps) * 2 < len(otherTrumps) + 2 {
-			if ! p.enoughTrumps(s) {
+			if !p.enoughTrumps(s) {
 				debugTacticsLog("Not enough trumps.  Playing suits")
 				return p.playSuit(s, c)
 			}
@@ -498,21 +568,21 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 			debugTacticsLog("Own trumps strength: %d, Other: %d", strength(ownTrumps), strength(otherTrumps))
 			if strength(ownTrumps) > strength(otherTrumps) {
 				card := p.strongestLowestNotAor10(s, c)
-				if cardValue(card) < 4 || ! p.otherPlayersHaveJs(s) {
+				if cardValue(card) < 4 || !p.otherPlayersHaveJs(s) {
 					debugTacticsLog("Playing strongest lowest\n")
-					return 	card			
+					return card
 				}
 
-			} 
-			lowest := ownTrumps[len(ownTrumps) - 1]
-			if cardValue(lowest) < 4 || ! p.otherPlayersHaveJs(s) {
+			}
+			lowest := ownTrumps[len(ownTrumps)-1]
+			if cardValue(lowest) < 4 || !p.otherPlayersHaveJs(s) {
 				debugTacticsLog("Playing lowest\n")
-				return 	lowest			
-			}			
+				return lowest
+			}
 			debugTacticsLog("Playing a suit\n")
 			return p.playSuit(s, c)
-			
-				// return firstCardTactic(c)
+
+			// return firstCardTactic(c)
 			// }
 		}
 		// TRUMP MONOPOLY
@@ -580,18 +650,18 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 							debugTacticsLog("throwing off number (not in AKX) not in 10X..")
 							if !is10X(card.Suit, p.hand) && cardValue(card) == 0 {
 								return card
-							}						
+							}
 						}
 					}
 					debugTacticsLog("throwing off number (even in AKX)..")
-					card := sortedValueNoTrumps[len(sortedValueNoTrumps) - 1]
-					if !is10X(card.Suit, p.hand)  && cardValue(card) == 0 {
+					card := sortedValueNoTrumps[len(sortedValueNoTrumps)-1]
+					if !is10X(card.Suit, p.hand) && cardValue(card) == 0 {
 						return card
 					}
 				}
 			}
 
-			if len(sureWinners) > 0 && len(sureWinners) + 1 > len(otherTrumps) && p.enoughTrumps(s) {
+			if len(sureWinners) > 0 && len(sureWinners)+1 > len(otherTrumps) && p.enoughTrumps(s) {
 				return sortValue(sureWinners)[0]
 			}
 
@@ -599,7 +669,7 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 
 			rank := []string{"A", "10", "J", "K", "D", "9", "8", "7"}
 			sortedTrumps := sortRankSpecial(ownTrumps, rank)
-			return sortedTrumps[len(sortedTrumps) - 1]
+			return sortedTrumps[len(sortedTrumps)-1]
 		}
 	}
 	if len(s.trick) == 2 {
@@ -628,17 +698,17 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 		if len(follows) > 1 && sum(s.trick) == 0 { // losers
 			if in(p.hand, Card{s.follow, "A"}) && !in(s.cardsPlayed, Card{s.follow, "10"}) {
 				debugTacticsLog(".. %v in hand and %v not played yet", Card{s.follow, "A"}, Card{s.follow, "10"})
-				fs := 7 - len(filter(s.cardsPlayed, func (c Card) bool {
+				fs := 7 - len(filter(s.cardsPlayed, func(c Card) bool {
 					return c.Suit == s.follow && c.Rank != "J"
-					}))
+				}))
 				debugTacticsLog(".. %d %s cards still in play..", fs, s.follow)
 				if fs > 4 && len(sortedValueNoTrumps) > 0 {
-					// this became an empty array 
+					// this became an empty array
 					// need to think what will happen in that case
 					// as an alternative
-					return sortedValueNoTrumps[len(sortedValueNoTrumps) - 1]
+					return sortedValueNoTrumps[len(sortedValueNoTrumps)-1]
 				}
-			} 
+			}
 		}
 
 		if sum(s.trick) == 0 {
@@ -669,16 +739,16 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 
 func (p *Player) playSuit(s *SuitState, c []Card) Card {
 	// Checking if card will not be trumped did not improve results !!???!!!
-	ifMoreThanOne := func (cs []Card) bool {
+	ifMoreThanOne := func(cs []Card) bool {
 		if len(cs) > 0 {
 			// inPlay := suitCardsInPlay(s, true, p.hand, cs[0].Suit)
-			// debugTacticsLog("..Cards in play of suit %s, %v..", cs[0].Suit, inPlay)						
+			// debugTacticsLog("..Cards in play of suit %s, %v..", cs[0].Suit, inPlay)
 			// if len(inPlay) > 1 {
-				return true
+			return true
 			// }
 		}
 		return false
-	}	
+	}
 
 	suits := filter(c, func(card Card) bool {
 		return card.Suit != s.trump && card.Rank != "J"
@@ -687,7 +757,7 @@ func (p *Player) playSuit(s *SuitState, c []Card) Card {
 	asses := filter(suits, func(card Card) bool {
 		return card.Rank == "A"
 	})
-	if ifMoreThanOne(asses){
+	if ifMoreThanOne(asses) {
 		return asses[0]
 	}
 	tens := filter(suits, func(card Card) bool {
@@ -696,18 +766,18 @@ func (p *Player) playSuit(s *SuitState, c []Card) Card {
 	})
 	if ifMoreThanOne(tens) {
 		return tens[0]
-	}					
+	}
 	Ks := filter(suits, func(card Card) bool {
 		cardsPlayed := append(s.cardsPlayed, s.skat...)
 		return card.Rank == "K" && in(cardsPlayed, Card{card.Suit, "A"}, Card{card.Suit, "10"})
 	})
 	if ifMoreThanOne(Ks) {
 		return Ks[0]
-	}					
+	}
 	Ds := filter(suits, func(card Card) bool {
 		cardsPlayed := append(s.cardsPlayed, s.skat...)
 		return card.Rank == "D" && in(cardsPlayed, Card{card.Suit, "A"}, Card{card.Suit, "10"}, Card{card.Suit, "K"})
-	})								
+	})
 	if ifMoreThanOne(Ds) {
 		return Ds[0]
 	}
@@ -718,7 +788,7 @@ func (p *Player) playSuit(s *SuitState, c []Card) Card {
 	// 		return sortedValue[i]
 	// 	}
 	// }
-	return sortedValue[len(sortedValue)-1]	
+	return sortedValue[len(sortedValue)-1]
 }
 
 func partner(s *SuitState, p PlayerI) PlayerI {
@@ -846,7 +916,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	if len(c) == 1 {
 		debugTacticsLog("FORCED MOVE\n")
 		return c[0]
-	}		
+	}
 
 	if s.trump == NULL {
 		return p.opponentTacticNull(s, c)
@@ -857,11 +927,11 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 		return card.Rank == "J" || card.Suit == s.trump
 	}))
 	sureWinners := []Card{}
-	for _,t := range ownTrumps {
+	for _, t := range ownTrumps {
 		if noHigherCard(s, true, p.hand, t) {
 			sureWinners = append(sureWinners, t)
 		}
-	}	
+	}
 	otherTrumps := p.otherPlayersTrumps(s)
 	sortedValueNoTrumps := filter(sortValue(c), func(card Card) bool {
 		return card.Suit != s.trump && card.Rank != "J"
@@ -882,7 +952,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 				return ownTrumps[0]
 			}
 		}
-		
+
 		// if you have a card with suit played in a previous trick
 		// started from you or your partner continue with it
 		prevSuit := p.FindPreviousSuit(s)
@@ -894,7 +964,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			// declarer has taken with trump?
 			// He will take it again.
 
-		// does not increase percentages (DECREASE BY 1%)
+			// does not increase percentages (DECREASE BY 1%)
 			// if (prevSuitCards[0].Rank == "10") && in(s.cardsPlayed, Card{prevSuit, "A"}) {
 			// 	debugTacticsLog("A and 10 seen resetting previous suit..")
 			// 	s.opp1.setPreviousSuit("")
@@ -903,7 +973,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			// }
 
 			// increase by 1%
-			if (s.declarerVoidSuit[prevSuit]) {
+			if s.declarerVoidSuit[prevSuit] {
 				debugTacticsLog("..Declarer void, will trump")
 				card := prevSuitCards[len(prevSuitCards)-1]
 				if cardValue(card) < 10 {
@@ -947,12 +1017,12 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			debugTacticsLog("Avoiding 2 numbers and D-number suits..")
 			nonTrumps := make([]Card, len(c))
 			copy(nonTrumps, c)
-			nonTrumps = filter(nonTrumps, func (card Card) bool {
+			nonTrumps = filter(nonTrumps, func(card Card) bool {
 				return getSuit(s.trump, card) != s.trump
-				})
+			})
 			candidates := []Card{}
-			var hs func (trump string, c []Card) Card 
-			if  len(p.otherPlayersTrumps(s)) == 0 {
+			var hs func(trump string, c []Card) Card
+			if len(p.otherPlayersTrumps(s)) == 0 {
 				hs = HighestShort
 			} else {
 				hs = HighestShortNotFull
@@ -960,17 +1030,17 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			candidate := hs(s.trump, c)
 			candidates = append(candidates, candidate)
 			for len(nonTrumps) > 0 && (twoNumbersSuit(nonTrumps, candidate.Suit) || DNumberSuit(nonTrumps, candidate.Suit)) {
-				nonTrumps = filter(nonTrumps, func (crd Card) bool {
+				nonTrumps = filter(nonTrumps, func(crd Card) bool {
 					return crd.Suit != candidate.Suit
-					})
+				})
 				candidate = hs(s.trump, nonTrumps)
 				if candidate.Suit != "" && candidate.Rank != "" {
-					candidates = append(candidates, candidate)				
+					candidates = append(candidates, candidate)
 				}
 			}
 			debugTacticsLog("Candidates %v, returning last..", candidates)
 			if len(candidates) > 0 {
-				card = candidates[len(candidates) - 1]
+				card = candidates[len(candidates)-1]
 			}
 			// slightly increases win percentages
 			// although goes against some of the test
@@ -1005,7 +1075,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 					return sortValue(c)[0]
 				}
 			}
-			if len(winnerCards(s, c)) == 0 && !noHigherCard(s, false, p.hand, s.trick[0]){
+			if len(winnerCards(s, c)) == 0 && !noHigherCard(s, false, p.hand, s.trick[0]) {
 				debugTacticsLog("higher cards in play, SMEAR..")
 				return sortValue(c)[0]
 			}
@@ -1023,14 +1093,14 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 
 					if s.greater(s.trick[0], inPlay...) && len(sortedValueNoTrumps) > 0 {
 						debugTacticsLog("partner wins the trick, smear..")
-						return(sortedValueNoTrumps[0])	
+						return (sortedValueNoTrumps[0])
 					}
 
 					sortedValueTrumps := sortValue(followCards(s, s.trump, c))
 					if len(sortedValueTrumps) > 0 {
 						debugTacticsLog("Playing a trump from %v..", sortedValueTrumps)
 						i := 0
-						for i < len(sortedValueTrumps) && cardValue(sortedValueTrumps[i]) < 3  && cardValue(sortedValueTrumps[i]) > 0 {
+						for i < len(sortedValueTrumps) && cardValue(sortedValueTrumps[i]) < 3 && cardValue(sortedValueTrumps[i]) > 0 {
 							i++
 						}
 						if i < len(sortedValueTrumps) {
@@ -1142,7 +1212,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 					continue
 				}
 				debugTacticsLog("bring player at MIDDLEhand..")
-				return card 
+				return card
 			}
 
 			debugTacticsLog("teammate wins..largest not-sure winner")
@@ -1154,7 +1224,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 					candidates = remove(candidates, card)
 					continue
 				}
-				return card 
+				return card
 			}
 			// if len(noTrumps) > 0 {
 			// 	return noTrumps[0]
@@ -1179,8 +1249,8 @@ func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 	var card Card
 
 	printCollectedInfo(s)
-	
-	if s.declarer.getName() == p.getName(){
+
+	if s.declarer.getName() == p.getName() {
 		card = p.declarerTactic(s, c)
 	} else if s.opp1.getName() == p.getName() || s.opp2.getName() == p.getName() {
 		card = p.opponentTactic(s, c)
@@ -1189,7 +1259,6 @@ func (p *Player) playerTactic(s *SuitState, c []Card) Card {
 	}
 	return card
 }
-
 
 func printCollectedInfo(s *SuitState) {
 	if s.declarer == nil || s.opp1 == nil || s.opp2 == nil {
@@ -1208,7 +1277,7 @@ func printCollectedInfo(s *SuitState) {
 			debugTacticsLog("%s ", k)
 		}
 	}
-	debugTacticsLog("\n\t%s: void:", s.opp2.getName())	
+	debugTacticsLog("\n\t%s: void:", s.opp2.getName())
 	for k, v := range s.opp2VoidSuit {
 		if v {
 			debugTacticsLog("%s ", k)
@@ -1216,6 +1285,7 @@ func printCollectedInfo(s *SuitState) {
 	}
 	debugTacticsLog("\n")
 }
+
 /*
 avg: -75 -- -178 with random play
 */
@@ -1254,7 +1324,6 @@ func (p *Player) getGamevalue(suit string) int {
 	}
 	return (mat + 1) * trumpBaseValue(suit)
 }
-
 
 func (p *Player) calculateHighestBid(afterSkat bool) int {
 	p.highestBid = 0
@@ -1341,7 +1410,7 @@ func (p *Player) discardInSkat(skat []Card) {
 		hrisk := 0
 		hriskSuit := ""
 		discarded := 0
-		for i := 0; i < 2 ; i++ {
+		for i := 0; i < 2; i++ {
 			cards := sortValueNull(p.hand)
 			for _, s := range suits {
 				risk := p.nullSafeSuit(s, cards)
@@ -1351,10 +1420,10 @@ func (p *Player) discardInSkat(skat []Card) {
 				}
 			}
 			if hrisk != 0 {
-				cs := filter(cards, func (c Card) bool {
+				cs := filter(cards, func(c Card) bool {
 					return c.Suit == hriskSuit
 				})
-				card := cs[len(cs) - 1]
+				card := cs[len(cs)-1]
 				debugTacticsLog("Discarding %v\n", card)
 				skat[discarded] = card
 				p.hand = remove(p.hand, card)
@@ -1365,15 +1434,14 @@ func (p *Player) discardInSkat(skat []Card) {
 		}
 		for len(p.hand) > 10 {
 			cards := sortValueNull(p.hand)
-			card := cards[len(cards) - 1]
+			card := cards[len(cards)-1]
 			debugTacticsLog("Discarding %v\n", card)
 			skat[discarded] = card
 			p.hand = remove(p.hand, card)
-			discarded++			
+			discarded++
 		}
 		return
 	}
-
 
 	most := mostCardsSuit(p.getHand())
 
@@ -1422,7 +1490,7 @@ func (p *Player) discardInSkat(skat []Card) {
 			skat[removed] = card
 			p.hand = remove(p.hand, card)
 			i++
-		}	
+		}
 
 		losers := sortValue(grandLosers(p.hand))
 		debugTacticsLog("..GRAND..losers %v..", losers)
@@ -1461,7 +1529,6 @@ func (p *Player) discardInSkat(skat []Card) {
 		//	fmt.Printf("2nd %v\n", skat)
 		return
 	}
-
 
 	// Discard high cards in non-A suits with few colors
 	sranks := []string{"J", "A", "10", "K", "D", "7", "8", "9"}

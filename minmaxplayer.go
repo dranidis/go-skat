@@ -74,6 +74,12 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 		return p.Player.playerTactic(s, c)
 	}
 
+	if len(c) > 5 {
+		debugTacticsLog("Valid: %v", c)
+		c = similar(s, c)
+		debugTacticsLog("Similar: %v\n", c)
+	}
+
 	worlds := p.dealCards(s)
 	debugMinmaxLog("(%s) %d Worlds, %s\n", p.name, len(worlds), MINIMAX_ALG)
 
@@ -649,20 +655,20 @@ func (p *MinMaxPlayer) distributeCards(s *SuitState, cards []Card) ([]Card, []Ca
 		hand1 = append(hand1, cards[nextCard])
 		nextCard++
 	}
-	debugMinmaxLog("completed hand1: %v\n", hand1)
+	// debugMinmaxLog("completed hand1: %v\n", hand1)
 
 	for i := len(hand2); i < handSize-leader; i++ {
-		debugMinmaxLog("hand2: %v, i: %d, handSize: %d, leader: %d, nextCard: %d\n", hand2, i, handSize, leader, nextCard)
+		// debugMinmaxLog("hand2: %v, i: %d, handSize: %d, leader: %d, nextCard: %d\n", hand2, i, handSize, leader, nextCard)
 		hand2 = append(hand2, cards[nextCard])
 		nextCard++
 	}
-	debugMinmaxLog("completed hand2: %v\n", hand2)
+	// debugMinmaxLog("completed hand2: %v\n", hand2)
 	return hand1, hand2
 }
 
 func checkVoidDecl(s *SuitState, p *MinMaxPlayer, cards []Card, suit string, IsDeclarerP1 bool) []Card {
 	if s.declarerVoidSuit[suit] {
-		debugMinmaxLog("..Declarer VOID in %s\n", suit)
+		// debugMinmaxLog("..Declarer VOID in %s\n", suit)
 		suitCards := filter(cards, func(c Card) bool {
 			return getSuit(s.trump, c) == suit
 		})
@@ -674,7 +680,16 @@ func checkVoidDecl(s *SuitState, p *MinMaxPlayer, cards []Card, suit string, IsD
 
 		cards = remove(cards, suitCards...)
 	}
+	singleVoidCards := filter(cards, func(c Card) bool {
+			return in(s.declarerVoidCards, c)
+		})
+	if IsDeclarerP1 {
+		p.p2Hand = append(p.p2Hand, singleVoidCards...)
+	} else {
+		p.p1Hand = append(p.p1Hand, singleVoidCards...)
+	}
 	cards = remove(cards, s.declarerVoidCards...)
+	debugMinmaxLog("..Declarer does not have: %v\n", s.declarerVoidCards)
 	return cards
 }
 
