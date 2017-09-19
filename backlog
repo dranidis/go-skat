@@ -30,6 +30,8 @@ REFACTORING
 Find out why MINMAX Tactics player is losing:
 	go build; go install; go-skat -auto -n 10  -v  -r 15 -minmax2
 
+BUG in BIDDING HTML
+	IN HTML if both players have passed the offer to the 3rd is 20 instead of 18
 
 -------------------------------------------------------------------------
 DONE:
