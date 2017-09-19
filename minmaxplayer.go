@@ -129,7 +129,8 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 				cardsTotal[card.String()] = 0.0	
 				cards[card.String()] = card		
 			}
-			debugMinmaxLog("MINMAX: cards %s: %v, %s: %v, SKAT:%v\n", player1.getName(), p.p1Hand, player2.getName(), p.p2Hand, p.skat)
+			// debugMinmaxLog("MINMAX: cards %s: %v, %s: %v, SKAT:%v\n", player1.getName(), p.p1Hand, player2.getName(), p.p2Hand, p.skat)
+			debugMinmaxLog("MINMAX: cards %v, %v, SKAT:%v\n",  p.p1Hand,  p.p2Hand, p.skat)
 			for _, card := range c {
 				value := p.minmaxSkat(s, c, card)
 				cardsTotal[card.String()] = cardsTotal[card.String()] + value			
@@ -648,14 +649,14 @@ func (p *MinMaxPlayer) distributeCards(s *SuitState, cards []Card) ([]Card, []Ca
 		hand1 = append(hand1, cards[nextCard])
 		nextCard++
 	}
-	// debugMinmaxLog("completed hand1: %v\n", hand1)
+	debugMinmaxLog("completed hand1: %v\n", hand1)
 
 	for i := len(hand2); i < handSize-leader; i++ {
-		// debugMinmaxLog("hand2: %v, i: %d, handSize: %d, leader: %d, nextCard: %d\n", hand2, i, handSize, leader, nextCard)
+		debugMinmaxLog("hand2: %v, i: %d, handSize: %d, leader: %d, nextCard: %d\n", hand2, i, handSize, leader, nextCard)
 		hand2 = append(hand2, cards[nextCard])
 		nextCard++
 	}
-	// debugMinmaxLog("completed hand2: %v\n", hand2)
+	debugMinmaxLog("completed hand2: %v\n", hand2)
 	return hand1, hand2
 }
 
@@ -687,8 +688,12 @@ func checkVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []C
 		p.p2Hand = append(p.p2Hand, suitCards...)
 		cards = remove(cards, suitCards...)
 	}
+	singleVoidCards := filter(cards, func(c Card) bool {
+			return in(s.opp1VoidCards, c)
+		})
+	p.p2Hand = append(p.p2Hand, singleVoidCards...)
 	cards = remove(cards, s.opp1VoidCards...)
-	
+	debugMinmaxLog("..Opponent 1 does not have: %v\n", s.opp1VoidCards)
 	return cards
 }
 
@@ -701,7 +706,12 @@ func checkVoidOpp2(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []C
 		p.p1Hand = append(p.p1Hand, suitCards...)
 		cards = remove(cards, suitCards...)
 	}
+	singleVoidCards := filter(cards, func(c Card) bool {
+			return in(s.opp2VoidCards, c)
+		})
+	p.p1Hand = append(p.p1Hand, singleVoidCards...)
 	cards = remove(cards, s.opp2VoidCards...)
+	debugMinmaxLog("..Opponent 2 does not have: %v\n", s.opp2VoidCards)
 	return cards
 }
 

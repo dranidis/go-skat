@@ -39,6 +39,12 @@ TACTICS win this game with 106-14, MinMax 67-53!!!!
 
 	I will try with MINMAX MC examining all actions in all worlds.
 
+
+BUG:
+	go build; go install; go-skat -n 12 -auto -cpuprofile=mm.prof -minmax2 -minmax3 -v -r 3668
+	At the 8th game
+	Game: 6	HEART, With 2 SCORE -60	Bob DEFEAT: 39 - 81, SCORE: -60
+
 -------------------------------------------------------------------------
 DONE:
 

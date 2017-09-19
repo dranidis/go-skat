@@ -56,8 +56,38 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 					s.opp2VoidCards = append(s.opp2VoidCards, Card{s.follow, "10"})
 				}
 			} 
-		}	
+		}
+
+		condition1 = s.greater(s.trick[0], s.trick[1]) && players[0].getName() == s.declarer.getName()
+		condition2 = s.greater(s.trick[1], s.trick[0]) && players[1].getName() == s.declarer.getName()
+		if condition1 || condition2 {
+			if !s.greater(card, s.trick...) && cardValue(card) > 0 && card.Rank != "J" {
+				debugTacticsLog("INFERENCE: **************************************\n")
+				debugTacticsLog("INFERENCE: Player does not have lower than %v    \n", card)
+				debugTacticsLog("INFERENCE: **************************************\n")
+				i := 0
+				r := ""
+				for i, r = range ranks {
+					if card.Rank == r {
+						break
+					}
+				}
+				for j := i + 1 ; j < len(ranks); j++ {
+					c := Card{card.Suit, ranks[j]}
+					if !in(s.cardsPlayed, c) {
+						if p.getName() == s.opp1.getName() {
+							s.opp1VoidCards = append(s.opp1VoidCards, c)
+						}
+						if p.getName() == s.opp2.getName() {
+							s.opp2VoidCards = append(s.opp2VoidCards, c)
+						}					
+					}
+				}
+			}
+		}
 	}
+
+
 	if len(s.trick) > 0 {
 		if p.getName() == s.declarer.getName() && card.equals(Card{s.follow, "10"}) && !s.greater(card, s.trick...) {
 			debugTacticsLog("INFERENCE: **************************************\n")

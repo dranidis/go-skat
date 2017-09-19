@@ -173,6 +173,36 @@ func TestInferencePlayerDoesNOtPlay_10_onTrick_A_OpenedByPartner(t *testing.T) {
 
 }
 
+func TestInferencePlayerPlays_ValueCard_onTrickWonByDeclarer(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.leader = &d
+	s.declarer = &d
+
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		Card{HEART, "A"}, // d
+		Card{HEART, "7"}, // o1
+	}
+
+	card := Card{HEART, "K"} // o2 does not have Q, 9, 8 , 7
+
+	analysePlay(&s, s.opp2, card)
+	if ! in(s.opp2VoidCards, Card{HEART, "D"}, Card{HEART, "9"},Card{HEART, "8"}, Card{HEART, "7"}) {
+		t.Errorf("BH Player does not have cards lower than K.")
+	}
+
+}
+
 func TestInferenceDeclarerPlays_10_onTrick_A_OpenedByOpponents(t *testing.T) {
 	d := makePlayer([]Card{})
 	o1 := makePlayer([]Card{})
