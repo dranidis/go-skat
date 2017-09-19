@@ -295,12 +295,25 @@ func (p Player) canWin(afterSkat bool) string {
 	aces := acesOthenThan(suit)
 	debugTacticsLog("Extra suits: %d\n", aces)
 	prob := 0
+// CONSERVATIVE
+	// if largest > 4 && aces > 2 {
+	// 	prob = 80
+	// }
 
-	if largest > 4 && aces > 2 {
+	// if largest > 5 && aces > 1  {
+	// 	prob = 85
+	// }
+	// if largest > 6 && aces > 0   {
+	// 	prob = 99
+	// }	
+	// if largest > 6 && aces > 1  {
+	// 	prob = 100
+	// }
+	if largest > 4 && aces > 1 {
 		prob = 80
 	}
 
-	if largest > 5 && aces > 1  {
+	if largest > 5 && aces > 0  {
 		prob = 85
 	}
 	if largest > 6 && aces > 0   {
@@ -309,7 +322,6 @@ func (p Player) canWin(afterSkat bool) string {
 	if largest > 6 && aces > 1  {
 		prob = 100
 	}
-
 	est := handEstimation(cs)
 	debugTacticsLog("Hand: %v, Estimation: %d\n", cs, est)
 	if prob < 80 {

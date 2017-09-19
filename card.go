@@ -382,6 +382,25 @@ func filterSuit(suits []string, f func(string) bool) []string {
 // 	})
 // }
 
+// a = append(a[:i], a[i+1:]...)
+
+// func remove(cs []Card, card ...Card) []Card {
+// 	for _, c := range card {
+// 		cs = removeOne(cs, c)
+// 	}
+// 	return cs
+// }
+
+// func removeOne(cs []Card, card Card) []Card {
+// 	for i, nc := range cs {
+// 		if nc.equals(card) {
+// 			cs = append(cs[:i], cs[i+1:]...)
+// 			break
+// 		}
+// 	}
+// 	return cs
+
+// }
 
 func remove(cs []Card, card ...Card) []Card {
 	ncs := []Card{}
@@ -399,6 +418,7 @@ func remove(cs []Card, card ...Card) []Card {
 	}
 	return ncs
 }
+
 
 func matadors(trump string, cs []Card) int {
 	cards := []Card{

@@ -14,6 +14,7 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"runtime/pprof"
 )
 
 var r = rand.New(rand.NewSource(1))
@@ -922,8 +923,17 @@ func main() {
 	flag.IntVar(&issSentDelay, "issdelay", 0, "Delay (in ms) before sending an action to ISS server. Useful for debugging and for observing a game.")
 	flag.IntVar(&maxHandSizeFlag, "mm-max", 4, "Max hand size for the minimax player. Below that normal tactics are used.")
 	flag.StringVar(&dealGame, "deal", "", "Force a specific game deal: Grand, Null")
+	var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 	flag.Parse()
 
+	if *cpuprofile != "" {
+        f, err := os.Create(*cpuprofile)
+        if err != nil {
+            log.Fatal(err)
+        }
+        pprof.StartCPUProfile(f)
+        defer pprof.StopCPUProfile()
+    }
 
 	if auto {
 		gameLogFlag = false

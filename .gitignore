@@ -7,5 +7,6 @@
 *swp
 *.check
 *logfile
-.tmp
-go-skat
+*.tmp
+go-skat*
+*.prof

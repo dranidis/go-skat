@@ -91,18 +91,18 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 			minimax.MAXDEPTH = 9999
 		}	
 	case "abt":
-		minimax.MAXDEPTH = 3
+		minimax.MAXDEPTH = 6
 		if len(p.hand) < 10 {
-			minimax.MAXDEPTH = 3
+			minimax.MAXDEPTH = 6
 		}		
 		if len(p.hand) < 9 {
-			minimax.MAXDEPTH = 6
-		}
-		if len(p.hand) < 8 {
 			minimax.MAXDEPTH = 9
 		}
-		if len(p.hand) < 7 {
+		if len(p.hand) < 8 {
 			minimax.MAXDEPTH = 12
+		}
+		if len(p.hand) < 7 {
+			minimax.MAXDEPTH = 15
 		}
 		if len(p.hand) < 6 {
 			minimax.MAXDEPTH = 9999
