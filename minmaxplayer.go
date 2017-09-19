@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/dranidis/go-skat/game"
+	// "github.com/dranidis/go-skat/game"
 	"github.com/dranidis/go-skat/game/minimax"
 	// "github.com/dranidis/go-skat/game/mcts"
 	"math/rand"
 	"time"
+	"math"
 	// "fmt"
 )
 
@@ -90,18 +91,18 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 			minimax.MAXDEPTH = 9999
 		}	
 	case "abt":
-		minimax.MAXDEPTH = 6
+		minimax.MAXDEPTH = 3
 		if len(p.hand) < 10 {
-			minimax.MAXDEPTH = 6
+			minimax.MAXDEPTH = 3
 		}		
 		if len(p.hand) < 9 {
-			minimax.MAXDEPTH = 9
+			minimax.MAXDEPTH = 6
 		}
 		if len(p.hand) < 8 {
-			minimax.MAXDEPTH = 12
+			minimax.MAXDEPTH = 9
 		}
 		if len(p.hand) < 7 {
-			minimax.MAXDEPTH = 15
+			minimax.MAXDEPTH = 12
 		}
 		if len(p.hand) < 6 {
 			minimax.MAXDEPTH = 9999
@@ -111,7 +112,7 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 
 	if true {
 	// if len(p.hand) <= p.maxHandSize || len(worlds) < p.maxWorlds {
-		cardsFreq := make(map[string]int)
+		// cardsFreq := make(map[string]int)
 		cardsTotal := make(map[string]float64)
 		cards := make(map[string]Card)
 
@@ -123,22 +124,15 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 
 			debugMinmaxLog("MinMaxPlayer\n")
 
-			card, value := p.minmaxSkat(s, c)
 
-			v, ok := cardsFreq[card.String()]
-			if ok {
-				cardsFreq[card.String()] = v + 1
-				cardsTotal[card.String()] = cardsTotal[card.String()] + value
-				if cardsFreq[card.String()] > len(worlds) / 2 { //&& !p.losingScore(s, value) {
-					// half of the worlds suggest this card
-					debugMinmaxLog("..PRELIMINARY END!\n")
-					break
-				}
-			} else {
-				cardsFreq[card.String()] = 1
-				cardsTotal[card.String()] = value
+			for _, card := range c {
+				cardsTotal[card.String()] = 0.0	
+				cards[card.String()] = card		
 			}
-			cards[card.String()] = card
+			for _, card := range c {
+				value := p.minmaxSkat(s, c, card)
+				cardsTotal[card.String()] = cardsTotal[card.String()] + value			
+			}
 
 			t := time.Now()
 			elapsed := t.Sub(start)
@@ -147,54 +141,39 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 				break
 			}
 		}
+
 		t := time.Now()
 		elapsed := t.Sub(start)
 		debugMinmaxLog("Time: %v\n", elapsed)
 
-		mostFrequent := 0
-		// mostFrequentKey := ""
-		// var bestAvg float64
-		// if p.name == s.declarer.getName() {
-		// 	bestAvg = 0.0
-		// } else 	{
-		// 	bestAvg = 120.0
-		// }
-		var mostFrequentCard Card
+		mostValue := float64(math.MinInt32)
+		var mostValueCard Card
 		// var bestAvgCard Card
-		for k, v := range cardsFreq {
-			if v > mostFrequent {
-				mostFrequent, mostFrequentCard = v, cards[k]
-				// mostFrequentKey = k
+		for k, v := range cardsTotal {
+			if v > mostValue {
+				mostValue, mostValueCard = v, cards[k]
 			}
-			cardsTotal[k] = cardsTotal[k]/float64(v)
-			// if p.name == s.declarer.getName() && cardsTotal[k] > bestAvg {
-			// 	// bestAvg, bestAvgCard = cardsTotal[k], cards[k]
-			// }
-			// if p.name != s.declarer.getName() && cardsTotal[k] < bestAvg {
-			// 	// bestAvg, bestAvgCard = cardsTotal[k], cards[k]
-			// }
-
+			if v == mostValue {
+				debugTacticsLog("EQUAL: %f, %f\n", v, mostValue)
+				if getSuit(s.trump, mostValueCard) == s.trump {
+					if getSuit(s.trump, cards[k]) != s.trump {
+						mostValue, mostValueCard = v, cards[k]
+					} else if cardValue(cards[k]) < cardValue(mostValueCard) {
+						mostValue, mostValueCard = v, cards[k]
+					} // add rank ordering : getRank
+				} else {
+					if cardValue(cards[k]) < cardValue(mostValueCard) {
+						mostValue, mostValueCard = v, cards[k]
+					}
+				}
+			}
 		}
-		if mostFrequent > 0 {
-			debugMinmaxLog("(%s) Hand: %v, Playing card: %v (at least %d times)\n\n", p.name, p.hand, mostFrequentCard, mostFrequent)
+		if mostValue > float64(math.MinInt32) {
+			debugMinmaxLog("Action values: %v\n", cardsTotal)
+			debugMinmaxLog("(%s) Hand: %v, Playing card: %v with value %f)\n\n", p.name, p.hand, mostValueCard, mostValue)
 			debugMinmaxLog("\nTACTICS suggest: %v\n\n", p.Player.playerTactic(s, c))			
-			return mostFrequentCard
+			return mostValueCard
 		}
-		// if mostFrequent > 0 {
-		// 	debugMinmaxLog("(%s) In hand %v, examined %d/%d worlds\n", p.name, p.hand, i, len(worlds))
-		// 	if p.losingScore(s, cardsTotal[mostFrequentKey]) {
-		// 		if p.losingScore(s, bestAvg) {
-		// 			debugMinmaxLog("(%s) Losing AVG (BACK TO NORMAL TACTICS)\n", p.name)
-		// 			return p.Player.playerTactic(s, c)
-		// 		} 
-		// 		debugMinmaxLog("(%s)Playing best AVG card: %v (%.0f)\n", p.name, bestAvgCard, bestAvg)
-		// 		return bestAvgCard
-		// 	} else {
-		// 		debugMinmaxLog("(%s)Playing card: %v (at least %d times)\n", p.name, mostFrequentCard, mostFrequent)
-		// 		return mostFrequentCard
-		// 	}
-		// }
-		// NO CARDS
 		debugMinmaxLog("MINMAX Failed.. back no normal tactics")
 	}
 
@@ -202,7 +181,7 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 	return p.Player.playerTactic(s, c)
 }
 
-func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
+func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 	var player1 PlayerI
 	var player2 PlayerI
 	if len(s.trick) == 0 {
@@ -296,36 +275,6 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 		}
 	}
 
-	// debugTacticsLog("Created skatsState: %v\n", skatState)
-	// debugTacticsLog("IsOppTurn: %v\n", skatState.IsOpponentTurn())
-// ::::: WORKING
-
-	// strick := make([]Card, len(s.trick))
-	// copy(strick, s.trick)
-
-	// dist := make([][]Card, 3)
-	// dist[0] = p.hand
-	// dist[1] = p.p1Hand
-	// dist[2] = p.p2Hand
-
-	// declScore := s.declarer.getScore()
-	// if p.name == s.declarer.getName() {
-	// 	declScore += sum(s.skat)
-	// }
-
-
-	// skatState := SkatState{
-	// 	s.cloneSuitState(),
-	// 	s.trump,
-	// 	dist,
-	// 	strick,
-	// 	decl,
-	// 	0,
-	// 	declScore,
-	// 	s.opp1.getScore() + s.opp2.getScore(),
-	// 	schneiderGoal,
-	// }
-
 	// mcts.SimulationRuns = 500
 	// mcts.ExplorationParameter = 2.0
 	// mcts.DEBUG = false // You have to increase delay to 2000 if you are dedugging to give time for runs
@@ -336,29 +285,32 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card) (Card, float64) {
 	// a, value := minimax.Minimax(&skatState)
 	// a, value := minimax.AlphaBeta(&skatState)
 	start := time.Now()
-	var a game.Action
+	// var a game.Action
 	var value float64
 	minimaxSearching = true
+
+	nextState := skatState.FindNextState(SkatAction{card})
+
 	switch MINIMAX_ALG {
 		case "mm":
-			a, value = minimax.Minimax(&skatState)
+			_, value = minimax.Minimax(nextState)
 		case "ab":
-			a, value = minimax.AlphaBeta(&skatState)
+			_, value = minimax.AlphaBeta(nextState)
 		case "abt":
 			// minimax.DEBUG = true
 			// debugTacticsLog("Calling ABT\n")
-			a, value = minimax.AlphaBetaTactics(&skatState)
+			_, value = minimax.AlphaBetaTactics(nextState)
 	}
 	minimaxSearching = false
 	end := time.Now()
 	elapsed := end.Sub(start)
 	debugMinmaxLog("Hand size: %d, MAXDEPTH: %d, Time: %8.6f sec\n", len(p.hand), minimax.MAXDEPTH, elapsed.Seconds())
 
-	ma := a.(SkatAction)
+	// ma := a.(SkatAction)
 
-	debugMinmaxLog("Suggesting card: %v with value %.4f\n", ma.card, value)
+	// debugMinmaxLog("Suggesting card: %v with value %.4f\n", ma.card, value)
 
-	return ma.card, value
+	return value
 }
 
 
