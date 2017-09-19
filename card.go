@@ -384,40 +384,40 @@ func filterSuit(suits []string, f func(string) bool) []string {
 
 // a = append(a[:i], a[i+1:]...)
 
-// func remove(cs []Card, card ...Card) []Card {
-// 	for _, c := range card {
-// 		cs = removeOne(cs, c)
-// 	}
-// 	return cs
-// }
-
-// func removeOne(cs []Card, card Card) []Card {
-// 	for i, nc := range cs {
-// 		if nc.equals(card) {
-// 			cs = append(cs[:i], cs[i+1:]...)
-// 			break
-// 		}
-// 	}
-// 	return cs
-
-// }
-
 func remove(cs []Card, card ...Card) []Card {
-	ncs := []Card{}
-	for _, nc := range cs {
-		found := false
-		for _, c := range card {
-			if nc.equals(c) {
-				found = true
-				break
-			}
-		}
-		if !found {
-			ncs = append(ncs, nc)
+	for _, c := range card {
+		cs = removeOne(cs, c)
+	}
+	return cs
+}
+
+func removeOne(cs []Card, card Card) []Card {
+	for i, nc := range cs {
+		if nc.equals(card) {
+			cs = append(cs[:i], cs[i+1:]...)
+			break
 		}
 	}
-	return ncs
+	return cs
+
 }
+
+// func remove(cs []Card, card ...Card) []Card {
+// 	ncs := []Card{}
+// 	for _, nc := range cs {
+// 		found := false
+// 		for _, c := range card {
+// 			if nc.equals(c) {
+// 				found = true
+// 				break
+// 			}
+// 		}
+// 		if !found {
+// 			ncs = append(ncs, nc)
+// 		}
+// 	}
+// 	return ncs
+// }
 
 
 func matadors(trump string, cs []Card) int {

@@ -129,6 +129,7 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 				cardsTotal[card.String()] = 0.0	
 				cards[card.String()] = card		
 			}
+			debugMinmaxLog("MINMAX: cards %s: %v, %s: %v, SKAT:%v\n", player1.getName(), p.p1Hand, player2.getName(), p.p2Hand, p.skat)
 			for _, card := range c {
 				value := p.minmaxSkat(s, c, card)
 				cardsTotal[card.String()] = cardsTotal[card.String()] + value			
@@ -182,39 +183,31 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 }
 
 func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
-	var player1 PlayerI
-	var player2 PlayerI
-	if len(s.trick) == 0 {
-		player1 = players[1]
-		player2 = players[2]
-	}
-	if len(s.trick) == 1 {
-		player1 = players[2]
-		player2 = players[0]
-	}
-	if len(s.trick) == 2 {
-		player1 = players[0]
-		player2 = players[1]
-	}
-	// schneiderGoal := true
-
-	// from the point of view of the defender the skat is unknown
-	// if s.declarer.getScore()+sum(s.trick) > 60 || s.opp1.getScore()+s.opp2.getScore() > 59 {
-	// 	debugMinmaxLog("MIN_MAX: schneiderGoal\n")
-	// 	// schneiderGoal = true
+	// var player1 PlayerI
+	// var player2 PlayerI
+	// if len(s.trick) == 0 {
+	// 	player1 = players[1]
+	// 	player2 = players[2]
+	// }
+	// if len(s.trick) == 1 {
+	// 	player1 = players[2]
+	// 	player2 = players[0]
+	// }
+	// if len(s.trick) == 2 {
+	// 	player1 = players[0]
+	// 	player2 = players[1]
+	// }
+	// var decl int // 0 is you, 1 is next player1, 2 is next player 2
+	// if s.declarer.getName() == p.getName() {
+	// 	decl = 0
+	// } else if s.declarer.getName() == player1.getName() {
+	// 	decl = 1
+	// } else {
+	// 	decl = 2
 	// }
 
-	var decl int // 0 is you, 1 is next player1, 2 is next player 2
-	if s.declarer.getName() == p.getName() {
-		decl = 0
-	} else if s.declarer.getName() == player1.getName() {
-		decl = 1
-	} else {
-		decl = 2
-	}
-
-	debugMinmaxLog("MINMAX: cards %s: %v, %s: %v, SKAT:%v\n", player1.getName(), p.p1Hand, player2.getName(), p.p2Hand, p.skat)
-	debugMinmaxLog("Decl: %d\n", decl)
+	// debugMinmaxLog("MINMAX: cards %s: %v, %s: %v, SKAT:%v\n", player1.getName(), p.p1Hand, player2.getName(), p.p2Hand, p.skat)
+	// debugMinmaxLog("Decl: %d\n", decl)
 
 // WORKING::::
 	// mmPlayers := make([]MinMaxPlayer, 3)
@@ -284,7 +277,9 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 
 	// a, value := minimax.Minimax(&skatState)
 	// a, value := minimax.AlphaBeta(&skatState)
-	start := time.Now()
+
+	// start := time.Now()
+
 	// var a game.Action
 	var value float64
 	minimaxSearching = true
@@ -302,13 +297,13 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 			_, value = minimax.AlphaBetaTactics(nextState)
 	}
 	minimaxSearching = false
-	end := time.Now()
-	elapsed := end.Sub(start)
-	debugMinmaxLog("Hand size: %d, MAXDEPTH: %d, Time: %8.6f sec\n", len(p.hand), minimax.MAXDEPTH, elapsed.Seconds())
+	// end := time.Now()
+	// elapsed := end.Sub(start)
+	// debugMinmaxLog("Hand size: %d, MAXDEPTH: %d, Time: %8.6f sec\n", len(p.hand), minimax.MAXDEPTH, elapsed.Seconds())
 
 	// ma := a.(SkatAction)
 
-	// debugMinmaxLog("Suggesting card: %v with value %.4f\n", ma.card, value)
+	debugMinmaxLog("Card: %v, Value: %f\n", card, value)
 
 	return value
 }
@@ -402,13 +397,16 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 				for j := i + 1; j < len(originalCards); j++ {
 					p.p1Hand = originalP1
 					p.p2Hand = originalP2
-					cards = originalCards
+					cards = make([]Card, len(originalCards))
+					copy(cards, originalCards)
+					// debugTacticsLog("Cards = originalCards %v\n", cards)
 
 					card1 := cards[i]
 					card2 := cards[j]
 					p.p1Hand = append(p.p1Hand, card1)
 					p.p1Hand = append(p.p1Hand, card2)
 					cards = remove(cards, card1, card2)
+					// debugTacticsLog("Removed %v, %v: %v\n", card1, card2, cards)
 					// distribute the rest
 					p1H, p2H := p.distributeCards(s, cards)
 					world := [][]Card{p1H, p2H}
@@ -432,7 +430,9 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 				restoreHands = func() {
 					p.p1Hand = originalP1
 					p.p2Hand = originalP2
-					cards = originalCards
+					cards = make([]Card, len(originalCards))
+					copy(cards, originalCards)
+					// debugTacticsLog("Cards = originalCards %v\n", cards)
 				}
 				appendCards = func(card1, card2 Card) {
 					p.p1Hand = append(p.p1Hand, card1)
@@ -446,7 +446,9 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 				restoreHands = func() {
 					p.p2Hand = originalP1
 					p.p1Hand = originalP2
-					cards = originalCards
+					cards = make([]Card, len(originalCards))
+					copy(cards, originalCards)
+					// debugTacticsLog("Cards = originalCards %v\n", cards)
 				}
 				appendCards = func(card1, card2 Card) {
 					p.p2Hand = append(p.p2Hand, card1)
@@ -461,6 +463,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 					card2 := cards[j]
 					appendCards(card1, card2)
 					cards = remove(cards, card1, card2)
+					// debugTacticsLog("Removed %v, %v: %v\n", card1, card2, cards)
 					// distribute the rest
 					p1H, p2H := p.distributeCards(s, cards)
 					world := [][]Card{p1H, p2H}
@@ -485,12 +488,14 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 				restoreHands = func() {
 					p.p1Hand = originalP1
 					p.p2Hand = originalP2
-					cards = originalCards
+					cards = make([]Card, len(originalCards))
+					copy(cards, originalCards)
+					// debugTacticsLog("Cards = originalCards %v\n", cards)
 				}
 				appendCards = func(card1, card2, card3 Card) {
-					p.p1Hand = append(p.p1Hand, card1)
-					p.p1Hand = append(p.p1Hand, card2)
-					p.p1Hand = append(p.p1Hand, card3)
+					p.p1Hand = append(p.p1Hand, card1, card2, card3)
+					// p.p1Hand = append(p.p1Hand, card2)
+					// p.p1Hand = append(p.p1Hand, card3)
 				}
 			} else {
 				originalP1 := make([]Card, len(p.p2Hand))
@@ -500,12 +505,14 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 				restoreHands = func() {
 					p.p2Hand = originalP1
 					p.p1Hand = originalP2
-					cards = originalCards
+					cards = make([]Card, len(originalCards))
+					copy(cards, originalCards)
+					// debugTacticsLog("Cards = originalCards %v\n", cards)
 				}
 				appendCards = func(card1, card2, card3 Card) {
-					p.p2Hand = append(p.p2Hand, card1)
-					p.p2Hand = append(p.p2Hand, card2)
-					p.p1Hand = append(p.p1Hand, card3)
+					p.p2Hand = append(p.p2Hand, card1, card2, card3)
+					// p.p2Hand = append(p.p2Hand, card2)
+					// p.p1Hand = append(p.p1Hand, card3)
 				}
 			}
 
@@ -518,6 +525,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 						card3 := cards[k]
 						appendCards(card1, card2, card3)
 						cards = remove(cards, card1, card2, card3)
+						// debugTacticsLog("Removed %v, %v, %v : %v\n", card1, card2, card3, cards)
 						// distribute the rest
 						p1H, p2H := p.distributeCards(s, cards)
 						world := [][]Card{p1H, p2H}
