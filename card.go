@@ -5,6 +5,7 @@ import (
 	"log"
 	"runtime/debug"
 	"math/rand"
+	"sort"
 )
 
 const CLUBS = "CLUBS"
@@ -100,18 +101,91 @@ var ranks = []string{"J", "A", "10", "K", "D", "9", "8", "7"}
 var nullRanks = []string{"A", "K", "D", "J", "10", "9", "8", "7"}
 var nullRanksRev = []string{"7", "8", "9", "10", "J", "D", "K", "A"}
 
-func sortRankSpecial(cs []Card, ranks []string) []Card {
-	cards := []Card{}
-
-	for _, r := range ranks {
-		for _, s := range suits {
-			if in(cs, Card{s, r}) {
-				cards = append(cards, Card{s, r})
-			}
-		}
-	}
-	return cards
+var ranksNum = map[string]int{
+		"J":  14,
+		"A":  13,
+		"10": 12,
+		"K":  11,
+		"D":  10,
+		"9":  9,
+		"8":  8,
+		"7":  7,
 }
+
+var suitNum = map[string]int{
+		CLUBS:  4,
+		SPADE:  3,
+		HEART : 2,
+		CARO:  1,
+	}
+
+
+type ByRank []Card
+
+func (a ByRank) Len() int           { return len(a) }
+func (a ByRank) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByRank) Less(i, j int) bool { 
+	if ranksNum[a[i].Rank] < ranksNum[a[j].Rank] {
+		return false
+	} else if ranksNum[a[i].Rank] > ranksNum[a[j].Rank] {
+		return true
+	} 
+	return suitNum[a[i].Suit] > suitNum[a[j].Suit]
+}
+
+// func sortRank(cs []Card) []Card {
+// 	return sortRankSpecial(cs, ranks)
+// }
+
+func sortRank(cs []Card) []Card {
+	sort.Sort(ByRank(cs))
+	return cs
+}
+
+type ByRankSpecial []Card
+func (a ByRankSpecial) Len() int           { return len(a) }
+func (a ByRankSpecial) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByRankSpecial) Less(i, j int) bool { 
+	if ranksSpecialNum[a[i].Rank] < ranksSpecialNum[a[j].Rank] {
+		return false
+	} else if ranksSpecialNum[a[i].Rank] > ranksSpecialNum[a[j].Rank] {
+		return true
+	} 
+	return suitNum[a[i].Suit] > suitNum[a[j].Suit]
+}
+
+var ranksSpecialNum = map[string]int{
+		"J":  14,
+		"A":  13,
+		"10": 12,
+		"K":  11,
+		"D":  10,
+		"9":  9,
+		"8":  8,
+		"7":  7,
+}
+ 
+
+func sortRankSpecial(cs []Card, ranks []string) []Card {
+	for i, r := range ranks {
+		ranksSpecialNum[r] = 12 - i
+	}
+	sort.Sort(ByRankSpecial(cs))
+	return cs
+}
+
+// func sortRankSpecial(cs []Card, ranks []string) []Card {
+// 	cards := []Card{}
+
+// 	for _, r := range ranks {
+// 		for _, s := range suits {
+// 			if in(cs, Card{s, r}) {
+// 				cards = append(cards, Card{s, r})
+// 			}
+// 		}
+// 	}
+// 	return cards
+// }
 
 func sortSuitRankSpecial(cs []Card, suits, ranks []string) []Card {
 	cards := []Card{}
@@ -176,9 +250,6 @@ func nextCard(trump string, c Card) Card {
 	return Card{"", ""}
 }
 
-func sortRank(cs []Card) []Card {
-	return sortRankSpecial(cs, ranks)
-}
 
 func sortValue(cs []Card) []Card {
 	valueRanks := []string{"A", "10", "K", "D", "J", "7", "8", "9"}

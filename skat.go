@@ -260,13 +260,15 @@ func round(s *SuitState, players []PlayerI) []PlayerI {
 
 func play(s *SuitState, p PlayerI) Card {
 	red := color.New(color.Bold, color.FgRed).SprintFunc()
-	valid := sortSuit(s.trump, validCards(*s, p.getHand()))
+	// valid := sortSuit(s.trump, validCards(*s, p.getHand()))
+	valid := validCards(*s, p.getHand())
 
 	// if len(valid) == 0 {
 	// 	log.Fatal(fmt.Sprintf("Empty valid: %v, Player: %v\n", valid, p))
 	// }
 
-	p.setHand(sortSuit(s.trump, p.getHand()))
+	// p.setHand(sortSuit(s.trump, p.getHand()))
+	
 	gameLog("Trick: %v\n", s.trick)
 	pName := p.getName()
 	if s.declarer.getName() == p.getName() {

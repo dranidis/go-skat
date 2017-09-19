@@ -1083,22 +1083,6 @@ func TestInMany(t *testing.T) {
 }
 
 
-func TestSortRank(t *testing.T) {
-	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "D"},
-		Card{CLUBS, "8"},
-	}
-
-	sr := sortRank(cards)
-
-	if len(sr) != len(cards) {
-		t.Errorf("ERROR IN SORTRANK")
-	}
-
-}
-
 func TestNextLowestCardsStillInPlay(t *testing.T) {
 	s := makeSuitState()
 

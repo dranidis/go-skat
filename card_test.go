@@ -5,6 +5,74 @@ import (
 )
 
 
+func TestSortRank(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "D"},
+		Card{CLUBS, "8"},
+	}
+
+	sr := sortRank(cards)
+
+	if len(sr) != len(cards) {
+		t.Errorf("ERROR IN SORTRANK")
+	}
+}
+
+
+
+func TestSortRank2(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{SPADE, "A"},
+		Card{HEART, "A"},
+		Card{HEART, "K"},
+		Card{CARO, "K"},
+	}
+
+	shCards := Shuffle(cards)
+
+	sr := sortRank(shCards)
+
+	if len(sr) != len(cards) {
+		t.Errorf("ERROR IN SORTRANK")
+	}
+	for i, c := range sr {
+		if !c.equals(cards[i]) {
+			t.Errorf("Wrong ordering: %d, %v, %v", i, c, cards[i])
+		}
+	}
+}
+
+func TestSortRankSpecial1(t *testing.T) {
+	cards := []Card{
+		Card{SPADE, "A"},
+		Card{HEART, "A"},
+		Card{HEART, "K"},
+		Card{CARO, "K"},
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "10"},
+	}
+
+	shCards := Shuffle(cards)
+
+	sr := sortRankSpecial(shCards, []string{"A", "K", "D", "J", "10" ,"9", "8", "7"})
+
+	if len(sr) != len(cards) {
+		t.Errorf("ERROR IN SORTRANKspecial")
+	}
+	for i, c := range sr {
+		if !c.equals(cards[i]) {
+			t.Errorf("Wrong ordering: %d, %v, %v", i, c, cards[i])
+		}
+	}
+}
+
+
+
 func TestRemove1(t *testing.T) {
 	hand := []Card{
 		Card{CLUBS, "J"},
