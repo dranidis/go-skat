@@ -175,9 +175,12 @@ func parseServer(t string) {
 		}
 
 		if s[3] == "end" {
-			//
+			s := strings.Split(t, "(")
+			processGameFormat("(" + s[1])
+				//
 			// TODO: get cards info to calculate score based on declarer cards and skat
 			//
+
 			waitServer <- "OK"
 			return
 		}
@@ -528,4 +531,10 @@ func sendToServer(s string) {
 	}
 	fmt.Printf("SENT: %s\n", yellow(s))
 	fmt.Fprintf(connW, "%s\n", s)
+}
+
+func processGameFormat(s string) {
+	// table .8 goskat end 
+			// (;GM[Skat]PC[International Skat Server]CO[]SE[252547]ID[4940313]DT[2017-09-20/12:43:07/UTC]P0[zoot]P1[goskat]P2[bernie]R0[]R1[0.0]R2[]MV[w HK.CA.H8.CK.CQ.HT.CJ.SK.DA.D7.HJ.ST.SJ.S8.C9.H9.S9.D8.H7.CT.HA.D9.DK.S7.SQ.SA.DJ.C8.C7.DQ.DT.HQ 1 p 2 p 0 18 0 s w DT.HQ 0 H.SK.D7 0 H8 1 H9 2 HA 2 SA 0 HK 1 S9 0 DA 1 D8 2 D9 0 CA 1 C9 2 C8 0 CQ 1 CT 2 C7 1 S8 2 SQ 0 HT 0 DT 1 H7 2 DK 1 SJ 2 DJ 0 CJ 0 CK 1 HJ 2 DQ 1 ST 2 S7 0 HQ ]R[d:0 win v:20 m:1 bidok p:73 t:6 s:0 z:0 p0:0 p1:0 p2:0 l:-1 to:-1 r:0] ;)
+
 }

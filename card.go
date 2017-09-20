@@ -238,7 +238,7 @@ func similar(s *SuitState, cards []Card) []Card {
 	}
 	sim = append(sim, card)
 	for i := 1; i < len(cards); i++ {
-		debugTacticsLog("next: %v cards[%d]: %v\n", next, i, cards[i])
+		// debugTacticsLog("next: %v cards[%d]: %v\n", next, i, cards[i])
 		if cards[i].Rank == "A" || cards[i].Rank == "K" || cards[i].Rank == "9" {
 			card = cards[i]
 			sim = append(sim, card)

@@ -37,19 +37,21 @@
 	Prefer a solid SUIT against a mmm GRAND if bid allows it
 
 -------------------------------------------------------------------------
-DONE:
+# DONE:
 
-FLAGS
+# FLAGS
 	Allow customization of auto players:
 	e.g -minmax1 Make 1st player minmax
 
-BUG:
+# BUG:
 	go build; go install; go-skat -n 12 -auto -cpuprofile=mm.prof -minmax2 -minmax3 -v -r 3668
 	At the 8th game crashes
 
-TACTICS win this game with 106-14, MinMax 67-53!!!!
+# TACTICS win this game with 106-14, MinMax 67-53!!!!
 	go build; go install; go-skat -html  -r 1453 -g 22 -minmax2
 	Opening and wasting the trumps on zero tricks
 
 	I will try with MINMAX MC examining all actions in all worlds.
+
+
 
