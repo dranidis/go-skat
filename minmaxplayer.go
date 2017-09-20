@@ -122,6 +122,11 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 		cardsTotal := make(map[string]float64)
 		cards := make(map[string]Card)
 
+		for _, card := range c {
+			cardsTotal[card.String()] = 0.0	
+			cards[card.String()] = card		
+		}
+
 		i := 0
 		for i = 0; i < len(worlds); i++ {
 			// SET world
@@ -131,10 +136,7 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 			debugMinmaxLog("MinMaxPlayer\n")
 
 
-			for _, card := range c {
-				cardsTotal[card.String()] = 0.0	
-				cards[card.String()] = card		
-			}
+
 			// debugMinmaxLog("MINMAX: cards %s: %v, %s: %v, SKAT:%v\n", player1.getName(), p.p1Hand, player2.getName(), p.p2Hand, p.skat)
 			debugMinmaxLog("MINMAX: cards %v, %v, SKAT:%v\n",  p.p1Hand,  p.p2Hand, p.skat)
 			for _, card := range c {
