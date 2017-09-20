@@ -68,11 +68,11 @@ func makeInference() Inference {
 func (s *Inference) cloneInference() Inference {
 	newI := makeInference()
 
-	newtrumpsInGame := make([]Card, len(s.trumpsInGame))
-	copy(newtrumpsInGame, s.trumpsInGame)
+	newI.trumpsInGame = make([]Card, len(s.trumpsInGame))
+	copy(newI.trumpsInGame, s.trumpsInGame)
 	
-	newcardsPlayed := make([]Card, len(s.cardsPlayed))
-	copy(newcardsPlayed, s.cardsPlayed)
+	newI.cardsPlayed = make([]Card, len(s.cardsPlayed))
+	copy(newI.cardsPlayed, s.cardsPlayed)
 		
 	newI.declarerVoidSuit = map[string]bool{
 			CLUBS: s.declarerVoidSuit[CLUBS],
