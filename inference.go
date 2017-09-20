@@ -105,7 +105,9 @@ func isLosingTrick(s *SuitState, p PlayerI, card Card) bool {
 				return true
 			}
 			if len(s.trick) == 2 {
-				return true
+				if !s.greater(s.trick[1], s.trick[0]) {
+					return true
+				}
 			}
 		}
 	}

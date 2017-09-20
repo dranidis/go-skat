@@ -391,7 +391,7 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 		scoringString += fmt.Sprintf("\nGame: %d\tNULL ", gameIndex)
 		// gameLog("\nSCORING\n\tNULL ")
 		if handGame {
-			scoringString += fmt.Sprintf("HAND \n")
+			scoringString += fmt.Sprintf("HAND ")
 			// gameLog("HAND \n")
 			if state.declarer.isSchwarz() {
 				gs = 35

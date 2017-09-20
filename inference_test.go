@@ -60,6 +60,34 @@ func TestInferenceLastTrumpDeclarerWins1(t *testing.T) {
 	}
 }
 
+func TestInferenceSmearTrickTrumpWhenParnerWins1(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = SPADE
+	s.leader = &d
+	s.declarer = &d
+
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = SPADE
+
+	s.trick = []Card{
+		Card{CARO, "J"}, // d
+		Card{HEART, "J"}, // o1
+	}
+	players = []PlayerI{&d, &o1, &o2}
+
+	card := Card{SPADE, "10"} // o2
+
+	analysePlay(&s, s.opp2, card)
+	if s.opp2VoidSuit[s.trump] {
+		t.Errorf("MH Player played 10 on a trump won by partner. It is NOT his last card.")
+	}
+}
+
 func TestInferenceLastTrumpDSmearing1(t *testing.T) {
 	d := makePlayer([]Card{})
 	o1 := makePlayer([]Card{})
