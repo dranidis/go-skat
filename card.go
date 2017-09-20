@@ -238,6 +238,7 @@ func similar(s *SuitState, cards []Card) []Card {
 	}
 	sim = append(sim, card)
 	for i := 1; i < len(cards); i++ {
+		debugTacticsLog("next: %v cards[%d]: %v\n", next, i, cards[i])
 		if cards[i].Rank == "A" || cards[i].Rank == "K" || cards[i].Rank == "9" {
 			card = cards[i]
 			sim = append(sim, card)
@@ -246,6 +247,10 @@ func similar(s *SuitState, cards []Card) []Card {
 				next = nextCard(s.trump, next)
 			}		
 		} else 	if cards[i].equals(next)  {
+			next = nextCard(s.trump, next)
+			for in(s.cardsPlayed, next) && next.Rank != "A" && next.Rank != "K" && next.Rank != "9" {
+				next = nextCard(s.trump, next)
+			}		
 			continue
 		} else {
 			card = cards[i]

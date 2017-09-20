@@ -158,7 +158,7 @@ func TestNextCard(t *testing.T) {
 	}
 }
 
-func TestEquivalent1(t *testing.T) {
+func TestSimilar1(t *testing.T) {
 	cards := []Card{
 		Card{CLUBS, "J"},
 		Card{HEART, "J"},
@@ -186,7 +186,7 @@ func TestEquivalent1(t *testing.T) {
 	}
 }
 
-func TestEquivalent2(t *testing.T) {
+func TestSimilar2(t *testing.T) {
 	cards := []Card{
 		Card{CLUBS, "J"},
 		Card{SPADE, "J"},
@@ -216,7 +216,7 @@ func TestEquivalent2(t *testing.T) {
 	}
 }
 
-func TestEquivalent3(t *testing.T) {
+func TestSimilar3(t *testing.T) {
 	cards := []Card{
 		Card{CLUBS, "J"},
 		Card{CARO, "J"},
@@ -247,6 +247,31 @@ func TestEquivalent3(t *testing.T) {
 		t.Errorf("Wrong similar cards %v", equiv)
 	}
 	if in(equiv, Card{CARO, "J"}) || in(equiv, Card{SPADE, "10"}, Card{HEART, "7"})  {
+		t.Errorf("Wrong similar cards %v", equiv)
+	}
+}
+
+func TestSimilar4(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "7"},
+	}
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.cardsPlayed = []Card{}
+
+	equiv := similar(&s, cards)
+
+	if len(equiv) != 2 {
+		t.Errorf("Wrong similar cards %v", equiv)
+	}
+	if !in(equiv, Card{CLUBS, "J"}, Card{CLUBS, "9"}) {
+		t.Errorf("Wrong similar cards %v", equiv)
+	}
+	if in(equiv, Card{CLUBS, "8"}) || in(equiv, Card{CLUBS, "7"})  {
 		t.Errorf("Wrong similar cards %v", equiv)
 	}
 }
