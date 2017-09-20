@@ -820,8 +820,8 @@ func (p *Player) opponentTacticNull(s *SuitState, c []Card) Card {
 		debugTacticsLog("NULL FOREHAND..")
 		prevSuit := p.FindPreviousSuit(s)
 		debugTacticsLog("Prev suit: %v..", prevSuit)
-		if prevSuit != "" && !s.declarerVoidSuit[prevSuit] {
-			debugTacticsLog("VOID suits: %v", s.declarerVoidSuit)
+		if prevSuit != "" && !s.getDeclarerVoidSuit()[prevSuit] {
+			debugTacticsLog("VOID suits: %v", s.getDeclarerVoidSuit())
 			var prevSuitCards []Card
 			if prevSuit != "" {
 				prevSuitCards = filter(notExhausted, func(c Card) bool {
@@ -973,7 +973,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			// }
 
 			// increase by 1%
-			if s.declarerVoidSuit[prevSuit] {
+			if s.getDeclarerVoidSuit()[prevSuit] {
 				debugTacticsLog("..Declarer void, will trump")
 				card := prevSuitCards[len(prevSuitCards)-1]
 				if cardValue(card) < 10 {
@@ -1266,19 +1266,19 @@ func printCollectedInfo(s *SuitState) {
 		return
 	}
 	debugTacticsLog("\n\t%s: void:", s.declarer.getName())
-	for k, v := range s.declarerVoidSuit {
+	for k, v := range s.getDeclarerVoidSuit() {
 		if v {
 			debugTacticsLog("%s ", k)
 		}
 	}
 	debugTacticsLog("\n\t%s: void:", s.opp1.getName())
-	for k, v := range s.opp1VoidSuit {
+	for k, v := range s.getOpp1VoidSuit() {
 		if v {
 			debugTacticsLog("%s ", k)
 		}
 	}
 	debugTacticsLog("\n\t%s: void:", s.opp2.getName())
-	for k, v := range s.opp2VoidSuit {
+	for k, v := range s.getOpp2VoidSuit() {
 		if v {
 			debugTacticsLog("%s ", k)
 		}

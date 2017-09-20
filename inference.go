@@ -1,11 +1,19 @@
 package main
 
 type Inference struct {
+//facts
 	trumpsInGame     []Card
 	cardsPlayed      []Card
+
 	declarerVoidSuit map[string]bool
 	opp1VoidSuit  map[string]bool
 	opp2VoidSuit  map[string]bool
+
+// beliefs
+	declarerVoidSuitB map[string]bool
+	opp1VoidSuitB  map[string]bool
+	opp2VoidSuitB  map[string]bool
+
 	declarerVoidCards  []Card
 	opp1VoidCards []Card
 	opp2VoidCards []Card
@@ -15,6 +23,24 @@ func makeInference() Inference {
 	return Inference{
 		[]Card{}, 
 		[]Card{},
+		map[string]bool{
+			CLUBS: false,
+			SPADE: false,
+			HEART: false,
+			CARO:  false,
+		},
+		map[string]bool{
+			CLUBS: false,
+			SPADE: false,
+			HEART: false,
+			CARO:  false,
+		},
+		map[string]bool{
+			CLUBS: false,
+			SPADE: false,
+			HEART: false,
+			CARO:  false,
+		},
 		map[string]bool{
 			CLUBS: false,
 			SPADE: false,
@@ -67,6 +93,27 @@ func (s *Inference) cloneInference() Inference {
 			CARO:  s.opp2VoidSuit[CARO],
 		}
 
+	// beliefs
+
+	newI.declarerVoidSuitB = map[string]bool{
+			CLUBS: s.declarerVoidSuitB[CLUBS],
+			SPADE: s.declarerVoidSuitB[SPADE],
+			HEART: s.declarerVoidSuitB[HEART],
+			CARO:  s.declarerVoidSuitB[CARO],
+		}
+	newI.opp1VoidSuitB = map[string]bool{
+			CLUBS: s.opp1VoidSuitB[CLUBS],
+			SPADE: s.opp1VoidSuitB[SPADE],
+			HEART: s.opp1VoidSuitB[HEART],
+			CARO:  s.opp1VoidSuitB[CARO],
+		}
+	newI.opp2VoidSuitB = map[string]bool{
+			CLUBS: s.opp2VoidSuitB[CLUBS],
+			SPADE: s.opp2VoidSuitB[SPADE],
+			HEART: s.opp2VoidSuitB[HEART],
+			CARO:  s.opp2VoidSuitB[CARO],
+		}
+
 	newI.declarerVoidCards = make([]Card, len(s.declarerVoidCards))
 	copy(newI.declarerVoidCards, s.declarerVoidCards)
 
@@ -79,6 +126,57 @@ func (s *Inference) cloneInference() Inference {
 	return newI
 }
 
+
+func (s *Inference) getDeclarerVoidSuit() map[string]bool {
+	return map[string]bool{
+			CLUBS: s.declarerVoidSuit[CLUBS] || s.declarerVoidSuitB[CLUBS],
+			SPADE: s.declarerVoidSuit[SPADE] || s.declarerVoidSuitB[SPADE],
+			HEART: s.declarerVoidSuit[HEART] || s.declarerVoidSuitB[HEART],
+			CARO:  s.declarerVoidSuit[CARO] || s.declarerVoidSuitB[CARO],
+		}
+}
+
+func (s *Inference) getOpp1VoidSuit() map[string]bool {
+	return map[string]bool{
+			CLUBS: s.opp1VoidSuit[CLUBS] || s.opp1VoidSuitB[CLUBS],
+			SPADE: s.opp1VoidSuit[SPADE] || s.opp1VoidSuitB[SPADE],
+			HEART: s.opp1VoidSuit[HEART] || s.opp1VoidSuitB[HEART],
+			CARO:  s.opp1VoidSuit[CARO] || s.opp1VoidSuitB[CARO],
+		}
+}
+
+func (s *Inference) getOpp2VoidSuit() map[string]bool {
+	return map[string]bool{
+			CLUBS: s.opp2VoidSuit[CLUBS] || s.opp2VoidSuitB[CLUBS],
+			SPADE: s.opp2VoidSuit[SPADE] || s.opp2VoidSuitB[SPADE],
+			HEART: s.opp2VoidSuit[HEART] || s.opp2VoidSuitB[HEART],
+			CARO:  s.opp2VoidSuit[CARO] || s.opp2VoidSuitB[CARO],
+		}
+}
+
+func (s *Inference) detractBeliefs() {
+	s.declarerVoidSuitB = map[string]bool{
+			CLUBS: false,
+			SPADE: false,
+			HEART: false,
+			CARO:  false,
+		}
+	s.opp1VoidSuitB = map[string]bool{
+			CLUBS: false,
+			SPADE: false,
+			HEART: false,
+			CARO:  false,
+		}
+	s.opp2VoidSuitB = map[string]bool{
+			CLUBS: false,
+			SPADE: false,
+			HEART: false,
+			CARO:  false,
+		}
+	s.opp1VoidCards = []Card{}
+	s.opp2VoidCards = []Card{}
+	s.declarerVoidCards = []Card{}
+}
 
 func analysePlay(s *SuitState, p PlayerI, card Card) {
 	// Player VOID on suit
@@ -192,4 +290,3 @@ func isLosingTrick(s *SuitState, p PlayerI, card Card) bool {
 	}
 	return false 
 }
-

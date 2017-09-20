@@ -22,13 +22,13 @@ func TestInferenceNotFollowingSuit(t *testing.T) {
 
 	analysePlay(&s, s.opp1, card)
 
-	if !s.opp1VoidSuit[CARO] {
+	if !s.getOpp1VoidSuit()[CARO] {
 		t.Errorf("Error not follow void")
 	}
-	if s.opp2VoidSuit[CARO] {
+	if s.getOpp2VoidSuit()[CARO] {
 		t.Errorf("Error not follow void")
 	}
-	if s.declarerVoidSuit[CARO] {
+	if s.getDeclarerVoidSuit()[CARO] {
 		t.Errorf("Error not follow void")
 	}	
 }
@@ -55,7 +55,7 @@ func TestInferenceLastTrumpDeclarerWins1(t *testing.T) {
 	card := Card{CLUBS, "A"} // o1
 
 	analysePlay(&s, s.opp1, card)
-	if !s.opp1VoidSuit[s.trump] {
+	if !s.getOpp1VoidSuit()[s.trump] {
 		t.Errorf("MH Player played A on a losing trick. Won by the declarer. It is his last card.")
 	}
 }
@@ -110,7 +110,7 @@ func TestInferenceLastTrumpDSmearing1(t *testing.T) {
 	card := Card{CLUBS, "A"} // o1
 
 	analysePlay(&s, s.opp1, card)
-	if s.opp1VoidSuit[s.trump] {
+	if s.getOpp1VoidSuit()[s.trump] {
 		t.Errorf("MH Player played A on a losing trick, BUT there are still higher Trumps in game, expecting partner to take the trick.")
 	}
 }
@@ -139,7 +139,7 @@ func TestInferenceLastTrumpDeclarerWins2(t *testing.T) {
 	card := Card{CLUBS, "A"} // o2
 
 	analysePlay(&s, s.opp2, card)
-	if !s.opp2VoidSuit[s.trump] {
+	if !s.getOpp2VoidSuit()[s.trump] {
 		t.Errorf("BH Player played A on a losing trick. Won by the declarer. It is his last card.")
 	}
 }
@@ -165,7 +165,7 @@ func TestInferenceLastTrumpPartnerWins(t *testing.T) {
 	card := Card{CLUBS, "A"} // o2, smearing
 
 	analysePlay(&s, s.opp2, card)
-	if s.opp2VoidSuit[s.trump] {
+	if s.getOpp2VoidSuit()[s.trump] {
 		t.Errorf("BH Player SMEARING A on a losing trick. Won by the partner.")
 	}
 
@@ -254,7 +254,7 @@ func TestInferenceDeclarerPlays_10_onTrick_A_OpenedByOpponents(t *testing.T) {
 	card := Card{HEART, "10"} // d does not have any other HEART
 
 	analysePlay(&s, s.declarer, card)
-	if ! s.declarerVoidSuit[HEART] {
+	if ! s.getDeclarerVoidSuit()[HEART] {
 		t.Errorf("Declarer is void on suit.")
 	}
 

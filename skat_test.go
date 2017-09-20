@@ -1687,7 +1687,7 @@ func TestDealCardsMID(t *testing.T) {
 
 	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
 
-	worlds := p.dealCards(&s)
+	worlds, _ := p.dealCards(&s)
 	if len(worlds) != 10  {
 		t.Errorf("Expecting 10 world, found %d: %v", len(worlds), worlds)
 	}
@@ -1752,7 +1752,7 @@ func TestDealCardsMID2(t *testing.T) {
 	s.opp1VoidSuit[CARO] = true
 	s.opp2VoidSuit[CLUBS] = true
 
-	worlds := p.dealCards(&s)
+	worlds,_ := p.dealCards(&s)
 
 	for i := 0; i < len(worlds); i++ {
 		// SET world
@@ -1819,7 +1819,7 @@ func TestDealCardsLeader(t *testing.T) {
 
 	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
 
-	worlds := p.dealCards(&s)
+	worlds, _ := p.dealCards(&s)
 
 	for i := 0; i < len(worlds); i++ {
 		// SET world
@@ -1887,7 +1887,7 @@ func TestDealCardsLeader3(t *testing.T) {
 	s.opp1VoidSuit[CARO] = true
 	s.opp2VoidSuit[CLUBS] = true
 
-	worlds := p.dealCards(&s)
+	worlds, _ := p.dealCards(&s)
 
 	for i := 0; i < len(worlds); i++ {
 		// SET world
@@ -1953,7 +1953,7 @@ func TestDealCardsBack(t *testing.T) {
 
 	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
 
-	worlds := p.dealCards(&s)
+	worlds, _ := p.dealCards(&s)
 	if len(worlds) != 6  {
 		t.Errorf("Expecting 6 world, found %d: %v", len(worlds), worlds)
 	}
@@ -2022,7 +2022,7 @@ func TestDealCardsBack2(t *testing.T) {
 	s.opp1VoidSuit[CARO] = true
 	s.opp2VoidSuit[CLUBS] = true
 
-	worlds := p.dealCards(&s)
+	worlds, _ := p.dealCards(&s)
 
 	for i := 0; i < len(worlds); i++ {
 		// SET world
@@ -2100,7 +2100,7 @@ func TestDealCardsLeader2(t *testing.T) {
 	s.opp2VoidSuit[void2] = true
 
 
-	worlds := p.dealCards(&s)
+	worlds, _ := p.dealCards(&s)
 
 	for i := 0; i < len(worlds); i++ {
 		// SET world

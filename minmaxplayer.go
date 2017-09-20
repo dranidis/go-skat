@@ -8,6 +8,7 @@ import (
 	"time"
 	"math"
 	// "fmt"
+	"errors"
 )
 
 var rminmax = rand.New(rand.NewSource(1))
@@ -80,7 +81,13 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 		debugTacticsLog("Similar: %v\n", c)
 	}
 
-	worlds := p.dealCards(s)
+	worlds, err := p.dealCards(s)
+	for err != nil {
+		debugTacticsLog("Detractics all beliefs!\n")
+		s.detractBeliefs()
+		worlds, err = p.dealCards(s)
+	}
+
 	debugMinmaxLog("(%s) %d Worlds, %s\n", p.name, len(worlds), MINIMAX_ALG)
 
 	start := time.Now()
@@ -325,7 +332,7 @@ func (p *MinMaxPlayer) losingScore(s *SuitState, score float64) bool {
 	return score >= float64(61)
 }
 
-func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
+func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 
 	worlds := [][][]Card{}
 
@@ -362,6 +369,13 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 		max1--
 		max2--
 	}
+
+	if len(p.p1Hand) > max1 || len(p.p2Hand) > max2 {
+		debugMinmaxLog("IMPOSSIBLE!")
+		return nil, errors.New("Hand size over")
+	}
+
+
 	// cards => ways to distribute
 	// 0 (0,0) => 1
 	// 1 (0,1) => 1
@@ -380,7 +394,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 			world := [][]Card{p1H, p2H}
 			worlds = append(worlds, world)
 
-			return worlds
+			return worlds, nil
 		}
 		if len(cards) < 4 || len(p.p1Hand) == max1-1 || len(p.p2Hand) == max2-1 {
 			for i := 0; i < len(cards); i++ {
@@ -391,7 +405,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 				cards = remove(cards, card)
 				cards = append(cards, card)
 			}
-			return worlds
+			return worlds, nil
 		}
 		if len(cards) == 4 {
 			// STORE THE hands in order to restore them
@@ -422,7 +436,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 					worlds = append(worlds, world)
 				}
 			}
-			return worlds
+			return worlds, nil
 		}
 		if len(cards) == 5 || len(p.p1Hand) == max1-2 || len(p.p2Hand) == max2-2 {
 			var restoreHands func()
@@ -479,7 +493,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 					worlds = append(worlds, world)
 				}
 			}
-			return worlds
+			return worlds, nil
 		}
 
 		if len(cards) == 6 || len(p.p1Hand) == max1 - 3 || len(p.p2Hand) == max2 - 3 {
@@ -542,7 +556,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 					}
 				}
 			}
-			return worlds
+			return worlds, nil
 		}
 
 	}
@@ -610,18 +624,18 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) [][][]Card {
 		}
 		if len(p.p1Hand) > max1 || len(p.p2Hand) > max2 {
 			debugMinmaxLog("IMPOSSIBLE!")
-			continue
+			return nil, errors.New("Hand size over")
 		}
 		p1H, p2H := p.distributeCards(s, copycards)
 		if len(p1H) > max1 || len(p2H) > max2 {
 			debugMinmaxLog("IMPOSSIBLE!")
-			continue
+			return nil, errors.New("Hand size over")
 		}		
 		debugMinmaxLog("DISTRIBUTION: %v %v\n", p1H, p2H)
 		world := [][]Card{p1H, p2H}
 		worlds = append(worlds, world)
 	}
-	return worlds
+	return worlds, nil
 }
 
 func (p *MinMaxPlayer) distributeCards(s *SuitState, cards []Card) ([]Card, []Card) {
@@ -669,7 +683,7 @@ func (p *MinMaxPlayer) distributeCards(s *SuitState, cards []Card) ([]Card, []Ca
 }
 
 func checkVoidDecl(s *SuitState, p *MinMaxPlayer, cards []Card, suit string, IsDeclarerP1 bool) []Card {
-	if s.declarerVoidSuit[suit] {
+	if s.getDeclarerVoidSuit()[suit] {
 		// debugMinmaxLog("..Declarer VOID in %s\n", suit)
 		suitCards := filter(cards, func(c Card) bool {
 			return getSuit(s.trump, c) == suit
@@ -697,7 +711,7 @@ func checkVoidDecl(s *SuitState, p *MinMaxPlayer, cards []Card, suit string, IsD
 
 // FROM THE POINT OF VIEW of A DECLARER
 func checkVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
-	if s.opp1VoidSuit[suit] {
+	if s.getOpp1VoidSuit()[suit] {
 		debugMinmaxLog("..Opponent 1 is VOID in %s\n", suit)
 		suitCards := filter(cards, func(c Card) bool {
 			return getSuit(s.trump, c) == suit
@@ -715,7 +729,7 @@ func checkVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []C
 }
 
 func checkVoidOpp2(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
-	if s.opp2VoidSuit[suit] {
+	if s.getOpp2VoidSuit()[suit] {
 		debugMinmaxLog("..Opponent 2 is VOID in %s\n", suit)
 		suitCards := filter(cards, func(c Card) bool {
 			return getSuit(s.trump, c) == suit
@@ -735,7 +749,7 @@ func checkVoidOpp2(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []C
 // FROM THE POINT OF VIEW of A DEFENDER (OPPONENT)
 // When opp1 is void cards go to p1
 func partnerCheckVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
-	if s.opp1VoidSuit[suit] {
+	if s.getOpp1VoidSuit()[suit] {
 		debugMinmaxLog("..Opponent 1 is VOID in %s\n", suit)
 		suitCards := filter(cards, func(c Card) bool {
 			return getSuit(s.trump, c) == suit
@@ -749,7 +763,7 @@ func partnerCheckVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit stri
 
 // When opp2 is void cards go to p2
 func partnerCheckVoidOpp2(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
-	if s.opp2VoidSuit[suit] {
+	if s.getOpp2VoidSuit()[suit] {
 		debugMinmaxLog("..Opponent 2 is VOID in %s\n", suit)
 		suitCards := filter(cards, func(c Card) bool {
 			return getSuit(s.trump, c) == suit

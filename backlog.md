@@ -1,10 +1,8 @@
 # USE MinMax to evaluate bidding
 
-# Inference: add beliefs
-	In a game xskat played 10 trump in a losing trick. He had A trump and J spade kept. 
-	A belief should be added and retracted if impossible hands occur in distributions.
 
-
+# INFERENCE:
+	DO not retract everything.!
 
 # World generation
 	Generate 1000 valid worlds
@@ -62,5 +60,8 @@
 
 	I will try with MINMAX MC examining all actions in all worlds.
 
+# Inference: add beliefs
+	In a game xskat played 10 trump in a losing trick. He had A trump and J spade kept. 
+	A belief should be added and retracted if impossible hands occur in distributions.
 
 
