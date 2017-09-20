@@ -1,3 +1,11 @@
+# USE MinMax to evaluate bidding
+
+# Inference: add beliefs
+	In a game xskat played 10 trump in a losing trick. He had A trump and J spade kept. 
+	A belief should be added and retracted if impossible hands occur in distributions.
+
+
+
 # World generation
 	Generate 1000 valid worlds
 	Choose 20 from these
@@ -35,6 +43,7 @@
 
 # GRAND vs SUIT after Bidding
 	Prefer a solid SUIT against a mmm GRAND if bid allows it
+
 
 -------------------------------------------------------------------------
 # DONE:
