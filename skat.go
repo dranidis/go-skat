@@ -75,15 +75,9 @@ type SuitState struct {
 	trick    []Card
 	skat             []Card
 	// not necessary for game but for tactics
-	trumpsInGame     []Card
-	cardsPlayed      []Card
-	declarerVoidSuit map[string]bool
-	opp1VoidSuit  map[string]bool
-	opp2VoidSuit  map[string]bool
-	declarerVoidCards  []Card
-	opp1VoidCards []Card
-	opp2VoidCards []Card
+	Inference
 }
+	
 
 func (s SuitState) String() string {
 	voidString := func(m map[string]bool) string {
@@ -120,66 +114,15 @@ func (s *SuitState) cloneSuitStateNotPlayers() SuitState {
 
 	newSS.skat = s.skat // Does not change. No need to clone
 
-	newtrumpsInGame := make([]Card, len(s.trumpsInGame))
-	copy(newtrumpsInGame, s.trumpsInGame)
-	
-	newcardsPlayed := make([]Card, len(s.cardsPlayed))
-	copy(newcardsPlayed, s.cardsPlayed)
-		
-	newSS.declarerVoidSuit = map[string]bool{
-			CLUBS: s.declarerVoidSuit[CLUBS],
-			SPADE: s.declarerVoidSuit[SPADE],
-			HEART: s.declarerVoidSuit[HEART],
-			CARO:  s.declarerVoidSuit[CARO],
-		}
-	newSS.opp1VoidSuit = map[string]bool{
-			CLUBS: s.opp1VoidSuit[CLUBS],
-			SPADE: s.opp1VoidSuit[SPADE],
-			HEART: s.opp1VoidSuit[HEART],
-			CARO:  s.opp1VoidSuit[CARO],
-		}
-	newSS.opp2VoidSuit = map[string]bool{
-			CLUBS: s.opp2VoidSuit[CLUBS],
-			SPADE: s.opp2VoidSuit[SPADE],
-			HEART: s.opp2VoidSuit[HEART],
-			CARO:  s.opp2VoidSuit[CARO],
-		}
-
-	newSS.declarerVoidCards = make([]Card, len(s.declarerVoidCards))
-	copy(newSS.declarerVoidCards, s.declarerVoidCards)
-
-	newSS.opp1VoidCards = make([]Card, len(s.opp1VoidCards))
-	copy(newSS.opp1VoidCards, s.opp1VoidCards)
-
-	newSS.opp2VoidCards = make([]Card, len(s.opp2VoidCards))
-	copy(newSS.opp2VoidCards, s.opp2VoidCards)
+	newSS.Inference = s.Inference.cloneInference()
 
 	return newSS
 }
 
 func makeSuitState() SuitState {
 	skat := make([]Card, 2)
-	return SuitState{nil, nil, nil, "", nil, "", []Card{}, skat, []Card{}, []Card{},
-		map[string]bool{
-			CLUBS: false,
-			SPADE: false,
-			HEART: false,
-			CARO:  false,
-		},
-		map[string]bool{
-			CLUBS: false,
-			SPADE: false,
-			HEART: false,
-			CARO:  false,
-		},
-		map[string]bool{
-			CLUBS: false,
-			SPADE: false,
-			HEART: false,
-			CARO:  false,
-		},
-		[]Card{}, []Card{}, []Card{},
-	}
+	inference := makeInference()
+	return SuitState{nil, nil, nil, "", nil, "", []Card{}, skat, inference}
 }
 
 func trickWinner(s *SuitState) int {

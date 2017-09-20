@@ -1,5 +1,84 @@
 package main
 
+type Inference struct {
+	trumpsInGame     []Card
+	cardsPlayed      []Card
+	declarerVoidSuit map[string]bool
+	opp1VoidSuit  map[string]bool
+	opp2VoidSuit  map[string]bool
+	declarerVoidCards  []Card
+	opp1VoidCards []Card
+	opp2VoidCards []Card
+}
+
+func makeInference() Inference {
+	return Inference{
+		[]Card{}, 
+		[]Card{},
+		map[string]bool{
+			CLUBS: false,
+			SPADE: false,
+			HEART: false,
+			CARO:  false,
+		},
+		map[string]bool{
+			CLUBS: false,
+			SPADE: false,
+			HEART: false,
+			CARO:  false,
+		},
+		map[string]bool{
+			CLUBS: false,
+			SPADE: false,
+			HEART: false,
+			CARO:  false,
+		},
+		[]Card{}, 
+		[]Card{}, 
+		[]Card{},
+	}
+}
+
+func (s *Inference) cloneInference() Inference {
+	newI := makeInference()
+
+	newtrumpsInGame := make([]Card, len(s.trumpsInGame))
+	copy(newtrumpsInGame, s.trumpsInGame)
+	
+	newcardsPlayed := make([]Card, len(s.cardsPlayed))
+	copy(newcardsPlayed, s.cardsPlayed)
+		
+	newI.declarerVoidSuit = map[string]bool{
+			CLUBS: s.declarerVoidSuit[CLUBS],
+			SPADE: s.declarerVoidSuit[SPADE],
+			HEART: s.declarerVoidSuit[HEART],
+			CARO:  s.declarerVoidSuit[CARO],
+		}
+	newI.opp1VoidSuit = map[string]bool{
+			CLUBS: s.opp1VoidSuit[CLUBS],
+			SPADE: s.opp1VoidSuit[SPADE],
+			HEART: s.opp1VoidSuit[HEART],
+			CARO:  s.opp1VoidSuit[CARO],
+		}
+	newI.opp2VoidSuit = map[string]bool{
+			CLUBS: s.opp2VoidSuit[CLUBS],
+			SPADE: s.opp2VoidSuit[SPADE],
+			HEART: s.opp2VoidSuit[HEART],
+			CARO:  s.opp2VoidSuit[CARO],
+		}
+
+	newI.declarerVoidCards = make([]Card, len(s.declarerVoidCards))
+	copy(newI.declarerVoidCards, s.declarerVoidCards)
+
+	newI.opp1VoidCards = make([]Card, len(s.opp1VoidCards))
+	copy(newI.opp1VoidCards, s.opp1VoidCards)
+
+	newI.opp2VoidCards = make([]Card, len(s.opp2VoidCards))
+	copy(newI.opp2VoidCards, s.opp2VoidCards)
+
+	return newI
+}
+
 
 func analysePlay(s *SuitState, p PlayerI, card Card) {
 	// Player VOID on suit
