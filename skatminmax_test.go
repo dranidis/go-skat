@@ -789,7 +789,7 @@ func TestAlphaBetaTactics3C(t *testing.T) {
 func TestAlphaBetaTactics4C(t *testing.T) {
 
 	h1 := []Card{
-		Card{SPADE, "7"},
+		// Card{SPADE, "7"},
 		Card{CARO, "J"},
 		Card{SPADE, "A"},
 		Card{SPADE, "K"},
@@ -816,7 +816,8 @@ func TestAlphaBetaTactics4C(t *testing.T) {
 	p2.name = "Opp1"
 	p3.name = "Opp2"
 
-	players := []PlayerI{&p1, &p2, &p3}
+	players = []PlayerI{&p1, &p2, &p3}
+	playersP := []PlayerI{&p1, &p2, &p3}
 
 	sst := makeSuitState()
 	sst.trump = SPADE
@@ -825,18 +826,25 @@ func TestAlphaBetaTactics4C(t *testing.T) {
 	sst.opp2 = &p3
 	sst.leader = &p1
 	sst.trick = []Card{}
+	sst.trumpsInGame = makeTrumpDeck(SPADE)
 
 
 	skatState := SkatState{
 		sst,
-		players,
+		playersP,
 	}
 
+	card := Card{SPADE, "7"}
+	nextState := skatState.FindNextState(SkatAction{card})
+
 	minimax.DEBUG = true
+	debugTacticsInMM =true
+
 	minimax.MAXDEPTH = 3
 
 	var skatStateP game.State
-	skatStateP = &skatState
+	// skatStateP = &skatState
+	skatStateP = nextState
 	var a game.Action
 	var v float64
 

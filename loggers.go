@@ -69,14 +69,17 @@ func createFile(logFileName string) *os.File {
 	return file
 }
 
+var debugTacticsInMM = false
 
 func disableLogs() {
 	debugTacticsLogFlagStored = debugTacticsLogFlag
 	gameLogFlagStored = gameLogFlag
 	fileLogFlagStored = fileLogFlag
-	debugTacticsLogFlag = false
-	gameLogFlag = false
-	fileLogFlag = false
+	if !debugTacticsInMM {
+		debugTacticsLogFlag = false
+		gameLogFlag = false
+		fileLogFlag = false
+	}
 }
 
 func restoreLogs() {

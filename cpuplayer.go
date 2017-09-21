@@ -458,7 +458,7 @@ func (p Player) enoughTrumps(s *SuitState) bool {
 func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	debugTacticsLog("DECLARER ")
 	if len(c) == 1 {
-		debugTacticsLog("..FORCED MOVE.. ")
+		debugTacticsLog("..FORCED MOVE.. \n")
 		return c[0]
 	}
 
@@ -1271,18 +1271,23 @@ func printCollectedInfo(s *SuitState) {
 			debugTacticsLog("%s ", k)
 		}
 	}
+	debugTacticsLog("\t%v", s.declarerVoidCards)
 	debugTacticsLog("\n\t%s: void:", s.opp1.getName())
 	for k, v := range s.getOpp1VoidSuit() {
 		if v {
 			debugTacticsLog("%s ", k)
 		}
 	}
+	debugTacticsLog("\t%v", s.opp1VoidCards)
 	debugTacticsLog("\n\t%s: void:", s.opp2.getName())
 	for k, v := range s.getOpp2VoidSuit() {
 		if v {
 			debugTacticsLog("%s ", k)
 		}
 	}
+	debugTacticsLog("\t%v", s.opp2VoidCards)
+	debugTacticsLog("\n\t\tPlayed cards  : %v\n", s.cardsPlayed)
+	debugTacticsLog("\t\tTrumps in game: %v\n", s.trumpsInGame)
 	debugTacticsLog("\n")
 }
 

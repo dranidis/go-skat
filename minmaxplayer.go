@@ -63,7 +63,7 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 	// minimax.DEBUG = true
 
 	if len(c) == 1 {
-		debugMinmaxLog("..FORCED MOVE.. ")
+		debugMinmaxLog("..FORCED MOVE.. \n")
 		return c[0]
 	}
 	if s.trump == NULL {

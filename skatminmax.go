@@ -6,6 +6,7 @@ import (
 	"github.com/dranidis/go-skat/game"
 )
 
+
 type SkatState struct {
 	SuitState
 	players    []PlayerI // YOU, 1, 2
