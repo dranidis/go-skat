@@ -88,7 +88,9 @@ func Connect(usr, pwd string) error {
 		for i :=0 ; i < totalGames; i++ {
 			ready()
 			<- waitServer // wait for game end
-			fmt.Println("GAME ENDED")			
+			fmt.Println("GAME ENDED")
+			time.Sleep(time.Duration(3000) * time.Millisecond)
+
 		}
 
 		leaveTable()
