@@ -1205,6 +1205,10 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			}
 			// even if the partner wins
 			w := sortValue(winnerCards(s, c))
+			// not with a trump
+			w = filter(w, func(c Card) bool {
+				return getSuit(s.trump, c) != s.trump
+				})
 			for len(w) > 0 {
 				card := w[0]
 				if in(sureWinners, card) {
