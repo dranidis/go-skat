@@ -864,8 +864,8 @@ func TestAlphaBeta4C(t *testing.T) {
 	h1 := []Card{
 		Card{SPADE, "7"},
 		// Card{CARO, "J"},
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},
+		Card{HEART, "A"},
+		Card{HEART, "K"},
 		}
 	h2 := []Card{
 		Card{HEART, "10"},
@@ -907,26 +907,27 @@ func TestAlphaBeta4C(t *testing.T) {
 		playersP,
 	}
 
-	// card := Card{SPADE, "7"}
+
 	card := Card{CARO, "J"}
 	nextState := skatState.FindNextState(SkatAction{card})
 
 	minimax.DEBUG = true
 	debugTacticsInMM =true
 
-	minimax.MAXDEPTH = 999
+	minimax.MAXDEPTH = 12
 
 	var skatStateP game.State
 	// skatStateP = &skatState
 	skatStateP = nextState
 	var a game.Action
+	var as []game.Action
 	var v float64
 
 	if true {
-		a, v = minimax.AlphaBetaTactics(skatStateP)
+		a, v, as = minimax.AlphaBetaActions(skatStateP)
 	}
 
-	debugTacticsLog("Action: %v, Value: %.4f\n", a, v)
+	debugTacticsLog("Action: %v, Value: %.4f, Actions: %v\n", a, v, as)
 	if false {
 		t.Errorf("TEST")
 	}

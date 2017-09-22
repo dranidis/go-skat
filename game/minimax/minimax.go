@@ -68,13 +68,6 @@ func minimaxAlg(state game.State, depth int, tab string) (*game.Action, float64)
 	return &bestAction, bestValue
 }
 
-func AlphaBeta(state game.State) (game.Action, float64) {
-	alpha := float64(math.MinInt32)
-	beta := float64(math.MaxInt32)
-	action, value := alphaBetaAlg(state, alpha, beta, MAXDEPTH, "")
-	return *action, value
-}
-
 
 func alphaBetaAlg(state game.State, alpha, beta float64, depth int, tab string) (*game.Action, float64) {
 	treedepth := MAXDEPTH - depth
@@ -157,7 +150,23 @@ func AlphaBetaTacticsActions(state game.State) (game.Action, float64,  []game.Ac
 	return *action, value, actions
 }
 
-var actions = []game.Action{}
+func AlphaBeta(state game.State) (game.Action, float64) {
+	alpha := float64(math.MinInt32)
+	beta := float64(math.MaxInt32)
+	action, value := alphaBetaAlg(state, alpha, beta, MAXDEPTH, "")
+	return *action, value
+}
+
+func AlphaBetaActions(state game.State) (game.Action, float64,  []game.Action) {
+	alpha := float64(math.MinInt32)
+	beta := float64(math.MaxInt32)
+	action, value, actions := alphaBetaAlgActions(state, alpha, beta, MAXDEPTH, "")
+	return *action, value, actions
+}
+
+
+
+// var actions = []game.Action{}
 // Player maximizes
 // Opponent uses tactics
 // For SKAT it needs adjustment, since when the player is a defender
@@ -213,9 +222,6 @@ func alphaBetaTacticsAlg(state game.State, alpha, beta float64, depth int, tab s
 	if !state.IsOpponentTurn() { // MAX
 		debugLog("%4d %s(%s) Best action %s : %.2f at state %v\n", treedepth, tab, debugStr, bestAction, bestValue, state)
 	}
-	// actions = append(actions, bestAction)
-	actions = append([]game.Action{ bestAction }, actions...)
-	debugLog("ACTIONS: %v\n", actions)
 	return &bestAction, bestValue
 }
 
@@ -271,7 +277,65 @@ func alphaBetaTacticsAlgActions(state game.State, alpha, beta float64, depth int
 	}
 	// actions = append(actions, bestAction)
 	bestActions = append([]game.Action{ bestAction }, bestActions...)
-	debugLog("ACTIONS: %v\n", actions)
+	debugLog("ACTIONS: %v\n", bestActions)
+	return &bestAction, bestValue, bestActions
+}
+
+func alphaBetaAlgActions(state game.State, alpha, beta float64, depth int, tab string) (*game.Action, float64, []game.Action) {
+	treedepth := MAXDEPTH - depth
+
+	if depth == 0  || state.IsTerminal() {
+		return nil, state.Heuristic(), []game.Action{}
+	}
+	var bestValue float64
+	var bestAction game.Action
+	var bestActions []game.Action
+
+	if !state.IsOpponentTurn() {
+		bestValue = float64(math.MinInt32)
+	} else {
+		bestValue = float64(math.MaxInt32)
+	}
+
+	debugStr := "MAX"
+	if state.IsOpponentTurn() {
+		debugStr = "MIN"
+	}
+
+	for _, action := range state.FindLegals() {
+		nextState := state.FindNextState(action)
+		debugLog("%4d %s(%s) game.Action %v :nextstate %v\n", treedepth, tab, debugStr, action, nextState)
+		_, value, actions := alphaBetaAlgActions(nextState, alpha, beta, depth - 1, tab + "....")
+		debugLog("%4d %s(%s) VALUE of action %v : %.2f at state %v\n", treedepth, tab, debugStr, action, value, state)
+		if !state.IsOpponentTurn() { // MAX
+			if value > bestValue {
+				bestValue, bestAction, bestActions = value, action, actions
+				debugLog("%4d %s(%s) Best Value so far: %.2f, Best game.Action so far: %s\n", treedepth, tab, debugStr, bestValue, bestAction)
+			}
+			if value > alpha {
+				alpha = value
+			}
+			if beta <= alpha {
+				debugLog("%4d %s(%s) Pruning at state %v and action %s\n", treedepth, tab, debugStr, state, action)
+				break
+			}
+		} else { // MIN
+			if value < bestValue {
+				bestValue, bestAction, bestActions = value, action, actions
+				debugLog("%4d %s(%s) Best Value so far: %.2f, Best game.Action so far: %s\n", treedepth, tab, debugStr, bestValue, bestAction)
+			}
+			if value < beta {
+				beta = value
+			}
+			if beta <= alpha {
+				debugLog("%4d %s(%s) Pruning at state %v and action %s\n", treedepth, tab, debugStr, state, action)
+				break
+			}
+		}
+	}
+	debugLog("%4d %s(%s) Best action %s : %.2f at state %v\n", treedepth, tab, debugStr, bestAction, bestValue, state)
+	bestActions = append([]game.Action{ bestAction }, bestActions...)
+	debugLog("ACTIONS: %v\n", bestActions)
 	return &bestAction, bestValue, bestActions
 }
 
