@@ -355,12 +355,12 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 		max2--
 	}
 
+	// check if card distribution is possible according to believs
 	for {
 		copycards := make([]Card, len(cards))
 		copy(copycards, cards)
 		p.p1Hand = []Card{}
 		p.p2Hand = []Card{}
-
 
 		if p.getName() == s.declarer.getName() {
 			for _, suit := range suits {
@@ -368,6 +368,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 				copycards = checkVoidOpp2(s, p, copycards, suit)
 			}
 		} 
+		// what happens when player is not declarer?
 
 		if len(p.p1Hand) > max1 {
 			debugMinmaxLog("IMPOSSIBLE hand for opp1: %v!\n", p.p1Hand)
