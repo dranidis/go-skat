@@ -28,9 +28,11 @@ func (s SkatState) String() string {
 
 func (m SkatState) Heuristic() float64 {
 	if m.IsTerminal() {
+		// fmt.Printf("R: %v\n", m.FindRewardNum())
 		return m.FindRewardNum()
 	} else {
 		m.playToTheEndWithTactics()
+		// fmt.Printf("R: %v\n", m.FindRewardNum())
 		return m.FindRewardNum() 
 	}
 }
@@ -82,7 +84,8 @@ func (m *SkatState) playToTheEndWithTactics() {
 	disableLogs()
 
 	for len(m.players[2].getHand()) > 0 {
-		_ = m.moveOne()
+		c := m.moveOne()
+		fmt.Printf("%v ", c)
 	}
 
 	restoreLogs()
@@ -142,7 +145,6 @@ func (m *SkatState) moveOne() Card {
 		// }
 		m.follow = ""
 	}
-	// debugTacticsLog("MOVEONE card %v\n", card)
 
 	return card
 }
