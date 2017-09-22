@@ -14,6 +14,9 @@ var debugTacticsLogFlag = false
 var gameLogFlag = true
 var fileLogFlag = true
 
+var debugTacticsInMM = false
+
+
 var debugTacticsLogFlagStored = false
 var gameLogFlagStored = true
 var fileLogFlagStored = true
@@ -69,7 +72,6 @@ func createFile(logFileName string) *os.File {
 	return file
 }
 
-var debugTacticsInMM = false
 
 func disableLogs() {
 	debugTacticsLogFlagStored = debugTacticsLogFlag

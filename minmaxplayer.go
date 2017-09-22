@@ -309,6 +309,7 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 			_, value = minimax.AlphaBeta(nextState)
 		case "abt":
 			// minimax.DEBUG = true
+			// debugTacticsInMM = true			
 			// debugTacticsLog("Calling ABT\n")
 			_, value = minimax.AlphaBetaTactics(nextState)
 	}

@@ -222,17 +222,40 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 		condition1 := s.trick[0].Rank == "A" && s.greater(s.trick[0], s.trick[1]) && players[0].getName() == partner(s, p).getName()
 		condition2 := s.trick[1].equals(Card{s.follow, "A"}) && s.greater(s.trick[1], s.trick[0]) &&  players[1].getName() == partner(s, p).getName()
 		if condition1 || condition2 {
-			if !card.equals(Card{s.follow, "10"}) {
+			if getSuit(s.trump, card) == s.follow && cardValue(card) < 10 {
+				voidCards := []Card{}
+				voidCards = append(voidCards, Card{s.follow, "10"})
+				if cardValue(card) < 4 {
+					voidCards = append(voidCards, Card{s.follow, "K"})
+				}
+				if cardValue(card) < 3 {
+					voidCards = append(voidCards, Card{s.follow, "D"})
+				}
 				debugTacticsLog("INFERENCE: **************************************\n")
-				debugTacticsLog("INFERENCE: Player does not have the %v           \n", Card{s.follow, "10"})
+				debugTacticsLog("INFERENCE: Player does not have the cards %v           \n", voidCards)
 				debugTacticsLog("INFERENCE: **************************************\n")
+
 				if p.getName() == s.opp1.getName() {
-					s.opp1VoidCards = append(s.opp1VoidCards, Card{s.follow, "10"})
+					s.opp1VoidCards = append(s.opp1VoidCards, voidCards...)
 				}
 				if p.getName() == s.opp2.getName() {
-					s.opp2VoidCards = append(s.opp2VoidCards, Card{s.follow, "10"})
+					s.opp2VoidCards = append(s.opp2VoidCards, voidCards...)
 				}
-			} 
+			}
+
+
+
+			// if !card.equals(Card{s.follow, "10"}) {
+			// 	debugTacticsLog("INFERENCE: **************************************\n")
+			// 	debugTacticsLog("INFERENCE: Player does not have the %v           \n", Card{s.follow, "10"})
+			// 	debugTacticsLog("INFERENCE: **************************************\n")
+			// 	if p.getName() == s.opp1.getName() {
+			// 		s.opp1VoidCards = append(s.opp1VoidCards, Card{s.follow, "10"})
+			// 	}
+			// 	if p.getName() == s.opp2.getName() {
+			// 		s.opp2VoidCards = append(s.opp2VoidCards, Card{s.follow, "10"})
+			// 	}
+			// } 
 		}
 
 		condition1 = s.greater(s.trick[0], s.trick[1]) && players[0].getName() == s.declarer.getName()
