@@ -81,12 +81,7 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 		debugTacticsLog("Similar: %v\n", c)
 	}
 
-	worlds, err := p.dealCards(s)
-	for err != nil {
-		debugTacticsLog("Detractics all beliefs!\n")
-		s.detractBeliefs()
-		worlds, err = p.dealCards(s)
-	}
+	worlds, _ := p.dealCards(s)
 
 	debugMinmaxLog("(%s) %d Worlds, %s\n", p.name, len(worlds), MINIMAX_ALG)
 
@@ -350,17 +345,6 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 
 	debugMinmaxLog("ALL REMAINING CARDS (%d): %v\n", len(cards), cards)
 
-	p.p1Hand = []Card{}
-	p.p2Hand = []Card{}
-
-	if p.getName() == s.declarer.getName() {
-		for _, suit := range suits {
-			cards = checkVoidOpp1(s, p, cards, suit)
-			cards = checkVoidOpp2(s, p, cards, suit)
-		}
-		debugMinmaxLog("REMAINING after void: %d cards: %v %v %v\n", len(cards), cards, p.p1Hand, p.p2Hand)
-	} 
-
 	max1 := len(p.hand)
 	max2 := len(p.hand)
 	if len(s.trick) == 1 {
@@ -371,10 +355,37 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 		max2--
 	}
 
-	if len(p.p1Hand) > max1 || len(p.p2Hand) > max2 {
-		debugMinmaxLog("IMPOSSIBLE!")
-		return nil, errors.New("Hand size over")
+	for {
+		copycards := make([]Card, len(cards))
+		copy(copycards, cards)
+		p.p1Hand = []Card{}
+		p.p2Hand = []Card{}
+
+
+		if p.getName() == s.declarer.getName() {
+			for _, suit := range suits {
+				copycards = checkVoidOpp1(s, p, copycards, suit)
+				copycards = checkVoidOpp2(s, p, copycards, suit)
+			}
+		} 
+
+		if len(p.p1Hand) > max1 {
+			debugMinmaxLog("IMPOSSIBLE hand for opp1: %v!\n", p.p1Hand)
+			debugTacticsLog("Detractics beliefs!\n")
+			s.detractBeliefs("opp2", p.p1Hand)
+			continue
+		}
+		if len(p.p2Hand) > max2 {
+			debugMinmaxLog("IMPOSSIBLE hand for opp2: %v!\n", p.p2Hand)
+			debugTacticsLog("Detractics beliefs!\n")
+			s.detractBeliefs("opp1", p.p2Hand)
+			continue
+		}
+		cards = copycards
+		break
 	}
+	debugMinmaxLog("REMAINING after void: %d cards: %v %v %v\n", len(cards), cards, p.p1Hand, p.p2Hand)
+
 
 
 	// cards => ways to distribute

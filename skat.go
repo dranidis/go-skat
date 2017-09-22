@@ -78,19 +78,20 @@ type SuitState struct {
 	Inference
 }
 	
+func voidString(m map[string]bool) string {
+	str := "("
+	for k, v := range m {
+		if v {
+			str += k
+			str += ","
+		}
+	}
+	str += ")"
+	return str
+}
 
 func (s SuitState) String() string {
-	voidString := func(m map[string]bool) string {
-		str := "("
-		for k, v := range m {
-			if v {
-				str += k
-				str += ","
-			}
-		}
-		str += ")"
-		return str
-	}
+
 	return fmt.Sprintf("D:%s, O1:%s, O2:%s, T:%s, Leads:%s, Fol: %s, TRICK:%v, SKAT:%v, InGame: %v, Played: %v, D_VOID:%s,%v,O1_VOID:%s, %v,O2_VOID:%s, %v\n", 
 		s.declarer.getName(), s.opp1.getName(), s.opp2.getName(), s.trump, s.leader.getName(), s.follow, s.trick, 
 		s.skat, s.trumpsInGame, s.cardsPlayed, 

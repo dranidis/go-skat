@@ -154,28 +154,58 @@ func (s *Inference) getOpp2VoidSuit() map[string]bool {
 		}
 }
 
-func (s *Inference) detractBeliefs() {
-	s.declarerVoidSuitB = map[string]bool{
-			CLUBS: false,
-			SPADE: false,
-			HEART: false,
-			CARO:  false,
+// Remove beliefs concerning opp player, about cards belonging the cards argument.
+func (s *SuitState) detractBeliefs(opp string, cards []Card) {
+	
+	getSuit := func(suit string) int {
+		return len(filter(cards, func (c Card) bool {
+				return getSuit(s.trump, c) == suit
+			}))
+	}
+	switch opp {
+	case "decl":
+		for _, suit := range suits {
+			if getSuit(suit) > 0 {
+				s.declarerVoidSuitB[suit] = false
+			}
 		}
-	s.opp1VoidSuitB = map[string]bool{
-			CLUBS: false,
-			SPADE: false,
-			HEART: false,
-			CARO:  false,
+		// s.declarerVoidSuitB = map[string]bool{
+		// 		CLUBS: false,
+		// 		SPADE: false,
+		// 		HEART: false,
+		// 		CARO:  false,
+		// 	}
+		s.declarerVoidCards = remove(s.declarerVoidCards, cards...)
+		debugTacticsLog("Updated beliefs: %v, %v", voidString(s.declarerVoidSuitB), s.declarerVoidCards)
+	case "opp1":
+		for _, suit := range suits {
+			if getSuit(suit) > 0 {
+				s.opp1VoidSuitB[suit] = false
+			}
 		}
-	s.opp2VoidSuitB = map[string]bool{
-			CLUBS: false,
-			SPADE: false,
-			HEART: false,
-			CARO:  false,
+		// s.opp1VoidSuitB = map[string]bool{
+		// 	CLUBS: false,
+		// 	SPADE: false,
+		// 	HEART: false,
+		// 	CARO:  false,
+		// }
+		s.opp1VoidCards = remove(s.opp1VoidCards, cards...)
+		debugTacticsLog("Updated beliefs: %v, %v", voidString(s.opp1VoidSuitB), s.opp1VoidCards)
+	case "opp2":
+		for _, suit := range suits {
+			if getSuit(suit) > 0 {
+				s.opp2VoidSuitB[suit] = false
+			}
 		}
-	s.opp1VoidCards = []Card{}
-	s.opp2VoidCards = []Card{}
-	s.declarerVoidCards = []Card{}
+		// s.opp2VoidSuitB = map[string]bool{
+		// 	CLUBS: false,
+		// 	SPADE: false,
+		// 	HEART: false,
+		// 	CARO:  false,
+		// }
+		s.opp2VoidCards = remove(s.opp2VoidCards, cards...)
+		debugTacticsLog("Updated beliefs: %v, %v", voidString(s.opp2VoidSuitB), s.opp2VoidCards)
+	}
 }
 
 func analysePlay(s *SuitState, p PlayerI, card Card) {
