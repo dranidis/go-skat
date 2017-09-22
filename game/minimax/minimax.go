@@ -143,9 +143,9 @@ func AlphaBetaTactics(state game.State) (game.Action, float64) {
 	return *action, value
 }
 
-func AlphaBetaTacticsActions(state game.State) (game.Action, float64,  []game.Action) {
-	alpha := float64(math.MinInt32)
-	beta := float64(math.MaxInt32)
+func AlphaBetaTacticsActions(state game.State, alpha, beta float64) (game.Action, float64,  []game.Action) {
+	// alpha := float64(math.MinInt32)
+	// beta := float64(math.MaxInt32)
 	action, value, actions := alphaBetaTacticsAlgActions(state, alpha, beta, MAXDEPTH, "")
 	return *action, value, actions
 }
@@ -157,9 +157,9 @@ func AlphaBeta(state game.State) (game.Action, float64) {
 	return *action, value
 }
 
-func AlphaBetaActions(state game.State) (game.Action, float64,  []game.Action) {
-	alpha := float64(math.MinInt32)
-	beta := float64(math.MaxInt32)
+func AlphaBetaActions(state game.State, alpha, beta float64) (game.Action, float64,  []game.Action) {
+	// alpha := float64(math.MinInt32)
+	// beta := float64(math.MaxInt32)
 	action, value, actions := alphaBetaAlgActions(state, alpha, beta, MAXDEPTH, "")
 	return *action, value, actions
 }

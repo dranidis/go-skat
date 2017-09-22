@@ -2,7 +2,7 @@ package main
 
 import (
 	"testing"
-	// "time"
+	"time"
 	"github.com/dranidis/go-skat/game"
 	"github.com/dranidis/go-skat/game/minimax"
 )
@@ -787,35 +787,102 @@ func TestAlphaBetaTactics3C(t *testing.T) {
 
 
 func TestAlphaBetaTactics4C(t *testing.T) {
-	FourCards(t, "abt")
-}
-
-func TestAlphaBeta4C(t *testing.T) {
-	FourCards(t, "ab")
-}
-
-func FourCards(t *testing.T, alg string) {
-
 	h1 := []Card{
-		Card{SPADE, "7"},
-		Card{CARO, "J"},
+		Card{SPADE, "A"},
+		Card{CLUBS, "J"},
 		Card{HEART, "A"},
 		Card{HEART, "K"},
+		Card{HEART, "9"},
 		}
 	h2 := []Card{
 		Card{HEART, "10"},
 		Card{HEART, "7"},
 		Card{CLUBS, "K"},
 		Card{CLUBS, "9"},
+		Card{SPADE, "J"},
 		}
 	h3 := []Card{
-		Card{CLUBS, "J"},
+		Card{CARO, "J"},
 		Card{SPADE, "8"},
 		Card{HEART, "D"},
 		Card{CLUBS, "A"},
+		Card{CLUBS, "D"},
 		}
 
 	dist := [][]Card{h1, h2, h3}
+	FirstPlays(t, "abt", dist, SPADE, -120, 120)
+}
+
+func TestAlphaBeta4C(t *testing.T) {
+	h1 := []Card{
+		Card{SPADE, "A"},
+		Card{CLUBS, "J"},
+		Card{HEART, "A"},
+		Card{HEART, "K"},
+		Card{HEART, "9"},
+		}
+	h2 := []Card{
+		Card{HEART, "10"},
+		Card{HEART, "7"},
+		Card{CLUBS, "K"},
+		Card{CLUBS, "9"},
+		Card{SPADE, "J"},
+		}
+	h3 := []Card{
+		Card{CARO, "J"},
+		Card{SPADE, "8"},
+		Card{HEART, "D"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "D"},
+		}
+
+	dist := [][]Card{h1, h2, h3}
+	FirstPlays(t, "ab", dist, SPADE, -120, 120)
+}
+
+func TestAlphaBeta3C(t *testing.T) {
+	h1 := []Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "J"},
+		Card{CLUBS, "D"},
+		}
+	h2 := []Card{
+		Card{CLUBS, "K"},
+		Card{SPADE, "A"},
+		Card{CLUBS, "8"},
+		}
+	h3 := []Card{
+		Card{CARO, "J"},
+		Card{SPADE, "J"},
+		Card{CARO, "K"},
+		}
+
+	dist := [][]Card{h1, h2, h3}
+	FirstPlays(t, "ab", dist, HEART, -120, 120)
+}
+
+func TestAlphaBeta23C(t *testing.T) {
+	h1 := []Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "J"},
+		}
+	h2 := []Card{
+		Card{CLUBS, "K"},
+		Card{SPADE, "A"},
+		Card{CLUBS, "8"},
+		}
+	h3 := []Card{
+		Card{CARO, "J"},
+		Card{SPADE, "J"},
+		Card{CARO, "K"},
+		}
+
+	dist := [][]Card{h1, h2, h3}
+	SecondPlays(t, "ab", dist, Card{CLUBS, "D"}, -120, 120)
+}
+		
+
+func SecondPlays(t *testing.T, alg string, dist [][]Card, first Card, a, b float64) {
 
 	p1 := makeMinMaxPlayer(dist[0])
 	p2 := makeMinMaxPlayer(dist[1])
@@ -828,16 +895,18 @@ func FourCards(t *testing.T, alg string) {
 	playersP := []PlayerI{&p1, &p2, &p3}
 
 	sst := makeSuitState()
-	sst.trump = SPADE
+	sst.trump = HEART
 	sst.declarer = &p1
 	sst.opp1 = &p2
 	sst.opp2 = &p3
 	sst.leader = &p1
-	sst.trick = []Card{}
+	sst.trick = []Card{first}
+	sst.follow = getSuit(sst.trump, first)
 
-	allcards := append([]Card{}, h1...)
-	allcards = append(allcards, h2...)
-	allcards = append(allcards, h3...)
+	allcards := append([]Card{}, p1.hand...)
+	allcards = append(allcards, p2.hand...)
+	allcards = append(allcards, p3.hand...)
+	allcards = append(allcards, first)
 	sst.trumpsInGame = filter(allcards, func(c Card) bool {
 			return getSuit(sst.trump, c) == sst.trump
 			})
@@ -847,9 +916,97 @@ func FourCards(t *testing.T, alg string) {
 		Card{CARO, "D"},
 	}
 	played := makeDeck()
-	played = remove(played, h1...)
-	played = remove(played, h2...)
-	played = remove(played, h3...)
+	played = remove(played, p1.hand...)
+	played = remove(played, p2.hand...)
+	played = remove(played, p3.hand...)
+	played = remove(played, sst.skat...)
+	played = remove(played, first)
+	sst.cardsPlayed = played
+
+	skatState := SkatState{
+		sst,
+		playersP,
+	}
+
+	copy1 := make([]Card, len(p2.hand))
+	copy(copy1, p2.hand)
+	for _, c := range copy1 {
+		card := c
+		p2.hand = remove(p2.hand, card)
+
+		nextState := skatState.FindNextState(SkatAction{card})
+
+		// minimax.DEBUG = true
+		// debugTacticsInMM = true
+
+		minimax.MAXDEPTH = 9999
+
+
+		var skatStateP game.State
+		// skatStateP = &skatState
+		skatStateP = nextState
+		// var a game.Action
+		var as []game.Action
+		var v float64
+
+		startWhole := time.Now()
+
+
+
+		if alg == "abt" {
+			_, v, as = minimax.AlphaBetaTacticsActions(skatStateP, a, b)
+		} else {
+			_, v, as = minimax.AlphaBetaActions(skatStateP, a, b)
+		}
+		ti := time.Now()
+		elapsed := ti.Sub(startWhole)		
+
+		debugTacticsLog("Action: %v, Value: %.4f, Actions: %v time: %v\n", c, v, as, elapsed)
+		p2.hand = append(p2.hand, card)
+	}
+
+
+	if false {
+		t.Errorf("TEST")
+	}
+}
+
+func FirstPlays(t *testing.T, alg string, dist [][]Card, tr string, a, b float64) {
+
+
+	p1 := makeMinMaxPlayer(dist[0])
+	p2 := makeMinMaxPlayer(dist[1])
+	p3 := makeMinMaxPlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+	playersP := []PlayerI{&p1, &p2, &p3}
+
+	sst := makeSuitState()
+	sst.trump = tr
+	sst.declarer = &p1
+	sst.opp1 = &p2
+	sst.opp2 = &p3
+	sst.leader = &p1
+	sst.trick = []Card{}
+
+	allcards := append([]Card{}, p1.hand...)
+	allcards = append(allcards, p2.hand...)
+	allcards = append(allcards, p3.hand...)
+	sst.trumpsInGame = filter(allcards, func(c Card) bool {
+			return getSuit(sst.trump, c) == sst.trump
+			})
+
+	sst.skat = []Card{
+		Card{CARO, "10"},
+		Card{CARO, "D"},
+	}
+	played := makeDeck()
+	played = remove(played, p1.hand...)
+	played = remove(played, p2.hand...)
+	played = remove(played, p3.hand...)
 	played = remove(played, sst.skat...)
 	sst.cardsPlayed = played
 
@@ -867,9 +1024,10 @@ func FourCards(t *testing.T, alg string) {
 		nextState := skatState.FindNextState(SkatAction{card})
 
 		// minimax.DEBUG = true
-		debugTacticsInMM = true
+		// debugTacticsInMM = true
 
 		minimax.MAXDEPTH = 9999
+
 
 		var skatStateP game.State
 		// skatStateP = &skatState
@@ -878,12 +1036,19 @@ func FourCards(t *testing.T, alg string) {
 		var as []game.Action
 		var v float64
 
+		startWhole := time.Now()
+
+
+
 		if alg == "abt" {
-			_, v, as = minimax.AlphaBetaTacticsActions(skatStateP)
+			_, v, as = minimax.AlphaBetaTacticsActions(skatStateP, a, b)
 		} else {
-			_, v, as = minimax.AlphaBetaActions(skatStateP)
+			_, v, as = minimax.AlphaBetaActions(skatStateP, a, b)
 		}
-		debugTacticsLog("Action: %v, Value: %.4f, Actions: %v\n", c, v, as)
+		ti := time.Now()
+		elapsed := ti.Sub(startWhole)		
+
+		debugTacticsLog("Action: %v, Value: %.4f, Actions: %v time: %v\n", c, v, as, elapsed)
 		p1.hand = append(p1.hand, card)
 	}
 

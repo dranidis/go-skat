@@ -42,6 +42,9 @@
 # GRAND vs SUIT after Bidding
 	Prefer a solid SUIT against a mmm GRAND if bid allows it
 
+# DISCARD
+	It is best to discard a doubleton than a singleton and another card.
+
 
 -------------------------------------------------------------------------
 # DONE:
