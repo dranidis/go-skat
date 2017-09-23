@@ -707,7 +707,7 @@ func TestAlphaBetaTactics2C(t *testing.T) {
 		players,
 	}
 
-	minimax.DEBUG = true
+	// minimax.DEBUG = true
 
 	var skatStateP game.State
 	skatStateP = &skatState
@@ -767,7 +767,7 @@ func TestAlphaBetaTactics3C(t *testing.T) {
 		players,
 	}
 
-	minimax.DEBUG = true
+	// minimax.DEBUG = true
 	minimax.MAXDEPTH = 3
 
 	var skatStateP game.State
@@ -1123,7 +1123,7 @@ func TestAlphaBetaTactics7C(t *testing.T) {
 		playersP,
 	}
 
-	minimax.DEBUG = true
+	// minimax.DEBUG = true
 	minimax.MAXDEPTH = 3
 
 	var skatStateP game.State
