@@ -629,59 +629,38 @@ func LongestNonTrumpSuit(trump string, cards []Card) string {
 }
 
 
-// func mostCardsSuit(cards []Card) string {
-// 	debugTacticsLog("..mostCardsSuit")
-// 	maxCount := 0
-// 	maxI := -1
-// 	for i, s := range suits {
-// 		cs := trumpCards(s, cards)
-// 		count := 200 * len(cs)
-// 		if !in(cards, Card{s, "A"}) {
-// 			count += 100
-// 			count += 100
-// 			count += sum(cs)
-// 		} else {
-// 			count -= sum(cs)
-// 		}
-// 		if len(cs) < 4 {
-// 			count -= 200
-// 		}
-// 		if len(cs) < 5 {
-// 			count -= 200
-// 		}
-// 		if count > maxCount {
-// 			maxCount = count
-// 			maxI = i
-// 		}
-// 		debugTacticsLog(".%s:%d  ", s, count)
-// 	}
-// 	return suits[maxI]
-// }
-
-// With a preference to non-A suits
-// and a preference to stronger cards (between A-suits)
-// func mostCardsSuit(cards []Card) string {
-// 	maxCount := 0
-// 	maxI := -1
-// 	for i, s := range suits {
-// 		cs := trumpCards(s, cards)
-// 		count := 200 * len(cs)
-// 		if !in(cards, Card{s, "A"}) {
-// 			count += 100
-// 		}
-// 		count += sum(cs)
-// 		if count > maxCount {
-// 			maxCount = count
-// 			maxI = i
-// 		}
-// 	}
-// 	return suits[maxI]
-// }
-
 // With a preference to non-A suits
 //   unless there are at least 3 suit
 // and a preference to weaker cards (between A-suits)
 func mostCardsSuit(cards []Card) string {
+	spCardValuefunc := func(c Card) int {
+		switch c.Rank {
+		case "J":
+			return 2
+		case "A":
+			return 11
+		case "10":
+			return 10
+		case "K":
+			return 4
+		case "D":
+			return 3
+		case "9":
+			return 2
+		case "8":
+			return 1
+		}
+		return 0
+	}
+	spSum := func(trick []Card) int {
+		s := 0
+		for _, c := range trick {
+			s += spCardValuefunc(c)
+		}
+		return s
+	}
+
+
 	asuits := 0
 	for _, s := range suits {
 		if in(cards, Card{s, "A"}) {
@@ -698,14 +677,9 @@ func mostCardsSuit(cards []Card) string {
 	for i, s := range suits {
 		cs := trumpCards(s, cards)
 		count := 200 * len(cs)
-		if !in(cards, Card{s, "A"}) {
-			count += sum(cs)
-			// if len(cs) > 4 {
-			// 	count += 100
-			// }
-		} else {
+		count -= spSum(cs)
+		if in(cards, Card{s, "A"}) {
 			count -= acePenalty
-			count -= sum(cs)
 		}
 		if count > maxCount {
 			maxCount = count
@@ -717,23 +691,7 @@ func mostCardsSuit(cards []Card) string {
 	return suits[maxI]
 }
 
-// func mostCardsSuit(cards []Card) string {
-// 	maxCount := 0
-// 	maxI := -1
-// 	for i, s := range suits {
-// 		cs := trumpCards(s, cards)
-// 		count := 200 * len(cs)
-// 		if !in(cards, Card{s, "A"}) {
-// 			count += 100
-// 		}
-// 		count += sum(cs)
-// 		if count > maxCount {
-// 			maxCount = count
-// 			maxI = i
-// 		}
-// 	}
-// 	return suits[maxI]
-// }
+
 func lessCardsSuitExcept(suitsToExclude []string, cards []Card) string {
 	copyCards := filter(cards, func(c Card) bool {
 		for _, s := range suitsToExclude {

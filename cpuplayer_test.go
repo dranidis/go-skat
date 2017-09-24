@@ -169,6 +169,38 @@ func TestPickUpSkatAndDeclareNew(t *testing.T) {
 	}
 }
 
+func TestPickUpSkatAndDeclare_10_D_9(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+
+		Card{SPADE, "10"},
+		Card{SPADE, "D"},
+		Card{SPADE, "9"},
+
+		Card{HEART, "10"},
+		Card{HEART, "D"},
+		Card{HEART, "7"},
+
+		Card{CLUBS, "7"},
+
+		Card{CARO, "8"},
+		Card{CARO, "9"},
+	})
+
+	skat := []Card{
+		Card{CARO, "8"},
+		Card{CARO, "9"},
+	}
+
+	player.pickUpSkat(skat)
+
+	if player.trumpToDeclare != HEART {
+		t.Errorf("Expected HEART, since SPADE is a bit stronger, found: ", player.trumpToDeclare)
+	}
+}
+
 func TestPickUpSkatGrandWith4Aces(t *testing.T) {
 	player := makePlayer([]Card{
 		Card{CLUBS, "9"},
