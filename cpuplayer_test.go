@@ -77,9 +77,10 @@ func TestPickUpSkat1(t *testing.T) {
 	// fmt.Println(player.hand)
 	// fmt.Println(skat)
 	player.pickUpSkat(skat)
-	cc1 := skat[0].Suit != CLUBS || skat[0].Rank != "7"
-	cc2 := skat[1].Suit != HEART || skat[1].Rank != "K"
-	if cc1 || cc2 {
+	card1 := Card{HEART, "K"}
+	card2 := Card{HEART, "9"}
+
+	if !in(skat, card1, card2) {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
 	}
 
@@ -109,6 +110,11 @@ func TestPickUpSkat2(t *testing.T) {
 		Card{HEART, "8"},
 		Card{CARO, "8"},
 	}
+
+	p2 := makePlayer([]Card{})
+	p3 := makePlayer([]Card{})
+	players = []PlayerI{&player, &p2, &p3}
+
 	// fmt.Println("TestPickUpSkat2")
 	// fmt.Println(player.hand)
 	// fmt.Println(skat)
@@ -234,9 +240,9 @@ func TestPickUpSkat4(t *testing.T) {
 	player.pickUpSkat(skat)
 	// fmt.Println(sort(player.hand))
 	// fmt.Println(skat)
-	cc1 := skat[1].Suit != HEART || skat[1].Rank != "K"
-	cc2 := skat[0].Suit != CARO || skat[0].Rank != "K"
-	if cc1 || cc2 {
+	card1 := Card{HEART, "K"}
+	card2 := Card{HEART, "7"}
+	if !in(skat, card1, card2) {
 		t.Errorf("Found in skat: %v %v", skat[0], skat[1])
 	}
 
@@ -2607,6 +2613,35 @@ func TestDiscardInSkatGRANDBlank(t *testing.T) {
 
 	if !in(skat, Card{SPADE, "D"}, Card{CARO, "9"}) {
 		t.Errorf("hand: %v discarded in SKAT: %v", p.hand, skat)
+	}
+}
+
+func TestDiscardInSkat_2CardsOfASuit(t *testing.T) {
+	cards := []Card{
+		Card{SPADE, "J"}, 
+		Card{HEART, "J"}, 
+		Card{CARO, "J"}, 
+
+		Card{CLUBS, "10"},
+		Card{CLUBS, "D"}, 
+		Card{CLUBS, "8"}, 
+
+		Card{HEART, "A"},
+		Card{HEART, "D"},
+		Card{HEART, "7"},
+
+		Card{SPADE, "D"}, 
+		Card{SPADE, "9"}, 
+
+		Card{CARO, "7"}, //LOSER		
+	}
+	skat := []Card{Card{CLUBS, "8"}, Card{SPADE, "D"}}
+	p := makePlayer(cards)
+	p.trumpToDeclare = CLUBS
+	p.discardInSkat(skat)
+
+	if !in(skat, Card{SPADE, "D"}, Card{SPADE, "9"}) {
+		t.Errorf("Final hand: %v discarded in SKAT: %v", p.hand, skat)
 	}
 }
 

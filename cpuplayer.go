@@ -1526,18 +1526,48 @@ func (p *Player) discardInSkat(skat []Card) {
 
 	bcards := findBlankCards(p.getHand())
 	debugTacticsLog("BLANK %v\n", bcards)
+	if len(bcards) > 1 {
+		debugTacticsLog("Discarding two blank: %v\n", bcards)
+		p.setHand(remove(p.getHand(), bcards[0]))
+		p.setHand(remove(p.getHand(), bcards[1]))
+		skat[0] = bcards[0]
+		skat[1] = bcards[1]
+		//	fmt.Printf("2nd %v\n", skat)
+		return
+	}
+
+	foundTwo := false
+	suitCards := []Card{}
+	for _,suit := range suits {
+		if suit == p.trumpToDeclare {
+			continue
+		}
+		suitCards = filter(p.getHand(), func (c Card) bool {
+			return getSuit(p.trumpToDeclare, c) == suit
+		})
+		if len(suitCards) == 2 && !in(suitCards, Card{suit, "A"}) {
+			foundTwo = true
+			break
+		}
+	}
+
+	if foundTwo {
+		debugTacticsLog("Found 2 cards of a suit to discard %v\n", suitCards)
+		p.setHand(remove(p.getHand(), suitCards[0]))
+		p.setHand(remove(p.getHand(), suitCards[1]))
+		skat[0] = suitCards[0]
+		skat[1] = suitCards[1]
+		return
+	}
+
 	if len(bcards) > 0 {
+		debugTacticsLog("Discarding one blank: %v\n", bcards)
 		p.setHand(remove(p.getHand(), bcards[0]))
 		skat[0] = bcards[0]
 		//	fmt.Printf("1st %v\n", skat)
 		removed++
 	}
-	if len(bcards) > 1 {
-		p.setHand(remove(p.getHand(), bcards[1]))
-		skat[1] = bcards[1]
-		//	fmt.Printf("2nd %v\n", skat)
-		return
-	}
+
 
 	// Discard high cards in non-A suits with few colors
 	sranks := []string{"J", "A", "10", "K", "D", "7", "8", "9"}
