@@ -1097,7 +1097,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 					}
 
 					sortedValueTrumps := sortValue(followCards(s, s.trump, c))
-					if len(sortedValueTrumps) > 0 {
+					if len(sortedValueTrumps) > 0 { //&& len(ownTrumps) + 1 < len(otherTrumps) {
 						debugTacticsLog("Playing a trump from %v..", sortedValueTrumps)
 						i := 0
 						for i < len(sortedValueTrumps) && cardValue(sortedValueTrumps[i]) < 3 && cardValue(sortedValueTrumps[i]) > 0 {
@@ -1221,7 +1221,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 
 			debugTacticsLog("teammate wins..largest not-sure winner")
 			candidates := []Card{}
-			candidates = sortedValue
+			candidates = sortedValueNoTrumps
 			for len(candidates) > 0 {
 				card := candidates[0]
 				if in(sureWinners, card) {
@@ -1230,6 +1230,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 				}
 				return card
 			}
+			// candidates = sortedValue
 			// if len(noTrumps) > 0 {
 			// 	return noTrumps[0]
 			// }

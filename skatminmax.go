@@ -84,8 +84,8 @@ func (m *SkatState) playToTheEndWithTactics() {
 	disableLogs()
 
 	for len(m.players[2].getHand()) > 0 {
-		c := m.moveOne()
-		fmt.Printf("%v ", c)
+		_ = m.moveOne()
+		// fmt.Printf("%v ", c)
 	}
 
 	restoreLogs()
