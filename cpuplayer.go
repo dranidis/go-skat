@@ -1532,6 +1532,17 @@ func (p *Player) discardInSkat(skat []Card) {
 
 	bcards := findBlankCards(p.getHand())
 	debugTacticsLog("BLANK %v\n", bcards)
+
+	if len(bcards) == 1 && bcards[0].Rank == "10" {
+		debugTacticsLog("Discarding one blank 10: %v\n", bcards)
+		p.setHand(remove(p.getHand(), bcards[0]))
+		skat[removed] = bcards[0]
+		//	fmt.Printf("1st %v\n", skat)
+		removed++
+		bcards = []Card{}
+	}
+
+
 	if len(bcards) > 1 {
 		debugTacticsLog("Discarding two blank: %v\n", bcards)
 		p.setHand(remove(p.getHand(), bcards[0]))

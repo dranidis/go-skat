@@ -2666,7 +2666,7 @@ func TestDiscardInSkat_2CardsOfASuit(t *testing.T) {
 		Card{SPADE, "D"}, 
 		Card{SPADE, "9"}, 
 
-		Card{CARO, "7"}, //LOSER		
+		Card{CARO, "7"}, 		
 	}
 	skat := []Card{Card{CLUBS, "8"}, Card{SPADE, "D"}}
 	p := makePlayer(cards)
@@ -2674,6 +2674,35 @@ func TestDiscardInSkat_2CardsOfASuit(t *testing.T) {
 	p.discardInSkat(skat)
 
 	if !in(skat, Card{SPADE, "D"}, Card{SPADE, "9"}) {
+		t.Errorf("Final hand: %v discarded in SKAT: %v", p.hand, skat)
+	}
+}
+
+
+func TestDiscardInSkat_Blank10_2CardsOfASuit(t *testing.T) {
+	cards := []Card{
+		Card{SPADE, "J"}, 
+		Card{CARO, "J"}, 
+
+		Card{HEART, "A"},
+		Card{HEART, "10"},
+		Card{HEART, "K"},
+		Card{HEART, "D"},
+		Card{HEART, "8"},
+
+		Card{CLUBS, "10"},
+		Card{SPADE, "10"}, 
+		Card{SPADE, "9"}, 
+
+		Card{CARO, "8"}, 		
+		Card{CARO, "7"}, 		
+	}
+	skat := []Card{Card{CLUBS, "10"}, Card{SPADE, "10"}}
+	p := makePlayer(cards)
+	p.trumpToDeclare = CLUBS
+	p.discardInSkat(skat)
+
+	if !in(skat, Card{CLUBS, "10"}, Card{SPADE, "10"}) {
 		t.Errorf("Final hand: %v discarded in SKAT: %v", p.hand, skat)
 	}
 }
