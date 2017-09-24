@@ -368,8 +368,13 @@ func (p Player) canWin(afterSkat bool) string {
 // Grand games  2613, ( 26%), Won:  2256 ( 86%)
 // Null games    307, (  3%), Won:   209 ( 68%)
 
+	if largest + aces == 6 && in(cs, Card{CLUBS, "J"}) { // 7
+		debugTacticsLog("Will play %s with %d trumps, CLUBS J and %d As \n", suit, largest, aces)
+		return "SUIT"
+	}
 
-	if largest + aces >= 6 { // 7
+
+	if largest + aces >= 7 { // 7
 		debugTacticsLog("Will play %s with %d trumps and %d As \n", suit, largest, aces)
 		return "SUIT"
 	}
@@ -1530,9 +1535,13 @@ func (p *Player) discardInSkat(skat []Card) {
 	if len(bcards) > 1 {
 		debugTacticsLog("Discarding two blank: %v\n", bcards)
 		p.setHand(remove(p.getHand(), bcards[0]))
+		skat[removed] = bcards[0]
+		removed++
+		if removed == 2 {
+			return
+		}
 		p.setHand(remove(p.getHand(), bcards[1]))
-		skat[0] = bcards[0]
-		skat[1] = bcards[1]
+		skat[removed] = bcards[1]
 		//	fmt.Printf("2nd %v\n", skat)
 		return
 	}
@@ -1552,7 +1561,7 @@ func (p *Player) discardInSkat(skat []Card) {
 		}
 	}
 
-	if foundTwo {
+	if foundTwo && removed == 0 {
 		debugTacticsLog("Found 2 cards of a suit to discard %v\n", suitCards)
 		p.setHand(remove(p.getHand(), suitCards[0]))
 		p.setHand(remove(p.getHand(), suitCards[1]))
@@ -1564,7 +1573,7 @@ func (p *Player) discardInSkat(skat []Card) {
 	if len(bcards) > 0 {
 		debugTacticsLog("Discarding one blank: %v\n", bcards)
 		p.setHand(remove(p.getHand(), bcards[0]))
-		skat[0] = bcards[0]
+		skat[removed] = bcards[0]
 		//	fmt.Printf("1st %v\n", skat)
 		removed++
 	}
