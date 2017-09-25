@@ -259,3 +259,40 @@ func TestInferenceDeclarerPlays_10_onTrick_A_OpenedByOpponents(t *testing.T) {
 	}
 
 }
+
+func TestInference_Declarer_A10_at_Declarer(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.cardsPlayed = []Card{}
+	s.leader = &o1
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&o1, &o2, &d}
+
+	s.trick = []Card{
+		Card{HEART, "K"}, 
+		Card{HEART, "8"}, 
+	}
+
+	card := Card{HEART, "9"} // goes under, he has A but no 10
+
+	analysePlay(&s, s.declarer, card)
+	// if ! in(s.opp1VoidCards, Card{HEART, "A"}) {
+	// 	t.Errorf("Opp1 does not have A")
+	// }
+	// if ! in(s.opp2VoidCards, Card{HEART, "A"}) {
+	// 	t.Errorf("Opp2 does not have A")
+	// }
+	if ! in(s.declarerVoidCards, Card{HEART, "10"}) {
+		t.Errorf("Declarer does not have 10 but A")
+	}
+
+}

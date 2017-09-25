@@ -272,6 +272,27 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 					s.opp2VoidCards = append(s.opp2VoidCards, voidCards...)
 				}
 			}
+		}	
+
+		// TODO
+		// only opp1 can know that if he does not have the 10
+		// inference from a point of view of the player is needed.
+		// TODO
+		// test: TestInference_Declarer_A10_at_Declarer DISABLED
+		condition0 := getSuit(s.trump, s.trick[0]) != s.trump
+		condition1 = s.trick[0].Rank == "K" && getSuit(s.trump, s.trick[1]) == s.follow && players[0].getName() == s.opp1.getName()
+		condition2 =  getSuit(s.trump, card) == s.follow 
+		condition3 :=  s.greater(s.trick[0], s.trick[1]) && s.greater(s.trick[0], card)
+		if condition0 && condition1 && condition2 && condition3 {
+			debugTacticsLog("INFERENCE: **************************************\n")
+			debugTacticsLog("INFERENCE: Partner and Declarer go under         \n")
+			debugTacticsLog("INFERENCE: Partner has 10 and declarer A         \n")
+			debugTacticsLog("INFERENCE: **************************************\n")
+
+			// s.opp1VoidCards = append(s.opp1VoidCards, Card{s.follow, "A"})  // This OR
+			// s.opp2VoidCards = append(s.opp2VoidCards, Card{s.follow, "A"})  // this
+			s.declarerVoidCards = append(s.declarerVoidCards, Card{s.follow, "10"})
+		}
 
 
 
@@ -286,7 +307,7 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 			// 		s.opp2VoidCards = append(s.opp2VoidCards, Card{s.follow, "10"})
 			// 	}
 			// } 
-		}
+		
 
 		condition1 = s.greater(s.trick[0], s.trick[1]) && players[0].getName() == s.declarer.getName()
 		condition2 = s.greater(s.trick[1], s.trick[0]) && players[1].getName() == s.declarer.getName()
