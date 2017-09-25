@@ -1040,6 +1040,87 @@ func TestOpponentTacticMIDPartnerLeadsVoidSuitWinner_SmearNoTrump(t *testing.T) 
 	}
 }
 
+func TestOpponentTacticMIDPartnerLeads_Trump_PlayLowTrump(t *testing.T) {
+	// MIDDLEHAND
+
+	validCards := []Card{
+		Card{HEART, "J"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "8"},
+	}
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer(validCards)
+	s := makeSuitState()
+	s.leader = &teamMate
+	s.declarer = &otherPlayer
+	s.opp1 = &teamMate
+	s.opp2 = &player
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{CARO, "J"}}
+	s.follow = CLUBS
+	s.cardsPlayed = []Card{
+		Card{CLUBS, "D"},		
+		Card{CLUBS, "7"},		
+	}
+	s.trumpsInGame = makeTrumpDeck(CLUBS)
+	s.trumpsInGame = remove(s.trumpsInGame, s.cardsPlayed...)
+
+	//
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CLUBS, "8"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by teammate, and valid %v, expected: %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
+func TestOpponentTacticMIDPartnerLeads_VOID_SUIT(t *testing.T) {
+	// MIDDLEHAND
+
+	validCards := []Card{
+		Card{HEART, "J"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "8"},
+	}
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer(validCards)
+	s := makeSuitState()
+	s.leader = &teamMate
+	s.declarer = &otherPlayer
+	s.opp1 = &teamMate
+	s.opp2 = &player
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{SPADE, "10"}}
+	s.follow = SPADE
+	s.cardsPlayed = []Card{
+		Card{CLUBS, "J"},		
+		Card{SPADE, "J"},		
+		Card{CLUBS, "D"},		
+		Card{CLUBS, "7"},		
+	}
+	s.cardsPlayed = append(s.cardsPlayed, makeSuitDeck(SPADE)...)
+	s.trumpsInGame = makeTrumpDeck(CLUBS)
+	s.trumpsInGame = remove(s.trumpsInGame, s.cardsPlayed...)
+	s.declarerVoidSuit[SPADE] = true
+	//
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "J"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by teammate, and valid %v, expected: %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
 // func TestOpponentTacticFORE_short_long(t *testing.T) {
 // 	// FOREHAND
 

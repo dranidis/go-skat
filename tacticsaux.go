@@ -215,8 +215,8 @@ func HighestShortNotFull(trump string, c []Card) Card {
 	}
 	// last card?
 	if len(c) > 0 {
-		debugTacticsLog("... DEBUG ... VALID: %v no HighestShort. Returning: %v\n", c, c[0])
-		return c[0]		
+		debugTacticsLog("... DEBUG ... VALID: %v no HighestShort. Returning: %v\n", c, c[len(c)-1])
+		return c[len(c)-1]		
 	}
 	debugTacticsLog(".. NO CARDS..")
 	return Card{"",""}

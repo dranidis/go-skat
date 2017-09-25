@@ -295,6 +295,11 @@ func sortValue(cs []Card) []Card {
 	return sortRankSpecial(cs, valueRanks)
 }
 
+func realSortValue(cs []Card) []Card {
+	valueRanks := []string{"A", "10", "K", "D", "J", "9", "8", "7"}
+	return sortRankSpecial(cs, valueRanks)
+}
+
 func sortValueNull(cs []Card) []Card {
 	valueRanks := []string{"7", "8", "9", "10", "J", "D", "K", "A"}
 	return sortRankSpecial(cs, valueRanks)

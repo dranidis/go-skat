@@ -1093,7 +1093,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			if len(followCards(s, s.follow, c)) == 0 {
 				debugTacticsLog("VOID on %s..", s.follow)
 				inPlay := suitCardsInPlay(s, false, p.hand, s.follow)
-				if len(inPlay) > 0 {
+				if len(inPlay) > 0 && !s.getDeclarerVoidSuit()[s.follow] {
 					debugTacticsLog("%s still in play %v..", s.follow, inPlay)
 
 					if s.greater(s.trick[0], inPlay...) && len(sortedValueNoTrumps) > 0 {
@@ -1162,8 +1162,8 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 				return true
 			})
 			// else
-			debugTacticsLog("PLAYED from suite %v", filter(s.cardsPlayed, func(card Card) bool {
-				return card.Suit == s.trick[0].Suit && card.Rank != "J"
+			debugTacticsLog("PLAYED from suite %v..", filter(s.cardsPlayed, func(card Card) bool {
+				return getSuit(s.trump, card) == s.follow // && card.Rank != "J"
 			}))
 			if in(s.cardsPlayed, trickFollowCards...) && sum(s.trick) == 0 {
 				debugTacticsLog("All suit %s played and zero trick. Increase trick value\n", s.trick[0].Suit)
@@ -1173,12 +1173,27 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 					}
 				}
 			}
+
+
+			if s.getDeclarerVoidSuit()[s.follow] {
+				debugTacticsLog("Declarer VOID at: %v..", s.follow)
+
+				if len(sureWinners) > 0 {
+					debugTacticsLog("Playing a sure winner: %v...", sureWinners)
+					return sureWinners[0]
+				}
+
+			}
+
 			debugTacticsLog("PLAY lowest value card\n")
 			if len(sortedValueNoTrumps) > 0 {
 				return sortedValueNoTrumps[len(sortedValueNoTrumps)-1]
 			}
 			// LASt card?
-			return sortValue(c)[0]
+			debugTacticsLog("..LAST CARD??..")
+			// return sortValue(c)[0]
+			cards :=  realSortValue(c)
+			return cards[len(cards)-1]
 		}
 	}
 

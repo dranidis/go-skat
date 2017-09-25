@@ -1,8 +1,6 @@
 # USE MinMax to evaluate bidding
 
 
-# INFERENCE:
-	DO not retract everything.!
 
 # World generation
 	Generate 1000 valid worlds
@@ -42,9 +40,15 @@
 # GRAND vs SUIT after Bidding
 	Prefer a solid SUIT against a mmm GRAND if bid allows it
 
+# HTML
+	Change score back at a replay (or do not cound new score)
 
 -------------------------------------------------------------------------
 # DONE:
+
+
+# INFERENCE:
+	DO not retract everything.!
 
 # DISCARD
 	It is best to discard a doubleton than a singleton and another card.
