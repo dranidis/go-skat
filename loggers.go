@@ -60,8 +60,10 @@ func debugTacticsLog(format string, a ...interface{}) {
 	logToFile(format, a...)
 }
 
+var MINMAX_PREFIX = "MM: "
+
 func debugMinmaxLog(format string, a ...interface{}) {
-	debugTacticsLog("MM: " + format, a...)
+	debugTacticsLog(MINMAX_PREFIX + format, a...)
 }
 
 func createFile(logFileName string) *os.File {

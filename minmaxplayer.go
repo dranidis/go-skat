@@ -88,17 +88,23 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 	start := time.Now()
 	switch MINIMAX_ALG {
 	case "ab":
+		MINMAX_PREFIX = "AB: "
+
 		minimax.MAXDEPTH = 3
 		if len(p.hand) < 8 {
 			minimax.MAXDEPTH = 6
 		}
 		if len(p.hand) < 7 {
-			minimax.MAXDEPTH = 9
+			minimax.MAXDEPTH = 6
 		}
 		if len(p.hand) < 6 {
-			minimax.MAXDEPTH = 9999
+			minimax.MAXDEPTH = 9
 		}	
+		if len(p.hand) < 5 {
+			minimax.MAXDEPTH = 9999
+		}			
 	case "abt":
+		MINMAX_PREFIX = "ABT: "
 		minimax.MAXDEPTH = 6
 		if len(p.hand) < 10 {
 			minimax.MAXDEPTH = 6
@@ -158,6 +164,11 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 		elapsed := t.Sub(start)
 		debugMinmaxLog("Time: %v\n", elapsed)
 
+		for _, card := range c {
+			cardsTotal[card.String()] = cardsTotal[card.String()] / float64(i + 1)			
+		}
+
+
 		mostValue := float64(math.MinInt32)
 		var mostValueCard Card
 		// var bestAvgCard Card
@@ -182,7 +193,7 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 		}
 		if mostValue > float64(math.MinInt32) {
 			debugMinmaxLog("Action values: %v\n", cardsTotal)
-			debugMinmaxLog("(%s) Hand: %v, Playing card: %v with value %f)\n\n", p.name, p.hand, mostValueCard, mostValue)
+			debugMinmaxLog("(%s) Hand: %v, Playing card: %v with value %5.1f)\n\n", p.name, p.hand, mostValueCard, mostValue)
 			debugMinmaxLog("\nTACTICS suggest: %v\n\n", p.Player.playerTactic(s, c))			
 			return mostValueCard
 		}

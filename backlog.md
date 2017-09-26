@@ -1,6 +1,9 @@
-# USE MinMax to evaluate bidding
+# USE MinMax to evaluate declaring after winning the bid
+	Run a Grand game, and suit game below the bid
+	Choose game which gives better chances of winning.
 
-
+# A very interesting game: go build; go install; go-skat -minmax2 -minmax3 -html -r 999 -g 8
+	
 
 # World generation
 	Generate 1000 valid worlds

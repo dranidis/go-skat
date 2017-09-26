@@ -90,7 +90,7 @@ func Connect(usr, pwd string) error {
 			<- waitServer // wait for game end
 			fmt.Println("GAME ENDED")
 			time.Sleep(time.Duration(3000) * time.Millisecond)
-
+			gameIndex++
 		}
 
 		leaveTable()
