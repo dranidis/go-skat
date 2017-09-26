@@ -75,6 +75,12 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 		return p.Player.playerTactic(s, c)
 	}
 
+	card, _ := p.minmaxSuggestion(s, c)
+
+	return card
+}
+
+func (p *MinMaxPlayer) minmaxSuggestion(s *SuitState, c []Card) (Card, float64) {
 	if len(c) > 5 {
 		debugTacticsLog("Valid: %v", c)
 		c = similar(s, c)
@@ -86,42 +92,6 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 	debugMinmaxLog("(%s) %d Worlds, %s\n", p.name, len(worlds), MINIMAX_ALG)
 
 	start := time.Now()
-	switch MINIMAX_ALG {
-	case "ab":
-		MINMAX_PREFIX = "AB: "
-
-		minimax.MAXDEPTH = 3
-		if len(p.hand) < 8 {
-			minimax.MAXDEPTH = 6
-		}
-		if len(p.hand) < 7 {
-			minimax.MAXDEPTH = 6
-		}
-		if len(p.hand) < 6 {
-			minimax.MAXDEPTH = 9
-		}	
-		if len(p.hand) < 5 {
-			minimax.MAXDEPTH = 9999
-		}			
-	case "abt":
-		MINMAX_PREFIX = "ABT: "
-		minimax.MAXDEPTH = 6
-		if len(p.hand) < 10 {
-			minimax.MAXDEPTH = 6
-		}		
-		if len(p.hand) < 9 {
-			minimax.MAXDEPTH = 9
-		}
-		if len(p.hand) < 8 {
-			minimax.MAXDEPTH = 12
-		}
-		if len(p.hand) < 7 {
-			minimax.MAXDEPTH = 15
-		}
-		if len(p.hand) < 6 {
-			minimax.MAXDEPTH = 9999
-		}	
-	}
 	
 
 	if true {
@@ -168,7 +138,6 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 			cardsTotal[card.String()] = cardsTotal[card.String()] / float64(i + 1)			
 		}
 
-
 		mostValue := float64(math.MinInt32)
 		var mostValueCard Card
 		// var bestAvgCard Card
@@ -195,16 +164,52 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 			debugMinmaxLog("Action values: %v\n", cardsTotal)
 			debugMinmaxLog("(%s) Hand: %v, Playing card: %v with value %5.1f)\n\n", p.name, p.hand, mostValueCard, mostValue)
 			debugMinmaxLog("\nTACTICS suggest: %v\n\n", p.Player.playerTactic(s, c))			
-			return mostValueCard
+			return mostValueCard, mostValue
 		}
 		debugMinmaxLog("MINMAX Failed.. back no normal tactics")
 	}
 
 	debugMinmaxLog("(%s) (NORMAL TACTICS)\n", p.name)
-	return p.Player.playerTactic(s, c)
+	return p.Player.playerTactic(s, c), float64(math.MinInt32)
 }
 
 func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
+	switch MINIMAX_ALG {
+	case "ab":
+		MINMAX_PREFIX = "AB: "
+
+		minimax.MAXDEPTH = 3
+		if len(p.hand) < 8 {
+			minimax.MAXDEPTH = 6
+		}
+		if len(p.hand) < 7 {
+			minimax.MAXDEPTH = 6
+		}
+		if len(p.hand) < 6 {
+			minimax.MAXDEPTH = 9
+		}	
+		if len(p.hand) < 5 {
+			minimax.MAXDEPTH = 9999
+		}			
+	case "abt":
+		MINMAX_PREFIX = "ABT: "
+		minimax.MAXDEPTH = 6
+		if len(p.hand) < 10 {
+			minimax.MAXDEPTH = 6
+		}		
+		if len(p.hand) < 9 {
+			minimax.MAXDEPTH = 9
+		}
+		if len(p.hand) < 8 {
+			minimax.MAXDEPTH = 12
+		}
+		if len(p.hand) < 7 {
+			minimax.MAXDEPTH = 15
+		}
+		if len(p.hand) < 6 {
+			minimax.MAXDEPTH = 9999
+		}	
+	}
 	// var player1 PlayerI
 	// var player2 PlayerI
 	// if len(s.trick) == 0 {

@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
+	"time"
 )
 
 type Player struct {
@@ -111,7 +113,7 @@ func (p Player) canWinNull(afterSkat bool) int {
 	debugTacticsLog("Evaluating safe suits\n")
 	removed := 0
 	for _, s := range suits {
-		risk := p.nullSafeSuit(s, p.hand)
+		risk := nullSafeSuit(s, p.hand)
 		switch risk {
 		case 0:
 			safe++
@@ -129,13 +131,13 @@ func (p Player) canWinNull(afterSkat bool) int {
 			})
 			cs = sortRankSpecial(cs, nullRanksRev)
 			maxToRemove := 1
-			for p.nullSafeSuit(s, cs) > 2 && removed < maxToRemove {
+			for nullSafeSuit(s, cs) > 2 && removed < maxToRemove {
 				last := cs[len(cs)-1]
 				cs = remove(cs, last)
 				removed++
 				debugTacticsLog(".. If I discard %v (%d removed)", last, removed)
 			}
-			if p.nullSafeSuit(s, cs) < 3 {
+			if nullSafeSuit(s, cs) < 3 {
 				debugTacticsLog(".. the suit is OK")
 				unplayable--
 				quiterisky++
@@ -164,7 +166,7 @@ func (p Player) nullRisky(s string) bool {
 	return false
 }
 
-func (p Player) nullSafeSuit(s string, cards []Card) int {
+func nullSafeSuit(s string, cards []Card) int {
 	risk := 0
 	safe := 0
 
@@ -1081,8 +1083,18 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 				}
 			}
 			if len(winnerCards(s, c)) == 0 && !noHigherCard(s, false, p.hand, s.trick[0]) {
-				debugTacticsLog("higher cards in play, SMEAR..")
-				return sortValue(c)[0]
+				void := false
+				suit := getSuit(s.trump, s.trick[0])
+				if s.opp1.getName() == p.getName() && s.getOpp2VoidSuit()[suit] {
+					void = true
+				}
+				if s.opp2.getName() == p.getName() && s.getOpp1VoidSuit()[suit] {
+					void = true
+				}
+				if !void {
+					debugTacticsLog("higher cards in play, SMEAR..")
+					return sortValue(c)[0]
+				}
 			}
 			return highestValueWinnerORlowestValueLoser(s, c)
 		} else {
@@ -1355,11 +1367,383 @@ func (p *Player) getGamevalue(suit string) int {
 	return (mat + 1) * trumpBaseValue(suit)
 }
 
+func (p *Player) autoGame(trump string, skat []Card) float64 {
+	// debugTacticsInMM = true			
+
+	var playersOld []PlayerI
+
+	playersOld = players
+
+	copyHand := make([]Card, len(p.getHand()))
+	copy(copyHand, p.getHand())
+	copyHand = remove(copyHand, skat...)
+
+	p1 := makeMinMaxPlayer(copyHand) // COPY???
+	p2 := makePlayer([]Card{})
+	p3 := makePlayer([]Card{})
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	sst := makeSuitState()
+	sst.trump = trump
+	sst.declarer = &p1
+	sst.opp1 = &p2
+	sst.opp2 = &p3
+	sst.skat = skat
+
+	worlds, _ := p1.dealCards(&sst)
+	debugMinmaxLog("%d Worlds, %s\n", len(worlds), MINIMAX_ALG)
+
+	cardsTotal := make(map[string]float64)
+	cards := make(map[string]Card)
+	for _, card := range p1.getHand() {
+		cardsTotal[card.String()] = 0.0	
+		cards[card.String()] = card		
+	}
+
+	position := ""
+	switch p.getName() {
+	case players[0].getName():
+		players = []PlayerI{&p1, &p2, &p3}
+		sst.leader = &p1
+		debugTacticsLog("Player in FORE.\n")
+		position = "FORE"
+	case players[1].getName():
+		players = []PlayerI{&p3, &p1, &p2}
+		sst.leader = &p3
+		debugTacticsLog("Player in MIDDLE. PLAYING a CARD\n")
+		position = "MID"
+	case players[2].getName():
+		players = []PlayerI{&p2, &p3, &p1}
+		sst.leader = &p2
+		debugTacticsLog("Player in BACK. PLAYING two CARDs\n")
+		position = "BACK"
+	default:
+		debugTacticsLog("p.getName(): %v, players: %v\n", p, players)
+		log.Fatal("Something Went Wrong. In autoGame, players do not have names??")
+		}
+
+
+
+	start := time.Now()
+	i := 0 
+	for i = 0; i < len(worlds); i++ {
+		// SET world
+		p2.setHand(worlds[i][0])
+		p3.setHand(worlds[i][1])
+
+		debugTacticsLog("p.getName(): %v, players: %v\n", p, players)
+		sst.trick = []Card{}
+		sst.Inference = makeInference()
+		switch position {
+		case "FORE":
+		case "MID":
+			_ = play(&sst, &p3)
+		case "BACK":
+			_ = play(&sst, &p2)
+			// p3 plays a card
+			sst.follow = getSuit(sst.trump, sst.trick[0])
+			_ = play(&sst, &p3)
+		default:
+			debugTacticsLog("p.getName(): %v, players: %v\n", p, players)
+			log.Fatal("Something Went Wrong. In autoGame, players do not have names??")
+		}
+
+		p1.p1Hand = p2.getHand()
+		p1.p2Hand = p3.getHand()
+		debugTacticsLog("p.getName(): %v, players: %v\n", p, players)
+
+
+		valid := validCards(sst, p1.getHand())
+		debugMinmaxLog("MINMAX: cards %v, %v, SKAT:%v\n",  p2.getHand(),  p3.getHand(), sst.skat)
+		for _, card := range valid {
+			debugMinmaxLog("In hand %v Evaluating card %v\n",  p1.hand, card)
+			value := p1.minmaxSkat(&sst, valid, card)
+			cardsTotal[card.String()] = cardsTotal[card.String()] + value			
+		}
+		t := time.Now()
+		elapsed := t.Sub(start)
+		if elapsed > time.Duration(p1.timeOutMs) * time.Millisecond { // ms
+			debugMinmaxLog("TIMEOUT\n")
+			break
+		}
+	}
+	for _, card := range p1.getHand() {
+		cardsTotal[card.String()] = cardsTotal[card.String()] / float64(i + 1)			
+	}
+	debugMinmaxLog("Action values: %v\n", cardsTotal)
+	mostValue := float64(math.MinInt32)
+	for k, v := range cardsTotal {
+		if v > mostValue {
+			mostValue, _ = v, cards[k]
+		}
+	}
+	// restore players
+	players = playersOld
+	return mostValue
+}
+
+func (pl *Player) cardsToDiscard(trump string) (skat []Card) {
+	p := pl.clone()
+	skat = make([]Card, 2)
+
+	if trump == NULL {
+		hrisk := 0
+		hriskSuit := ""
+		discarded := 0
+		for i := 0; i < 2; i++ {
+			cards := sortValueNull(p.getHand())
+			for _, s := range suits {
+				risk := nullSafeSuit(s, cards)
+				if risk > hrisk {
+					hrisk = risk
+					hriskSuit = s
+				}
+			}
+			if hrisk != 0 {
+				cs := filter(cards, func(c Card) bool {
+					return c.Suit == hriskSuit
+				})
+				card := cs[len(cs)-1]
+				debugTacticsLog("Discarding %v\n", card)
+				skat[discarded] = card
+				p.setHand(remove(p.getHand(), card))
+				discarded++
+			}
+			hrisk = 0
+			hriskSuit = ""
+		}
+		for len(p.getHand()) > 10 {
+			cards := sortValueNull(p.getHand())
+			card := cards[len(cards)-1]
+			debugTacticsLog("Discarding %v\n", card)
+			skat[discarded] = card
+			p.setHand(remove(p.getHand(), card))
+			discarded++
+		}
+		return 
+	}
+
+	removed := 0
+	most := mostCardsSuit(p.getHand())
+
+	if trump == GRAND {
+		debugTacticsLog("..GRAND..")
+
+		tenSuits := []string{}
+		counts := []int{}
+		for _, s := range suits {
+			if in(p.getHand(), Card{s, "A"}) {
+				continue
+			}
+			if in(p.getHand(), Card{s, "10"}) {
+				tenSuits = append(tenSuits, s)
+				count := len(nonTrumpCards(s, p.getHand()))
+				counts = append(counts, count)
+			}
+		}
+		debugTacticsLog("..10s: %v, counts %v..", tenSuits, counts)
+		nTenSuits := []string{}
+		for i := 1; i < 8; i++ {
+			for j, s := range tenSuits {
+				if counts[j] == i {
+					nTenSuits = append(nTenSuits, s)
+				}
+			}
+		}
+		debugTacticsLog("..10s: %v..", nTenSuits)
+
+		for i := 0; removed < 2 && i < len(nTenSuits); removed++ {
+			s := nTenSuits[i]
+			card := Card{s, "10"}
+			debugTacticsLog("REMOVING %v..", card)
+			skat[removed] = card
+			p.setHand(remove(p.getHand(), card))
+			i++
+		}
+
+		losers := sortValue(grandLosers(p.getHand()))
+		debugTacticsLog("..GRAND..losers %v..", losers)
+		for ; removed < 2 && len(losers) > 0 && cardValue(losers[0]) > 0; removed++ {
+			card := losers[0]
+			debugTacticsLog("REMOVING %v..", card)
+			skat[removed] = card
+			p.setHand(remove(p.getHand(), card))
+			losers = remove(losers, card)
+		}
+		bcards := findBlankCards(p.getHand())
+		for ; removed < 2 && len(bcards) > 0; removed++ {
+			card := bcards[0]
+			skat[removed] = card
+			p.setHand(remove(p.getHand(), card))
+			bcards = remove(bcards, card)
+		}
+		if removed == 2 {
+			return
+		}
+	}
+
+	// discard BLANKS
+
+	bcards := findBlankCards(p.getHand())
+	debugTacticsLog("BLANK %v\n", bcards)
+
+	if len(bcards) == 1 && bcards[0].Rank == "10" {
+		debugTacticsLog("Discarding one blank 10: %v\n", bcards)
+		p.setHand(remove(p.getHand(), bcards[0]))
+		skat[removed] = bcards[0]
+		//	fmt.Printf("1st %v\n", skat)
+		removed++
+		bcards = []Card{}
+	}
+
+
+	if len(bcards) > 1 {
+		debugTacticsLog("Discarding two blank: %v\n", bcards)
+		p.setHand(remove(p.getHand(), bcards[0]))
+		skat[removed] = bcards[0]
+		removed++
+		if removed == 2 {
+			return
+		}
+		p.setHand(remove(p.getHand(), bcards[1]))
+		skat[removed] = bcards[1]
+		//	fmt.Printf("2nd %v\n", skat)
+		return
+	}
+
+	foundTwo := false
+	suitCards := []Card{}
+	for _,suit := range suits {
+		if suit == trump {
+			continue
+		}
+		suitCards = filter(p.getHand(), func (c Card) bool {
+			return getSuit(trump, c) == suit
+		})
+		if len(suitCards) == 2 && !in(suitCards, Card{suit, "A"}) {
+			foundTwo = true
+			break
+		}
+	}
+
+	if foundTwo && removed == 0 {
+		debugTacticsLog("Found 2 cards of a suit to discard %v\n", suitCards)
+		p.setHand(remove(p.getHand(), suitCards[0]))
+		p.setHand(remove(p.getHand(), suitCards[1]))
+		skat[0] = suitCards[0]
+		skat[1] = suitCards[1]
+		return
+	}
+
+	if len(bcards) > 0 {
+		debugTacticsLog("Discarding one blank: %v\n", bcards)
+		p.setHand(remove(p.getHand(), bcards[0]))
+		skat[removed] = bcards[0]
+		//	fmt.Printf("1st %v\n", skat)
+		removed++
+	}
+
+
+	// Discard high cards in non-A suits with few colors
+	sranks := []string{"J", "A", "10", "K", "D", "7", "8", "9"}
+
+	lsuit := lessCardsSuitExcept([]string{trump}, p.getHand())
+	debugTacticsLog("..Less cards suit %v..", lsuit)
+	if lsuit != "" {
+		lcards := sortRankSpecial(filter(p.getHand(), func(c Card) bool {
+			return c.Suit == lsuit && c.Rank != "A" && c.Rank != "J"
+		}), sranks)
+		// debugTacticsLog(".. TRUMP to DECLARE [%s]..", p.trumpToDeclare)
+		if lsuit != trump { //len(lcards) < 4 { // do not throw long fleets
+			debugTacticsLog("SUIT %v LESS %v\n", lsuit, lcards)
+
+			if len(lcards) > 1 {
+				i := 0
+				for removed < 2 {
+					p.setHand(remove(p.getHand(), lcards[i]))
+					skat[removed] = lcards[i]
+					i++
+					removed++
+				}
+				return
+			}
+		}
+	}
+
+	// Discard non-A-10 suit cards
+	ncards := nonA10cards(p.getHand())
+	ncards = findBlankCards(ncards)
+	// fmt.Printf("nonA10cards %v\n", ncards)
+
+	if len(ncards) > 1 {
+		i := 0
+		for removed < 2 {
+			p.setHand(remove(p.getHand(), ncards[i]))
+			skat[removed] = ncards[i]
+			i++
+			removed++
+		}
+		return
+	}
+
+	if len(ncards) == 1 {
+		p.setHand(remove(p.getHand(), ncards[0]))
+		skat[removed] = ncards[0]
+		removed++
+
+		if removed == 2 {
+			return
+		}
+	}
+
+
+	cardsTodiscard := filter(sortRank(p.getHand()), func(c Card) bool {
+		return c.Suit != most && c.Rank != "J"
+	})
+	if len(cardsTodiscard) < 2 {
+		debugTacticsLog("ALL TRUMPS (no 2 cards to discard)? %v", p.getHand())
+		cardsTodiscard = sortRank(p.getHand())
+	}
+	debugTacticsLog("HAND %v\n", cardsTodiscard)
+	if removed == 1 {
+		card := cardsTodiscard[len(cardsTodiscard)-1]
+		p.setHand(remove(p.getHand(), card))
+		skat[1] = card
+		return
+	}
+	c1 := cardsTodiscard[len(cardsTodiscard)-1]
+	c2 := cardsTodiscard[len(cardsTodiscard)-2]
+	p.setHand(remove(p.getHand(), c1))
+	p.setHand(remove(p.getHand(), c2))
+	skat[0] = c1
+	skat[1] = c2
+
+	return 
+}
+
 func (p *Player) calculateHighestBid(afterSkat bool) int {
 	p.highestBid = 0
 
 	canWin := p.canWin(afterSkat)
 	debugTacticsLog("Can win: %s\n", canWin)
+
+	if canWin == "GRAND" && afterSkat {
+		debugTacticsLog("SIMULATING GRAND GAME\n")
+		skat := p.cardsToDiscard(GRAND)
+		debugTacticsLog("\nSKAT: %v\n", skat)
+		// try a grand game
+		value := p.autoGame(GRAND, skat)
+		debugTacticsLog("Evaluation of Grand: %v\n", value)
+		fmt.Printf("Evaluation of Grand: %v\n", value)
+		if value < 20 {
+			most := mostCardsSuit(p.getHand())
+			if p.getGamevalue(most) >= p.declaredBid {
+				canWin = "SUIT"
+			}
+		}
+	}
 
 	switch canWin {
 	case "":
@@ -1436,40 +1820,10 @@ func (p *Player) discardInSkat(skat []Card) {
 	debugTacticsLog("New high bid %d\n", newHbid)
 
 	if p.trumpToDeclare == NULL {
-		debugTacticsLog("..discard in Null %d\n", newHbid)
-		hrisk := 0
-		hriskSuit := ""
-		discarded := 0
-		for i := 0; i < 2; i++ {
-			cards := sortValueNull(p.hand)
-			for _, s := range suits {
-				risk := p.nullSafeSuit(s, cards)
-				if risk > hrisk {
-					hrisk = risk
-					hriskSuit = s
-				}
-			}
-			if hrisk != 0 {
-				cs := filter(cards, func(c Card) bool {
-					return c.Suit == hriskSuit
-				})
-				card := cs[len(cs)-1]
-				debugTacticsLog("Discarding %v\n", card)
-				skat[discarded] = card
-				p.hand = remove(p.hand, card)
-				discarded++
-			}
-			hrisk = 0
-			hriskSuit = ""
-		}
-		for len(p.hand) > 10 {
-			cards := sortValueNull(p.hand)
-			card := cards[len(cards)-1]
-			debugTacticsLog("Discarding %v\n", card)
-			skat[discarded] = card
-			p.hand = remove(p.hand, card)
-			discarded++
-		}
+		ctd := p.cardsToDiscard(NULL)
+		skat[0] = ctd[0]
+		skat[1] = ctd[1]
+		p.hand = remove(p.hand, skat...)
 		return
 	}
 
@@ -1485,198 +1839,12 @@ func (p *Player) discardInSkat(skat []Card) {
 		}
 	}
 
-	removed := 0
-
-	if p.trumpToDeclare == GRAND {
-		debugTacticsLog("..GRAND..")
-
-		tenSuits := []string{}
-		counts := []int{}
-		for _, s := range suits {
-			if in(p.hand, Card{s, "A"}) {
-				continue
-			}
-			if in(p.hand, Card{s, "10"}) {
-				tenSuits = append(tenSuits, s)
-				count := len(nonTrumpCards(s, p.hand))
-				counts = append(counts, count)
-			}
-		}
-		debugTacticsLog("..10s: %v, counts %v..", tenSuits, counts)
-		nTenSuits := []string{}
-		for i := 1; i < 8; i++ {
-			for j, s := range tenSuits {
-				if counts[j] == i {
-					nTenSuits = append(nTenSuits, s)
-				}
-			}
-		}
-		debugTacticsLog("..10s: %v..", nTenSuits)
-
-		for i := 0; removed < 2 && i < len(nTenSuits); removed++ {
-			s := nTenSuits[i]
-			card := Card{s, "10"}
-			debugTacticsLog("REMOVING %v..", card)
-			skat[removed] = card
-			p.hand = remove(p.hand, card)
-			i++
-		}
-
-		losers := sortValue(grandLosers(p.hand))
-		debugTacticsLog("..GRAND..losers %v..", losers)
-		for ; removed < 2 && len(losers) > 0 && cardValue(losers[0]) > 0; removed++ {
-			card := losers[0]
-			debugTacticsLog("REMOVING %v..", card)
-			skat[removed] = card
-			p.hand = remove(p.hand, card)
-			losers = remove(losers, card)
-		}
-		bcards := findBlankCards(p.getHand())
-		for ; removed < 2 && len(bcards) > 0; removed++ {
-			card := bcards[0]
-			skat[removed] = card
-			p.hand = remove(p.hand, card)
-			bcards = remove(bcards, card)
-		}
-		if removed == 2 {
-			return
-		}
-	}
-
-	// discard BLANKS
-
-	bcards := findBlankCards(p.getHand())
-	debugTacticsLog("BLANK %v\n", bcards)
-
-	if len(bcards) == 1 && bcards[0].Rank == "10" {
-		debugTacticsLog("Discarding one blank 10: %v\n", bcards)
-		p.setHand(remove(p.getHand(), bcards[0]))
-		skat[removed] = bcards[0]
-		//	fmt.Printf("1st %v\n", skat)
-		removed++
-		bcards = []Card{}
-	}
-
-
-	if len(bcards) > 1 {
-		debugTacticsLog("Discarding two blank: %v\n", bcards)
-		p.setHand(remove(p.getHand(), bcards[0]))
-		skat[removed] = bcards[0]
-		removed++
-		if removed == 2 {
-			return
-		}
-		p.setHand(remove(p.getHand(), bcards[1]))
-		skat[removed] = bcards[1]
-		//	fmt.Printf("2nd %v\n", skat)
-		return
-	}
-
-	foundTwo := false
-	suitCards := []Card{}
-	for _,suit := range suits {
-		if suit == p.trumpToDeclare {
-			continue
-		}
-		suitCards = filter(p.getHand(), func (c Card) bool {
-			return getSuit(p.trumpToDeclare, c) == suit
-		})
-		if len(suitCards) == 2 && !in(suitCards, Card{suit, "A"}) {
-			foundTwo = true
-			break
-		}
-	}
-
-	if foundTwo && removed == 0 {
-		debugTacticsLog("Found 2 cards of a suit to discard %v\n", suitCards)
-		p.setHand(remove(p.getHand(), suitCards[0]))
-		p.setHand(remove(p.getHand(), suitCards[1]))
-		skat[0] = suitCards[0]
-		skat[1] = suitCards[1]
-		return
-	}
-
-	if len(bcards) > 0 {
-		debugTacticsLog("Discarding one blank: %v\n", bcards)
-		p.setHand(remove(p.getHand(), bcards[0]))
-		skat[removed] = bcards[0]
-		//	fmt.Printf("1st %v\n", skat)
-		removed++
-	}
-
-
-	// Discard high cards in non-A suits with few colors
-	sranks := []string{"J", "A", "10", "K", "D", "7", "8", "9"}
-
-	lsuit := lessCardsSuitExcept([]string{p.trumpToDeclare}, p.getHand())
-	debugTacticsLog("..Less cards suit %v..", lsuit)
-	if lsuit != "" {
-		lcards := sortRankSpecial(filter(p.getHand(), func(c Card) bool {
-			return c.Suit == lsuit && c.Rank != "A" && c.Rank != "J"
-		}), sranks)
-		// debugTacticsLog(".. TRUMP to DECLARE [%s]..", p.trumpToDeclare)
-		if lsuit != p.trumpToDeclare { //len(lcards) < 4 { // do not throw long fleets
-			debugTacticsLog("SUIT %v LESS %v\n", lsuit, lcards)
-
-			if len(lcards) > 1 {
-				i := 0
-				for removed < 2 {
-					p.setHand(remove(p.getHand(), lcards[i]))
-					skat[removed] = lcards[i]
-					i++
-					removed++
-				}
-				return
-			}
-		}
-	}
-
-	// Discard non-A-10 suit cards
-	ncards := nonA10cards(p.getHand())
-	ncards = findBlankCards(ncards)
-	// fmt.Printf("nonA10cards %v\n", ncards)
-
-	if len(ncards) > 1 {
-		i := 0
-		for removed < 2 {
-			p.setHand(remove(p.getHand(), ncards[i]))
-			skat[removed] = ncards[i]
-			i++
-			removed++
-		}
-		return
-	}
-
-	if len(ncards) == 1 {
-		p.setHand(remove(p.getHand(), ncards[0]))
-		skat[removed] = ncards[0]
-		removed++
-
-		if removed == 2 {
-			return
-		}
-	}
-
-	cardsTodiscard := filter(sortRank(p.hand), func(c Card) bool {
-		return c.Suit != most && c.Rank != "J"
-	})
-	if len(cardsTodiscard) < 2 {
-		debugTacticsLog("ALL TRUMPS (no 2 cards to discard)? %v", p.hand)
-		cardsTodiscard = sortRank(p.hand)
-	}
-	debugTacticsLog("HAND %v\n", cardsTodiscard)
-	if removed == 1 {
-		card := cardsTodiscard[len(cardsTodiscard)-1]
-		p.setHand(remove(p.getHand(), card))
-		skat[1] = card
-		return
-	}
-	c1 := cardsTodiscard[len(cardsTodiscard)-1]
-	c2 := cardsTodiscard[len(cardsTodiscard)-2]
-	p.setHand(remove(p.getHand(), c1))
-	p.setHand(remove(p.getHand(), c2))
-	skat[0] = c1
-	skat[1] = c2
+	ctd := p.cardsToDiscard(p.trumpToDeclare)
+	skat[0] = ctd[0]
+	skat[1] = ctd[1]	
+	debugTacticsLog("\nSKAT: %v\n", skat)
+	p.hand = remove(p.hand, skat...)
+	return
 }
 
 func (p *Player) pickUpSkat(skat []Card) bool {

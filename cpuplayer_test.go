@@ -139,6 +139,48 @@ func TestPickUpSkat2(t *testing.T) {
 	}
 }
 
+func TestPickUpSkatGRAND_CHANGEDTOSUIT(t *testing.T) {
+	player := makePlayer([]Card{
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+
+		Card{CLUBS, "A"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "K"},
+		Card{CLUBS, "D"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "8"},
+
+		Card{SPADE, "9"},
+		Card{SPADE, "8"},
+
+	})
+
+	skat := []Card{
+		Card{HEART, "8"},
+		Card{CLUBS, "7"},
+	}
+
+	p2 := makePlayer([]Card{})
+	p3 := makePlayer([]Card{})
+	players = []PlayerI{&player, &p2, &p3}
+
+	player.declaredBid = 18
+	player.trumpToDeclare = GRAND
+	// fmt.Println("TestPickUpSkat2")
+	// fmt.Println(player.hand)
+	// fmt.Println(skat)
+	player.pickUpSkat(skat)
+	// fmt.Println(sort(player.hand))
+	// fmt.Println(skat)
+	// cc1 := skat[0].Suit != CARO || skat[0].Rank != "8"
+	// cc2 := skat[1].Suit != SPADE || skat[1].Rank != "8"
+
+	if player.trumpToDeclare != SPADE {
+		t.Errorf("Expected SPADE declaration, found: %s", player.trumpToDeclare)
+	}
+}
+
 func TestPickUpSkatAndDeclareNew(t *testing.T) {
 	player := makePlayer([]Card{
 		Card{CARO, "J"},
@@ -385,6 +427,12 @@ func TestPickUpSkat7(t *testing.T) {
 		Card{HEART, "A"},
 		Card{SPADE, "A"},
 	}
+
+	p2 := makePlayer([]Card{})
+	p3 := makePlayer([]Card{})
+	players = []PlayerI{&player, &p2, &p3}
+
+
 	// fmt.Println("TestPickUpSkat7")
 	// fmt.Println(player.hand)
 	// fmt.Println(skat)
@@ -798,6 +846,41 @@ func TestOpponentTacticMIDPlayerLeadsLosingCard_Smear1(t *testing.T) {
 	exp := Card{CARO, "10"}
 	if !card.equals(exp) {
 		t.Errorf("In trick %v, with cards played %v and valid %v, expected to smear %v, played %v",
+			s.trick, s.cardsPlayed, validCards, exp, card)
+	}
+}
+
+func TestOpponentTacticMIDPlayerLeadsLosingCard_Donot_Smear_if_partner_void(t *testing.T) {
+	// MIDDLEHAND
+
+	// if declarer leads a losing card (there are higher cards in game), SMEAR
+
+	validCards := []Card{
+		Card{HEART, "D"},
+		Card{HEART, "K"},
+		Card{HEART, "9"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{CARO, "8"},
+	}
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer(validCards)
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{SPADE, "7"}}
+	s.opp2VoidSuit[SPADE] = true
+
+	//
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "9"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v, with cards played %v and valid %v, not expected to smear %v (partner void), played %v",
 			s.trick, s.cardsPlayed, validCards, exp, card)
 	}
 }

@@ -467,6 +467,15 @@ func grandSuitLosers(cs []Card) []Card {
 				cs = remove(cs, Card{s, "K"})
 				if in(cs, Card{s, "D"}) {
 					cs = remove(cs, Card{s, "D"})
+					if in(cs, Card{s, "9"}) {
+						cs = remove(cs, Card{s, "9"})
+						if in(cs, Card{s, "8"}) {
+							cs = remove(cs, Card{s, "8"})
+								if in(cs, Card{s, "7"}) {
+									cs = remove(cs, Card{s, "7"})
+								}
+						}
+					}
 				}
 				return cs
 			}
