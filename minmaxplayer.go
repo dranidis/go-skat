@@ -61,6 +61,8 @@ func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 
 	// minimax.DEBUG = true
+	c = equivalent(s, c)
+	debugTacticsLog("Equivalent: %v\n", c)
 
 	if len(c) == 1 {
 		debugMinmaxLog("..FORCED MOVE.. \n")

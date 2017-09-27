@@ -1,3 +1,6 @@
+# MM (not ab) is taking too long!
+	TIMEOUT
+
 # 	Equivalent cards
 	When player holds two equivalent cards in the hand like 78 or 89 they should always be evaluated together
 

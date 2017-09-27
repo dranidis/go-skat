@@ -264,6 +264,88 @@ func similar(s *SuitState, cards []Card) []Card {
 	return sim
 }
 
+// func equivalent(s *SuitState, cards []Card) []Card {
+// 	eqCards := []Card{}
+// 	for _, c := range cards {
+// 		if cardValue(c) > 2 {
+// 			eqCards = append(eqCards, c)
+// 		}
+// 	}
+// 	for _, s := range suits {
+// 		if in(cards, Card{s, "9"}) {
+// 			eqCards = append(eqCards, Card{s, "9"})
+// 			if !in(cards, Card{s, "8"}) && in(cards, Card{s, "7"}) {
+// 				eqCards = append(eqCards, Card{s, "7"})
+// 			}
+// 		} else if in(cards, Card{s, "8"}) {
+// 			eqCards = append(eqCards, Card{s, "8"})
+// 		} else if in(cards, Card{s, "7"}) {
+// 			eqCards = append(eqCards, Card{s, "8"})
+// 		}
+// 	}
+
+// 	if in(cards, Card{CLUBS, "J"}) {
+// 		eqCards = append(eqCards, Card{CLUBS, "J"})
+// 		if !in(cards, Card{SPADE, "J"}) && in(cards, Card{HEART, "J"}) {
+// 			eqCards = append(eqCards, Card{HEART, "J"})
+// 		}
+// 	} else if in(cards, Card{SPADE, "J"}) {
+// 		eqCards = append(eqCards, Card{SPADE, "J"})
+// 		if !in(cards, Card{HEART, "J"}) && in(cards, Card{CARO, "J"}) {
+// 			eqCards = append(eqCards, Card{CARO, "J"})
+// 		}
+// 	} else if in(cards, Card{HEART, "J"}) {
+// 		eqCards = append(eqCards, Card{HEART, "J"})
+// 	} else if in(cards, Card{CARO, "J"}) {
+// 		eqCards = append(eqCards, Card{CARO, "J"})
+// 	} 		
+// 	return eqCards
+// }
+
+func equivalent(s *SuitState, cards []Card) []Card {
+	eqCards := []Card{}
+	for _, c := range cards {
+		if cardValue(c) > 2 {
+			eqCards = append(eqCards, c)
+		}
+	}
+
+	suits := []string{"CARO", "HEART", "SPADE", "CLUBS"}
+	ins := true
+	for _, suit := range suits {
+		card := Card{suit, "J"}
+		if in(cards, card) && ins {
+			eqCards = append(eqCards, card)
+			ins = false
+		} else if !in(cards, card) {
+			if ! in(s.cardsPlayed, card) {
+				ins = true
+			} else if in(s.trick, card) {
+				ins = true
+			}
+		}
+	}
+	ranks := []string{"9", "8", "7"}
+
+	for _, suit := range suits {
+		ins = true
+		for _, r := range ranks {
+			card := Card{suit, r}
+			if in(cards, card) && ins {
+				eqCards = append(eqCards, card)
+				ins = false
+			} else if !in(cards, card) {
+				if ! in(s.cardsPlayed, card) {
+					ins = true
+				} else if in(s.trick, card) {
+					ins = true
+				}
+			}
+		}
+	}
+	return eqCards
+}
+
 func nextCard(trump string, c Card) Card {
 	if c.equals(Card{CLUBS, "J"}) {
 		return Card{SPADE, "J"}

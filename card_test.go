@@ -275,3 +275,59 @@ func TestSimilar4(t *testing.T) {
 		t.Errorf("Wrong similar cards %v", equiv)
 	}
 }
+
+func TestEquivalent(t *testing.T) {
+	cards := []Card{
+		Card{CLUBS, "J"},
+		Card{HEART, "J"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "K"},
+		Card{CLUBS, "9"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "7"},
+	}
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.cardsPlayed = []Card{}
+	s.trick = []Card{}
+
+	equiv := equivalent(&s, cards)
+
+	if len(equiv) != 5 {
+		t.Errorf("Wrong equivalent cards %v", equiv)
+	}
+	if !in(equiv, Card{CLUBS, "J"}, Card{HEART, "J"}) {
+		t.Errorf("Wrong equivalent cards %v", equiv)
+	}
+	if in(equiv, Card{CLUBS, "9"}, Card{CLUBS, "8"})  {
+		t.Errorf("Wrong equivalent cards %v", equiv)
+	}
+	if in(equiv, Card{CLUBS, "9"}, Card{CLUBS, "7"})  {
+		t.Errorf("Wrong equivalent cards %v", equiv)
+	}
+	if in(equiv, Card{CLUBS, "8"}, Card{CLUBS, "7"})  {
+		t.Errorf("Wrong equivalent cards %v", equiv)
+	}
+
+	s.cardsPlayed = []Card{Card{SPADE, "J"}}
+	equiv = equivalent(&s, cards)
+
+	if len(equiv) != 4 {
+		t.Errorf("Wrong equivalent cards %v", equiv)
+	}
+	if in(equiv, Card{CLUBS, "J"}, Card{HEART, "J"}) {
+		t.Errorf("Wrong equivalent cards %v", equiv)
+	}
+
+	s.cardsPlayed = []Card{Card{SPADE, "J"}}
+	s.trick = []Card{Card{SPADE, "J"}}
+	equiv = equivalent(&s, cards)
+
+	if len(equiv) != 5 {
+		t.Errorf("Wrong equivalent cards %v", equiv)
+	}
+
+	debugTacticsLog("Equivalent: %v, %v\n", cards, equiv)
+
+}
