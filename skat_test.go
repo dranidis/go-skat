@@ -776,26 +776,26 @@ func TestFindBlankCards(t *testing.T) {
 	}
 }
 
-func TestGame(t *testing.T) {
-	// player1 is declared globally
-	player := makePlayer([]Card{})
-	player1 := &player
+// func TestGame(t *testing.T) {
+// 	// player1 is declared globally
+// 	player := makePlayer([]Card{})
+// 	player1 := &player
 
-	player2 := makePlayer([]Card{})
-	player3 := makePlayer([]Card{})
-	player3.firstCardPlay = true
-	player1.setName("NAME")
-	if player1.getName() != "NAME" {
-		t.Errorf("Error in set/get name")
-	}
-	if player1.getTotalScore() != 0 {
-		t.Errorf("Error in get total score")
-	}
-	gamePlayers = []PlayerI{player1, &player2, &player3}
-	for i := 0; i < 20; i++ {
-		_ = skatGame()
-	}
-}
+// 	player2 := makePlayer([]Card{})
+// 	player3 := makePlayer([]Card{})
+// 	player3.firstCardPlay = true
+// 	player1.setName("NAME")
+// 	if player1.getName() != "NAME" {
+// 		t.Errorf("Error in set/get name")
+// 	}
+// 	if player1.getTotalScore() != 0 {
+// 		t.Errorf("Error in get total score")
+// 	}
+// 	gamePlayers = []PlayerI{player1, &player2, &player3}
+// 	for i := 0; i < 20; i++ {
+// 		_ = skatGame()
+// 	}
+// }
 
 func TestGame2(t *testing.T) {
 	// player1 is declared globally

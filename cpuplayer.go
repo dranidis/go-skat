@@ -1045,10 +1045,32 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 					candidates = append(candidates, candidate)
 				}
 			}
-			debugTacticsLog("Candidates %v, returning last..", candidates)
-			if len(candidates) > 0 {
-				card = candidates[len(candidates)-1]
+			foundKD := false
+			for _, c := range candidates {
+				if c.Rank == "K" {
+					debugTacticsLog("Candidates %v, Found: %v..", candidates, c)
+					card = c
+					foundKD = true
+					break
+				}
 			}
+			if !foundKD {
+				for _, c := range candidates {
+					if c.Rank == "D" {
+						debugTacticsLog("Candidates %v, Found: %v..", candidates, c)
+						card = c
+						foundKD = true
+						break
+					}
+				}
+			} 
+			if !foundKD {
+				debugTacticsLog("Candidates %v, returning last..", candidates)
+				if len(candidates) > 0 {
+					card = candidates[len(candidates)-1]
+				}			
+			}
+
 			// slightly increases win percentages
 			// although goes against some of the test
 			// that were disabled:
