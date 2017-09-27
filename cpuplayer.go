@@ -1420,8 +1420,8 @@ func (p *Player) autoGame(trump string, skat []Card) float64 {
 		debugTacticsLog("Player in BACK. PLAYING two CARDs\n")
 		position = "BACK"
 	default:
-		debugTacticsLog("p.getName(): %v, players: %v\n", p, players)
-		log.Fatal("Something Went Wrong. In autoGame, players do not have names??")
+		debugTacticsLog("Something Went Wrong. In autoGame, players do not have names??np.getName(): %v, players: %v\n", p, players)
+		// log.Fatal("Something Went Wrong. In autoGame, players do not have names??")
 		}
 
 

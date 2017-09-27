@@ -1,3 +1,6 @@
+# 	Equivalent cards
+	When player holds two equivalent cards in the hand like 78 or 89 they should always be evaluated together
+
 # USE MinMax to evaluate declaring after winning the bid
 	Run a Grand game, and suit game below the bid
 	Choose game which gives better chances of winning.
