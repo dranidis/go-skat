@@ -1045,26 +1045,44 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 					candidates = append(candidates, candidate)
 				}
 			}
-			foundKD := false
+			foundKDX := false
 			for _, c := range candidates {
 				if c.Rank == "K" {
 					debugTacticsLog("Candidates %v, Found: %v..", candidates, c)
 					card = c
-					foundKD = true
+					foundKDX = true
 					break
 				}
 			}
-			if !foundKD {
+			if !foundKDX {
 				for _, c := range candidates {
 					if c.Rank == "D" {
 						debugTacticsLog("Candidates %v, Found: %v..", candidates, c)
 						card = c
-						foundKD = true
+						foundKDX = true
 						break
 					}
 				}
 			} 
-			if !foundKD {
+			if !foundKDX {
+				for _, suit := range suits {
+					if suit == s.trump {
+						continue
+					}
+					if in(c, Card{suit, "A"}) {
+						suitCards := realSortValue(filter(c, func(crd Card) bool {
+							return getSuit(s.trump, crd) == suit
+							}))
+						min := suitCards[len(suitCards) - 1]
+						if cardValue(min) == 0 {
+							card = min
+							foundKDX = true
+						}
+
+					}
+				}
+			}
+			if !foundKDX {
 				debugTacticsLog("Candidates %v, returning last..", candidates)
 				if len(candidates) > 0 {
 					card = candidates[len(candidates)-1]
