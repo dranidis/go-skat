@@ -539,6 +539,77 @@ func TestOpponentTacticFOREFollowPreviousSuit5(t *testing.T) {
 	}
 }
 
+func TestOpponentTacticMID_PartnerLeads_Figure_or_Number(t *testing.T) {
+
+	// When the partner leads a figure it means that he does not have the A
+	// play a number 
+	// When the partner leads a number it means that he does have the A
+	// so play the 10
+	// unless you have 3 cards: 7 D 10
+	// in that case play the D
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.follow = CARO
+
+	validCards := []Card{Card{CARO, "10"}, Card{CARO, "8"}}
+
+	s.trick = []Card{Card{CARO, "D"}}
+
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+
+	s.cardsPlayed = s.trick
+	s.trumpsInGame = makeTrumpDeck(s.trump)
+
+	s.leader = &teamMate
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "8"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by opponent, valid %v, expected to play %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+
+	s.trick = []Card{Card{CARO, "7"}}
+	s.cardsPlayed = s.trick
+
+	card = player.playerTactic(&s, validCards)
+
+	exp = Card{CARO, "10"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by opponent, and valid cards: %v expected to play %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+
+	validCards = []Card{Card{CARO, "10"}, Card{CARO, "D"}, Card{CARO, "8"}}
+
+	s.trick = []Card{Card{CARO, "K"}}
+	s.cardsPlayed = s.trick
+
+	card = player.playerTactic(&s, validCards)
+
+	exp = Card{CARO, "8"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by opponent, and valid cards: %v expected to play %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+
+	s.trick = []Card{Card{CARO, "7"}}
+	s.cardsPlayed = s.trick
+
+	card = player.playerTactic(&s, validCards)
+
+	exp = Card{CARO, "D"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v by opponent, and valid cards: %v expected to play %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
 func TestOpponentTacticMIDTrump1(t *testing.T) {
 
 	// if player has J caro and A trump and is required to play a trump
