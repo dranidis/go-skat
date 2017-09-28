@@ -797,6 +797,44 @@ func TestOpponentTacticMIDPlayerLeadsLosingCard_Donot_Smear_if_partner_void(t *t
 	}
 }
 
+func TestOpponentTacticMIDPlayerLeadsLosingTRUMP_Donot_Smear_if_partner_void(t *testing.T) {
+	// MIDDLEHAND
+
+	// if declarer leads a losing card (there are higher cards in game), SMEAR
+
+	validCards := []Card{
+		Card{HEART, "D"},
+		Card{HEART, "K"},
+		Card{HEART, "9"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+		Card{CARO, "8"},
+	}
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer(validCards)
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+
+	s.trump = CLUBS
+	s.follow = CLUBS
+	s.trick = []Card{Card{CLUBS, "7"}}
+	s.opp2VoidSuit[CLUBS] = true
+	s.trumpsInGame = makeTrumpDeck(CLUBS)
+
+	//
+	card := player.playerTactic(&s, validCards)
+	debugTacticsLog("Played: %v\n", card)
+	notexp := Card{CARO, "10"}
+	if card.equals(notexp) {
+		t.Errorf("In trick %v, with cards played %v and valid %v, not expected to smear %v (partner void), played %v",
+			s.trick, s.cardsPlayed, validCards, notexp, card)
+	}
+}
+
 func TestOpponentTacticMIDTrump7(t *testing.T) {
 	// MIDDLEHAND
 

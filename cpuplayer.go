@@ -1118,8 +1118,18 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 				if len(filter(p.otherPlayersTrumps(s), func(c Card) bool {
 					return s.greater(c, s.trick[0])
 				})) > 0 {
-					debugTacticsLog("TRUMP. There are higher trumps, SMEAR..")
-					return sortValue(c)[0]
+					void := false
+					suit := getSuit(s.trump, s.trick[0])
+					if s.opp1.getName() == p.getName() && s.getOpp2VoidSuit()[suit] {
+						void = true
+					}
+					if s.opp2.getName() == p.getName() && s.getOpp1VoidSuit()[suit] {
+						void = true
+					}
+					if !void {
+						debugTacticsLog("TRUMP. There are higher trumps, SMEAR..")
+						return sortValue(c)[0]
+					}
 				}
 			}
 			if len(winnerCards(s, c)) == 0 && !noHigherCard(s, false, p.hand, s.trick[0]) {
