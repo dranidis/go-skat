@@ -59,6 +59,14 @@ func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 }
 
 func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
+	if s.trump == NULL {
+		debugTacticsLog("CURRENTLY PLAYING NULL with tactics!!!!\n")
+		return p.Player.playerTactic(s, c)
+	}
+	if p.getName() != s.declarer.getName() {
+		debugTacticsLog("CURRENTLY PLAYING MINMAX only for declarer!!!!\n")
+		return p.Player.playerTactic(s, c)
+	}
 
 	// minimax.DEBUG = true
 	c = equivalent(s, c)
@@ -68,17 +76,8 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 		debugMinmaxLog("..FORCED MOVE.. \n")
 		return c[0]
 	}
-	if s.trump == NULL {
-		return p.Player.playerTactic(s, c)
-	}
-
-	if p.getName() != s.declarer.getName() {
-		debugTacticsLog("CURRENTLY PLAYING MINMAX only for declarer!!!!\n")
-		return p.Player.playerTactic(s, c)
-	}
 
 	card, _ := p.minmaxSuggestion(s, c)
-
 	return card
 }
 

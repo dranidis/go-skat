@@ -1362,6 +1362,52 @@ func TestOpponentTacticFORE_Protect_the_10_of_the_Partner_2(t *testing.T) {
 	}
 }
 
+func TestOpponentTacticFORE_Protect_the_10_of_the_Partner_3(t *testing.T) {
+	// FOREHAND
+	// if declarer BACK short
+	// never 2 numbers, or D number suit
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &otherPlayer
+
+	s.trump = SPADE
+	s.trick = []Card{}
+	_ = teamMate
+
+	validCards := []Card{
+		Card{SPADE, "D"},
+
+		Card{CLUBS, "D"}, // not so good
+		Card{CLUBS, "7"},
+
+		Card{HEART, "K"}, // too long
+		Card{HEART, "9"}, // 
+		Card{HEART, "8"},
+		Card{HEART, "7"}, // 
+
+		Card{CARO, "K"}, // good choice
+		Card{CARO, "8"},
+	}
+
+	// declarer BACK
+	s.opp1 = &player
+	s.opp2 = &teamMate
+	s.trumpsInGame = makeTrumpDeck(SPADE)
+	teamMate.previousSuit = ""
+	player.previousSuit = ""
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "K"} 
+	debugTacticsLog("PLayed: %v\n", card)
+	if !card.equals(exp) {
+		t.Errorf("FOREHAND, DECLARER BACK, expected: %v, played %v",
+			exp, card)
+	}
+}
+
 // func TestOpponentTacticFORE_short_TOD_SUENDE_1_1(t *testing.T) {
 // 	// FOREHAND
 
