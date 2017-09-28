@@ -52,6 +52,19 @@
 # HTML
 	Change score back at a replay (or do not cound new score)
 
+
+# Game Lost?
+	HAND: gs: CJ, HJ, CA, C10, C9, C7, 		HA, H7,		DK, DD
+	x1 	gs 	x2 	x1 	gs
+MH:	SA 	CA 	S9 			22-0
+FH:		HA 	H9 	H8 		33-0  (An A is wasted. Opponents throw off. Play a trump instead!)
+FH: 	HJ 	CD 	CJ 		33-7	(All evaluations are already negative!)
+MH: S10 C10 DJ 			33-29	(lost a full trump)
+BH: 		DA 	D8 	DD 	33-56
+BH: 		D10 C8 	DK 	33-70  (LOST)
+
+ table .5 goskat end (;GM[Skat]PC[International Skat Server]CO[]SE[252902]ID[4947663]DT[2017-09-28/12:14:02/UTC]P0[xskat]P1[goskat]P2[bernie]R0[]R1[0.0]R2[]MV[w HQ.CJ.ST.HK.D8.S7.SQ.H8.SA.C8.SJ.HJ.CA.S8.HA.DK.H7.CT.C7.C9.DA.D7.CK.HT.DJ.S9.CQ.DT.D9.H9.SK.DQ 1 18 0 p 2 p 1 s w SK.DQ 1 C.S8.SK 0 SA 1 CA 2 S9 1 HA 2 H9 0 H8 1 HJ 2 CQ 0 CJ 0 ST 1 CT 2 DJ 2 HT 0 HQ 1 H7 2 DA 0 D8 1 DQ 2 DT 0 C8 1 DK 0 HK 1 SJ 2 D9 1 C9 2 CK 0 SQ 2 D7 0 S7 1 C7 ]R[d:1 loss v:-48 m:-1 bidok p:43 t:4 s:0 z:0 p0:0 p1:0 p2:0 l:-1 to:-1 r:0] ;)
+
 -------------------------------------------------------------------------
 # DONE:
 
