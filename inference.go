@@ -211,7 +211,7 @@ func (s *SuitState) detractBeliefs(opp string, cards []Card) {
 
 func analysePlay(s *SuitState, p PlayerI, card Card) {
 
-	if p.getName() == s.opp1.getName() {
+	if p.getName() == s.opp1.getName() && opponentIsLosingTrick(s, p, card, true){
 		if noHigherCard(s, true, s.declarer.getHand(), card) {
 			debugTacticsLog("TRICK: %v, Card: %v\n", s.trick, card)
 			debugTacticsLog("INFERENCE: ***************DECLARER***************\n")
@@ -243,7 +243,7 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 	if p.getName() != s.declarer.getName() {
 		if s.follow == s.trump {
 			if getSuit(s.trump, card) == s.trump && (card.Rank == "A" || card.Rank == "10") {
-				if isLosingTrick(s, p, card) {
+				if opponentIsLosingTrick(s, p, card, false) {
 					// TODO:
 					debugTacticsLog("INFERENCE: **************************************\n")
 					debugTacticsLog("INFERENCE: Playing a full Trump on a losing trick\n")
@@ -362,14 +362,42 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 	}
 }
 
-func isLosingTrick(s *SuitState, p PlayerI, card Card) bool {
+// func opponentIsLosingTrick(s *SuitState, p PlayerI, card Card, lookSkat bool) bool {
+// 	dIndex := 0
+// 	for dIndex, _ = range players {
+// 		if players[dIndex].getName() == s.declarer.getName() {
+// 			break
+// 		}
+// 	}
+// 	if dIndex >= len(s.trick) {
+// 		return false
+// 	}
+// 	for _, c := range s.trick {
+// 		if !s.greater(c, s.trick[dIndex]) {
+// 			return false
+// 		}
+// 	}
+// 	return true 
+// }
+
+func opponentIsLosingTrick(s *SuitState, p PlayerI, card Card, lookSkat bool) bool {
+	dIndex := 0
+	for dIndex, _ = range players {
+		if players[dIndex].getName() == s.declarer.getName() {
+			break
+		}
+	}
 	for i, c := range s.trick {
 		if s.greater(c, card) && players[i].getName() == s.declarer.getName() {
 			if len(s.trick) == 1 && noHigherCard(s, false, p.getHand(), c) {
 				return true
 			}
 			if len(s.trick) == 2 {
-				if !s.greater(s.trick[1], s.trick[0]) {
+				other := 0
+				if dIndex == 0 {
+					other = 1
+				}
+				if s.greater(s.trick[dIndex], s.trick[other]) {
 					return true
 				}
 			}
