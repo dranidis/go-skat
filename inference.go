@@ -181,6 +181,7 @@ func (s *SuitState) detractBeliefs(opp string, cards []Card) {
 		for _, suit := range suits {
 			if getSuit(suit) > 0 {
 				s.opp1VoidSuitB[suit] = false
+				s.declarer.getInference().opp1VoidSuitB[suit] = false
 			}
 		}
 		// s.opp1VoidSuitB = map[string]bool{
@@ -209,6 +210,13 @@ func (s *SuitState) detractBeliefs(opp string, cards []Card) {
 }
 
 func analysePlay(s *SuitState, p PlayerI, card Card) {
+
+	if p.getName() == s.opp1.getName() {
+		if noHigherCard(s, true, s.declarer.getHand(), card) {
+			s.declarer.getInference().opp1VoidSuitB[s.follow] = true
+		}
+	}
+
 	// Player VOID on suit
 	if len(s.trick) > 0 && getSuit(s.trump, card) != getSuit(s.trump, s.trick[0]) {
 		debugTacticsLog("TRICK: %v, Card: %v\n", s.trick, card)

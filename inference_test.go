@@ -296,3 +296,74 @@ func TestInference_Declarer_A10_at_Declarer(t *testing.T) {
 	}
 
 }
+
+
+// DECLARER CAN ONLY KNOW THAT
+func TestInference_Opponent_Plays_K_Decl_Played_A_and_Has_10_or_In_Skat(t *testing.T) {
+	d := makePlayer([]Card{
+		Card{HEART, "10"},
+		})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.cardsPlayed = []Card{}
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		Card{HEART, "A"}, 
+	}
+
+	card := Card{HEART, "K"} // opponent plays his lower card. He does not have any more HEART
+
+	analysePlay(&s, s.opp1, card)
+	// if ! in(s.opp1VoidCards, Card{HEART, "A"}) {
+	// 	t.Errorf("Opp1 does not have A")
+	// }
+	// if ! in(s.opp2VoidCards, Card{HEART, "A"}) {
+	// 	t.Errorf("Opp2 does not have A")
+	// }
+	if !d.getInference().opp1VoidSuitB[s.follow] {
+		t.Errorf("MH Player played K on a losing trick (10 in declarer). It is his last card.")
+	}
+}
+
+// DECLARER CAN ONLY KNOW THAT
+func TestInference_Opponent_Plays_D_Decl_Played_A_and_Has_10_or_In_Skat(t *testing.T) {
+	d := makePlayer([]Card{
+		Card{HEART, "10"},
+		})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.cardsPlayed = []Card{}
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		Card{HEART, "A"}, 
+	}
+
+	card := Card{HEART, "D"} // opponent might still have HEART
+
+	analysePlay(&s, s.opp1, card)
+	if d.getInference().opp1VoidSuitB[s.follow] {
+		t.Errorf("MH Player played D on a losing trick (10 in declarer). It is NOT his last card.")
+	}
+}

@@ -1366,6 +1366,12 @@ func printCollectedInfo(s *SuitState) {
 		}
 	}
 	debugTacticsLog("\t%v", s.opp1VoidCards)
+	debugTacticsLog("\n\t%s: (D) void:", s.opp1.getName())
+	for k, v := range s.declarer.getInference().opp1VoidSuitB {
+		if v {
+			debugTacticsLog("%s ", k)
+		}
+	}
 	debugTacticsLog("\n\t%s: void:", s.opp2.getName())
 	for k, v := range s.getOpp2VoidSuit() {
 		if v {

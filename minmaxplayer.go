@@ -741,7 +741,7 @@ func checkVoidDecl(s *SuitState, p *MinMaxPlayer, cards []Card, suit string, IsD
 
 // FROM THE POINT OF VIEW of A DECLARER
 func checkVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
-	if s.getOpp1VoidSuit()[suit] {
+	if s.getOpp1VoidSuit()[suit] || p.getInference().opp1VoidSuitB[suit] {
 		debugMinmaxLog("..Opponent 1 is VOID in %s\n", suit)
 		suitCards := filter(cards, func(c Card) bool {
 			return getSuit(s.trump, c) == suit
@@ -759,7 +759,7 @@ func checkVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []C
 }
 
 func checkVoidOpp2(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []Card {
-	if s.getOpp2VoidSuit()[suit] {
+	if s.getOpp2VoidSuit()[suit] || p.getInference().opp2VoidSuitB[suit] {
 		debugMinmaxLog("..Opponent 2 is VOID in %s\n", suit)
 		suitCards := filter(cards, func(c Card) bool {
 			return getSuit(s.trump, c) == suit
