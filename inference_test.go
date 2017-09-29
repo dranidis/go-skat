@@ -444,7 +444,7 @@ func TestInference_Opponent_Plays_D_Decl_Played_A_and_Has_10_or_In_Skat_1(t *tes
 	s := makeSuitState()
 	s.trump = CLUBS
 	s.cardsPlayed = []Card{}
-	s.leader = &d
+	s.leader = &o1
 
 	s.declarer = &d
 	s.opp1 = &o1
@@ -460,5 +460,91 @@ func TestInference_Opponent_Plays_D_Decl_Played_A_and_Has_10_or_In_Skat_1(t *tes
 	analysePlay(&s, s.opp1, card)
 	if d.getInference().opp1VoidSuitB[s.follow] {
 		t.Errorf("First card")
+	}
+}
+
+func TestInference_Opponent_Plays_D_Decl_Played_A_and_Has_10_or_In_Skat_3(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{Card{HEART, "9"}}
+	s.cardsPlayed = s.trick
+
+	card := Card{HEART, "10"} // opponent might still have HEART
+
+	analysePlay(&s, s.opp1, card)
+	if d.getInference().opp1VoidSuitB[s.follow] {
+		t.Errorf("First card")
+	}
+}
+
+func TestInference_Opponent_Plays_D_Decl_Played_A_and_Has_10_or_In_Skat_4(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = HEART
+	s.leader = &o2
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&o2, &d, &o1}
+
+	s.trick = []Card{
+		Card{CARO, "J"},
+		Card{HEART, "D"},
+	}
+	s.cardsPlayed = s.trick
+
+	card := Card{SPADE, "D"} // opponent might still have HEART
+
+	analysePlay(&s, s.opp1, card)
+	if d.getInference().opp1VoidSuitB[HEART] {
+		t.Errorf("Opp 2 wins: %v", s.trick)
+	}
+}
+
+func TestInference_Opponent_Plays_D_Decl_Played_A_and_Has_10_or_In_Skat_5(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = HEART
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		Card{HEART, "A"},
+	}
+	s.cardsPlayed = s.trick
+
+	card := Card{CARO, "10"} 
+
+	analysePlay(&s, s.opp1, card)
+	if d.getInference().opp1VoidSuitB[CARO] {
+		t.Errorf("Opp 2 wins: %v", s.trick)
 	}
 }

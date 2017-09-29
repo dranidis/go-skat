@@ -86,7 +86,7 @@ func firstCardTactic(c []Card) Card {
 // }
 func noHigherCard(s *SuitState, viewSkat bool, hand []Card, c Card) bool {
 	scip := suitCardsInPlay(s, viewSkat, hand, getSuit(s.trump, c))
-	// debugTacticsLog("Cards of suit %s still in play: %v", c.Suit, scip)
+	debugTacticsLog("Cards of suit %s still in play: %v", c.Suit, scip)
 	for _, card := range scip {
 		if s.greater(card, c) {
 			return false

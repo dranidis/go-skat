@@ -219,6 +219,7 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 			debugTacticsLog("INFERENCE: Void on suit                          \n")
 			debugTacticsLog("INFERENCE: **************************************\n")
 			s.declarer.getInference().opp1VoidSuitB[s.follow] = true
+			debugTacticsLog("SuitState: %v, Player: %v, Card %v\n", s, p, card)
 		}
 	}
 
@@ -361,24 +362,6 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 		}
 	}
 }
-
-// func opponentIsLosingTrick(s *SuitState, p PlayerI, card Card, lookSkat bool) bool {
-// 	dIndex := 0
-// 	for dIndex, _ = range players {
-// 		if players[dIndex].getName() == s.declarer.getName() {
-// 			break
-// 		}
-// 	}
-// 	if dIndex >= len(s.trick) {
-// 		return false
-// 	}
-// 	for _, c := range s.trick {
-// 		if !s.greater(c, s.trick[dIndex]) {
-// 			return false
-// 		}
-// 	}
-// 	return true 
-// }
 
 func opponentIsLosingTrick(s *SuitState, p PlayerI, card Card, lookSkat bool) bool {
 	dIndex := 0
