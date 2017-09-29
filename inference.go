@@ -213,6 +213,11 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 
 	if p.getName() == s.opp1.getName() {
 		if noHigherCard(s, true, s.declarer.getHand(), card) {
+			debugTacticsLog("TRICK: %v, Card: %v\n", s.trick, card)
+			debugTacticsLog("INFERENCE: ***************DECLARER***************\n")
+			debugTacticsLog("INFERENCE: Opp1 does not have any lower cards    \n")
+			debugTacticsLog("INFERENCE: Void on suit                          \n")
+			debugTacticsLog("INFERENCE: **************************************\n")
 			s.declarer.getInference().opp1VoidSuitB[s.follow] = true
 		}
 	}
