@@ -572,3 +572,19 @@ func followCards(s *SuitState, suit string, cards []Card)  []Card  {
 	}
 	return nonTrumpCards(suit, cards)
 }
+
+// declarer is going to play the card now
+func declarerCardIsLosingTrick(s *SuitState, p PlayerI, card Card) bool {
+	for _, c := range s.trick {
+		if s.greater(c, card) {
+			return true
+		}
+	}
+	if len(s.trick) == 2 {
+		return false
+	}
+	if noHigherCard(s, true, p.getHand(), card) {
+		return false
+	}
+	return true 
+}

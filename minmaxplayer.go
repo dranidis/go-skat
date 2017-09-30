@@ -150,14 +150,21 @@ func (p *MinMaxPlayer) minmaxSuggestion(s *SuitState, c []Card) (Card, float64) 
 				debugTacticsLog("EQUAL: %f, %f\n", v, mostValue)
 				if getSuit(s.trump, mostValueCard) == s.trump {
 					if getSuit(s.trump, cards[k]) != s.trump {
+						debugMinmaxLog("Prefering a non-trump: %v, %v\n", mostValueCard, cards[k])
 						mostValue, mostValueCard = v, cards[k]
 					} else if cardValue(cards[k]) < cardValue(mostValueCard) {
-						mostValue, mostValueCard = v, cards[k]
+						if declarerCardIsLosingTrick(s, p, mostValueCard) {
+							debugMinmaxLog("Losing the trick, play low\n")
+							mostValue, mostValueCard = v, cards[k]
+						}
 					} // add rank ordering : getRank
 				} else {
 					if cardValue(cards[k]) < cardValue(mostValueCard) {
-						mostValue, mostValueCard = v, cards[k]
-					}
+						if declarerCardIsLosingTrick(s, p, mostValueCard) {
+							debugMinmaxLog("Losing the trick, play low\n")
+							mostValue, mostValueCard = v, cards[k]
+						}
+					}				
 				}
 			}
 		}
@@ -181,13 +188,13 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 
 		minimax.MAXDEPTH = 3
 		if len(p.hand) < 8 {
-			minimax.MAXDEPTH = 6
+			minimax.MAXDEPTH = 3
 		}
 		if len(p.hand) < 7 {
-			minimax.MAXDEPTH = 6
+			minimax.MAXDEPTH = 3
 		}
 		if len(p.hand) < 6 {
-			minimax.MAXDEPTH = 9
+			minimax.MAXDEPTH = 6
 		}	
 		if len(p.hand) < 5 {
 			minimax.MAXDEPTH = 9999

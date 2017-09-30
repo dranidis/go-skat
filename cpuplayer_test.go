@@ -3897,7 +3897,7 @@ func TestOverbid(t *testing.T) {
 	}
 }
 
-func TestOpponentTacticFORE_No_trumps_in_Game(t *testing.T) {
+func TestOpponentTacticFORE_No_trumps_in_Game1(t *testing.T) {
 	otherPlayer := makePlayer([]Card{})
 	teamMate := makePlayer([]Card{})
 	player := makePlayer([]Card{})
@@ -3918,6 +3918,41 @@ func TestOpponentTacticFORE_No_trumps_in_Game(t *testing.T) {
 		Card{HEART, "D"},
 		Card{HEART, "A"},
 	}
+
+	player.hand = validCards
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("No trumps in Game, In trick %v and valid %v, expected to play %v, played %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
+func TestOpponentTacticFORE_No_trumps_in_Game2(t *testing.T) {
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+
+	validCards := []Card{
+		Card{CARO, "J"},
+		Card{HEART, "D"},
+		Card{HEART, "A"},
+	}
+
+	player := makePlayer(validCards)
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+	s.trump = GRAND
+	s.trumpsInGame = []Card{Card{CARO, "J"}}
+	s.trick = []Card{}
+	s.cardsPlayed = makeTrumpDeck(s.trump)
+	s.cardsPlayed = remove(s.cardsPlayed, s.trumpsInGame...)
+
+	debugTacticsLog("Suistate: %v\n", s)
+
+
 	card := player.playerTactic(&s, validCards)
 	exp := Card{HEART, "A"}
 	if !card.equals(exp) {

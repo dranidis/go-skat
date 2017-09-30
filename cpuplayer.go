@@ -940,6 +940,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 		}
 	}
 	otherTrumps := p.otherPlayersTrumps(s)
+	debugTacticsLog("Other players trumps: %v\n", otherTrumps)
 	sortedValueNoTrumps := filter(sortValue(c), func(card Card) bool {
 		return card.Suit != s.trump && card.Rank != "J"
 	})
@@ -947,13 +948,13 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	sureSuitWinners := []Card{}
 	for _, t := range sortedValueNoTrumps {
 		if noHigherCard(s, false, p.hand, t) {
-			sureSuitWinners = append(sureWinners, t)
+			sureSuitWinners = append(sureSuitWinners, t)
 		}
 	}
 
 	if len(s.trick) == 0 {
 		// OPPONENT FOREHAND
-		debugTacticsLog("FOREHAND..")
+		debugTacticsLog("\nFOREHAND..")
 
 		if len(otherTrumps) == 0 {
 			debugTacticsLog("sure suit winners %v..", sureSuitWinners)
@@ -1813,10 +1814,13 @@ func (p *Player) calculateHighestBid(afterSkat bool) int {
 		fmt.Printf("Evaluation of Grand: %v\n", value)
 		// if value < 20 {
 		if value < 65 {
+			debugTacticsLog("Low grand win chance\n")
 			most := mostCardsSuit(p.getHand())
+			debugTacticsLog("Play %v with game value: %d?\n", most, p.getGamevalue(most))
 			if p.getGamevalue(most) >= p.declaredBid {
 				canWin = "SUIT"
 			}
+			debugTacticsLog("PLAYING GRAND")
 		}
 	}
 

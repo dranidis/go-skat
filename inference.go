@@ -388,3 +388,4 @@ func opponentIsLosingTrick(s *SuitState, p PlayerI, card Card, lookSkat bool) bo
 	}
 	return false 
 }
+
