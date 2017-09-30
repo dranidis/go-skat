@@ -449,6 +449,7 @@ func TestOpponentTacticFOREFollowPreviousSuit3(t *testing.T) {
 	s.opp2 = &teamMate
 	s.trump = CLUBS
 	s.trick = []Card{}
+	s.trumpsInGame = makeTrumpDeck(s.trump)
 
 	player.previousSuit = CARO
 
@@ -479,6 +480,7 @@ func TestOpponentTacticFOREFollowPreviousSuit4(t *testing.T) {
 
 	s.trump = CLUBS
 	s.trick = []Card{}
+	s.trumpsInGame = makeTrumpDeck(s.trump)
 	teamMate.previousSuit = CARO
 	validCards := []Card{Card{CARO, "8"},
 		Card{HEART, "9"},
@@ -3892,5 +3894,34 @@ func TestOverbid(t *testing.T) {
 	trump := p.declareTrump()
 	if p.getGamevalue(trump) < p.declaredBid {
 		t.Errorf("OVERBID")
+	}
+}
+
+func TestOpponentTacticFORE_No_trumps_in_Game(t *testing.T) {
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &player
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+	s.trump = CLUBS
+	s.trumpsInGame = []Card{}
+	s.trick = []Card{}
+	s.cardsPlayed = makeTrumpDeck(s.trump)
+
+	player.previousSuit = CARO
+
+	validCards := []Card{
+		Card{SPADE, "9"},
+		Card{HEART, "D"},
+		Card{HEART, "A"},
+	}
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("No trumps in Game, In trick %v and valid %v, expected to play %v, played %v",
+			s.trick, validCards, exp, card)
 	}
 }

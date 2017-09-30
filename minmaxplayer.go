@@ -112,12 +112,12 @@ func (p *MinMaxPlayer) minmaxSuggestion(s *SuitState, c []Card) (Card, float64) 
 			p.p1Hand = worlds[i][0]
 			p.p2Hand = worlds[i][1]
 
-			debugMinmaxLog("MinMaxPlayer\n")
+			// debugMinmaxLog("MinMaxPlayer\n")
 
 
 
 			// debugMinmaxLog("MINMAX: cards %s: %v, %s: %v, SKAT:%v\n", player1.getName(), p.p1Hand, player2.getName(), p.p2Hand, p.skat)
-			debugMinmaxLog("MINMAX: cards %v, %v, SKAT:%v\n",  p.p1Hand,  p.p2Hand, p.skat)
+			debugMinmaxLog("\nMINMAX %s: cards %v, %v, SKAT:%v\n", MINIMAX_ALG,  p.p1Hand,  p.p2Hand, p.skat)
 			for _, card := range c {
 				value := p.minmaxSkat(s, c, card)
 				cardsTotal[card.String()] = cardsTotal[card.String()] + value			
@@ -162,7 +162,7 @@ func (p *MinMaxPlayer) minmaxSuggestion(s *SuitState, c []Card) (Card, float64) 
 			}
 		}
 		if mostValue > float64(math.MinInt32) {
-			debugMinmaxLog("Action values: %v\n", cardsTotal)
+			debugMinmaxLog("%d Worlds: %v\n", i+1, cardsTotal)
 			debugMinmaxLog("(%s) Hand: %v, Playing card: %v with value %5.1f)\n\n", p.name, p.hand, mostValueCard, mostValue)
 			debugMinmaxLog("\nTACTICS suggest: %v\n\n", p.Player.playerTactic(s, c))			
 			return mostValueCard, mostValue
@@ -332,7 +332,7 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 
 	// ma := a.(SkatAction)
 
-	debugMinmaxLog("Card: %v, Value: %f\n", card, value)
+	debugMinmaxLog("%v: %4.2f\t", card, value)
 
 	return value
 }
@@ -626,9 +626,9 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 		decl, _, _ := p.getDeclarerNrAndPlayers(s) // (int, PlayerI, PlayerI)
 		IsDeclarerP1 := decl == 1
 		if IsDeclarerP1 {
-			debugMinmaxLog("Declarer is P1\n") // you are s.opp2
+			// debugMinmaxLog("Declarer is P1\n") // you are s.opp2
 		} else {
-			debugMinmaxLog("Declarer is P2\n") // you are s.opp1
+			// debugMinmaxLog("Declarer is P2\n") // you are s.opp1
 		} 
 
 		if p.getName() != s.declarer.getName() {
@@ -661,7 +661,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 			debugMinmaxLog("IMPOSSIBLE!")
 			return nil, errors.New("Hand size over")
 		}		
-		debugMinmaxLog("DISTRIBUTION: %v %v\n", p1H, p2H)
+		// debugMinmaxLog("DISTRIBUTION: %v %v\n", p1H, p2H)
 		world := [][]Card{p1H, p2H}
 		worlds = append(worlds, world)
 	}
@@ -754,7 +754,7 @@ func checkVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []C
 		})
 	p.p2Hand = append(p.p2Hand, singleVoidCards...)
 	cards = remove(cards, s.opp1VoidCards...)
-	debugMinmaxLog("..Opponent 1 does not have: %v\n", s.opp1VoidCards)
+	// debugMinmaxLog("..Opponent 1 does not have: %v\n", s.opp1VoidCards)
 	return cards
 }
 
@@ -772,7 +772,7 @@ func checkVoidOpp2(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []C
 		})
 	p.p1Hand = append(p.p1Hand, singleVoidCards...)
 	cards = remove(cards, s.opp2VoidCards...)
-	debugMinmaxLog("..Opponent 2 does not have: %v\n", s.opp2VoidCards)
+	// debugMinmaxLog("..Opponent 2 does not have: %v\n", s.opp2VoidCards)
 	return cards
 }
 

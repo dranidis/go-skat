@@ -935,7 +935,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 	}))
 	sureWinners := []Card{}
 	for _, t := range ownTrumps {
-		if noHigherCard(s, true, p.hand, t) {
+		if noHigherCard(s, false, p.hand, t) {
 			sureWinners = append(sureWinners, t)
 		}
 	}
@@ -944,9 +944,27 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 		return card.Suit != s.trump && card.Rank != "J"
 	})
 
+	sureSuitWinners := []Card{}
+	for _, t := range sortedValueNoTrumps {
+		if noHigherCard(s, false, p.hand, t) {
+			sureSuitWinners = append(sureWinners, t)
+		}
+	}
+
 	if len(s.trick) == 0 {
 		// OPPONENT FOREHAND
 		debugTacticsLog("FOREHAND..")
+
+		if len(otherTrumps) == 0 {
+			debugTacticsLog("sure suit winners %v..", sureSuitWinners)
+			if len(sureSuitWinners) > 0 {
+				return sureSuitWinners[0]
+			}
+			// if len(sureWinners) > 0 {
+			// 	debugTacticsLog("sure winners %v..", sureWinners)
+			// 	return sureWinners[0]
+			// }
+		}
 
 		if len(ownTrumps) >= len(otherTrumps) && len(otherTrumps) > 0 {
 			debugTacticsLog("Many trumps..")
@@ -1793,7 +1811,8 @@ func (p *Player) calculateHighestBid(afterSkat bool) int {
 		value := p.autoGame(GRAND, skat)
 		debugTacticsLog("Evaluation of Grand: %v\n", value)
 		fmt.Printf("Evaluation of Grand: %v\n", value)
-		if value < 20 {
+		// if value < 20 {
+		if value < 65 {
 			most := mostCardsSuit(p.getHand())
 			if p.getGamevalue(most) >= p.declaredBid {
 				canWin = "SUIT"

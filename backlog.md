@@ -1,12 +1,11 @@
+# Optimize Legal actions in MinMax
+	Evaluate only better actions.
+	For example when a player surely loses the trick and he needs to choose between 10, K, D, 9 only the 9 should be evaluated as a legal action.
+
+# NULL Evaluation has to be more strict
+
 # MM (not ab) is taking too long!
 	TIMEOUT
-
-# 	Equivalent cards
-	When player holds two equivalent cards in the hand like 78 or 89 they should always be evaluated together
-
-# USE MinMax to evaluate declaring after winning the bid
-	Run a Grand game, and suit game below the bid
-	Choose game which gives better chances of winning.
 
 # A very interesting game: go build; go install; go-skat -minmax2 -minmax3 -html -r 999 -g 8
 	
@@ -46,12 +45,8 @@
 # BUG in BIDDING HTML
 	IN HTML if both players have passed the offer to the 3rd is 20 instead of 18
 
-# GRAND vs SUIT after Bidding
-	Prefer a solid SUIT against a mmm GRAND if bid allows it
-
 # HTML
 	Change score back at a replay (or do not cound new score)
-
 
 # Game Lost?
 	HAND: gs: CJ, HJ, CA, C10, C9, C7, 		HA, H7,		DK, DD
@@ -68,6 +63,12 @@ BH: 		D10 C8 	DK 	33-70  (LOST)
 -------------------------------------------------------------------------
 # DONE:
 
+# USE MinMax to evaluate declaring after winning the bid
+	Run a Grand game, and suit game below the bid
+	Choose game which gives better chances of winning.
+
+# 	Equivalent cards
+	When player holds two equivalent cards in the hand like 78 or 89 they should always be evaluated together
 
 # INFERENCE:
 	DO not retract everything.!

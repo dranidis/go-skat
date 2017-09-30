@@ -165,7 +165,8 @@ func (m *SkatState) IsTerminal() bool {
 }
 
 func (m *SkatState) FindRewardNum() float64 {
-	return float64(m.declarer.getScore() - m.opp1.getScore() - m.opp2.getScore())  
+	// return float64(m.declarer.getScore() - m.opp1.getScore() - m.opp2.getScore())  
+	return float64(m.declarer.getScore())  
 }
 
 func (m *SkatState) FindReward() float64 {
@@ -182,9 +183,57 @@ func (m SkatState) validCards(cards []Card) []Card {
 	})
 }
 
+func (m *SkatState) cardIsLosingTheTrick(card Card) bool {
+	// return only following cards
+	if getSuit(m.trump, card) != m.follow {
+		return false
+	}
+
+	if len(m.trick) == 2 {
+		if m.players[2].getName() == m.opp1.getName() || m.players[2].getName() == m.opp2.getName() {
+			//opponent is playing last
+			dIndex := 0
+			for dIndex, _ = range m.players {
+				if m.players[dIndex].getName() == m.declarer.getName() {
+					break
+				}
+			}
+			other := 0
+			if dIndex == 0 {
+				other = 1
+			}
+			if m.greater(m.trick[dIndex], card) || m.greater(m.trick[dIndex], m.trick[other]) {
+				return true
+			}
+		} else {
+			// declarer is playing last
+			if m.greater(m.trick[0], card) && m.greater(m.trick[1], card) {
+				return true
+			}
+		}
+	}
+	// currently only for last card
+	return false
+}
+
 func (m *SkatState) FindLegals() []game.Action {
 	actions := []game.Action{}
-	for _, card := range m.validCards(m.players[len(m.trick)].getHand()) {
+
+	validCards := m.validCards(m.players[len(m.trick)].getHand())
+	// if len(m.trick) == 2 {
+	// 	losers := []Card{}
+	// 	for _, card := range validCards {
+	// 		if m.cardIsLosingTheTrick(card) {
+	// 			losers = append(losers, card)
+	// 		}
+	// 	}
+	// 	if len(losers) > 1 {
+	// 		losers = realSortValue(losers)
+	// 		validCards = remove(validCards, losers...)
+	// 		validCards = append(validCards, losers[len(losers) - 1])
+	// 	}
+	// }
+	for _, card := range validCards {
 		actions = append(actions, SkatAction{card})
 	}
 	return actions
