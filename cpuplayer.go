@@ -1295,7 +1295,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 				}
 				if getSuit(s.trump, candidate) == s.trump && s.follow != s.trump {
 					debugTacticsLog("..see if it is worth Taking with trump: %v..", candidate)
-					if sum(s.trick) > 0 {
+					if sum(s.trick) > 0 || cardValue(lowValue) > 4 {
 						debugTacticsLog("..taking with the trump..")
 						return candidate
 					}

@@ -1879,6 +1879,41 @@ func TestOpponentTacticBACK_DoNotWasteTrumpOnZeroValueTrickIfYouCanWinAnotherTru
 	}
 }
 
+func TestOpponentTacticBACK_DoNotWasteA_FullOne_on_a_trick_to_save_Trumps(t *testing.T) {
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	validCards := []Card{
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+		Card{SPADE, "D"},
+
+		Card{CLUBS, "10"},
+	}
+	player := makePlayer(validCards)
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	s.opp1 = &teamMate
+	s.opp2 = &player
+
+	s.trump = SPADE
+	s.trick = []Card{Card{HEART, "8"}, Card{CLUBS, "9"}}
+	s.follow = HEART
+
+	s.trumpsInGame = makeTrumpDeck(s.trump)
+
+	// s.cardsPlayed = remove(makeTrumpDeck(SPADE), s.trumpsInGame...)
+	//
+	card := player.playerTactic(&s, validCards)
+
+	notexp := Card{CLUBS, "10"}
+	if card.equals(notexp) {
+		t.Errorf("In trick %v, TRUMPS SPADE, and valid %v, NOT expected : %v, got %v",
+			s.trick, validCards, notexp, card)
+	}
+}
+
 func TestDeclarerTacticFORE0(t *testing.T) {
 	// don't play your A-10 trumps if Js still there
 	validCards := []Card{
