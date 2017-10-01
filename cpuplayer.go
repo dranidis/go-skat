@@ -680,7 +680,7 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 		}
 	}
 	if len(s.trick) == 2 {
-		debugTacticsLog("BACKHAND ")
+		debugTacticsLog("\nBACKHAND ")
 
 		if len(follows) > 0 {
 			debugTacticsLog("Following normal suit...")
@@ -699,7 +699,7 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				return w
 			}
 		} else {
-			debugTacticsLog("TRUMP OR No cards of suit played...")
+			debugTacticsLog("must not follow...")
 		}
 
 		if len(follows) > 1 && sum(s.trick) == 0 { // losers
@@ -740,8 +740,35 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 	// TODO:exhausted
 	// in middlehand, if leader leads with an  suit don't take
 	// it with the most valuable trump. It might be taken....
+	highWinnerLowLoser := highestValueWinnerORlowestValueLoser(s, c)
+	if p.score + sum(s.trick) + cardValue(highWinnerLowLoser) > 60 {
+		debugTacticsLog("Enough to win\n")
+		return highWinnerLowLoser
+	}
 
-	return highestValueWinnerORlowestValueLoser(s, c)
+
+
+	// debugTacticsLog("Sorted no trumps: %v\n", sortedValueNoTrumps)
+	// var loser Card
+
+	// ENDGAME:
+	// if score plus remaining cards value exceeds 60
+
+	if len(p.hand) < 4 && len(ownTrumps) > 0 && len(ownTrumps) >= len(otherTrumps) && len(sortedValueNoTrumps) > 0 { // ENDGAME ONLY
+		loser := sortedValueNoTrumps[len(sortedValueNoTrumps) - 1]
+		if len(sureWinners) >= len(otherTrumps) {
+			total := 120 - (sum(s.cardsPlayed) + sum(p.hand) + sum(s.skat))
+			rest := sum(p.hand) - cardValue(loser)
+			if rest + p.score + total> 60 {
+				debugTacticsLog("If i lose %v Remaining cards total: %d Hand total: %d\n", loser, total, rest)
+				debugTacticsLog("I will reach %v total: %d\n", loser, rest + p.score + total)
+				return loser
+			}
+		}
+	}
+
+	debugTacticsLog("LAST RESORT: returning highWinnerLowLoser: %v\n", highWinnerLowLoser)
+	return highWinnerLowLoser
 }
 
 func (p *Player) playSuit(s *SuitState, c []Card) Card {
@@ -1295,6 +1322,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 				}
 				if getSuit(s.trump, candidate) == s.trump && s.follow != s.trump {
 					debugTacticsLog("..see if it is worth Taking with trump: %v..", candidate)
+					// Do not play trump if trick value is zero and you can play up to a K
 					if sum(s.trick) > 0 || cardValue(lowValue) > 4 {
 						debugTacticsLog("..taking with the trump..")
 						return candidate
@@ -1320,7 +1348,7 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 				return card
 			}
 
-			debugTacticsLog("teammate wins..largest not-sure winner")
+			debugTacticsLog("teammate wins..largest not-sure winner\n")
 			candidates := []Card{}
 			candidates = sortedValueNoTrumps
 			for len(candidates) > 0 {
@@ -1335,6 +1363,10 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			// if len(noTrumps) > 0 {
 			// 	return noTrumps[0]
 			// }
+
+			valueRanks := []string{"A", "10", "K", "D", "9", "8", "7", "J"}
+			sortedValue = sortRankSpecial(c, valueRanks)
+			debugTacticsLog("Returning first from: %v\n", sortedValue)
 			return sortedValue[0]
 		}
 		debugTacticsLog(" -- teammate leads --\n")
@@ -1819,8 +1851,11 @@ func (p *Player) calculateHighestBid(afterSkat bool) int {
 			debugTacticsLog("Play %v with game value: %d?\n", most, p.getGamevalue(most))
 			if p.getGamevalue(most) >= p.declaredBid {
 				canWin = "SUIT"
+				p.trumpToDeclare = most
+				return p.getGamevalue(most)
+			} else {
+				debugTacticsLog("PLAYING GRAND to avoid OVERBID")
 			}
-			debugTacticsLog("PLAYING GRAND")
 		}
 	}
 

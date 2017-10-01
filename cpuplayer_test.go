@@ -1751,6 +1751,32 @@ func TestOpponentTacticBACK_MateLeads(t *testing.T) {
 // 	}
 // }
 
+func TestOpponentTacticBACK_PlayerLeads_Trump(t *testing.T) {
+	validCards := []Card{
+		Card{CLUBS, "J"},
+		Card{CARO, "8"},
+	}
+	player := makePlayer(validCards)
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	s.opp1 = &teamMate
+	s.opp2 = &player
+
+	s.trump = CARO
+	s.trick = []Card{Card{CARO, "J"}, Card{HEART, "J"}}
+	s.follow = CARO
+	
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "8"}
+	if !card.equals(exp) {
+		t.Errorf("In trick led by declarer %v, and valid %v, expected: %v, played: %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
 
 func TestOpponentTacticBACK2(t *testing.T) {
 
@@ -2384,9 +2410,12 @@ func TestDeclarerTacticBACK_TrumpWithLowJack(t *testing.T) {
 	}
 	player := makePlayer(validCards)
 	other := makePlayer([]Card{})
+	other1 := makePlayer([]Card{})
 	s := makeSuitState()
 	s.leader = &other
 	s.declarer = &player
+	s.opp1 = &other
+	s.opp2 = &other1
 
 	s.trump = GRAND
 	s.trick = []Card{Card{CLUBS, "A"}, Card{CLUBS, "8"}}
@@ -2681,7 +2710,8 @@ func TestDeclarerTacticKeepTheAForThe10_2(t *testing.T) {
 		Card{HEART, "8"},
 	}
 
-	s.cardsPlayed = []Card{}
+	s.cardsPlayed = makeDeck()
+	s.cardsPlayed = remove(s.cardsPlayed, player.hand...)
 
 	s.cardsPlayed = append(s.cardsPlayed, Card{HEART, "10"})
 	card := player.playerTactic(&s, player.hand)
@@ -2696,6 +2726,10 @@ func TestDeclarerTacticKeepTheAForThe10_2(t *testing.T) {
 		Card{HEART, "10"},
 	}
 	s.cardsPlayed = []Card{}
+	s.cardsPlayed = makeDeck()
+	s.cardsPlayed = remove(s.cardsPlayed, player.hand...)
+	s.cardsPlayed = remove(s.cardsPlayed, Card{HEART, "10"})
+
 	card = player.playerTactic(&s, player.hand)
 	exp = Card{HEART, "A"}
 	if !card.equals(exp) {
@@ -3932,6 +3966,48 @@ func TestOverbid(t *testing.T) {
 	}
 }
 
+func TestChangeGrandToSuit(t *testing.T) {
+	p := makePlayer([]Card{
+		Card{SPADE, "J"},
+
+		Card{CLUBS, "A"},
+		// Card{CLUBS, "10"},
+		Card{CLUBS, "9"},
+
+		Card{SPADE, "A"},
+		Card{SPADE, "10"},
+		Card{SPADE, "K"},
+		Card{SPADE, "D"},
+
+		Card{HEART, "A"},// loser
+		// Card{HEART, "K"},// loser
+		Card{HEART, "8"},// loser
+		Card{HEART, "7"},// loser
+	})
+	o1 :=  makePlayer([]Card{})
+	o2 :=  makePlayer([]Card{})
+	players = []PlayerI{&o2, &p, &o1}	
+
+	s := makeSuitState()
+	s.skat = []Card{
+		Card{CLUBS, "10"},
+		Card{HEART, "K"},
+	}
+
+	p.declaredBid = 20
+	p.calculateHighestBid(true)
+	p.pickUpSkat(s.skat)
+	trump := p.declareTrump()
+	if p.getGamevalue(trump) < p.declaredBid {
+		t.Errorf("OVERBID")
+	}
+
+	debugTacticsLog("DECLARE: %v\n", p.trumpToDeclare)
+	if trump == GRAND {
+		t.Errorf("NO")
+	}
+}
+
 func TestOpponentTacticFORE_No_trumps_in_Game1(t *testing.T) {
 	otherPlayer := makePlayer([]Card{})
 	teamMate := makePlayer([]Card{})
@@ -3995,3 +4071,57 @@ func TestOpponentTacticFORE_No_trumps_in_Game2(t *testing.T) {
 			s.trick, validCards, exp, card)
 	}
 }
+
+func TestDeclarerTacticBACK_Just_Enough_To_Win(t *testing.T) {
+
+	validCards := []Card{
+		Card{HEART, "J"},
+		Card{CARO, "10"},
+		Card{CARO, "K"},
+	}
+	player := makePlayer(validCards)
+	other := makePlayer([]Card{})
+	other1 := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &other
+	s.declarer = &player
+	s.opp1 = &other
+	s.opp2 = &other1
+	s.skat = []Card{
+		Card{HEART, "9"},
+		Card{SPADE, "8"},
+	}
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{SPADE, "K"}, Card{SPADE, "7"}}
+	s.follow = SPADE
+
+	player.score = 38
+	s.cardsPlayed = makeDeck()
+
+// remaining 11 points: 38 + 11 = 49
+	// +10 (caro 10) + 2 (HEART J) = 61!
+	remaining := []Card{
+		Card{CLUBS, "7"},
+		Card{SPADE, "9"},
+		Card{SPADE, "A"},
+		Card{CARO, "8"},
+	}
+
+
+	s.cardsPlayed = remove(s.cardsPlayed, remaining...)
+	s.cardsPlayed = remove(s.cardsPlayed, s.skat...)
+	s.cardsPlayed = remove(s.cardsPlayed, player.hand...)
+	s.trumpsInGame = makeTrumpDeck(s.trump)
+	s.trumpsInGame = remove(s.trumpsInGame, s.cardsPlayed...)
+
+	card := player.playerTactic(&s, validCards)
+
+	// the only chance to win
+	exp := Card{CARO, "K"}
+	if !card.equals(exp) {
+		t.Errorf("Trump: %s, In trick %v and valid %v, was expected to play %v. Played %v",
+			s.trump, s.trick, validCards, exp, card)
+	}
+}
+
