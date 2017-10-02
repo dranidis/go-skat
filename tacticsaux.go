@@ -96,6 +96,20 @@ func noHigherCard(s *SuitState, viewSkat bool, hand []Card, c Card) bool {
 	return true
 }
 
+func HigherCards(s *SuitState, viewSkat bool, hand []Card, c Card) []Card {
+	suit := getSuit(s.trump, c)
+	scip := suitCardsInPlay(s, viewSkat, hand, suit)
+	debugTacticsLog("Cards of suit %s still in play: %v", suit, scip)
+	higherCards := []Card{}
+	for _, card := range scip {
+		if s.greater(card, c) {
+			higherCards = append(higherCards, card)
+		}
+	}
+	debugTacticsLog("Cards of suit %s higher than %v, %v", suit, c, higherCards)
+	return higherCards
+}
+
 func noSecondHigherCard(s *SuitState, viewSkat bool, hand []Card, c Card) bool {
 	firstFound := false
 	scip := suitCardsInPlay(s, viewSkat, hand, getSuit(s.trump, c))

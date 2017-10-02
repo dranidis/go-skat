@@ -721,7 +721,11 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 		if sum(s.trick) == 0 {
 			debugTacticsLog("ZERO valued trick. DO not trump!...")
 			if len(sortedValueNoTrumps) > 0 {
-				return highestValueWinnerORlowestValueLoser(s, sortedValueNoTrumps)
+				c := highestValueWinnerORlowestValueLoser(s, sortedValueNoTrumps)
+				if cardValue(c) < 4 {
+					return highestValueWinnerORlowestValueLoser(s, sortedValueNoTrumps)
+				}
+				debugTacticsLog("Not throwing off: %v...", c)
 			}
 		}
 		// don't throw your A if not 10 in the trick and still in game
@@ -1162,6 +1166,12 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 			// smear the trick with a high value
 			if getSuit(s.trump, s.trick[0]) == s.trump && len(winnerCards(s, c)) == 0 {
 				if len(filter(p.otherPlayersTrumps(s), func(c Card) bool {
+					if s.opp1.getName() == p.getName() && in(s.opp2VoidCards, c) {
+						return false
+					}					
+					if s.opp2.getName() == p.getName() && in(s.opp1VoidCards, c) {
+						return false
+					}					
 					return s.greater(c, s.trick[0])
 				})) > 0 {
 					void := false
@@ -1172,25 +1182,40 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 					if s.opp2.getName() == p.getName() && s.getOpp1VoidSuit()[suit] {
 						void = true
 					}
-					if !void {
+					if !void && s.trick[0].Rank != "J" {
 						debugTacticsLog("TRUMP. There are higher trumps, SMEAR..")
 						return sortValue(c)[0]
 					}
+					debugTacticsLog("Will not smear...")
 				}
 			}
-			if len(winnerCards(s, c)) == 0 && !noHigherCard(s, false, p.hand, s.trick[0]) {
+			if len(winnerCards(s, c)) == 0 {
 				void := false
+				higher := HigherCards(s, false, p.hand, s.trick[0])
 				suit := getSuit(s.trump, s.trick[0])
-				if s.opp1.getName() == p.getName() && s.getOpp2VoidSuit()[suit] {
-					void = true
+				if s.opp1.getName() == p.getName() {
+					if s.getOpp2VoidSuit()[suit] {
+						void = true
+					}
+					higher = remove(higher, s.opp2VoidCards...)
+					if len(higher) == 0 {
+						void = true
+					}
 				}
-				if s.opp2.getName() == p.getName() && s.getOpp1VoidSuit()[suit] {
-					void = true
+				if s.opp2.getName() == p.getName() {
+					if s.getOpp1VoidSuit()[suit] {
+						void = true
+					}
+					higher = remove(higher, s.opp1VoidCards...)
+					if len(higher) == 0 {
+						void = true
+					}
 				}
-				if !void {
-					debugTacticsLog("higher cards in play, SMEAR..")
+				if !void && s.trick[0].Rank != "J" {
+					debugTacticsLog("higher cards in play %v, SMEAR..", higher)
 					return sortValue(c)[0]
 				}
+				debugTacticsLog("Will not smear...")
 			}
 			return highestValueWinnerORlowestValueLoser(s, c)
 		} else {
@@ -1221,8 +1246,20 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 							return sortedValueTrumps[i]
 						}
 						i--
-						debugTacticsLog("Playing %v..", sortedValueTrumps[i])
-						return sortedValueTrumps[i]
+						debugTacticsLog("No value trump..")
+						// debugTacticsLog("No value trump. Playing %v..", sortedValueTrumps[i])
+						// nothing to smear
+						// check if remaining card has value to catch
+						if sum(inPlay) > 0 {
+							return sortedValueTrumps[i]
+						} else {
+							if l := len(sortedValueNoTrumps); l > 0 {
+								if cardValue(sortedValueNoTrumps[l - 1]) == 0 {
+									debugTacticsLog("throw off..")
+									return sortedValueNoTrumps[l - 1]
+								}
+							}
+						}
 					}
 					debugTacticsLog("No trump to play..")
 				}

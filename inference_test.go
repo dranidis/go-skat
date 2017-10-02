@@ -548,3 +548,99 @@ func TestInference_Opponent_Plays_D_Decl_Played_A_and_Has_10_or_In_Skat_5(t *tes
 		t.Errorf("Opp 2 wins: %v", s.trick)
 	}
 }
+
+func TestInference_Opponent_Plays_JClub_to_Win_a_smeared_trick_Does_not_have_lower(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = HEART
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		Card{CARO, "J"},
+		Card{HEART, "10"},
+	}
+	s.cardsPlayed = s.trick
+
+	card := Card{CLUBS, "J"} 
+
+	analysePlay(&s, s.opp2, card)
+	if !in(s.opp2VoidCards, Card{SPADE, "J"}, Card{HEART, "J"}) {
+		t.Errorf("Opp 2 void cards: %v",s.opp2VoidCards)
+	}
+	if in(s.opp2VoidCards, Card{CLUBS, "J"}) ||  in(s.opp2VoidCards, Card{CARO, "J"}) {
+		t.Errorf("Opp 2 void cards: %v",s.opp2VoidCards)
+	}
+}
+
+func TestInference_Opponent_Plays_low_trump_and_loses_a_smeared_trick_Does_not_have_Higher(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = HEART
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		Card{CARO, "J"},
+		Card{HEART, "10"},
+	}
+	s.cardsPlayed = s.trick
+
+	card := Card{HEART, "7"} 
+
+	analysePlay(&s, s.opp2, card)
+	if !in(s.opp2VoidCards, Card{SPADE, "J"}, Card{HEART, "J"}, Card{CLUBS, "J"}) {
+		t.Errorf("Opp 2 void cards: %v",s.opp2VoidCards)
+	}
+	if in(s.opp2VoidCards, Card{HEART, "A"}) || in(s.opp2VoidCards, Card{HEART, "7"}) { // and all cards in between
+ 		t.Errorf("Opp 2 void cards: %v",s.opp2VoidCards)
+	}
+}
+
+func TestInference_Opponent_DoesNot_Play_a_FullTRUMP_on_a_Winned_TRICK_DOES_NOT_HAVE_A10(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = HEART
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		Card{CARO, "J"},
+		Card{SPADE, "J"},
+	}
+	s.cardsPlayed = s.trick
+
+	card := Card{HEART, "7"} 
+
+	analysePlay(&s, s.opp2, card)
+	if !in(s.opp2VoidCards, Card{HEART, "A"}, Card{HEART, "10"}) {
+		t.Errorf("Opp 2 void cards: %v",s.opp2VoidCards)
+	}
+}

@@ -769,6 +769,164 @@ func TestOpponentTacticMIDTrump6(t *testing.T) {
 	}
 }
 
+func TestOpponentTacticMIDTrumpJ(t *testing.T) {
+	// MIDDLEHAND
+
+	// if declarer leads a high trump, and there are still higher trumps
+	// DON"T smear it! High Risk!
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{HEART, "J"}}
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+	}
+
+	validCards := []Card{
+		Card{CLUBS, "9"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "A"},
+	}
+	//
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CLUBS, "8"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v, with trumps in game: %v and valid %v, expected to play (not smear) %v, played %v",
+			s.trick, s.trumpsInGame, validCards, exp, card)
+	}
+}
+
+func TestOpponentTacticMIDTrumpJ_Opp_Cannot_Go_higher(t *testing.T) {
+	// MIDDLEHAND
+
+	// if declarer leads a trump, and partner cannot go higher
+	// DON"T smear it! 
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{CLUBS, "A"}}
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+	}
+
+	validCards := []Card{
+		Card{CLUBS, "9"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "K"},
+		Card{CLUBS, "D"},
+	}
+	//
+
+	s.opp2VoidCards = []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CARO, "J"},
+	}
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CLUBS, "8"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v, with trumps in game: %v and valid %v, expected to play (not smear, opp void higher) %v, played %v",
+			s.trick, s.trumpsInGame, validCards, exp, card)
+	}
+}
+
+func TestOpponentTacticMIDTrump_NonJ_SMEAR(t *testing.T) {
+	// MIDDLEHAND
+
+	// if declarer leads a low trump, and there are still higher trumps
+	// smear it! 
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &otherPlayer
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{CLUBS, "K"}}
+	s.trumpsInGame = []Card{
+		Card{CLUBS, "J"},
+		Card{SPADE, "J"},
+	}
+
+	validCards := []Card{
+		Card{CLUBS, "9"},
+		Card{CLUBS, "8"},
+		Card{CLUBS, "D"},
+	}
+	//
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CLUBS, "D"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v, with trumps in game: %v and valid %v, expected to play (smear) %v, played %v",
+			s.trick, s.trumpsInGame, validCards, exp, card)
+	}
+}
+
+func TestOpponentTacticMID_PartnerLeadsAVoidCard_Trump_only_if_still_points(t *testing.T) {
+	validCards := []Card{
+		Card{HEART, "J"},
+		Card{CARO, "A"},
+		Card{CARO, "K"},
+		Card{CARO, "7"},
+	}
+	player := makePlayer([]Card{})
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &teamMate
+	s.declarer = &otherPlayer
+	s.opp2 = &player
+	s.opp1 = &teamMate
+	players = []PlayerI{&teamMate, &player, &otherPlayer}
+
+	s.trump = CLUBS
+	s.trick = []Card{Card{HEART, "8"}}
+	s.follow = HEART
+	s.trumpsInGame = []Card{
+		Card{HEART, "J"},
+		Card{CLUBS, "D"},
+		Card{CLUBS, "9"},
+	}
+
+	s.cardsPlayed = makeSuitDeck(HEART)
+	s.cardsPlayed = remove(s.cardsPlayed, s.trick...)
+	s.cardsPlayed = remove(s.cardsPlayed, Card{HEART, "9"})
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "7"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v, with trumps in game: %v and valid %v, expected to play %v, played %v",
+			s.trick, s.trumpsInGame, validCards, exp, card)
+	}
+}
+
 func TestOpponentTacticMIDPlayerLeadsLosingCard_Smear(t *testing.T) {
 	// MIDDLEHAND
 
@@ -2479,6 +2637,71 @@ func TestDeclarerTacticBACK_DontWasteYourAonaZeroTrick_UnlessYouHavethe10(t *tes
 
 	card := player.playerTactic(&s, validCards)
 	exp := Card{HEART, "A"}
+	if !card.equals(exp) {
+		t.Errorf("Trump: %s, In trick %v and valid %v, was expected to play %v. Played %v",
+			s.trump, s.trick, validCards, exp, card)
+	}
+}
+
+func TestDeclarerTacticBACK_Dont_Throw_a_FullOne_on_a_zero_trick(t *testing.T) {
+
+	validCards := []Card{
+		Card{HEART, "J"},
+		Card{HEART, "10"},
+		Card{HEART, "K"},
+		Card{HEART, "8"},
+		Card{HEART, "7"},
+		Card{CARO, "10"},
+	}
+	player := makePlayer(validCards)
+	other1 := makePlayer([]Card{})
+	other2 := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &other1
+	s.declarer = &player
+	s.opp1 = &other1
+	s.opp2 = &other2
+	players = []PlayerI{&other1, &other2, &player}
+
+	s.trump = HEART
+	s.trick = []Card{Card{CLUBS, "7"}, Card{CLUBS, "9"}}
+	s.follow = CLUBS
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{HEART, "10"}
+	if !card.equals(exp) {
+		t.Errorf("Trump: %s, In trick %v and valid %v, was expected to play %v. Played %v",
+			s.trump, s.trick, validCards, exp, card)
+	}
+}
+
+func TestDeclarerTacticBACK_Throw_MAX_a_D_a_zero_trick(t *testing.T) {
+
+	validCards := []Card{
+		Card{HEART, "J"},
+		Card{HEART, "10"},
+		Card{HEART, "K"},
+		Card{HEART, "8"},
+		Card{HEART, "7"},
+		Card{CARO, "10"},
+		Card{CARO, "D"},
+	}
+	player := makePlayer(validCards)
+	other1 := makePlayer([]Card{})
+	other2 := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &other1
+	s.declarer = &player
+	s.opp1 = &other1
+	s.opp2 = &other2
+	players = []PlayerI{&other1, &other2, &player}
+
+	s.trump = HEART
+	s.trick = []Card{Card{CLUBS, "7"}, Card{CLUBS, "9"}}
+	s.follow = CLUBS
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "D"}
 	if !card.equals(exp) {
 		t.Errorf("Trump: %s, In trick %v and valid %v, was expected to play %v. Played %v",
 			s.trump, s.trick, validCards, exp, card)

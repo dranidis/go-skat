@@ -209,8 +209,7 @@ func (s *SuitState) detractBeliefs(opp string, cards []Card) {
 	}
 }
 
-func analysePlay(s *SuitState, p PlayerI, card Card) {
-
+func opponentDoesNotHaveAnyLowerCards(s *SuitState, p PlayerI, card Card) {
 	if p.getName() == s.opp1.getName() && opponentIsLosingTrick(s, p, card, true){
 		if noHigherCard(s, true, s.declarer.getHand(), card) {
 			debugTacticsLog("TRICK: %v, Card: %v\n", s.trick, card)
@@ -222,7 +221,9 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 			debugTacticsLog("SuitState: %v, Player: %v, Card %v\n", s, p, card)
 		}
 	}
+}
 
+func notFollowingSuit(s *SuitState, p PlayerI, card Card) {
 	// Player VOID on suit
 	if len(s.trick) > 0 && getSuit(s.trump, card) != getSuit(s.trump, s.trick[0]) {
 		debugTacticsLog("TRICK: %v, Card: %v\n", s.trick, card)
@@ -240,26 +241,94 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 			s.opp2VoidSuit[getSuit(s.trump, s.trick[0])] = true
 		}
 	}
+}
 
-	if p.getName() != s.declarer.getName() {
-		if s.follow == s.trump {
-			if getSuit(s.trump, card) == s.trump && (card.Rank == "A" || card.Rank == "10") {
-				if opponentIsLosingTrick(s, p, card, false) {
-					// TODO:
-					debugTacticsLog("INFERENCE: **************************************\n")
-					debugTacticsLog("INFERENCE: Playing a full Trump on a losing trick\n")
-					debugTacticsLog("INFERENCE: Is the last of the player             \n")
-					debugTacticsLog("INFERENCE: **************************************\n")
+func playingAFullTrumpOnALosingTrick(s *SuitState, p PlayerI, card Card) {
+	if p.getName() != s.declarer.getName() && s.follow == s.trump {
+		if getSuit(s.trump, card) == s.trump && (card.Rank == "A" || card.Rank == "10") {
+			if opponentIsLosingTrick(s, p, card, false) {
+				// TODO:
+				debugTacticsLog("INFERENCE: **************************************\n")
+				debugTacticsLog("INFERENCE: Playing a full Trump on a losing trick\n")
+				debugTacticsLog("INFERENCE: Is the last of the player             \n")
+				debugTacticsLog("INFERENCE: **************************************\n")
 
-					if p.getName() == s.opp1.getName() {
-						s.opp1VoidSuit[s.trump] = true
-					}
-					if p.getName() == s.opp2.getName() {
-						s.opp2VoidSuit[s.trump] = true
-					}
+				if p.getName() == s.opp1.getName() {
+					s.opp1VoidSuitB[s.trump] = true
+				}
+				if p.getName() == s.opp2.getName() {
+					s.opp2VoidSuitB[s.trump] = true
 				}
 			}
 		}
+	}
+}
+
+func playingAFullTrumpOnALosingTrickDecl(s *SuitState, p PlayerI, card Card) {
+	fullOne := card.equals(Card{s.follow, "10"}) || card.equals(Card{s.follow, "A"}) 
+	if len(s.trick) > 0 {
+		if p.getName() == s.declarer.getName() && fullOne && !s.greater(card, s.trick...) {
+			debugTacticsLog("INFERENCE: **************************************\n")
+			debugTacticsLog("INFERENCE: Declarer void on suit %v              \n", s.follow)
+			debugTacticsLog("INFERENCE: **************************************\n")
+			s.declarerVoidSuitB[s.follow] = true
+		}
+	}
+}
+
+func losingASmearedTrick(s *SuitState, p PlayerI, card Card) {
+	pcard := s.trick[1]
+	fullOne := pcard.equals(Card{s.follow, "10"}) || pcard.equals(Card{s.follow, "A"}) 
+	// debugTacticsLog("%v\n", s.trick)
+	if fullOne && s.greater(s.trick[0], pcard) && s.greater(s.trick[0], card) {
+		for _, c := range makeTrumpDeck(s.trump) {
+			if s.greater(c, s.trick[0]) {
+				s.opp2VoidCards = append(s.opp2VoidCards, c)
+			}
+		}
+		debugTacticsLog("INFERENCE: **************************************\n")
+		debugTacticsLog("INFERENCE: Losing a SMEARED TRICK: opp2 void Cards %v \n", s.opp2VoidCards)
+		debugTacticsLog("INFERENCE: **************************************\n")
+	}
+}
+
+func winingASmearedTrick(s *SuitState, p PlayerI, card Card) {
+	pcard := s.trick[1]
+	fullOne := pcard.equals(Card{s.follow, "10"}) || pcard.equals(Card{s.follow, "A"}) 
+	// debugTacticsLog("%v\n", s.trick)
+	if fullOne && s.greater(s.trick[0], pcard) && s.greater(card, s.trick[0], ) {
+		for _, c := range makeTrumpDeck(s.trump) {
+			if s.greater(c, s.trick[0]) && s.greater(card, c) {
+				s.opp2VoidCards = append(s.opp2VoidCards, c)
+			}
+		}
+		debugTacticsLog("INFERENCE: **************************************\n")
+		debugTacticsLog("INFERENCE: Wining a SMEARED TRICK with more than enough: opp2 void Cards %v \n", s.opp2VoidCards)
+		debugTacticsLog("INFERENCE: **************************************\n")
+	}
+}
+
+func opponent_DoesNot_Play_a_FullTRUMP_on_a_Winned_TRICK_DOES_NOT_HAVE_A10(s *SuitState, p PlayerI, card Card) {
+	fullOne := card.equals(Card{s.follow, "10"}) || card.equals(Card{s.follow, "A"}) 
+	// debugTacticsLog("%v\n", s.trick)
+	if !fullOne && s.greater(s.trick[1], s.trick[0]) {
+		s.opp2VoidCards = append(s.opp2VoidCards, Card{s.follow, "10"}, Card{s.follow, "A"})
+		debugTacticsLog("INFERENCE: **************************************\n")
+		debugTacticsLog("INFERENCE: Not SMEARING A/10: opp2 void Cards %v \n", s.opp2VoidCards)
+		debugTacticsLog("INFERENCE: **************************************\n")
+	}
+}
+
+func analysePlay(s *SuitState, p PlayerI, card Card) {
+	opponentDoesNotHaveAnyLowerCards(s, p, card)
+	notFollowingSuit(s, p, card)
+	playingAFullTrumpOnALosingTrick(s, p, card)
+	playingAFullTrumpOnALosingTrickDecl(s, p, card)
+
+	if len(s.trick) == 2 && s.follow == s.trump && p.getName() == s.opp2.getName() {
+		losingASmearedTrick(s, p, card)
+		winingASmearedTrick(s, p, card)
+		opponent_DoesNot_Play_a_FullTRUMP_on_a_Winned_TRICK_DOES_NOT_HAVE_A10(s, p, card)
 	}
 
 	if len(s.trick) == 2 {
@@ -353,14 +422,6 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 	}
 
 
-	if len(s.trick) > 0 {
-		if p.getName() == s.declarer.getName() && card.equals(Card{s.follow, "10"}) && !s.greater(card, s.trick...) {
-			debugTacticsLog("INFERENCE: **************************************\n")
-			debugTacticsLog("INFERENCE: Declarer void on suit %v              \n", s.follow)
-			debugTacticsLog("INFERENCE: **************************************\n")
-			s.declarerVoidSuit[s.follow] = true
-		}
-	}
 }
 
 func opponentIsLosingTrick(s *SuitState, p PlayerI, card Card, lookSkat bool) bool {
