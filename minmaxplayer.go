@@ -203,6 +203,22 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 		if len(p.hand) < 5 {
 			minimax.MAXDEPTH = 9999
 		}			
+	case "zw":
+		MINMAX_PREFIX = "ZW: "
+
+		minimax.MAXDEPTH = 6
+		if len(p.hand) < 8 {
+			minimax.MAXDEPTH = 6
+		}
+		if len(p.hand) < 7 {
+			minimax.MAXDEPTH = 6
+		}
+		if len(p.hand) < 6 {
+			minimax.MAXDEPTH = 9
+		}	
+		if len(p.hand) < 5 {
+			minimax.MAXDEPTH = 9999
+		}			
 	case "abt":
 		MINMAX_PREFIX = "ABT: "
 		minimax.MAXDEPTH = 6
@@ -222,7 +238,7 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 			minimax.MAXDEPTH = 9999
 		}	
 	}
-	minimax.MAXDEPTH += 3 // zeroWindow
+
 	if p.depth != -1 {
 		minimax.MAXDEPTH = p.depth
 	}
@@ -339,12 +355,14 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 		case "mm":
 			_, value = minimax.Minimax(nextState)
 		case "ab":
-			aim := 61
+			_, value = minimax.AlphaBeta(nextState)
+		case "zw":
+			aim := 61.0
 			// _, value = minimax.AlphaBeta(nextState)
 			if p.score > 61 {
-				aim = 90
+				aim = 90.0
 			}
-			_, value = minimax.ZeroWindowAlg(nextState, 90)
+			_, value = minimax.ZeroWindowAlg(nextState, aim)
 		case "abt":
 			// minimax.DEBUG = true
 			// debugTacticsInMM = true			
