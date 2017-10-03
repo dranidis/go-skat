@@ -1060,7 +1060,7 @@ func FirstPlays(t *testing.T, alg string, dist [][]Card, tr string, a, b float64
 
 
 
-func TestAlphaBetaTactics7C(t *testing.T) {
+func TestAlphaBetaTactics7C_1(t *testing.T) {
 
 	h1 := []Card{
 		// Card{CARO, "J"},
@@ -1139,6 +1139,366 @@ func TestAlphaBetaTactics7C(t *testing.T) {
 	if false {
 		t.Errorf("TEST")
 	}
+}
+
+func TestAlphaBetaTactics7C_2(t *testing.T) {
+
+	h1 := []Card{
+		Card{CLUBS, "J"},
+
+		Card{CARO, "K"},
+		Card{CARO, "9"},
+		Card{CARO, "8"},
+		Card{CLUBS, "8"},
+		Card{HEART, "10"},
+		Card{HEART, "D"},
+		Card{HEART, "7"},
+		}
+	h2 := []Card{
+		Card{CARO, "J"},
+
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "K"},
+		Card{SPADE, "9"},
+		Card{SPADE, "7"},
+		Card{HEART, "8"},
+		}
+	h3 := []Card{
+		Card{CARO, "7"},
+
+		Card{CARO, "10"},
+		Card{CARO, "D"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "9"},
+		Card{SPADE, "10"},
+		Card{SPADE, "K"},
+		Card{SPADE, "D"},
+		}
+
+	dist := [][]Card{h1, h2, h3}
+
+	p1 := makeMinMaxPlayer(dist[0])
+	p1.score = 37
+	p2 := makeMinMaxPlayer(dist[1])
+	p3 := makeMinMaxPlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+	playersP := []PlayerI{&p1, &p2, &p3}
+
+	sst := makeSuitState()
+	sst.trump = CARO
+	sst.declarer = &p1
+	sst.opp1 = &p2
+	sst.opp2 = &p3
+	sst.leader = &p1
+	sst.skat = []Card{Card{CLUBS, "D"}, Card{CLUBS, "7"}}
+	sst.trick = []Card{
+	}
+
+	trick1 := []Card{
+		Card{SPADE, "A"},
+		Card{SPADE, "8"},
+		Card{CARO, "A"},
+	}
+	trick2 := []Card{
+		Card{HEART, "A"},
+		Card{HEART, "9"},
+		Card{HEART, "K"},
+	}
+	// trick3 := []Card{
+	// 	Card{CLUBS, "J"},
+	// 	Card{CARO, "J"},
+	// 	Card{CARO, "7"},
+	// }
+	sst.cardsPlayed = append(sst.cardsPlayed, trick1...)
+	sst.cardsPlayed = append(sst.cardsPlayed, trick2...)
+	// sst.cardsPlayed = append(sst.cardsPlayed, trick3...)
+	debugTacticsLog("Played: %v\n", sst.cardsPlayed)
+
+	sst.trumpsInGame = makeTrumpDeck(sst.trump)
+	sst.trumpsInGame = remove(sst.trumpsInGame, trick1...)
+	sst.trumpsInGame = remove(sst.trumpsInGame, trick2...)
+	// sst.trumpsInGame = remove(sst.trumpsInGame, trick3...)
+	debugTacticsLog("trumpsInGame: %v\n", sst.trumpsInGame)
+
+	sst.declarerVoidSuit[SPADE] = true
+	sst.opp2VoidCards = []Card{Card{HEART, "D"}, Card{HEART, "8"}, Card{HEART, "7"}}
+
+	skatState := SkatState{
+		sst,
+		playersP,
+	}
+
+	for _, play := range p1.hand {
+		debugTacticsLog("Card %v\n", play)
+		var skatStateP game.State
+		skatStateP = skatState.FindNextState(SkatAction{play})
+
+		// card := p1.playerTactic(&sst, h1)
+		// debugTacticsLog("Playing card %v\n", card)
+		minimax.DEBUG = true
+		minimax.MAXDEPTH = 6
+
+		// skatStateP = &skatState
+		var a game.Action
+		var v float64
+		var as []game.Action
+
+		if true {
+			a, v, as = minimax.AlphaBetaActions(skatStateP, 45, 61)
+		}
+
+		debugTacticsLog("Action: %v, Value: %.4f, Actions: %v \n", a, v, as)	
+		break
+	}
+
+	if false {
+		t.Errorf("TEST")
+	}
+}
+
+func TestAlphaBetaTactics8C_play(t *testing.T) {
+	MINIMAX_ALG = "ab"
+	h1 := []Card{
+		Card{CLUBS, "J"},
+
+		Card{CARO, "K"},
+		Card{CARO, "9"},
+		Card{CARO, "8"},
+		Card{CLUBS, "8"},
+		Card{HEART, "10"},
+		Card{HEART, "D"},
+		Card{HEART, "7"},
+		}
+	h2 := []Card{
+		Card{CARO, "J"},
+
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "K"},
+		Card{SPADE, "9"},
+		Card{SPADE, "7"},
+		Card{HEART, "8"},
+		}
+	h3 := []Card{
+		Card{CARO, "7"},
+
+		Card{CARO, "10"},
+		Card{CARO, "D"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "9"},
+		Card{SPADE, "10"},
+		Card{SPADE, "K"},
+		Card{SPADE, "D"},
+		}
+
+	dist := [][]Card{h1, h2, h3}
+
+	p1 := makeMinMaxPlayer(dist[0])
+	p1.score = 37
+	p1.maxWorlds = 20
+	p1.timeOutMs = 30000
+	p2 := makeMinMaxPlayer(dist[1])
+	p3 := makeMinMaxPlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+	// playersP := []PlayerI{&p1, &p2, &p3}
+
+	sst := makeSuitState()
+	sst.trump = CARO
+	sst.declarer = &p1
+	sst.opp1 = &p2
+	sst.opp2 = &p3
+	sst.leader = &p1
+	sst.skat = []Card{Card{CLUBS, "D"}, Card{CLUBS, "7"}}
+	sst.trick = []Card{
+	}
+
+	trick1 := []Card{
+		Card{SPADE, "A"},
+		Card{SPADE, "8"},
+		Card{CARO, "A"},
+	}
+	trick2 := []Card{
+		Card{HEART, "A"},
+		Card{HEART, "9"},
+		Card{HEART, "K"},
+	}
+	// trick3 := []Card{
+	// 	Card{CLUBS, "J"},
+	// 	Card{CARO, "J"},
+	// 	Card{CARO, "7"},
+	// }
+	sst.cardsPlayed = append(sst.cardsPlayed, trick1...)
+	sst.cardsPlayed = append(sst.cardsPlayed, trick2...)
+	// sst.cardsPlayed = append(sst.cardsPlayed, trick3...)
+	debugTacticsLog("Played: %v\n", sst.cardsPlayed)
+
+	sst.trumpsInGame = makeTrumpDeck(sst.trump)
+	sst.trumpsInGame = remove(sst.trumpsInGame, trick1...)
+	sst.trumpsInGame = remove(sst.trumpsInGame, trick2...)
+	// sst.trumpsInGame = remove(sst.trumpsInGame, trick3...)
+	debugTacticsLog("trumpsInGame: %v\n", sst.trumpsInGame)
+
+	sst.declarerVoidSuit[SPADE] = true
+	sst.opp2VoidCards = []Card{Card{HEART, "D"}, Card{HEART, "8"}, Card{HEART, "7"}}
+
+	// skatState := SkatState{
+	// 	sst,
+	// 	playersP,
+	// }
+
+	// debugTacticsLog("Card %v\n", h1[0])
+	// var skatStateP game.State
+	// skatStateP = skatState.FindNextState(SkatAction{h1[0]})
+
+	p1.depth = 9
+
+	card := p1.playerTactic(&sst, p1.hand)
+	debugTacticsLog("Playing card %v\n", card)
+	// minimax.DEBUG = true
+	// minimax.MAXDEPTH = 3
+
+	// skatStateP = &skatState
+	// var a game.Action
+	// var v float64
+
+	// if true {
+	// 	a, v = minimax.AlphaBeta(skatStateP)
+	// }
+
+	// debugTacticsLog("Action: %v, Value: %.4f\n", a, v)
+	// if false {
+	// 	t.Errorf("TEST")
+	// }
+}
+
+func TestAlphaBetaTactics7C_play(t *testing.T) {
+	MINIMAX_ALG = "ab"
+	h1 := []Card{
+		// Card{CLUBS, "J"},
+
+		Card{CARO, "K"},
+		Card{CARO, "9"},
+		Card{CARO, "8"},
+		Card{CLUBS, "8"},
+		Card{HEART, "10"},
+		Card{HEART, "D"},
+		Card{HEART, "7"},
+		}
+	h2 := []Card{
+		// Card{CARO, "J"},
+
+		Card{SPADE, "J"},
+		Card{HEART, "J"},
+		Card{CLUBS, "A"},
+		Card{CLUBS, "K"},
+		Card{SPADE, "9"},
+		Card{SPADE, "7"},
+		Card{HEART, "8"},
+		}
+	h3 := []Card{
+		// Card{CARO, "7"},
+
+		Card{CARO, "10"},
+		Card{CARO, "D"},
+		Card{CLUBS, "10"},
+		Card{CLUBS, "9"},
+		Card{SPADE, "10"},
+		Card{SPADE, "K"},
+		Card{SPADE, "D"},
+		}
+
+	dist := [][]Card{h1, h2, h3}
+
+	p1 := makeMinMaxPlayer(dist[0])
+	p1.score = 41
+	p1.maxWorlds = 20
+	p1.timeOutMs = 30000
+	p2 := makeMinMaxPlayer(dist[1])
+	p3 := makeMinMaxPlayer(dist[2])
+	p1.name = "Decl"
+	p2.name = "Opp1"
+	p3.name = "Opp2"
+
+	players = []PlayerI{&p1, &p2, &p3}
+	// playersP := []PlayerI{&p1, &p2, &p3}
+
+	sst := makeSuitState()
+	sst.trump = CARO
+	sst.declarer = &p1
+	sst.opp1 = &p2
+	sst.opp2 = &p3
+	sst.leader = &p1
+	sst.skat = []Card{Card{CLUBS, "D"}, Card{CLUBS, "7"}}
+	sst.trick = []Card{
+	}
+
+	trick1 := []Card{
+		Card{SPADE, "A"},
+		Card{SPADE, "8"},
+		Card{CARO, "A"},
+	}
+	trick2 := []Card{
+		Card{HEART, "A"},
+		Card{HEART, "9"},
+		Card{HEART, "K"},
+	}
+	trick3 := []Card{
+		Card{CLUBS, "J"},
+		Card{CARO, "J"},
+		Card{CARO, "7"},
+	}
+	sst.cardsPlayed = append(sst.cardsPlayed, trick1...)
+	sst.cardsPlayed = append(sst.cardsPlayed, trick2...)
+	sst.cardsPlayed = append(sst.cardsPlayed, trick3...)
+	debugTacticsLog("Played: %v\n", sst.cardsPlayed)
+
+	sst.trumpsInGame = makeTrumpDeck(sst.trump)
+	sst.trumpsInGame = remove(sst.trumpsInGame, trick1...)
+	sst.trumpsInGame = remove(sst.trumpsInGame, trick2...)
+	sst.trumpsInGame = remove(sst.trumpsInGame, trick3...)
+	debugTacticsLog("trumpsInGame: %v\n", sst.trumpsInGame)
+
+	sst.declarerVoidSuit[SPADE] = true
+	sst.opp2VoidCards = []Card{Card{HEART, "D"}, Card{HEART, "8"}, Card{HEART, "7"}}
+
+	// skatState := SkatState{
+	// 	sst,
+	// 	playersP,
+	// }
+
+	// debugTacticsLog("Card %v\n", h1[0])
+	// var skatStateP game.State
+	// skatStateP = skatState.FindNextState(SkatAction{h1[0]})
+
+	p1.depth = 6
+	card := p1.playerTactic(&sst, p1.hand)
+	debugTacticsLog("Playing card %v\n", card)
+	// minimax.DEBUG = true
+	// minimax.MAXDEPTH = 3
+
+	// skatStateP = &skatState
+	// var a game.Action
+	// var v float64
+
+	// if true {
+	// 	a, v = minimax.AlphaBeta(skatStateP)
+	// }
+
+	// debugTacticsLog("Action: %v, Value: %.4f\n", a, v)
+	// if false {
+	// 	t.Errorf("TEST")
+	// }
 }
 
 // func TestAlphaBetaTactics2CDef(t *testing.T) {

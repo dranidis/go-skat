@@ -1882,7 +1882,7 @@ func (p *Player) calculateHighestBid(afterSkat bool) int {
 		debugTacticsLog("Evaluation of Grand: %v\n", value)
 		fmt.Printf("Evaluation of Grand: %v\n", value)
 		// if value < 20 {
-		if value < 65 {
+		if value < 61 { // Zerowindow??
 			debugTacticsLog("Low grand win chance\n")
 			most := mostCardsSuit(p.getHand())
 			debugTacticsLog("Play %v with game value: %d?\n", most, p.getGamevalue(most))

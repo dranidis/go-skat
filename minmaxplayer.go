@@ -23,6 +23,7 @@ type MinMaxPlayer struct {
 	maxWorlds   int
 	timeOutMs int
 	mctsSimulationTimeMs int
+	depth int
 	// schneiderGoal bool
 }
 
@@ -41,6 +42,7 @@ func (p *MinMaxPlayer) clone() PlayerI {
 	newPlayer.maxWorlds = p.maxWorlds
 	newPlayer.timeOutMs = p.timeOutMs
 	newPlayer.mctsSimulationTimeMs = p.mctsSimulationTimeMs
+	newPlayer.depth = p.depth
 
 	return &newPlayer
 }
@@ -54,6 +56,7 @@ func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 		maxWorlds:   20,
 		timeOutMs: 10000,
 		mctsSimulationTimeMs: 1000,
+		depth: -1,
 		// schneiderGoal: false,
 	}
 }
@@ -69,6 +72,7 @@ func (p *MinMaxPlayer) playerTactic(s *SuitState, c []Card) Card {
 	}
 
 	// minimax.DEBUG = true
+	debugTacticsLog("Valid: %v\n", c)
 	c = equivalent(s, c)
 	debugTacticsLog("Equivalent: %v\n", c)
 
@@ -218,6 +222,10 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 			minimax.MAXDEPTH = 9999
 		}	
 	}
+	minimax.MAXDEPTH += 3 // zeroWindow
+	if p.depth != -1 {
+		minimax.MAXDEPTH = p.depth
+	}
 	// var player1 PlayerI
 	// var player2 PlayerI
 	// if len(s.trick) == 0 {
@@ -254,30 +262,36 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 		// mmPlayers[i].name += "-MM" 
 		mmplayer.name += "-MM"
 		// miPlayers[i] = &mmPlayers[i]
-
+		// mmplayer.hand = make([]Card, len(p.hand))
 
 		if len(s.trick) == 0 {
 			if i == 1 {
 				mmplayer.hand = p.p1Hand
+				// copy(mmplayer.hand, p.p1Hand)
 			}
 			if i == 2 {
 				mmplayer.hand = p.p2Hand
+				// copy(mmplayer.hand, p.p2Hand)
 			}
 		}
 		if len(s.trick) == 1 {
 			if i == 2 {
 				mmplayer.hand = p.p1Hand
+				// copy(mmplayer.hand, p.p1Hand)
 			}
 			if i == 0 {
 				mmplayer.hand = p.p2Hand
+				// copy(mmplayer.hand, p.p2Hand)
 			}
 		}
 		if len(s.trick) == 2 {
 			if i == 0 {
 				mmplayer.hand = p.p1Hand
+				// copy(mmplayer.hand, p.p1Hand)
 			}
 			if i == 1 {
 				mmplayer.hand = p.p2Hand
+				// copy(mmplayer.hand, p.p2Hand)
 			}
 		}
 
@@ -325,7 +339,8 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 		case "mm":
 			_, value = minimax.Minimax(nextState)
 		case "ab":
-			_, value = minimax.AlphaBeta(nextState)
+			// _, value = minimax.AlphaBeta(nextState)
+			_, value = minimax.ZeroWindowAlg(nextState, 61)
 		case "abt":
 			// minimax.DEBUG = true
 			// debugTacticsInMM = true			
