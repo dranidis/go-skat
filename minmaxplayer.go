@@ -54,7 +54,7 @@ func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 		p2Hand:      []Card{},
 		maxHandSize: 5, // MINIMAX takes too long at 6, Will try MCTS
 		maxWorlds:   20,
-		timeOutMs: 10000,
+		timeOutMs: 5000,
 		mctsSimulationTimeMs: 1000,
 		depth: -1,
 		// schneiderGoal: false,
