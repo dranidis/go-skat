@@ -122,6 +122,7 @@ func (p Player) canWinNull(afterSkat bool) int {
 		case 2:
 			quiterisky++
 		default:
+			return -1 // one unplayable is enough to reject			
 			unplayable++
 		}
 		if risk > 2 && !afterSkat {
@@ -243,8 +244,10 @@ func (p Player) canWin(afterSkat bool) string {
 	}
 
 	fullOnes := sureFullOnesOtherThan("")
-	losers := len(grandLosers(cs)) + jackLosers(cs)
-	debugTacticsLog("\nLosers: %v, %d jacks\n", grandLosers(cs), jackLosers(cs))
+	gl := grandLosers(cs)
+	jl := jackLosers(cs)
+	losers := len(gl) + jl
+	debugTacticsLog("\nLosers: %v, %d jacks\n", gl, jl)
 	debugTacticsLog("\nConsidering GRAND in Hand: %v, Full ones: %v, Losers: %v\n", cs, fullOnes, losers)
 
 	if afterSkat {
@@ -1414,6 +1417,22 @@ func (p *Player) opponentTactic(s *SuitState, c []Card) Card {
 				return sortedValueNoTrumps[0]
 			}
 			return sortedValue[0]
+		}
+		card := highestValueWinnerORlowestValueLoser(s, c)
+		debugTacticsLog("Suggested: %v\n", card)
+		if getSuit(s.trump, card) == s.trump {
+			// the winner is a trump... should we play it?
+			debugTacticsLog("Is a trump..")
+			if sum(s.trick) == 0 {
+				if cardValue(card) > 4 {
+					debugTacticsLog("Saving a A or 10...")
+					return card
+				}
+				debugTacticsLog("Zero trick..sortedValue: %v", sortedValueNoTrumps)
+				if l :=len(sortedValueNoTrumps); l > 0 && cardValue(sortedValueNoTrumps[l-1]) == 0 {
+					return sortedValueNoTrumps[l-1]
+				} 
+			}
 		}
 		return highestValueWinnerORlowestValueLoser(s, c)
 	}

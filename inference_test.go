@@ -646,33 +646,35 @@ func TestInference_Opponent_DoesNot_Play_a_FullTRUMP_on_a_Winned_TRICK_DOES_NOT_
 }
 
 
-func TestInference_Opponent_Plays_JCaro_on_a_Low_Trump_Does_not_have_lower(t *testing.T) {
-	d := makePlayer([]Card{})
-	o1 := makePlayer([]Card{})
-	o2 := makePlayer([]Card{})
 
-	s := makeSuitState()
-	s.trump = HEART
-	s.leader = &d
+// not so sure
+// func TestInference_Opponent_Plays_JCaro_on_a_Low_Trump_Does_not_have_lower(t *testing.T) {
+// 	d := makePlayer([]Card{})
+// 	o1 := makePlayer([]Card{})
+// 	o2 := makePlayer([]Card{})
 
-	s.declarer = &d
-	s.opp1 = &o1
-	s.opp2 = &o2
-	s.follow = HEART
+// 	s := makeSuitState()
+// 	s.trump = HEART
+// 	s.leader = &d
 
-	players = []PlayerI{&d, &o1, &o2}
+// 	s.declarer = &d
+// 	s.opp1 = &o1
+// 	s.opp2 = &o2
+// 	s.follow = HEART
 
-	s.trick = []Card{
-		Card{HEART, "7"},
-	}
-	s.cardsPlayed = s.trick
+// 	players = []PlayerI{&d, &o1, &o2}
 
-	card := Card{CARO, "J"} 
+// 	s.trick = []Card{
+// 		Card{HEART, "7"},
+// 	}
+// 	s.cardsPlayed = s.trick
 
-	// no cards lower than J
-	analysePlay(&s, s.opp1, card)
-	if !in(s.opp1VoidCards, Card{HEART, "A"}, Card{HEART, "10"}, Card{HEART, "K"}, Card{HEART, "D"}, Card{HEART, "9"}, Card{HEART, "8"}) {
-		t.Errorf("Opp 2 void cards: %v",s.opp2VoidCards)
-	}
-}
+// 	card := Card{CARO, "J"} 
+
+// 	// no cards lower than J
+// 	analysePlay(&s, s.opp1, card)
+// 	if !in(s.opp1VoidCards, Card{HEART, "A"}, Card{HEART, "10"}, Card{HEART, "K"}, Card{HEART, "D"}, Card{HEART, "9"}, Card{HEART, "8"}) {
+// 		t.Errorf("Opp 2 void cards: %v",s.opp2VoidCards)
+// 	}
+// }
 

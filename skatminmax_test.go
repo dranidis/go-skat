@@ -1241,7 +1241,7 @@ func TestAlphaBetaTactics7C_2(t *testing.T) {
 
 		// card := p1.playerTactic(&sst, h1)
 		// debugTacticsLog("Playing card %v\n", card)
-		minimax.DEBUG = true
+		// minimax.DEBUG = true
 		minimax.MAXDEPTH = 6
 
 		// skatStateP = &skatState
@@ -1361,7 +1361,7 @@ func TestAlphaBetaTactics8C_play(t *testing.T) {
 	// var skatStateP game.State
 	// skatStateP = skatState.FindNextState(SkatAction{h1[0]})
 
-	p1.depth = 9
+	//p1.depth = 9
 
 	card := p1.playerTactic(&sst, p1.hand)
 	debugTacticsLog("Playing card %v\n", card)
@@ -1481,7 +1481,7 @@ func TestAlphaBetaTactics7C_play(t *testing.T) {
 	// var skatStateP game.State
 	// skatStateP = skatState.FindNextState(SkatAction{h1[0]})
 
-	p1.depth = 6
+	//p1.depth = 6
 	card := p1.playerTactic(&sst, p1.hand)
 	debugTacticsLog("Playing card %v\n", card)
 	// minimax.DEBUG = true

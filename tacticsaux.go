@@ -471,35 +471,39 @@ func tenIsSupported(cs []Card, ten Card) bool {
 }
 
 func grandSuitLosers(cs []Card) []Card {
-	if len(cs) == 0 {
+	// debugTacticsLog("Card: %v\n", cs)
+	l := len(cs)
+	if l == 0 {
 		return cs
 	}
 	s := cs[0].Suit
 	if in(cs, Card{s, "A"}) {
+		if l >= 6 {
+			return []Card{}
+		}		
 		cs = remove(cs, Card{s, "A"})
 		if in(cs, Card{s, "10"}) {
+			if l >= 5 {
+				return []Card{}
+			}
 			cs = remove(cs, Card{s, "10"})
 			if in(cs, Card{s, "K"}) {
-				cs = remove(cs, Card{s, "K"})
-				if in(cs, Card{s, "D"}) {
-					cs = remove(cs, Card{s, "D"})
-					if in(cs, Card{s, "9"}) {
-						cs = remove(cs, Card{s, "9"})
-						if in(cs, Card{s, "8"}) {
-							cs = remove(cs, Card{s, "8"})
-								if in(cs, Card{s, "7"}) {
-									cs = remove(cs, Card{s, "7"})
-								}
-						}
-					}
-				}
-				return cs
+				return []Card{}
+				// if len >= 4 {
+				// 	return []Card{}
+				// }
+				// cs = remove(cs, Card{s, "K"})
+				// if in(cs, Card{s, "D"}) {
+				// 	cs = []Card{}
+				// }
+				// return cs
 			}
 			return cs
 		}
 		return cs
 	} else if in(cs, Card{s, "10"}) {
 	// && tenIsSupported(cs, Card{s, "10"}) {
+		debugTacticsLog(".. removing 10s, they will be discarded..")
 		cs = remove(cs, Card{s, "10"}) // will be discarded
 	}
 	return cs
@@ -552,7 +556,9 @@ func grandLosers(cs []Card) []Card {
 		cards := filter(cs, func(c Card) bool {
 			return c.Rank != "J" && c.Suit == s
 		})
-		losers = append(losers, grandSuitLosers(cards)...)
+		gsl := grandSuitLosers(cards)
+		debugTacticsLog("Suit: %s, losers: %v\n", s, gsl)
+		losers = append(losers, gsl...)
 	}
 	return losers
 }

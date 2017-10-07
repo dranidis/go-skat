@@ -1856,6 +1856,69 @@ func TestOpponentTacticBACK_MateLeads(t *testing.T) {
 	}
 }
 
+func TestOpponentTacticBACK_MateLeads_PlayerWins_Dont_Play_A_trump_on_A_Zero_trick(t *testing.T) {
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &teamMate
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+
+	s.trump = CARO
+	s.trick = []Card{Card{CLUBS, "7"}, Card{CLUBS, "9"}}
+	s.follow = CLUBS
+
+	validCards := []Card{
+		Card{CARO, "J"},
+		Card{SPADE, "D"},
+		Card{HEART, "10"},
+		Card{HEART, "D"},
+		Card{HEART, "8"},
+	}
+	//
+
+	card := player.playerTactic(&s, validCards)
+	if getSuit(s.trump, card) == s.trump {
+		t.Errorf("In trick %v, TRUMPS CARO, and valid %v, NOT expected a trump: %v",
+			s.trick, validCards, card)
+	}
+}
+
+func TestOpponentTacticBACK_MateLeads_PlayerWins_Dont_Play_A_trump_on_A_Zero_trick_Unless_Saving_a_FULL(t *testing.T) {
+
+	otherPlayer := makePlayer([]Card{})
+	teamMate := makePlayer([]Card{})
+	player := makePlayer([]Card{})
+	s := makeSuitState()
+	s.leader = &teamMate
+	s.declarer = &otherPlayer
+	s.opp1 = &player
+	s.opp2 = &teamMate
+
+	s.trump = CARO
+	s.trick = []Card{Card{CLUBS, "7"}, Card{CLUBS, "9"}}
+	s.follow = CLUBS
+
+	validCards := []Card{
+		Card{CARO, "10"},
+		Card{SPADE, "D"},
+		Card{HEART, "10"},
+		Card{HEART, "D"},
+		Card{HEART, "8"},
+	}
+	//
+
+	card := player.playerTactic(&s, validCards)
+	exp := Card{CARO, "10"}
+	if !card.equals(exp) {
+		t.Errorf("In trick %v, TRUMPS CARO, and valid %v, expected to save a trump: %v, played: %v",
+			s.trick, validCards, exp, card)
+	}
+}
+
 // Does not improve??
 // func TestOpponentTacticBACK_PlayerLeads_(t *testing.T) {
 // 	validCards := []Card{
@@ -3448,7 +3511,8 @@ func TestCanWinNULL1(t *testing.T) {
 func TestCanWinNULL2(t *testing.T) {
 	cards := []Card{
 		Card{CLUBS, "D"},
-		Card{HEART, "K"},
+
+		Card{HEART, "9"},
 
 		Card{CLUBS, "A"}, 
 		Card{CLUBS, "9"}, 
