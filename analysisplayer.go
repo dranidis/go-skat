@@ -6,24 +6,24 @@ import (
 
 type APlayer struct {
 	Player
-	moves []int
-	play []int
-	prevPlay []int
+	moves     []int
+	play      []int
+	prevPlay  []int
 	forcedBid int
 }
 
 func makeAPlayer(hand []Card) APlayer {
 	return APlayer{
-		Player:     makePlayer(hand),
-		moves: []int{0,0,0,0,0,0,0,0,0,0},
-		play: []int{0,0,0,0,0,0,0,0,0,0},
-		prevPlay: []int{0,0,0,0,0,0,0,0,0,0},
+		Player:    makePlayer(hand),
+		moves:     []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		play:      []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		prevPlay:  []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		forcedBid: 0,
 	}
 }
 
 var analysisEnded = false
-var	tIndex = -1
+var tIndex = -1
 var previousGameAnalysis = false
 
 func (p *APlayer) playerTactic(s *SuitState, c []Card) Card {
@@ -50,8 +50,8 @@ func (p *APlayer) next(t int) {
 		analysisEnded = true
 		return
 	}
-	if p.play[t] == p.moves[t] - 1 { // last move
-		p.next(t-1)
+	if p.play[t] == p.moves[t]-1 { // last move
+		p.next(t - 1)
 	} else {
 		p.play[t] += 1
 		for i := t + 1; i < 10; i++ {

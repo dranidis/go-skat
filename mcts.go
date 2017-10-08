@@ -6,10 +6,10 @@ import (
 )
 
 type MCNode struct {
-	state State
-	visits int
-	utility int
-	parent *MCNode
+	state    State
+	visits   int
+	utility  int
+	parent   *MCNode
 	children []MCNode
 }
 
@@ -17,7 +17,6 @@ type State struct {
 }
 
 type Action struct {
-
 }
 
 func selectNode(node MCNode) MCNode {
@@ -51,6 +50,7 @@ func expand(node MCNode) {
 }
 
 var roles = []int{}
+
 func simulate(state State) int {
 	if findTerminal(state) {
 		return findReward(state)
@@ -61,7 +61,7 @@ func simulate(state State) int {
 		options := findLegals(newState)
 		best := r.Intn(len(options))
 		newState = findNextState(newState, options[best])
-	} 
+	}
 	return simulate(newState)
 }
 
@@ -86,7 +86,7 @@ func findNextState(state State, action Action) State {
 }
 
 func selectfn(node MCNode) float64 {
-	return float64(node.utility) + 2.0 * math.Sqrt(math.Log(float64(node.parent.visits)) / float64(node.visits))
+	return float64(node.utility) + 2.0*math.Sqrt(math.Log(float64(node.parent.visits))/float64(node.visits))
 }
 
 func findTerminal(state State) bool {

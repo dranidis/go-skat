@@ -4,36 +4,34 @@ import (
 	// "github.com/dranidis/go-skat/game"
 	"github.com/dranidis/go-skat/game/minimax"
 	// "github.com/dranidis/go-skat/game/mcts"
+	"math"
 	"math/rand"
 	"time"
-	"math"
 	// "fmt"
 	"errors"
 )
 
 var rminmax = rand.New(rand.NewSource(1))
 
-
 type MinMaxPlayer struct {
 	Player
-	p1Hand      []Card
-	p2Hand      []Card
-	skat        []Card
-	maxHandSize int
-	maxWorlds   int
-	timeOutMs int
+	p1Hand               []Card
+	p2Hand               []Card
+	skat                 []Card
+	maxHandSize          int
+	maxWorlds            int
+	timeOutMs            int
 	mctsSimulationTimeMs int
-	depth int
+	depth                int
 	// schneiderGoal bool
 }
-
 
 func (p *MinMaxPlayer) clone() PlayerI {
 	newPlayer := makeMinMaxPlayer([]Card{})
 
 	pl := p.Player.clone()
 	var clone = pl.(*Player)
-	newPlayer.Player = *clone	
+	newPlayer.Player = *clone
 
 	newPlayer.p1Hand = p.p1Hand
 	newPlayer.p2Hand = p.p2Hand
@@ -49,14 +47,14 @@ func (p *MinMaxPlayer) clone() PlayerI {
 
 func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 	return MinMaxPlayer{
-		Player:      makePlayer(hand),
-		p1Hand:      []Card{},
-		p2Hand:      []Card{},
-		maxHandSize: 5, // MINIMAX takes too long at 6, Will try MCTS
-		maxWorlds:   20,
-		timeOutMs: 5000,
+		Player:               makePlayer(hand),
+		p1Hand:               []Card{},
+		p2Hand:               []Card{},
+		maxHandSize:          5, // MINIMAX takes too long at 6, Will try MCTS
+		maxWorlds:            MINIMAX_worlds,
+		timeOutMs:            MINIMAX_TO_ms,
 		mctsSimulationTimeMs: 1000,
-		depth: -1,
+		depth:                -1,
 		// schneiderGoal: false,
 	}
 }
@@ -97,17 +95,16 @@ func (p *MinMaxPlayer) minmaxSuggestion(s *SuitState, c []Card) (Card, float64) 
 	debugMinmaxLog("(%s) %d Worlds, %s\n", p.name, len(worlds), MINIMAX_ALG)
 
 	start := time.Now()
-	
 
 	if true {
-	// if len(p.hand) <= p.maxHandSize || len(worlds) < p.maxWorlds {
+		// if len(p.hand) <= p.maxHandSize || len(worlds) < p.maxWorlds {
 		// cardsFreq := make(map[string]int)
 		cardsTotal := make(map[string]float64)
 		cards := make(map[string]Card)
 
 		for _, card := range c {
-			cardsTotal[card.String()] = 0.0	
-			cards[card.String()] = card		
+			cardsTotal[card.String()] = 0.0
+			cards[card.String()] = card
 		}
 
 		i := 0
@@ -118,18 +115,16 @@ func (p *MinMaxPlayer) minmaxSuggestion(s *SuitState, c []Card) (Card, float64) 
 
 			// debugMinmaxLog("MinMaxPlayer\n")
 
-
-
 			// debugMinmaxLog("MINMAX: cards %s: %v, %s: %v, SKAT:%v\n", player1.getName(), p.p1Hand, player2.getName(), p.p2Hand, p.skat)
-			debugMinmaxLog("\nMINMAX %s: cards %v, %v, SKAT:%v\n", MINIMAX_ALG,  p.p1Hand,  p.p2Hand, p.skat)
+			debugMinmaxLog("\nMINMAX %s: cards %v, %v, SKAT:%v\n", MINIMAX_ALG, p.p1Hand, p.p2Hand, p.skat)
 			for _, card := range c {
 				value := p.minmaxSkat(s, c, card)
-				cardsTotal[card.String()] = cardsTotal[card.String()] + value			
+				cardsTotal[card.String()] = cardsTotal[card.String()] + value
 			}
 
 			t := time.Now()
 			elapsed := t.Sub(start)
-			if elapsed > time.Duration(p.timeOutMs) * time.Millisecond { // ms
+			if elapsed > time.Duration(p.timeOutMs)*time.Millisecond { // ms
 				debugMinmaxLog("TIMEOUT\n")
 				break
 			}
@@ -140,7 +135,7 @@ func (p *MinMaxPlayer) minmaxSuggestion(s *SuitState, c []Card) (Card, float64) 
 		debugMinmaxLog("Time: %v\n", elapsed)
 
 		for _, card := range c {
-			cardsTotal[card.String()] = cardsTotal[card.String()] / float64(i + 1)			
+			cardsTotal[card.String()] = cardsTotal[card.String()] / float64(i+1)
 		}
 
 		mostValue := float64(math.MinInt32)
@@ -168,14 +163,14 @@ func (p *MinMaxPlayer) minmaxSuggestion(s *SuitState, c []Card) (Card, float64) 
 							debugMinmaxLog("Losing the trick, play low\n")
 							mostValue, mostValueCard = v, cards[k]
 						}
-					}				
+					}
 				}
 			}
 		}
 		if mostValue > float64(math.MinInt32) {
 			debugMinmaxLog("%d Worlds: %v\n", i+1, cardsTotal)
 			debugMinmaxLog("(%s) Hand: %v, Playing card: %v with value %5.1f)\n\n", p.name, p.hand, mostValueCard, mostValue)
-			debugMinmaxLog("\nTACTICS suggest: %v\n\n", p.Player.playerTactic(s, c))			
+			debugMinmaxLog("\nTACTICS suggest: %v\n\n", p.Player.playerTactic(s, c))
 			return mostValueCard, mostValue
 		}
 		debugMinmaxLog("MINMAX Failed.. back no normal tactics")
@@ -199,10 +194,10 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 		}
 		if len(p.hand) < 6 {
 			minimax.MAXDEPTH = 6
-		}	
+		}
 		if len(p.hand) < 5 {
 			minimax.MAXDEPTH = 9999
-		}			
+		}
 	case "zw":
 		MINMAX_PREFIX = "ZW: "
 
@@ -215,16 +210,16 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 		}
 		if len(p.hand) < 6 {
 			minimax.MAXDEPTH = 9
-		}	
+		}
 		if len(p.hand) < 5 {
 			minimax.MAXDEPTH = 9999
-		}			
+		}
 	case "abt":
 		MINMAX_PREFIX = "ABT: "
 		minimax.MAXDEPTH = 6
 		if len(p.hand) < 10 {
 			minimax.MAXDEPTH = 6
-		}		
+		}
 		if len(p.hand) < 9 {
 			minimax.MAXDEPTH = 9
 		}
@@ -236,7 +231,7 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 		}
 		if len(p.hand) < 6 {
 			minimax.MAXDEPTH = 9999
-		}	
+		}
 	}
 
 	if p.depth != -1 {
@@ -268,14 +263,14 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 	// debugMinmaxLog("MINMAX: cards %s: %v, %s: %v, SKAT:%v\n", player1.getName(), p.p1Hand, player2.getName(), p.p2Hand, p.skat)
 	// debugMinmaxLog("Decl: %d\n", decl)
 
-// WORKING::::
+	// WORKING::::
 	// mmPlayers := make([]MinMaxPlayer, 3)
 	miPlayers := make([]PlayerI, 3)
 	for i := 0; i < 3; i++ {
 		mmplayer := copyPlayerMM(players[i])
 		// mmPlayers[i] = makeMinMaxPlayer(players[i].getHand())
-		// mmPlayers[i].name = players[i].getName() 
-		// mmPlayers[i].name += "-MM" 
+		// mmPlayers[i].name = players[i].getName()
+		// mmPlayers[i].name += "-MM"
 		mmplayer.name += "-MM"
 		// miPlayers[i] = &mmPlayers[i]
 		// mmplayer.hand = make([]Card, len(p.hand))
@@ -311,9 +306,8 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 			}
 		}
 
-
 		miPlayers[i] = &mmplayer
-	}	
+	}
 	skatState := SkatState{
 		s.cloneSuitStateNotPlayers(),
 		miPlayers,
@@ -352,22 +346,22 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 	nextState := skatState.FindNextState(SkatAction{card})
 
 	switch MINIMAX_ALG {
-		case "mm":
-			_, value = minimax.Minimax(nextState)
-		case "ab":
-			_, value = minimax.AlphaBeta(nextState)
-		case "zw":
-			aim := 61.0
-			// _, value = minimax.AlphaBeta(nextState)
-			if p.score > 61 {
-				aim = 90.0
-			}
-			_, value = minimax.ZeroWindowAlg(nextState, aim)
-		case "abt":
-			// minimax.DEBUG = true
-			// debugTacticsInMM = true			
-			// debugTacticsLog("Calling ABT\n")
-			_, value = minimax.AlphaBetaTactics(nextState)
+	case "mm":
+		_, value = minimax.Minimax(nextState)
+	case "ab":
+		_, value = minimax.AlphaBeta(nextState)
+	case "zw":
+		aim := 61.0
+		// _, value = minimax.AlphaBeta(nextState)
+		if p.score > 61 {
+			aim = 90.0
+		}
+		_, value = minimax.ZeroWindowAlg(nextState, aim)
+	case "abt":
+		// minimax.DEBUG = true
+		// debugTacticsInMM = true
+		// debugTacticsLog("Calling ABT\n")
+		_, value = minimax.AlphaBetaTactics(nextState)
 	}
 	minimaxSearching = false
 	// end := time.Now()
@@ -380,7 +374,6 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 
 	return value
 }
-
 
 func (p *MinMaxPlayer) losingScore(s *SuitState, score float64) bool {
 	if p.name == s.declarer.getName() {
@@ -428,7 +421,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 				copycards = checkVoidOpp1(s, p, copycards, suit)
 				copycards = checkVoidOpp2(s, p, copycards, suit)
 			}
-		} 
+		}
 		// what happens when player is not declarer?
 
 		if len(p.p1Hand) > max1 {
@@ -448,8 +441,6 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 	}
 	debugMinmaxLog("REMAINING after void: %d cards: %v %v %v\n", len(cards), cards, p.p1Hand, p.p2Hand)
 
-
-
 	// cards => ways to distribute
 	// 0 (0,0) => 1
 	// 1 (0,1) => 1
@@ -460,9 +451,9 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 	// 6 (3,3) => 20
 
 	if p.getName() == s.declarer.getName() {
-	// why not for everybody?
-	// because defenders DO NOT know the SKAT!
-	// if true {
+		// why not for everybody?
+		// because defenders DO NOT know the SKAT!
+		// if true {
 		if len(cards) < 2 || len(p.p1Hand) == max1 || len(p.p2Hand) == max2 {
 			p1H, p2H := p.distributeCards(s, cards)
 			world := [][]Card{p1H, p2H}
@@ -570,7 +561,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 			return worlds, nil
 		}
 
-		if len(cards) == 6 || len(p.p1Hand) == max1 - 3 || len(p.p2Hand) == max2 - 3 {
+		if len(cards) == 6 || len(p.p1Hand) == max1-3 || len(p.p2Hand) == max2-3 {
 			var restoreHands func()
 			var appendCards func(card1, card2, card3 Card)
 			// STORE THE hands in order to restore them
@@ -673,7 +664,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 			// debugMinmaxLog("Declarer is P1\n") // you are s.opp2
 		} else {
 			// debugMinmaxLog("Declarer is P2\n") // you are s.opp1
-		} 
+		}
 
 		if p.getName() != s.declarer.getName() {
 			p.p1Hand = []Card{}
@@ -685,7 +676,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 				} else {
 					copycards = checkVoidDecl(s, p, copycards, suit, IsDeclarerP1)
 					// debugMinmaxLog("..copycards: %v\n", copycards)
-				}	
+				}
 				if p.getName() == s.opp1.getName() {
 					copycards = partnerCheckVoidOpp2(s, p, copycards, suit)
 					// debugMinmaxLog("..copycards after partner void: %v\n", copycards)
@@ -704,7 +695,7 @@ func (p *MinMaxPlayer) dealCards(s *SuitState) ([][][]Card, error) {
 		if len(p1H) > max1 || len(p2H) > max2 {
 			debugMinmaxLog("IMPOSSIBLE!")
 			return nil, errors.New("Hand size over")
-		}		
+		}
 		// debugMinmaxLog("DISTRIBUTION: %v %v\n", p1H, p2H)
 		world := [][]Card{p1H, p2H}
 		worlds = append(worlds, world)
@@ -771,8 +762,8 @@ func checkVoidDecl(s *SuitState, p *MinMaxPlayer, cards []Card, suit string, IsD
 		cards = remove(cards, suitCards...)
 	}
 	singleVoidCards := filter(cards, func(c Card) bool {
-			return in(s.declarerVoidCards, c)
-		})
+		return in(s.declarerVoidCards, c)
+	})
 	if IsDeclarerP1 {
 		p.p2Hand = append(p.p2Hand, singleVoidCards...)
 	} else {
@@ -794,8 +785,8 @@ func checkVoidOpp1(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []C
 		cards = remove(cards, suitCards...)
 	}
 	singleVoidCards := filter(cards, func(c Card) bool {
-			return in(s.opp1VoidCards, c)
-		})
+		return in(s.opp1VoidCards, c)
+	})
 	p.p2Hand = append(p.p2Hand, singleVoidCards...)
 	cards = remove(cards, s.opp1VoidCards...)
 	// debugMinmaxLog("..Opponent 1 does not have: %v\n", s.opp1VoidCards)
@@ -812,8 +803,8 @@ func checkVoidOpp2(s *SuitState, p *MinMaxPlayer, cards []Card, suit string) []C
 		cards = remove(cards, suitCards...)
 	}
 	singleVoidCards := filter(cards, func(c Card) bool {
-			return in(s.opp2VoidCards, c)
-		})
+		return in(s.opp2VoidCards, c)
+	})
 	p.p1Hand = append(p.p1Hand, singleVoidCards...)
 	cards = remove(cards, s.opp2VoidCards...)
 	// debugMinmaxLog("..Opponent 2 does not have: %v\n", s.opp2VoidCards)
@@ -877,5 +868,3 @@ func (p *MinMaxPlayer) getDeclarerNrAndPlayers(s *SuitState) (int, PlayerI, Play
 	}
 	return decl, player1, player2
 }
-
-

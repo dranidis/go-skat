@@ -4,7 +4,6 @@ import (
 	"testing"
 )
 
-
 func TestGrandLosers1(t *testing.T) {
 	cards := []Card{
 		Card{CLUBS, "A"},
@@ -19,7 +18,7 @@ func TestGrandLosers1(t *testing.T) {
 	}
 
 	losers := grandLosers(cards)
-	if !in(losers,Card{SPADE, "K"}) {
+	if !in(losers, Card{SPADE, "K"}) {
 		// , Card{HEART, "10"}) {
 		t.Errorf("Losers: %v", losers)
 	}
@@ -31,13 +30,13 @@ func TestGrandLosers2(t *testing.T) {
 		Card{SPADE, "10"},
 		Card{SPADE, "K"},
 
-		Card{SPADE, "8"},  
-		Card{SPADE, "7"},  
+		Card{SPADE, "8"},
+		Card{SPADE, "7"},
 
 		Card{CLUBS, "K"},
 
-		Card{HEART, "10"},  // will be discarded!
-		
+		Card{HEART, "10"}, // will be discarded!
+
 		Card{CARO, "9"},
 		Card{CARO, "8"},
 	}
@@ -52,9 +51,9 @@ func TestGrandLosers3(t *testing.T) {
 	cards := []Card{
 		Card{SPADE, "A"},
 		Card{SPADE, "10"},
-		Card{SPADE, "9"},  
-		Card{SPADE, "8"},  
-		Card{SPADE, "7"},  
+		Card{SPADE, "9"},
+		Card{SPADE, "8"},
+		Card{SPADE, "7"},
 	}
 
 	losers := grandLosers(cards)
@@ -68,9 +67,9 @@ func TestGrandLosers4(t *testing.T) {
 		Card{SPADE, "A"},
 		Card{SPADE, "K"},
 		Card{SPADE, "Q"},
-		Card{SPADE, "9"},  
-		Card{SPADE, "8"},  
-		Card{SPADE, "7"},  
+		Card{SPADE, "9"},
+		Card{SPADE, "8"},
+		Card{SPADE, "7"},
 	}
 
 	losers := grandLosers(cards)

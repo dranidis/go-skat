@@ -2,16 +2,15 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
-	"fmt"
 	// "time"
 	// "github.com/dranidis/go-skat/game"
 	// "github.com/dranidis/go-skat/game/minimax"
 	// "github.com/dranidis/go-skat/game/mcts"
-
 )
 
 func TestMain(m *testing.M) {
@@ -609,7 +608,6 @@ func TestMostCardsSuitTwoAsuitsAndAWeakSuit2(t *testing.T) {
 	}
 }
 
-
 func gameScore1(trump string, cs []Card, s int, bid int, decS, oppS bool, hg bool) int {
 	d := makePlayer([]Card{})
 	o1 := makePlayer([]Card{})
@@ -624,7 +622,6 @@ func gameScore1(trump string, cs []Card, s int, bid int, decS, oppS bool, hg boo
 	testState.opp1 = &o1
 	testState.opp2 = &o2
 	testState.declarer.setDeclaredBid(bid)
-
 
 	gs := gameScore(testState, cs, hg)
 	return gs.GameScore
@@ -735,7 +732,6 @@ func TestGameScore(t *testing.T) {
 	}
 
 }
-
 
 func TestFindBlankCards(t *testing.T) {
 	player := makePlayer([]Card{
@@ -922,7 +918,6 @@ func TestHighestShort(t *testing.T) {
 	}
 }
 
-
 func TestOtherPlayersTrumps(t *testing.T) {
 	player := makePlayer([]Card{})
 	s := makeSuitState()
@@ -1082,7 +1077,6 @@ func TestInMany(t *testing.T) {
 
 }
 
-
 func TestNextLowestCardsStillInPlay(t *testing.T) {
 	s := makeSuitState()
 
@@ -1105,11 +1099,6 @@ func TestNextLowestCardsStillInPlay(t *testing.T) {
 		t.Errorf("10 played")
 	}
 }
-
-
-
-
-
 
 func TestSingletons(t *testing.T) {
 	cs := []Card{
@@ -1390,7 +1379,6 @@ func TestHTMLBid3(t *testing.T) {
 		t.Errorf("Error bid, exp: %v, found %v", expB, actB)
 	}
 
-
 	// FOREHAND (18) No
 	req, _ = http.NewRequest("GET", "/bid/0", nil)
 	rr = httptest.NewRecorder()
@@ -1475,7 +1463,6 @@ func TestHTMLBid4(t *testing.T) {
 		t.Errorf("Error bid, exp: %v, found %v", expB, actB)
 	}
 
-
 }
 
 func TestWinnerCards(t *testing.T) {
@@ -1499,21 +1486,18 @@ func TestWinnerCards(t *testing.T) {
 	}
 }
 
-
 func TestGreaterTrump(t *testing.T) {
 	s := makeSuitState()
 	s.skat = []Card{}
 	s.trump = CLUBS
 	card := Card{CLUBS, "J"}
 	c := Card{CARO, "J"}
-	act := s.greater(card, c) 
+	act := s.greater(card, c)
 	exp := true
 	if act != exp {
 		t.Errorf("Error in higher")
 	}
 }
-
-
 
 func TestDealCardsMID(t *testing.T) {
 	p := makeMinMaxPlayer([]Card{
@@ -1546,7 +1530,7 @@ func TestDealCardsMID(t *testing.T) {
 	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
 
 	worlds, _ := p.dealCards(&s)
-	if len(worlds) != 10  {
+	if len(worlds) != 10 {
 		t.Errorf("Expecting 10 world, found %d: %v", len(worlds), worlds)
 	}
 	for i := 0; i < len(worlds); i++ {
@@ -1572,7 +1556,6 @@ func TestDealCardsMID(t *testing.T) {
 		}
 	}
 }
-
 
 func TestDealCardsMID2(t *testing.T) {
 	p := makeMinMaxPlayer([]Card{
@@ -1610,7 +1593,7 @@ func TestDealCardsMID2(t *testing.T) {
 	s.opp1VoidSuit[CARO] = true
 	s.opp2VoidSuit[CLUBS] = true
 
-	worlds,_ := p.dealCards(&s)
+	worlds, _ := p.dealCards(&s)
 
 	for i := 0; i < len(worlds); i++ {
 		// SET world
@@ -1619,15 +1602,15 @@ func TestDealCardsMID2(t *testing.T) {
 
 		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
 
-		for _,c := range  makeSuitDeck(void1) {
+		for _, c := range makeSuitDeck(void1) {
 			if in(p.p1Hand, c) {
 				t.Errorf("Opp1 is VOID of %s: %v %v", p.p1Hand, c, void1)
-			}		
+			}
 		}
-		for _,c := range  makeSuitDeck(void2) {
+		for _, c := range makeSuitDeck(void2) {
 			if in(p.p2Hand, c) {
 				t.Errorf("Opp2 is VOID of %s: %v %v", p.p2Hand, c, void2)
-			}		
+			}
 		}
 
 		if len(p.p2Hand) != 2 {
@@ -1636,9 +1619,8 @@ func TestDealCardsMID2(t *testing.T) {
 
 		if len(p.p1Hand) != 3 {
 			t.Errorf("Wrong hand size for next player: %v", p.p1Hand)
-		}	
+		}
 	}
-
 
 }
 
@@ -1662,7 +1644,7 @@ func TestDealCardsLeader(t *testing.T) {
 		Card{SPADE, "10"},
 		Card{CARO, "10"},
 		Card{HEART, "10"},
-//
+		//
 		Card{CLUBS, "K"},
 	}
 
@@ -1724,7 +1706,7 @@ func TestDealCardsLeader3(t *testing.T) {
 		Card{SPADE, "10"},
 		Card{CARO, "10"},
 		Card{HEART, "10"},
-//
+		//
 		Card{CLUBS, "K"},
 	}
 
@@ -1737,7 +1719,7 @@ func TestDealCardsLeader3(t *testing.T) {
 	p1HandSize := 3
 	p2HandSize := 3
 
-	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)	
+	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
 
 	// VOID SUITS
 	void1 := CARO
@@ -1754,15 +1736,15 @@ func TestDealCardsLeader3(t *testing.T) {
 
 		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
 
-		for _,c := range  makeSuitDeck(void1) {
+		for _, c := range makeSuitDeck(void1) {
 			if in(p.p1Hand, c) {
 				t.Errorf("Opp1 is VOID of %s: %v %v", p.p1Hand, c, void1)
-			}		
+			}
 		}
-		for _,c := range  makeSuitDeck(void2) {
+		for _, c := range makeSuitDeck(void2) {
 			if in(p.p2Hand, c) {
 				t.Errorf("Opp2 is VOID of %s: %v %v", p.p2Hand, c, void2)
-			}		
+			}
 		}
 
 		if len(p.p2Hand) != p2HandSize {
@@ -1771,9 +1753,8 @@ func TestDealCardsLeader3(t *testing.T) {
 
 		if len(p.p1Hand) != p1HandSize {
 			t.Errorf("Wrong hand size for next player: %v", p.p1Hand)
-		}	
+		}
 	}
-
 
 }
 
@@ -1789,15 +1770,15 @@ func TestDealCardsBack(t *testing.T) {
 	s.declarer = &p
 	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
 
-	s.trick = []Card{Card{CLUBS, "K"},Card{CLUBS, "A"}}
+	s.trick = []Card{Card{CLUBS, "K"}, Card{CLUBS, "A"}}
 
 	notPlayedYet := []Card{
 		Card{CLUBS, "D"},
 		Card{SPADE, "10"},
 		Card{CARO, "10"},
 		Card{HEART, "10"},
-//
-		
+		//
+
 	}
 
 	s.cardsPlayed = makeDeck()
@@ -1812,7 +1793,7 @@ func TestDealCardsBack(t *testing.T) {
 	fmt.Printf("PLAYED CARDS %v\n", s.cardsPlayed)
 
 	worlds, _ := p.dealCards(&s)
-	if len(worlds) != 6  {
+	if len(worlds) != 6 {
 		t.Errorf("Expecting 6 world, found %d: %v", len(worlds), worlds)
 	}
 
@@ -1852,15 +1833,15 @@ func TestDealCardsBack2(t *testing.T) {
 	s.declarer = &p
 	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
 
-	s.trick = []Card{Card{CLUBS, "K"},Card{CLUBS, "A"}}
+	s.trick = []Card{Card{CLUBS, "K"}, Card{CLUBS, "A"}}
 
 	notPlayedYet := []Card{
 		Card{CLUBS, "D"},
 		Card{SPADE, "10"},
 		Card{CARO, "10"},
 		Card{HEART, "10"},
-//
-		
+		//
+
 	}
 
 	s.cardsPlayed = makeDeck()
@@ -1889,15 +1870,15 @@ func TestDealCardsBack2(t *testing.T) {
 
 		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
 
-		for _,c := range  makeSuitDeck(void1) {
+		for _, c := range makeSuitDeck(void1) {
 			if in(p.p1Hand, c) {
 				t.Errorf("Opp1 is VOID of %s: %v %v", p.p1Hand, c, void1)
-			}		
+			}
 		}
-		for _,c := range  makeSuitDeck(void2) {
+		for _, c := range makeSuitDeck(void2) {
 			if in(p.p2Hand, c) {
 				t.Errorf("Opp2 is VOID of %s: %v %v", p.p2Hand, c, void2)
-			}		
+			}
 		}
 
 		if len(p.p2Hand) != p2HandSize {
@@ -1906,9 +1887,8 @@ func TestDealCardsBack2(t *testing.T) {
 
 		if len(p.p1Hand) != p1HandSize {
 			t.Errorf("Wrong hand size for next player: %v", p.p1Hand)
-		}	
+		}
 	}
-
 
 }
 
@@ -1933,7 +1913,7 @@ func TestDealCardsLeader2(t *testing.T) {
 		Card{CLUBS, "8"},
 
 		Card{CARO, "10"},
-//
+		//
 		Card{HEART, "D"},
 		Card{HEART, "A"},
 		Card{HEART, "K"},
@@ -1957,7 +1937,6 @@ func TestDealCardsLeader2(t *testing.T) {
 	s.opp1VoidSuit[void1] = true
 	s.opp2VoidSuit[void2] = true
 
-
 	worlds, _ := p.dealCards(&s)
 
 	for i := 0; i < len(worlds); i++ {
@@ -1967,15 +1946,15 @@ func TestDealCardsLeader2(t *testing.T) {
 
 		fmt.Printf("DEALT: %v %v\n", p.p1Hand, p.p2Hand)
 
-		for _,c := range  makeSuitDeck(void1) {
+		for _, c := range makeSuitDeck(void1) {
 			if in(p.p1Hand, c) {
 				t.Errorf("Opp1 is VOID of %s: %v %v", p.p1Hand, c, void1)
-			}		
+			}
 		}
-		for _,c := range  makeSuitDeck(void2) {
+		for _, c := range makeSuitDeck(void2) {
 			if in(p.p2Hand, c) {
 				t.Errorf("Opp2 is VOID of %s: %v %v", p.p2Hand, c, void2)
-			}		
+			}
 		}
 		if len(p.p2Hand) != p2HandSize {
 			t.Errorf("Wrong hand size for player who just opened the trick: %v", p.p2Hand)
@@ -1983,7 +1962,6 @@ func TestDealCardsLeader2(t *testing.T) {
 
 		if len(p.p1Hand) != p1HandSize {
 			t.Errorf("Wrong hand size for next player: %v", p.p1Hand)
-		}	
+		}
 	}
 }
-

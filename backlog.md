@@ -1,3 +1,4 @@
+
 # Optimize Legal actions in MinMax
 	Evaluate only better actions.
 	For example when a player surely loses the trick and he needs to choose between 10, K, D, 9 only the 9 should be evaluated as a legal action.

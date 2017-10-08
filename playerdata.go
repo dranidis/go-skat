@@ -30,8 +30,7 @@ func makePlayerData(hand []Card) PlayerData {
 		hand, 0, 0, true, 0, "", 0, 0, 0, 0, inf}
 }
 
-
-func (p *PlayerData) clone() PlayerData{
+func (p *PlayerData) clone() PlayerData {
 	newPlayerData := makePlayerData([]Card{})
 
 	newPlayerData.name = p.name
@@ -40,7 +39,7 @@ func (p *PlayerData) clone() PlayerData{
 
 	newPlayerData.hand = newHand
 	newPlayerData.highestBid = p.highestBid
-	newPlayerData.score  = p.score
+	newPlayerData.score = p.score
 	newPlayerData.schwarz = p.schwarz
 	newPlayerData.totalScore = p.totalScore
 	newPlayerData.previousSuit = p.previousSuit
@@ -58,7 +57,6 @@ func (p PlayerData) String() string {
 	return fmt.Sprintf("(%s):%v [%d]", p.name, p.hand, p.score)
 }
 
-
 func (p *PlayerData) ResetPlayer() {
 	p.setScore(0)
 	p.setSchwarz(true)
@@ -71,7 +69,6 @@ func (p *PlayerData) ResetPlayer() {
 func (p *PlayerData) getInference() Inference {
 	return p.Inference
 }
-
 
 func (p *PlayerData) setDeclaredBid(b int) {
 	p.declaredBid = b
@@ -95,7 +92,6 @@ func (p *PlayerData) getWon() int {
 func (p *PlayerData) getLost() int {
 	return p.lost
 }
-
 
 func (p *PlayerData) incTotalScore(s int) {
 	if s > 0 {

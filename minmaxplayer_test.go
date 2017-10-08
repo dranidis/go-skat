@@ -25,7 +25,6 @@ func TestGameMinMaxDefender(t *testing.T) {
 	// 	gs1 = skatGame()
 	// }
 
-
 	// mm2 := makeMinMaxPlayer([]Card{})
 	// player2 = &mm2
 	// player2.setName("Def1")
@@ -38,6 +37,4 @@ func TestGameMinMaxDefender(t *testing.T) {
 	// 	t.Errorf("Different scores")
 	// }
 
-
 }
-

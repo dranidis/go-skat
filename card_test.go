@@ -4,7 +4,6 @@ import (
 	"testing"
 )
 
-
 func TestSortRank(t *testing.T) {
 	cards := []Card{
 		Card{CLUBS, "J"},
@@ -19,8 +18,6 @@ func TestSortRank(t *testing.T) {
 		t.Errorf("ERROR IN SORTRANK")
 	}
 }
-
-
 
 func TestSortRank2(t *testing.T) {
 	cards := []Card{
@@ -59,7 +56,7 @@ func TestSortRankSpecial1(t *testing.T) {
 
 	shCards := Shuffle(cards)
 
-	sr := sortRankSpecial(shCards, []string{"A", "K", "D", "J", "10" ,"9", "8", "7"})
+	sr := sortRankSpecial(shCards, []string{"A", "K", "D", "J", "10", "9", "8", "7"})
 
 	if len(sr) != len(cards) {
 		t.Errorf("ERROR IN SORTRANKspecial")
@@ -70,8 +67,6 @@ func TestSortRankSpecial1(t *testing.T) {
 		}
 	}
 }
-
-
 
 func TestRemove1(t *testing.T) {
 	hand := []Card{
@@ -133,17 +128,17 @@ func TestRemove3(t *testing.T) {
 	i := 0
 	debugTacticsLog("cs[:i] = %v, cs[i+1:] = %v\n", hand[:i], hand[i+1:])
 
-	debugTacticsLog("List: %v\n",hand)
+	debugTacticsLog("List: %v\n", hand)
 	cardToRemove := Card{CLUBS, "J"}
 	newhand := remove(hand, cardToRemove)
-	debugTacticsLog("Remove first: %v %v\n",hand, newhand)
+	debugTacticsLog("Remove first: %v %v\n", hand, newhand)
 	if in(newhand, cardToRemove) {
 		t.Errorf("First Card not removed")
 	}
 
 	cardToRemove = Card{SPADE, "8"}
 	newhand2 := remove(newhand, cardToRemove)
-	debugTacticsLog("Remove last: %v %v %v\n",hand, newhand, newhand2)
+	debugTacticsLog("Remove last: %v %v %v\n", hand, newhand, newhand2)
 	if in(newhand2, cardToRemove) {
 		t.Errorf("Last Card not removed")
 	}
@@ -211,7 +206,7 @@ func TestSimilar2(t *testing.T) {
 	if !in(equiv, Card{CLUBS, "J"}, Card{CLUBS, "10"}, Card{CLUBS, "D"}, Card{CLUBS, "7"}, Card{SPADE, "A"}, Card{SPADE, "K"}, Card{HEART, "9"}, Card{HEART, "7"}) {
 		t.Errorf("Wrong similar cards %v", equiv)
 	}
-	if in(equiv, Card{SPADE, "J"}) || in(equiv, Card{SPADE, "10"})  {
+	if in(equiv, Card{SPADE, "J"}) || in(equiv, Card{SPADE, "10"}) {
 		t.Errorf("Wrong similar cards %v", equiv)
 	}
 }
@@ -246,7 +241,7 @@ func TestSimilar3(t *testing.T) {
 	if !in(equiv, Card{CLUBS, "J"}, Card{CLUBS, "10"}, Card{CLUBS, "D"}, Card{CLUBS, "7"}, Card{SPADE, "A"}, Card{SPADE, "K"}, Card{HEART, "9"}) {
 		t.Errorf("Wrong similar cards %v", equiv)
 	}
-	if in(equiv, Card{CARO, "J"}) || in(equiv, Card{SPADE, "10"}, Card{HEART, "7"})  {
+	if in(equiv, Card{CARO, "J"}) || in(equiv, Card{SPADE, "10"}, Card{HEART, "7"}) {
 		t.Errorf("Wrong similar cards %v", equiv)
 	}
 }
@@ -271,7 +266,7 @@ func TestSimilar4(t *testing.T) {
 	if !in(equiv, Card{CLUBS, "J"}, Card{CLUBS, "9"}) {
 		t.Errorf("Wrong similar cards %v", equiv)
 	}
-	if in(equiv, Card{CLUBS, "8"}) || in(equiv, Card{CLUBS, "7"})  {
+	if in(equiv, Card{CLUBS, "8"}) || in(equiv, Card{CLUBS, "7"}) {
 		t.Errorf("Wrong similar cards %v", equiv)
 	}
 }
@@ -300,13 +295,13 @@ func TestEquivalent(t *testing.T) {
 	if !in(equiv, Card{CLUBS, "J"}, Card{HEART, "J"}) {
 		t.Errorf("Wrong equivalent cards %v", equiv)
 	}
-	if in(equiv, Card{CLUBS, "9"}, Card{CLUBS, "8"})  {
+	if in(equiv, Card{CLUBS, "9"}, Card{CLUBS, "8"}) {
 		t.Errorf("Wrong equivalent cards %v", equiv)
 	}
-	if in(equiv, Card{CLUBS, "9"}, Card{CLUBS, "7"})  {
+	if in(equiv, Card{CLUBS, "9"}, Card{CLUBS, "7"}) {
 		t.Errorf("Wrong equivalent cards %v", equiv)
 	}
-	if in(equiv, Card{CLUBS, "8"}, Card{CLUBS, "7"})  {
+	if in(equiv, Card{CLUBS, "8"}, Card{CLUBS, "7"}) {
 		t.Errorf("Wrong equivalent cards %v", equiv)
 	}
 
@@ -331,3 +326,43 @@ func TestEquivalent(t *testing.T) {
 	debugTacticsLog("Equivalent: %v, %v\n", cards, equiv)
 
 }
+
+//probabilities
+// func TestZuDrittProb(t *testing.T) {
+// 	cards := []Card{
+// 		Card{"CARO", "K"},
+// 		Card{"CARO", "9"},
+// 		Card{"CARO", "8"},
+// 		Card{"CARO", "7"},
+// 		Card{"SPADE", "7"},
+// 		Card{"SPADE", "8"},
+// 		Card{"SPADE", "9"},
+// 		Card{"SPADE", "10"},
+// 	}
+
+// 	zuDritt := func (cs []Card) bool {
+// 		caros := filter(cs, func(c Card) bool {
+// 			return c.Suit == "CARO"
+// 			})
+// 		if len(caros) >= 3 && in(caros, Card{"CARO", "K"}) {
+// 			return true
+// 		}
+// 		return false
+// 	}
+// 	zt := 0
+// 	tot := 100
+// 	for i := 0 ; i < tot; i++ {
+// 		cards := Shuffle(cards)
+// 		half1 := cards[0:4]
+// 		half2 := cards[4:]
+// 		// debugTacticsLog("%v %v", half1, half2)
+// 		if zuDritt(half1) || zuDritt(half2) {
+// 			//debugTacticsLog("\tZT\n")
+// 			zt++
+// 		} else {
+// 			//debugTacticsLog("\n")
+// 		}
+// 	}
+// 	debugTacticsLog("%d %d\n", zt, zt * 100/tot)
+
+// }

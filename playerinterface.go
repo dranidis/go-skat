@@ -34,4 +34,3 @@ type PlayerI interface {
 
 	getInference() Inference
 }
-
