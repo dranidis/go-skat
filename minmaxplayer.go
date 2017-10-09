@@ -54,7 +54,7 @@ func makeMinMaxPlayer(hand []Card) MinMaxPlayer {
 		maxWorlds:            MINIMAX_worlds,
 		timeOutMs:            MINIMAX_TO_ms,
 		mctsSimulationTimeMs: 1000,
-		depth:                -1,
+		depth:                MINIMAX_EXTRA_DEPTH,
 		// schneiderGoal: false,
 	}
 }
@@ -116,11 +116,18 @@ func (p *MinMaxPlayer) minmaxSuggestion(s *SuitState, c []Card) (Card, float64) 
 			// debugMinmaxLog("MinMaxPlayer\n")
 
 			// debugMinmaxLog("MINMAX: cards %s: %v, %s: %v, SKAT:%v\n", player1.getName(), p.p1Hand, player2.getName(), p.p2Hand, p.skat)
-			debugMinmaxLog("\nMINMAX %s: cards %v, %v, SKAT:%v\n", MINIMAX_ALG, p.p1Hand, p.p2Hand, p.skat)
+			debugMinmaxLog("Opp1: %v Opp2: %v, SKAT:%v", p.p1Hand, p.p2Hand, p.skat)
+
+			max := 0.0
+			var maxCard Card
 			for _, card := range c {
 				value := p.minmaxSkat(s, c, card)
 				cardsTotal[card.String()] = cardsTotal[card.String()] + value
+				if value > max {
+					max, maxCard = value, card
+				}
 			}
+			debugTacticsLog("\t%v %4.0f\n", maxCard, max)
 
 			t := time.Now()
 			elapsed := t.Sub(start)
@@ -141,31 +148,39 @@ func (p *MinMaxPlayer) minmaxSuggestion(s *SuitState, c []Card) (Card, float64) 
 		mostValue := float64(math.MinInt32)
 		var mostValueCard Card
 		// var bestAvgCard Card
+		mostValueCards := []Card{}
+		// debugTacticsLog("Cards totals: %v\n"m cardsTotal)
 		for k, v := range cardsTotal {
 			if v > mostValue {
 				mostValue, mostValueCard = v, cards[k]
+				mostValueCards = []Card{cards[k]}
+			} else if v == mostValue {
+				// debugTacticsLog("EQUAL: %f, %f\n", v, mostValue)
+				// if getSuit(s.trump, mostValueCard) == s.trump {
+				// 	if getSuit(s.trump, cards[k]) != s.trump {
+				// 		debugMinmaxLog("Prefering a non-trump: %v, %v\n", mostValueCard, cards[k])
+				// 		mostValue, mostValueCard = v, cards[k]
+				// 	} else if cardValue(cards[k]) < cardValue(mostValueCard) {
+				// 		if declarerCardIsLosingTrick(s, p, mostValueCard) {
+				// 			debugMinmaxLog("Losing the trick, play low\n")
+				// 			mostValue, mostValueCard = v, cards[k]
+				// 		}
+				// 	} // add rank ordering : getRank
+				// } else {
+				// 	if cardValue(cards[k]) < cardValue(mostValueCard) {
+				// 		if declarerCardIsLosingTrick(s, p, mostValueCard) {
+				// 			debugMinmaxLog("Losing the trick, play low\n")
+				// 			mostValue, mostValueCard = v, cards[k]
+				// 		}
+				// 	}
+				// }
+				mostValueCards = append(mostValueCards, cards[k])
 			}
-			if v == mostValue {
-				debugTacticsLog("EQUAL: %f, %f\n", v, mostValue)
-				if getSuit(s.trump, mostValueCard) == s.trump {
-					if getSuit(s.trump, cards[k]) != s.trump {
-						debugMinmaxLog("Prefering a non-trump: %v, %v\n", mostValueCard, cards[k])
-						mostValue, mostValueCard = v, cards[k]
-					} else if cardValue(cards[k]) < cardValue(mostValueCard) {
-						if declarerCardIsLosingTrick(s, p, mostValueCard) {
-							debugMinmaxLog("Losing the trick, play low\n")
-							mostValue, mostValueCard = v, cards[k]
-						}
-					} // add rank ordering : getRank
-				} else {
-					if cardValue(cards[k]) < cardValue(mostValueCard) {
-						if declarerCardIsLosingTrick(s, p, mostValueCard) {
-							debugMinmaxLog("Losing the trick, play low\n")
-							mostValue, mostValueCard = v, cards[k]
-						}
-					}
-				}
-			}
+		}
+		if len(mostValueCards) > 1 {
+			debugMinmaxLog("Equal cards: %v\n", mostValueCards)
+			mostValueCard = p.Player.playerTactic(s, mostValueCards)
+			debugMinmaxLog("Tactics decide: %v\n", mostValueCard)
 		}
 		if mostValue > float64(math.MinInt32) {
 			debugMinmaxLog("%d Worlds: %v\n", i+1, cardsTotal)
@@ -234,9 +249,9 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 		}
 	}
 
-	if p.depth != -1 {
-		minimax.MAXDEPTH = p.depth
-	}
+	// if p.depth != -1 {
+		minimax.MAXDEPTH += p.depth // extra depth
+	// }
 	// var player1 PlayerI
 	// var player2 PlayerI
 	// if len(s.trick) == 0 {
@@ -370,7 +385,7 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 
 	// ma := a.(SkatAction)
 
-	debugMinmaxLog("%v: %4.2f\t", card, value)
+	// debugMinmaxLog("%v: %4.0f\t", card, value)
 
 	return value
 }

@@ -58,6 +58,7 @@ var minmax3Flag = false
 var minimaxSearching = false
 var MINIMAX_TO_ms = 10000
 var MINIMAX_worlds = 20
+var MINIMAX_EXTRA_DEPTH = 0
 
 var gameIndex = 1
 var player1 PlayerI
@@ -879,6 +880,7 @@ func main() {
 	var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 	flag.IntVar(&MINIMAX_TO_ms, "mmtimeout", 5000, "Timeout (in ms) for minmax")
 	flag.IntVar(&MINIMAX_worlds, "mmworlds", 20, "Maximum worlds to generate for minmax")
+	flag.IntVar(&MINIMAX_EXTRA_DEPTH, "mmextradepth", 0, "Add extra depth to the default")
 
 	flag.Parse()
 
