@@ -46,8 +46,8 @@ func (p *HtmlPlayer) calculateHighestBid(b bool) int {
 }
 
 func (p *HtmlPlayer) discardInSkat(skat []Card) {
-	card1 := <- discardChannel	
-	card2 := <- discardChannel	
+	card1 := <-discardChannel
+	card2 := <-discardChannel
 
 	p.setHand(remove(p.getHand(), card1))
 	p.setHand(remove(p.getHand(), card2))
@@ -72,13 +72,13 @@ func (p *HtmlPlayer) pickUpSkat(skat []Card) bool {
 	p.setHand(sortSuit("", hand))
 
 	// find indices of skat cards in hand
-	for i, c := range(p.hand) {
+	for i, c := range p.hand {
 		if c.equals(skat[0]) {
 			skatPositionChannel <- i
-		} 
+		}
 		if c.equals(skat[1]) {
 			skatPositionChannel <- i
-		} 		
+		}
 	}
 	// SEND HAND TO SERVER
 

@@ -1,27 +1,27 @@
 package main
 
 type Inference struct {
-//facts
-	trumpsInGame     []Card
-	cardsPlayed      []Card
+	//facts
+	trumpsInGame []Card
+	cardsPlayed  []Card
 
 	declarerVoidSuit map[string]bool
-	opp1VoidSuit  map[string]bool
-	opp2VoidSuit  map[string]bool
+	opp1VoidSuit     map[string]bool
+	opp2VoidSuit     map[string]bool
 
-// beliefs
+	// beliefs
 	declarerVoidSuitB map[string]bool
-	opp1VoidSuitB  map[string]bool
-	opp2VoidSuitB  map[string]bool
+	opp1VoidSuitB     map[string]bool
+	opp2VoidSuitB     map[string]bool
 
-	declarerVoidCards  []Card
-	opp1VoidCards []Card
-	opp2VoidCards []Card
+	declarerVoidCards []Card
+	opp1VoidCards     []Card
+	opp2VoidCards     []Card
 }
 
 func makeInference() Inference {
 	return Inference{
-		[]Card{}, 
+		[]Card{},
 		[]Card{},
 		map[string]bool{
 			CLUBS: false,
@@ -59,8 +59,8 @@ func makeInference() Inference {
 			HEART: false,
 			CARO:  false,
 		},
-		[]Card{}, 
-		[]Card{}, 
+		[]Card{},
+		[]Card{},
 		[]Card{},
 	}
 }
@@ -70,49 +70,49 @@ func (s *Inference) cloneInference() Inference {
 
 	newI.trumpsInGame = make([]Card, len(s.trumpsInGame))
 	copy(newI.trumpsInGame, s.trumpsInGame)
-	
+
 	newI.cardsPlayed = make([]Card, len(s.cardsPlayed))
 	copy(newI.cardsPlayed, s.cardsPlayed)
-		
+
 	newI.declarerVoidSuit = map[string]bool{
-			CLUBS: s.declarerVoidSuit[CLUBS],
-			SPADE: s.declarerVoidSuit[SPADE],
-			HEART: s.declarerVoidSuit[HEART],
-			CARO:  s.declarerVoidSuit[CARO],
-		}
+		CLUBS: s.declarerVoidSuit[CLUBS],
+		SPADE: s.declarerVoidSuit[SPADE],
+		HEART: s.declarerVoidSuit[HEART],
+		CARO:  s.declarerVoidSuit[CARO],
+	}
 	newI.opp1VoidSuit = map[string]bool{
-			CLUBS: s.opp1VoidSuit[CLUBS],
-			SPADE: s.opp1VoidSuit[SPADE],
-			HEART: s.opp1VoidSuit[HEART],
-			CARO:  s.opp1VoidSuit[CARO],
-		}
+		CLUBS: s.opp1VoidSuit[CLUBS],
+		SPADE: s.opp1VoidSuit[SPADE],
+		HEART: s.opp1VoidSuit[HEART],
+		CARO:  s.opp1VoidSuit[CARO],
+	}
 	newI.opp2VoidSuit = map[string]bool{
-			CLUBS: s.opp2VoidSuit[CLUBS],
-			SPADE: s.opp2VoidSuit[SPADE],
-			HEART: s.opp2VoidSuit[HEART],
-			CARO:  s.opp2VoidSuit[CARO],
-		}
+		CLUBS: s.opp2VoidSuit[CLUBS],
+		SPADE: s.opp2VoidSuit[SPADE],
+		HEART: s.opp2VoidSuit[HEART],
+		CARO:  s.opp2VoidSuit[CARO],
+	}
 
 	// beliefs
 
 	newI.declarerVoidSuitB = map[string]bool{
-			CLUBS: s.declarerVoidSuitB[CLUBS],
-			SPADE: s.declarerVoidSuitB[SPADE],
-			HEART: s.declarerVoidSuitB[HEART],
-			CARO:  s.declarerVoidSuitB[CARO],
-		}
+		CLUBS: s.declarerVoidSuitB[CLUBS],
+		SPADE: s.declarerVoidSuitB[SPADE],
+		HEART: s.declarerVoidSuitB[HEART],
+		CARO:  s.declarerVoidSuitB[CARO],
+	}
 	newI.opp1VoidSuitB = map[string]bool{
-			CLUBS: s.opp1VoidSuitB[CLUBS],
-			SPADE: s.opp1VoidSuitB[SPADE],
-			HEART: s.opp1VoidSuitB[HEART],
-			CARO:  s.opp1VoidSuitB[CARO],
-		}
+		CLUBS: s.opp1VoidSuitB[CLUBS],
+		SPADE: s.opp1VoidSuitB[SPADE],
+		HEART: s.opp1VoidSuitB[HEART],
+		CARO:  s.opp1VoidSuitB[CARO],
+	}
 	newI.opp2VoidSuitB = map[string]bool{
-			CLUBS: s.opp2VoidSuitB[CLUBS],
-			SPADE: s.opp2VoidSuitB[SPADE],
-			HEART: s.opp2VoidSuitB[HEART],
-			CARO:  s.opp2VoidSuitB[CARO],
-		}
+		CLUBS: s.opp2VoidSuitB[CLUBS],
+		SPADE: s.opp2VoidSuitB[SPADE],
+		HEART: s.opp2VoidSuitB[HEART],
+		CARO:  s.opp2VoidSuitB[CARO],
+	}
 
 	newI.declarerVoidCards = make([]Card, len(s.declarerVoidCards))
 	copy(newI.declarerVoidCards, s.declarerVoidCards)
@@ -126,41 +126,40 @@ func (s *Inference) cloneInference() Inference {
 	return newI
 }
 
-
 func (s *Inference) getDeclarerVoidSuit() map[string]bool {
 	return map[string]bool{
-			CLUBS: s.declarerVoidSuit[CLUBS] || s.declarerVoidSuitB[CLUBS],
-			SPADE: s.declarerVoidSuit[SPADE] || s.declarerVoidSuitB[SPADE],
-			HEART: s.declarerVoidSuit[HEART] || s.declarerVoidSuitB[HEART],
-			CARO:  s.declarerVoidSuit[CARO] || s.declarerVoidSuitB[CARO],
-		}
+		CLUBS: s.declarerVoidSuit[CLUBS] || s.declarerVoidSuitB[CLUBS],
+		SPADE: s.declarerVoidSuit[SPADE] || s.declarerVoidSuitB[SPADE],
+		HEART: s.declarerVoidSuit[HEART] || s.declarerVoidSuitB[HEART],
+		CARO:  s.declarerVoidSuit[CARO] || s.declarerVoidSuitB[CARO],
+	}
 }
 
 func (s *Inference) getOpp1VoidSuit() map[string]bool {
 	return map[string]bool{
-			CLUBS: s.opp1VoidSuit[CLUBS] || s.opp1VoidSuitB[CLUBS],
-			SPADE: s.opp1VoidSuit[SPADE] || s.opp1VoidSuitB[SPADE],
-			HEART: s.opp1VoidSuit[HEART] || s.opp1VoidSuitB[HEART],
-			CARO:  s.opp1VoidSuit[CARO] || s.opp1VoidSuitB[CARO],
-		}
+		CLUBS: s.opp1VoidSuit[CLUBS] || s.opp1VoidSuitB[CLUBS],
+		SPADE: s.opp1VoidSuit[SPADE] || s.opp1VoidSuitB[SPADE],
+		HEART: s.opp1VoidSuit[HEART] || s.opp1VoidSuitB[HEART],
+		CARO:  s.opp1VoidSuit[CARO] || s.opp1VoidSuitB[CARO],
+	}
 }
 
 func (s *Inference) getOpp2VoidSuit() map[string]bool {
 	return map[string]bool{
-			CLUBS: s.opp2VoidSuit[CLUBS] || s.opp2VoidSuitB[CLUBS],
-			SPADE: s.opp2VoidSuit[SPADE] || s.opp2VoidSuitB[SPADE],
-			HEART: s.opp2VoidSuit[HEART] || s.opp2VoidSuitB[HEART],
-			CARO:  s.opp2VoidSuit[CARO] || s.opp2VoidSuitB[CARO],
-		}
+		CLUBS: s.opp2VoidSuit[CLUBS] || s.opp2VoidSuitB[CLUBS],
+		SPADE: s.opp2VoidSuit[SPADE] || s.opp2VoidSuitB[SPADE],
+		HEART: s.opp2VoidSuit[HEART] || s.opp2VoidSuitB[HEART],
+		CARO:  s.opp2VoidSuit[CARO] || s.opp2VoidSuitB[CARO],
+	}
 }
 
 // Remove beliefs concerning opp player, about cards belonging the cards argument.
 func (s *SuitState) detractBeliefs(opp string, cards []Card) {
-	
+
 	getSuit := func(suit string) int {
-		return len(filter(cards, func (c Card) bool {
-				return getSuit(s.trump, c) == suit
-			}))
+		return len(filter(cards, func(c Card) bool {
+			return getSuit(s.trump, c) == suit
+		}))
 	}
 	switch opp {
 	case "decl":
@@ -181,6 +180,7 @@ func (s *SuitState) detractBeliefs(opp string, cards []Card) {
 		for _, suit := range suits {
 			if getSuit(suit) > 0 {
 				s.opp1VoidSuitB[suit] = false
+				s.declarer.getInference().opp1VoidSuitB[suit] = false
 			}
 		}
 		// s.opp1VoidSuitB = map[string]bool{
@@ -208,7 +208,21 @@ func (s *SuitState) detractBeliefs(opp string, cards []Card) {
 	}
 }
 
-func analysePlay(s *SuitState, p PlayerI, card Card) {
+func opponentDoesNotHaveAnyLowerCards(s *SuitState, p PlayerI, card Card) {
+	if p.getName() == s.opp1.getName() && opponentIsLosingTrick(s, p, card, true) {
+		if noHigherCard(s, true, s.declarer.getHand(), card) {
+			debugTacticsLog("TRICK: %v, Card: %v\n", s.trick, card)
+			debugTacticsLog("INFERENCE: ***************DECLARER***************\n")
+			debugTacticsLog("INFERENCE: Opp1 does not have any lower cards    \n")
+			debugTacticsLog("INFERENCE: Void on suit                          \n")
+			debugTacticsLog("INFERENCE: **************************************\n")
+			s.declarer.getInference().opp1VoidSuitB[s.follow] = true
+			debugTacticsLog("SuitState: %v, Player: %v, Card %v\n", s, p, card)
+		}
+	}
+}
+
+func notFollowingSuit(s *SuitState, p PlayerI, card Card) {
 	// Player VOID on suit
 	if len(s.trick) > 0 && getSuit(s.trump, card) != getSuit(s.trump, s.trick[0]) {
 		debugTacticsLog("TRICK: %v, Card: %v\n", s.trick, card)
@@ -226,31 +240,99 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 			s.opp2VoidSuit[getSuit(s.trump, s.trick[0])] = true
 		}
 	}
+}
 
-	if p.getName() != s.declarer.getName() {
-		if s.follow == s.trump {
-			if getSuit(s.trump, card) == s.trump && (card.Rank == "A" || card.Rank == "10") {
-				if isLosingTrick(s, p, card) {
-					// TODO:
-					debugTacticsLog("INFERENCE: **************************************\n")
-					debugTacticsLog("INFERENCE: Playing a full Trump on a losing trick\n")
-					debugTacticsLog("INFERENCE: Is the last of the player             \n")
-					debugTacticsLog("INFERENCE: **************************************\n")
+func playingAFullTrumpOnALosingTrick(s *SuitState, p PlayerI, card Card) {
+	if p.getName() != s.declarer.getName() && s.follow == s.trump {
+		if getSuit(s.trump, card) == s.trump && (card.Rank == "A" || card.Rank == "10") {
+			if opponentIsLosingTrick(s, p, card, false) {
+				// TODO:
+				debugTacticsLog("INFERENCE: **************************************\n")
+				debugTacticsLog("INFERENCE: Playing a full Trump on a losing trick\n")
+				debugTacticsLog("INFERENCE: Is the last of the player             \n")
+				debugTacticsLog("INFERENCE: **************************************\n")
 
-					if p.getName() == s.opp1.getName() {
-						s.opp1VoidSuit[s.trump] = true
-					}
-					if p.getName() == s.opp2.getName() {
-						s.opp2VoidSuit[s.trump] = true
-					}
+				if p.getName() == s.opp1.getName() {
+					s.opp1VoidSuitB[s.trump] = true
+				}
+				if p.getName() == s.opp2.getName() {
+					s.opp2VoidSuitB[s.trump] = true
 				}
 			}
 		}
 	}
+}
+
+func playingAFullTrumpOnALosingTrickDecl(s *SuitState, p PlayerI, card Card) {
+	fullOne := card.equals(Card{s.follow, "10"}) || card.equals(Card{s.follow, "A"})
+	if len(s.trick) > 0 {
+		if p.getName() == s.declarer.getName() && fullOne && !s.greater(card, s.trick...) {
+			debugTacticsLog("INFERENCE: **************************************\n")
+			debugTacticsLog("INFERENCE: Declarer void on suit %v              \n", s.follow)
+			debugTacticsLog("INFERENCE: **************************************\n")
+			s.declarerVoidSuitB[s.follow] = true
+		}
+	}
+}
+
+func losingASmearedTrick(s *SuitState, p PlayerI, card Card) {
+	pcard := s.trick[1]
+	fullOne := pcard.equals(Card{s.follow, "10"}) || pcard.equals(Card{s.follow, "A"})
+	// debugTacticsLog("%v\n", s.trick)
+	if fullOne && s.greater(s.trick[0], pcard) && s.greater(s.trick[0], card) {
+		for _, c := range makeTrumpDeck(s.trump) {
+			if s.greater(c, s.trick[0]) {
+				s.opp2VoidCards = append(s.opp2VoidCards, c)
+			}
+		}
+		debugTacticsLog("INFERENCE: **************************************\n")
+		debugTacticsLog("INFERENCE: Losing a SMEARED TRICK: opp2 void Cards %v \n", s.opp2VoidCards)
+		debugTacticsLog("INFERENCE: **************************************\n")
+	}
+}
+
+func winingASmearedTrick(s *SuitState, p PlayerI, card Card) {
+	pcard := s.trick[1]
+	fullOne := pcard.equals(Card{s.follow, "10"}) || pcard.equals(Card{s.follow, "A"})
+	// debugTacticsLog("%v\n", s.trick)
+	if fullOne && s.greater(s.trick[0], pcard) && s.greater(card, s.trick[0]) {
+		for _, c := range makeTrumpDeck(s.trump) {
+			if s.greater(c, s.trick[0]) && s.greater(card, c) {
+				s.opp2VoidCards = append(s.opp2VoidCards, c)
+			}
+		}
+		debugTacticsLog("INFERENCE: **************************************\n")
+		debugTacticsLog("INFERENCE: Wining a SMEARED TRICK with more than enough: opp2 void Cards %v \n", s.opp2VoidCards)
+		debugTacticsLog("INFERENCE: **************************************\n")
+	}
+}
+
+func opponent_DoesNot_Play_a_FullTRUMP_on_a_Winned_TRICK_DOES_NOT_HAVE_A10(s *SuitState, p PlayerI, card Card) {
+	fullOne := card.equals(Card{s.follow, "10"}) || card.equals(Card{s.follow, "A"})
+	// debugTacticsLog("%v\n", s.trick)
+	if !fullOne && s.greater(s.trick[1], s.trick[0]) {
+		s.opp2VoidCards = append(s.opp2VoidCards, Card{s.follow, "10"}, Card{s.follow, "A"})
+		debugTacticsLog("INFERENCE: **************************************\n")
+		debugTacticsLog("INFERENCE: Not SMEARING A/10: opp2 void Cards %v \n", s.opp2VoidCards)
+		debugTacticsLog("INFERENCE: **************************************\n")
+	}
+}
+
+func analysePlay(s *SuitState, p PlayerI, card Card) {
+	opponentDoesNotHaveAnyLowerCards(s, p, card)
+	notFollowingSuit(s, p, card)
+	playingAFullTrumpOnALosingTrick(s, p, card)
+	playingAFullTrumpOnALosingTrickDecl(s, p, card)
+
+	if len(s.trick) == 2 && s.follow == s.trump && p.getName() == s.opp2.getName() {
+		losingASmearedTrick(s, p, card)
+		winingASmearedTrick(s, p, card)
+		opponent_DoesNot_Play_a_FullTRUMP_on_a_Winned_TRICK_DOES_NOT_HAVE_A10(s, p, card)
+	}
 
 	if len(s.trick) == 2 {
 		condition1 := s.trick[0].Rank == "A" && s.greater(s.trick[0], s.trick[1]) && players[0].getName() == partner(s, p).getName()
-		condition2 := s.trick[1].equals(Card{s.follow, "A"}) && s.greater(s.trick[1], s.trick[0]) &&  players[1].getName() == partner(s, p).getName()
+		condition2 := s.trick[1].equals(Card{s.follow, "A"}) && s.greater(s.trick[1], s.trick[0]) && players[1].getName() == partner(s, p).getName()
 		if condition1 || condition2 {
 			if getSuit(s.trump, card) == s.follow && cardValue(card) < 10 {
 				voidCards := []Card{}
@@ -272,7 +354,7 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 					s.opp2VoidCards = append(s.opp2VoidCards, voidCards...)
 				}
 			}
-		}	
+		}
 
 		// TODO
 		// only opp1 can know that if he does not have the 10
@@ -281,8 +363,8 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 		// test: TestInference_Declarer_A10_at_Declarer DISABLED
 		condition0 := getSuit(s.trump, s.trick[0]) != s.trump
 		condition1 = s.trick[0].Rank == "K" && getSuit(s.trump, s.trick[1]) == s.follow && players[0].getName() == s.opp1.getName()
-		condition2 =  getSuit(s.trump, card) == s.follow 
-		condition3 :=  s.greater(s.trick[0], s.trick[1]) && s.greater(s.trick[0], card)
+		condition2 = getSuit(s.trump, card) == s.follow
+		condition3 := s.greater(s.trick[0], s.trick[1]) && s.greater(s.trick[0], card)
 		if condition0 && condition1 && condition2 && condition3 {
 			debugTacticsLog("INFERENCE: **************************************\n")
 			debugTacticsLog("INFERENCE: Partner and Declarer go under         \n")
@@ -294,20 +376,17 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 			s.declarerVoidCards = append(s.declarerVoidCards, Card{s.follow, "10"})
 		}
 
-
-
-			// if !card.equals(Card{s.follow, "10"}) {
-			// 	debugTacticsLog("INFERENCE: **************************************\n")
-			// 	debugTacticsLog("INFERENCE: Player does not have the %v           \n", Card{s.follow, "10"})
-			// 	debugTacticsLog("INFERENCE: **************************************\n")
-			// 	if p.getName() == s.opp1.getName() {
-			// 		s.opp1VoidCards = append(s.opp1VoidCards, Card{s.follow, "10"})
-			// 	}
-			// 	if p.getName() == s.opp2.getName() {
-			// 		s.opp2VoidCards = append(s.opp2VoidCards, Card{s.follow, "10"})
-			// 	}
-			// } 
-		
+		// if !card.equals(Card{s.follow, "10"}) {
+		// 	debugTacticsLog("INFERENCE: **************************************\n")
+		// 	debugTacticsLog("INFERENCE: Player does not have the %v           \n", Card{s.follow, "10"})
+		// 	debugTacticsLog("INFERENCE: **************************************\n")
+		// 	if p.getName() == s.opp1.getName() {
+		// 		s.opp1VoidCards = append(s.opp1VoidCards, Card{s.follow, "10"})
+		// 	}
+		// 	if p.getName() == s.opp2.getName() {
+		// 		s.opp2VoidCards = append(s.opp2VoidCards, Card{s.follow, "10"})
+		// 	}
+		// }
 
 		condition1 = s.greater(s.trick[0], s.trick[1]) && players[0].getName() == s.declarer.getName()
 		condition2 = s.greater(s.trick[1], s.trick[0]) && players[1].getName() == s.declarer.getName()
@@ -323,7 +402,7 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 						break
 					}
 				}
-				for j := i + 1 ; j < len(ranks); j++ {
+				for j := i + 1; j < len(ranks); j++ {
 					c := Card{card.Suit, ranks[j]}
 					if !in(s.cardsPlayed, c) {
 						if p.getName() == s.opp1.getName() {
@@ -331,36 +410,37 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 						}
 						if p.getName() == s.opp2.getName() {
 							s.opp2VoidCards = append(s.opp2VoidCards, c)
-						}					
+						}
 					}
 				}
 			}
 		}
 	}
 
-
-	if len(s.trick) > 0 {
-		if p.getName() == s.declarer.getName() && card.equals(Card{s.follow, "10"}) && !s.greater(card, s.trick...) {
-			debugTacticsLog("INFERENCE: **************************************\n")
-			debugTacticsLog("INFERENCE: Declarer void on suit %v              \n", s.follow)
-			debugTacticsLog("INFERENCE: **************************************\n")
-			s.declarerVoidSuit[s.follow] = true
-		}
-	}
 }
 
-func isLosingTrick(s *SuitState, p PlayerI, card Card) bool {
+func opponentIsLosingTrick(s *SuitState, p PlayerI, card Card, lookSkat bool) bool {
+	dIndex := 0
+	for dIndex = range players {
+		if players[dIndex].getName() == s.declarer.getName() {
+			break
+		}
+	}
 	for i, c := range s.trick {
 		if s.greater(c, card) && players[i].getName() == s.declarer.getName() {
 			if len(s.trick) == 1 && noHigherCard(s, false, p.getHand(), c) {
 				return true
 			}
 			if len(s.trick) == 2 {
-				if !s.greater(s.trick[1], s.trick[0]) {
+				other := 0
+				if dIndex == 0 {
+					other = 1
+				}
+				if s.greater(s.trick[dIndex], s.trick[other]) {
 					return true
 				}
 			}
 		}
 	}
-	return false 
+	return false
 }

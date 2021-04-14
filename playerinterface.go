@@ -31,5 +31,6 @@ type PlayerI interface {
 
 	ResetPlayer()
 	clone() PlayerI
-}
 
+	getInference() Inference
+}

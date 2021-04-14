@@ -17,7 +17,7 @@ func TestInferenceNotFollowingSuit(t *testing.T) {
 	s.opp1 = &o1
 	s.opp2 = &o2
 
-	s.trick = []Card{Card{CARO, "7"}}
+	s.trick = []Card{{CARO, "7"}}
 	card := Card{HEART, "7"}
 
 	analysePlay(&s, s.opp1, card)
@@ -30,7 +30,7 @@ func TestInferenceNotFollowingSuit(t *testing.T) {
 	}
 	if s.getDeclarerVoidSuit()[CARO] {
 		t.Errorf("Error not follow void")
-	}	
+	}
 }
 
 func TestInferenceLastTrumpDeclarerWins1(t *testing.T) {
@@ -48,7 +48,7 @@ func TestInferenceLastTrumpDeclarerWins1(t *testing.T) {
 	s.follow = CLUBS
 
 	s.trick = []Card{
-		Card{CLUBS, "J"}, // d
+		{CLUBS, "J"}, // d
 	}
 	players = []PlayerI{&d, &o1, &o2}
 
@@ -75,8 +75,8 @@ func TestInferenceSmearTrickTrumpWhenParnerWins1(t *testing.T) {
 	s.follow = SPADE
 
 	s.trick = []Card{
-		Card{CARO, "J"}, // d
-		Card{HEART, "J"}, // o1
+		{CARO, "J"},  // d
+		{HEART, "J"}, // o1
 	}
 	players = []PlayerI{&d, &o1, &o2}
 
@@ -103,7 +103,7 @@ func TestInferenceLastTrumpDSmearing1(t *testing.T) {
 	s.follow = CLUBS
 
 	s.trick = []Card{
-		Card{CARO, "J"}, // d
+		{CARO, "J"}, // d
 	}
 	players = []PlayerI{&d, &o1, &o2}
 
@@ -130,8 +130,8 @@ func TestInferenceLastTrumpDeclarerWins2(t *testing.T) {
 	s.follow = CLUBS
 
 	s.trick = []Card{
-		Card{CARO, "J"}, // d
-		Card{CLUBS, "7"}, // o1
+		{CARO, "J"},  // d
+		{CLUBS, "7"}, // o1
 	}
 
 	players = []PlayerI{&d, &o1, &o2}
@@ -158,8 +158,8 @@ func TestInferenceLastTrumpPartnerWins(t *testing.T) {
 	s.opp2 = &o2
 
 	s.trick = []Card{
-		Card{CLUBS, "7"}, // d
-		Card{CLUBS, "J"}, // o1
+		{CLUBS, "7"}, // d
+		{CLUBS, "J"}, // o1
 	}
 
 	card := Card{CLUBS, "A"} // o2, smearing
@@ -188,14 +188,14 @@ func TestInferencePlayerDoesNOtPlay_10_onTrick_A_OpenedByPartner(t *testing.T) {
 	players = []PlayerI{&o2, &d, &o1}
 
 	s.trick = []Card{
-		Card{HEART, "A"}, // o2
-		Card{HEART, "7"}, // d
+		{HEART, "A"}, // o2
+		{HEART, "7"}, // d
 	}
 
 	card := Card{HEART, "K"} // o1 does not have 10
 
 	analysePlay(&s, s.opp1, card)
-	if ! in(s.opp1VoidCards, Card{HEART, "10"}) {
+	if !in(s.opp1VoidCards, Card{HEART, "10"}) {
 		t.Errorf("BH Player does not have the 10.")
 	}
 
@@ -218,14 +218,14 @@ func TestInferencePlayerPlays_ValueCard_onTrickWonByDeclarer(t *testing.T) {
 	players = []PlayerI{&d, &o1, &o2}
 
 	s.trick = []Card{
-		Card{HEART, "A"}, // d
-		Card{HEART, "7"}, // o1
+		{HEART, "A"}, // d
+		{HEART, "7"}, // o1
 	}
 
 	card := Card{HEART, "K"} // o2 does not have Q, 9, 8 , 7
 
 	analysePlay(&s, s.opp2, card)
-	if ! in(s.opp2VoidCards, Card{HEART, "D"}, Card{HEART, "9"},Card{HEART, "8"}, Card{HEART, "7"}) {
+	if !in(s.opp2VoidCards, Card{HEART, "D"}, Card{HEART, "9"}, Card{HEART, "8"}, Card{HEART, "7"}) {
 		t.Errorf("BH Player does not have cards lower than K.")
 	}
 
@@ -248,13 +248,13 @@ func TestInferenceDeclarerPlays_10_onTrick_A_OpenedByOpponents(t *testing.T) {
 	players = []PlayerI{&o2, &d, &o1}
 
 	s.trick = []Card{
-		Card{HEART, "A"}, // o2
+		{HEART, "A"}, // o2
 	}
 
 	card := Card{HEART, "10"} // d does not have any other HEART
 
 	analysePlay(&s, s.declarer, card)
-	if ! s.getDeclarerVoidSuit()[HEART] {
+	if !s.getDeclarerVoidSuit()[HEART] {
 		t.Errorf("Declarer is void on suit.")
 	}
 
@@ -278,8 +278,8 @@ func TestInference_Declarer_A10_at_Declarer(t *testing.T) {
 	players = []PlayerI{&o1, &o2, &d}
 
 	s.trick = []Card{
-		Card{HEART, "K"}, 
-		Card{HEART, "8"}, 
+		{HEART, "K"},
+		{HEART, "8"},
 	}
 
 	card := Card{HEART, "9"} // goes under, he has A but no 10
@@ -291,8 +291,386 @@ func TestInference_Declarer_A10_at_Declarer(t *testing.T) {
 	// if ! in(s.opp2VoidCards, Card{HEART, "A"}) {
 	// 	t.Errorf("Opp2 does not have A")
 	// }
-	if ! in(s.declarerVoidCards, Card{HEART, "10"}) {
+	if !in(s.declarerVoidCards, Card{HEART, "10"}) {
 		t.Errorf("Declarer does not have 10 but A")
 	}
 
 }
+
+// DECLARER CAN ONLY KNOW THAT
+func TestInference_Opponent_Plays_K_Decl_Played_A_and_Has_10_or_In_Skat(t *testing.T) {
+	d := makePlayer([]Card{
+		{HEART, "10"},
+	})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.cardsPlayed = []Card{}
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		{HEART, "A"},
+	}
+
+	card := Card{HEART, "K"} // opponent plays his lower card. He does not have any more HEART
+
+	analysePlay(&s, s.opp1, card)
+	// if ! in(s.opp1VoidCards, Card{HEART, "A"}) {
+	// 	t.Errorf("Opp1 does not have A")
+	// }
+	// if ! in(s.opp2VoidCards, Card{HEART, "A"}) {
+	// 	t.Errorf("Opp2 does not have A")
+	// }
+	if !d.getInference().opp1VoidSuitB[s.follow] {
+		t.Errorf("MH Player played K on a losing trick (10 in declarer). It is his last card.")
+	}
+}
+
+// DECLARER CAN ONLY KNOW THAT
+func TestInference_Opponent_Plays_K_Decl_Played_A_and_Has_10_or_In_Skat_Opp1(t *testing.T) {
+	d := makePlayer([]Card{
+		{HEART, "10"},
+	})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.leader = &o2
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&o2, &d, &o1}
+
+	s.trick = []Card{
+		{HEART, "7"},
+		{HEART, "A"},
+	}
+	s.cardsPlayed = s.trick
+
+	card := Card{HEART, "K"} // opponent plays his lower card. He does not have any more HEART
+
+	analysePlay(&s, s.opp1, card)
+
+	if !d.getInference().opp1VoidSuitB[s.follow] {
+		t.Errorf("MH Player played K on a losing trick (10 in declarer). It is his last card.")
+	}
+}
+
+// DECLARER CAN ONLY KNOW THAT
+func TestInference_Opponent_Plays_D_Decl_Played_A_and_Has_10_or_In_Skat(t *testing.T) {
+	d := makePlayer([]Card{
+		{HEART, "10"},
+	})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.cardsPlayed = []Card{}
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		{HEART, "A"},
+	}
+
+	card := Card{HEART, "D"} // opponent might still have HEART
+
+	analysePlay(&s, s.opp1, card)
+	if d.getInference().opp1VoidSuitB[s.follow] {
+		t.Errorf("MH Player played D on a losing trick (10 in declarer). It is NOT his last card.")
+	}
+}
+
+func TestInference_Opponent_Plays_D_Decl_Played_A_and_Has_10_or_In_Skat_2(t *testing.T) {
+	d := makePlayer([]Card{
+		{HEART, "10"},
+	})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.cardsPlayed = []Card{}
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		{HEART, "7"},
+	}
+
+	card := Card{HEART, "D"} // opponent might still have HEART
+
+	analysePlay(&s, s.opp1, card)
+	if d.getInference().opp1VoidSuitB[s.follow] {
+		t.Errorf("MH Player played D on a losing trick (10 in declarer). It is NOT his last card.")
+	}
+}
+
+// DECLARER CAN ONLY KNOW THAT
+func TestInference_Opponent_Plays_D_Decl_Played_A_and_Has_10_or_In_Skat_1(t *testing.T) {
+	d := makePlayer([]Card{
+		{HEART, "10"},
+	})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.cardsPlayed = []Card{}
+	s.leader = &o1
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&o1, &o2, &d}
+
+	s.trick = []Card{}
+
+	card := Card{HEART, "A"} // opponent might still have HEART
+
+	analysePlay(&s, s.opp1, card)
+	if d.getInference().opp1VoidSuitB[s.follow] {
+		t.Errorf("First card")
+	}
+}
+
+func TestInference_Opponent_Plays_D_Decl_Played_A_and_Has_10_or_In_Skat_3(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = CLUBS
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{{HEART, "9"}}
+	s.cardsPlayed = s.trick
+
+	card := Card{HEART, "10"} // opponent might still have HEART
+
+	analysePlay(&s, s.opp1, card)
+	if d.getInference().opp1VoidSuitB[s.follow] {
+		t.Errorf("First card")
+	}
+}
+
+func TestInference_Opponent_Plays_D_Decl_Played_A_and_Has_10_or_In_Skat_4(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = HEART
+	s.leader = &o2
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&o2, &d, &o1}
+
+	s.trick = []Card{
+		{CARO, "J"},
+		{HEART, "D"},
+	}
+	s.cardsPlayed = s.trick
+
+	card := Card{SPADE, "D"} // opponent might still have HEART
+
+	analysePlay(&s, s.opp1, card)
+	if d.getInference().opp1VoidSuitB[HEART] {
+		t.Errorf("Opp 2 wins: %v", s.trick)
+	}
+}
+
+func TestInference_Opponent_Plays_D_Decl_Played_A_and_Has_10_or_In_Skat_5(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = HEART
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		{HEART, "A"},
+	}
+	s.cardsPlayed = s.trick
+
+	card := Card{CARO, "10"}
+
+	analysePlay(&s, s.opp1, card)
+	if d.getInference().opp1VoidSuitB[CARO] {
+		t.Errorf("Opp 2 wins: %v", s.trick)
+	}
+}
+
+func TestInference_Opponent_Plays_JClub_to_Win_a_smeared_trick_Does_not_have_lower(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = HEART
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		{CARO, "J"},
+		{HEART, "10"},
+	}
+	s.cardsPlayed = s.trick
+
+	card := Card{CLUBS, "J"}
+
+	analysePlay(&s, s.opp2, card)
+	if !in(s.opp2VoidCards, Card{SPADE, "J"}, Card{HEART, "J"}) {
+		t.Errorf("Opp 2 void cards: %v", s.opp2VoidCards)
+	}
+	if in(s.opp2VoidCards, Card{CLUBS, "J"}) || in(s.opp2VoidCards, Card{CARO, "J"}) {
+		t.Errorf("Opp 2 void cards: %v", s.opp2VoidCards)
+	}
+}
+
+func TestInference_Opponent_Plays_low_trump_and_loses_a_smeared_trick_Does_not_have_Higher(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = HEART
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		{CARO, "J"},
+		{HEART, "10"},
+	}
+	s.cardsPlayed = s.trick
+
+	card := Card{HEART, "7"}
+
+	analysePlay(&s, s.opp2, card)
+	if !in(s.opp2VoidCards, Card{SPADE, "J"}, Card{HEART, "J"}, Card{CLUBS, "J"}) {
+		t.Errorf("Opp 2 void cards: %v", s.opp2VoidCards)
+	}
+	if in(s.opp2VoidCards, Card{HEART, "A"}) || in(s.opp2VoidCards, Card{HEART, "7"}) { // and all cards in between
+		t.Errorf("Opp 2 void cards: %v", s.opp2VoidCards)
+	}
+}
+
+func TestInference_Opponent_DoesNot_Play_a_FullTRUMP_on_a_Winned_TRICK_DOES_NOT_HAVE_A10(t *testing.T) {
+	d := makePlayer([]Card{})
+	o1 := makePlayer([]Card{})
+	o2 := makePlayer([]Card{})
+
+	s := makeSuitState()
+	s.trump = HEART
+	s.leader = &d
+
+	s.declarer = &d
+	s.opp1 = &o1
+	s.opp2 = &o2
+	s.follow = HEART
+
+	players = []PlayerI{&d, &o1, &o2}
+
+	s.trick = []Card{
+		{CARO, "J"},
+		{SPADE, "J"},
+	}
+	s.cardsPlayed = s.trick
+
+	card := Card{HEART, "7"}
+
+	analysePlay(&s, s.opp2, card)
+	if !in(s.opp2VoidCards, Card{HEART, "A"}, Card{HEART, "10"}) {
+		t.Errorf("Opp 2 void cards: %v", s.opp2VoidCards)
+	}
+}
+
+// not so sure
+// func TestInference_Opponent_Plays_JCaro_on_a_Low_Trump_Does_not_have_lower(t *testing.T) {
+// 	d := makePlayer([]Card{})
+// 	o1 := makePlayer([]Card{})
+// 	o2 := makePlayer([]Card{})
+
+// 	s := makeSuitState()
+// 	s.trump = HEART
+// 	s.leader = &d
+
+// 	s.declarer = &d
+// 	s.opp1 = &o1
+// 	s.opp2 = &o2
+// 	s.follow = HEART
+
+// 	players = []PlayerI{&d, &o1, &o2}
+
+// 	s.trick = []Card{
+// 		Card{HEART, "7"},
+// 	}
+// 	s.cardsPlayed = s.trick
+
+// 	card := Card{CARO, "J"}
+
+// 	// no cards lower than J
+// 	analysePlay(&s, s.opp1, card)
+// 	if !in(s.opp1VoidCards, Card{HEART, "A"}, Card{HEART, "10"}, Card{HEART, "K"}, Card{HEART, "D"}, Card{HEART, "9"}, Card{HEART, "8"}) {
+// 		t.Errorf("Opp 2 void cards: %v",s.opp2VoidCards)
+// 	}
+// }

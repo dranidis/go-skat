@@ -16,10 +16,21 @@ type PlayerData struct {
 	lost         int
 	defWon       int
 	declaredBid  int
+	Inference
 }
 
+var randomNameNumber = 0
 
-func (p *PlayerData) clone() PlayerData{
+func makePlayerData(hand []Card) PlayerData {
+	randomNameNumber++
+	inf := makeInference()
+	return PlayerData{"dummy" + fmt.Sprintf("%d", randomNameNumber),
+		//false,
+		// false,
+		hand, 0, 0, true, 0, "", 0, 0, 0, 0, inf}
+}
+
+func (p *PlayerData) clone() PlayerData {
 	newPlayerData := makePlayerData([]Card{})
 
 	newPlayerData.name = p.name
@@ -28,7 +39,7 @@ func (p *PlayerData) clone() PlayerData{
 
 	newPlayerData.hand = newHand
 	newPlayerData.highestBid = p.highestBid
-	newPlayerData.score  = p.score
+	newPlayerData.score = p.score
 	newPlayerData.schwarz = p.schwarz
 	newPlayerData.totalScore = p.totalScore
 	newPlayerData.previousSuit = p.previousSuit
@@ -37,6 +48,8 @@ func (p *PlayerData) clone() PlayerData{
 	newPlayerData.defWon = p.defWon
 	newPlayerData.declaredBid = p.declaredBid
 
+	newPlayerData.Inference = p.cloneInference()
+
 	return newPlayerData
 }
 
@@ -44,12 +57,17 @@ func (p PlayerData) String() string {
 	return fmt.Sprintf("(%s):%v [%d]", p.name, p.hand, p.score)
 }
 
-
 func (p *PlayerData) ResetPlayer() {
 	p.setScore(0)
 	p.setSchwarz(true)
 	p.setPreviousSuit("")
 	p.setDeclaredBid(0)
+
+	p.Inference = makeInference()
+}
+
+func (p *PlayerData) getInference() Inference {
+	return p.Inference
 }
 
 func (p *PlayerData) setDeclaredBid(b int) {
@@ -73,15 +91,6 @@ func (p *PlayerData) getWon() int {
 
 func (p *PlayerData) getLost() int {
 	return p.lost
-}
-
-var randomNameNumber = 0
-func makePlayerData(hand []Card) PlayerData {
-	randomNameNumber++
-	return PlayerData{"dummy" + fmt.Sprintf("%d", randomNameNumber),
-		//false,
-		// false,
-		hand, 0, 0, true, 0, "", 0, 0, 0, 0}
 }
 
 func (p *PlayerData) incTotalScore(s int) {

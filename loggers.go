@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"io"
-	"os"
 	"log"
+	"os"
 )
 
 var logFile io.Writer = nil
@@ -16,11 +16,9 @@ var fileLogFlag = true
 
 var debugTacticsInMM = false
 
-
 var debugTacticsLogFlagStored = false
 var gameLogFlagStored = true
 var fileLogFlagStored = true
-
 
 var htmlLogFlag = false
 var logFileName = "gameLog.txt"
@@ -63,7 +61,7 @@ func debugTacticsLog(format string, a ...interface{}) {
 var MINMAX_PREFIX = "MM: "
 
 func debugMinmaxLog(format string, a ...interface{}) {
-	debugTacticsLog(MINMAX_PREFIX + format, a...)
+	debugTacticsLog(MINMAX_PREFIX+format, a...)
 }
 
 func createFile(logFileName string) *os.File {
@@ -73,7 +71,6 @@ func createFile(logFileName string) *os.File {
 	}
 	return file
 }
-
 
 func disableLogs() {
 	debugTacticsLogFlagStored = debugTacticsLogFlag

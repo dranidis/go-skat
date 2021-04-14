@@ -2,20 +2,20 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"log"
+	"strconv"
 	"strings"
 )
 
 type ISSPlayer struct {
 	PlayerData
-	shortcut [] Card
+	shortcut []Card
 }
 
 func makeISSPlayer(hand []Card) ISSPlayer {
 	return ISSPlayer{
 		PlayerData: makePlayerData(hand),
-		shortcut : []Card{},
+		shortcut:   []Card{},
 	}
 }
 
@@ -33,11 +33,11 @@ func (p *ISSPlayer) setPartner(partner PlayerI) {
 
 func (p *ISSPlayer) accepts(bidIndex int, listens bool) bool {
 	fmt.Printf("Waiting bid from %s..", p.getName())
-	bid := <-bidChannel 
+	bid := <-bidChannel
 	fmt.Printf(" .. bid received %s\n", bid)
 
 	if bidNr, err := strconv.ParseInt(bid, 10, 64); err == nil {
-		if int64(bids[bidIndex]) ==  bidNr {
+		if int64(bids[bidIndex]) == bidNr {
 			return true
 		}
 	}
@@ -46,7 +46,7 @@ func (p *ISSPlayer) accepts(bidIndex int, listens bool) bool {
 	}
 	if bid == "y" {
 		return true
-	}	
+	}
 	log.Fatal("Unrecognised bid from ISS player")
 	return false
 }
@@ -65,8 +65,8 @@ func (p *ISSPlayer) calculateHighestBid(b bool) int {
 
 func (p *ISSPlayer) discardInSkat(skat []Card) {
 	// fmt.Printf("Waiting 2 discard cards from %s..", p.getName())
-	// card1 := <- discardChannel	
-	// card2 := <- discardChannel	
+	// card1 := <- discardChannel
+	// card2 := <- discardChannel
 	// fmt.Printf(" .. received %v and %v\n", card1, card2)
 
 	// p.setHand(remove(p.getHand(), card1))
@@ -112,7 +112,7 @@ func (p *ISSPlayer) playerTactic(s *SuitState, c []Card) Card {
 		p.shortcut = remove(p.shortcut, card)
 		fmt.Printf(" .. playing SC card %v\n", card)
 		return card
-	} 
+	}
 	p.shortcut = []Card{} // empty shortcut if normal card was played
 	fmt.Printf(" .. received %v\n", card)
 

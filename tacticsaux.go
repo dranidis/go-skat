@@ -57,7 +57,6 @@ func highestValueWinnerORlowestValueLoser(s *SuitState, c []Card) Card {
 	return sortedValue[len(sortedValue)-1]
 }
 
-
 func firstCardTactic(c []Card) Card {
 	return c[0]
 }
@@ -85,14 +84,29 @@ func firstCardTactic(c []Card) Card {
 // 	return true
 // }
 func noHigherCard(s *SuitState, viewSkat bool, hand []Card, c Card) bool {
-	scip := suitCardsInPlay(s, viewSkat, hand, getSuit(s.trump, c))
-	// debugTacticsLog("Cards of suit %s still in play: %v", c.Suit, scip)
+	suit := getSuit(s.trump, c)
+	scip := suitCardsInPlay(s, viewSkat, hand, suit)
+	debugTacticsLog("Cards of suit %s still in play: %v", suit, scip)
 	for _, card := range scip {
 		if s.greater(card, c) {
 			return false
 		}
 	}
 	return true
+}
+
+func HigherCards(s *SuitState, viewSkat bool, hand []Card, c Card) []Card {
+	suit := getSuit(s.trump, c)
+	scip := suitCardsInPlay(s, viewSkat, hand, suit)
+	debugTacticsLog("Cards of suit %s still in play: %v", suit, scip)
+	higherCards := []Card{}
+	for _, card := range scip {
+		if s.greater(card, c) {
+			higherCards = append(higherCards, card)
+		}
+	}
+	debugTacticsLog("Cards of suit %s higher than %v, %v", suit, c, higherCards)
+	return higherCards
 }
 
 func noSecondHigherCard(s *SuitState, viewSkat bool, hand []Card, c Card) bool {
@@ -106,7 +120,7 @@ func noSecondHigherCard(s *SuitState, viewSkat bool, hand []Card, c Card) bool {
 		}
 		if s.greater(card, c) {
 			return false
-		}		
+		}
 	}
 	return true
 }
@@ -125,9 +139,10 @@ func suitCardsInPlay(s *SuitState, viewSkat bool, hand []Card, suit string) []Ca
 	allCardsPlayed = append(allCardsPlayed, s.cardsPlayed...)
 	allCardsPlayed = append(allCardsPlayed, s.trick...)
 	allCardsPlayed = append(allCardsPlayed, hand...)
-	for _, cardPlayed := range allCardsPlayed {
-		allCards = remove(allCards, cardPlayed)
-	}
+	// for _, cardPlayed := range allCardsPlayed {
+	// allCards = remove(allCards, cardPlayed...)
+	// }
+	allCards = remove(allCards, allCardsPlayed...)
 	return allCards
 }
 
@@ -140,7 +155,6 @@ func nextLowestCardsStillInPlay(s *SuitState, c Card, followCards []Card) bool {
 	}
 	return true
 }
-
 
 func isAKX(trump string, cs []Card) bool {
 	cards := filter(cs, func(c Card) bool {
@@ -191,12 +205,11 @@ func HighestShort(trump string, c []Card) Card {
 	// last card?
 	if len(c) > 0 {
 		debugTacticsLog("... DEBUG ... VALID: %v no HighestShort. Returning: %v\n", c, c[0])
-		return c[0]		
+		return c[0]
 	}
 	debugTacticsLog(".. NO CARDS..")
-	return Card{"",""}
+	return Card{"", ""}
 }
-
 
 func HighestShortNotFull(trump string, c []Card) Card {
 	s := ShortestNonTrumpSuit(trump, c)
@@ -216,10 +229,10 @@ func HighestShortNotFull(trump string, c []Card) Card {
 	// last card?
 	if len(c) > 0 {
 		debugTacticsLog("... DEBUG ... VALID: %v no HighestShort. Returning: %v\n", c, c[len(c)-1])
-		return c[len(c)-1]		
+		return c[len(c)-1]
 	}
 	debugTacticsLog(".. NO CARDS..")
-	return Card{"",""}
+	return Card{"", ""}
 }
 
 func HighestLong(trump string, c []Card) Card {
@@ -284,7 +297,6 @@ func isVoid(s *SuitState, cs []Card, suit string) bool {
 
 	return false
 }
-
 
 //
 // Der US-Amerikaner J.P. Wergin hat in seinem Buch "Wergin on Skat and Sheepshead"
@@ -444,37 +456,50 @@ func tenIsSupported(cs []Card, ten Card) bool {
 		log.Fatal("ten argument is not a 10 card")
 	}
 	s := ten.Suit
-	suitCards := filter(cs, func (c Card) bool {
+	suitCards := filter(cs, func(c Card) bool {
 		return c.Suit == s && c.Rank != "J"
-		})
+	})
 	if len(suitCards) > 2 {
 		debugTacticsLog("..Supported 10 in %v..", suitCards)
 		return true
-	}	
+	}
 	return false
 }
 
 func grandSuitLosers(cs []Card) []Card {
-	if len(cs) == 0 {
+	// debugTacticsLog("Card: %v\n", cs)
+	l := len(cs)
+	if l == 0 {
 		return cs
 	}
 	s := cs[0].Suit
 	if in(cs, Card{s, "A"}) {
+		if l >= 6 {
+			return []Card{}
+		}
 		cs = remove(cs, Card{s, "A"})
 		if in(cs, Card{s, "10"}) {
+			if l >= 5 {
+				return []Card{}
+			}
 			cs = remove(cs, Card{s, "10"})
 			if in(cs, Card{s, "K"}) {
-				cs = remove(cs, Card{s, "K"})
-				if in(cs, Card{s, "D"}) {
-					cs = remove(cs, Card{s, "D"})
-				}
-				return cs
+				return []Card{}
+				// if len >= 4 {
+				// 	return []Card{}
+				// }
+				// cs = remove(cs, Card{s, "K"})
+				// if in(cs, Card{s, "D"}) {
+				// 	cs = []Card{}
+				// }
+				// return cs
 			}
 			return cs
 		}
 		return cs
 	} else if in(cs, Card{s, "10"}) {
-	// && tenIsSupported(cs, Card{s, "10"}) {
+		// && tenIsSupported(cs, Card{s, "10"}) {
+		debugTacticsLog(".. removing 10s, they will be discarded..")
 		cs = remove(cs, Card{s, "10"}) // will be discarded
 	}
 	return cs
@@ -527,16 +552,18 @@ func grandLosers(cs []Card) []Card {
 		cards := filter(cs, func(c Card) bool {
 			return c.Rank != "J" && c.Suit == s
 		})
-		losers = append(losers, grandSuitLosers(cards)...)
+		gsl := grandSuitLosers(cards)
+		debugTacticsLog("Suit: %s, losers: %v\n", s, gsl)
+		losers = append(losers, gsl...)
 	}
 	return losers
 }
 
 func twoNumbersSuit(cs []Card, suit string) bool {
 	debugTacticsLog("..Checking cards %v for 2 number suit %s..", cs, suit)
-	suitCards := filter(cs, func (c Card) bool {
+	suitCards := filter(cs, func(c Card) bool {
 		return c.Suit == suit && c.Rank != "J"
-		})
+	})
 	if len(suitCards) == 2 && sum(suitCards) == 0 {
 		debugTacticsLog("FOUND..")
 		return true
@@ -546,9 +573,9 @@ func twoNumbersSuit(cs []Card, suit string) bool {
 
 func DNumberSuit(cs []Card, suit string) bool {
 	debugTacticsLog("..Checking cards %v for D number suit %s..", cs, suit)
-	suitCards := filter(cs, func (c Card) bool {
+	suitCards := filter(cs, func(c Card) bool {
 		return c.Suit == suit && c.Rank != "J"
-		})
+	})
 	if len(suitCards) == 2 && sum(suitCards) == 3 {
 		debugTacticsLog("FOUND..")
 		return true
@@ -557,9 +584,25 @@ func DNumberSuit(cs []Card, suit string) bool {
 }
 
 // Returns the cards that follow the suit argument
-func followCards(s *SuitState, suit string, cards []Card)  []Card  {
+func followCards(s *SuitState, suit string, cards []Card) []Card {
 	if suit == s.trump {
 		return trumpCards(suit, cards)
 	}
 	return nonTrumpCards(suit, cards)
+}
+
+// declarer is going to play the card now
+func declarerCardIsLosingTrick(s *SuitState, p PlayerI, card Card) bool {
+	for _, c := range s.trick {
+		if s.greater(c, card) {
+			return true
+		}
+	}
+	if len(s.trick) == 2 {
+		return false
+	}
+	if noHigherCard(s, true, p.getHand(), card) {
+		return false
+	}
+	return true
 }

@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/fatih/color"
 	"log"
-	"runtime/debug"
 	"math/rand"
+	"runtime/debug"
 	"sort"
 )
 
@@ -102,34 +102,33 @@ var nullRanks = []string{"A", "K", "D", "J", "10", "9", "8", "7"}
 var nullRanksRev = []string{"7", "8", "9", "10", "J", "D", "K", "A"}
 
 var ranksNum = map[string]int{
-		"J":  14,
-		"A":  13,
-		"10": 12,
-		"K":  11,
-		"D":  10,
-		"9":  9,
-		"8":  8,
-		"7":  7,
+	"J":  14,
+	"A":  13,
+	"10": 12,
+	"K":  11,
+	"D":  10,
+	"9":  9,
+	"8":  8,
+	"7":  7,
 }
 
 var suitNum = map[string]int{
-		CLUBS:  4,
-		SPADE:  3,
-		HEART : 2,
-		CARO:  1,
-	}
-
+	CLUBS: 4,
+	SPADE: 3,
+	HEART: 2,
+	CARO:  1,
+}
 
 type ByRank []Card
 
-func (a ByRank) Len() int           { return len(a) }
-func (a ByRank) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ByRank) Less(i, j int) bool { 
+func (a ByRank) Len() int      { return len(a) }
+func (a ByRank) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a ByRank) Less(i, j int) bool {
 	if ranksNum[a[i].Rank] < ranksNum[a[j].Rank] {
 		return false
 	} else if ranksNum[a[i].Rank] > ranksNum[a[j].Rank] {
 		return true
-	} 
+	}
 	return suitNum[a[i].Suit] > suitNum[a[j].Suit]
 }
 
@@ -143,28 +142,28 @@ func sortRank(cs []Card) []Card {
 }
 
 type ByRankSpecial []Card
-func (a ByRankSpecial) Len() int           { return len(a) }
-func (a ByRankSpecial) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ByRankSpecial) Less(i, j int) bool { 
+
+func (a ByRankSpecial) Len() int      { return len(a) }
+func (a ByRankSpecial) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a ByRankSpecial) Less(i, j int) bool {
 	if ranksSpecialNum[a[i].Rank] < ranksSpecialNum[a[j].Rank] {
 		return false
 	} else if ranksSpecialNum[a[i].Rank] > ranksSpecialNum[a[j].Rank] {
 		return true
-	} 
+	}
 	return suitNum[a[i].Suit] > suitNum[a[j].Suit]
 }
 
 var ranksSpecialNum = map[string]int{
-		"J":  14,
-		"A":  13,
-		"10": 12,
-		"K":  11,
-		"D":  10,
-		"9":  9,
-		"8":  8,
-		"7":  7,
+	"J":  14,
+	"A":  13,
+	"10": 12,
+	"K":  11,
+	"D":  10,
+	"9":  9,
+	"8":  8,
+	"7":  7,
 }
- 
 
 func sortRankSpecial(cs []Card, ranks []string) []Card {
 	for i, r := range ranks {
@@ -245,12 +244,12 @@ func similar(s *SuitState, cards []Card) []Card {
 			next = nextCard(s.trump, card)
 			for in(s.cardsPlayed, next) && next.Rank != "A" && next.Rank != "K" && next.Rank != "9" {
 				next = nextCard(s.trump, next)
-			}		
-		} else 	if cards[i].equals(next)  {
+			}
+		} else if cards[i].equals(next) {
 			next = nextCard(s.trump, next)
 			for in(s.cardsPlayed, next) && next.Rank != "A" && next.Rank != "K" && next.Rank != "9" {
 				next = nextCard(s.trump, next)
-			}		
+			}
 			continue
 		} else {
 			card = cards[i]
@@ -258,10 +257,92 @@ func similar(s *SuitState, cards []Card) []Card {
 			next = nextCard(s.trump, card)
 			for in(s.cardsPlayed, next) && next.Rank != "A" && next.Rank != "K" && next.Rank != "9" {
 				next = nextCard(s.trump, next)
-			}		
+			}
 		}
 	}
 	return sim
+}
+
+// func equivalent(s *SuitState, cards []Card) []Card {
+// 	eqCards := []Card{}
+// 	for _, c := range cards {
+// 		if cardValue(c) > 2 {
+// 			eqCards = append(eqCards, c)
+// 		}
+// 	}
+// 	for _, s := range suits {
+// 		if in(cards, Card{s, "9"}) {
+// 			eqCards = append(eqCards, Card{s, "9"})
+// 			if !in(cards, Card{s, "8"}) && in(cards, Card{s, "7"}) {
+// 				eqCards = append(eqCards, Card{s, "7"})
+// 			}
+// 		} else if in(cards, Card{s, "8"}) {
+// 			eqCards = append(eqCards, Card{s, "8"})
+// 		} else if in(cards, Card{s, "7"}) {
+// 			eqCards = append(eqCards, Card{s, "8"})
+// 		}
+// 	}
+
+// 	if in(cards, Card{CLUBS, "J"}) {
+// 		eqCards = append(eqCards, Card{CLUBS, "J"})
+// 		if !in(cards, Card{SPADE, "J"}) && in(cards, Card{HEART, "J"}) {
+// 			eqCards = append(eqCards, Card{HEART, "J"})
+// 		}
+// 	} else if in(cards, Card{SPADE, "J"}) {
+// 		eqCards = append(eqCards, Card{SPADE, "J"})
+// 		if !in(cards, Card{HEART, "J"}) && in(cards, Card{CARO, "J"}) {
+// 			eqCards = append(eqCards, Card{CARO, "J"})
+// 		}
+// 	} else if in(cards, Card{HEART, "J"}) {
+// 		eqCards = append(eqCards, Card{HEART, "J"})
+// 	} else if in(cards, Card{CARO, "J"}) {
+// 		eqCards = append(eqCards, Card{CARO, "J"})
+// 	}
+// 	return eqCards
+// }
+
+func equivalent(s *SuitState, cards []Card) []Card {
+	eqCards := []Card{}
+	for _, c := range cards {
+		if cardValue(c) > 2 {
+			eqCards = append(eqCards, c)
+		}
+	}
+
+	suits := []string{"CARO", "HEART", "SPADE", "CLUBS"}
+	ins := true
+	for _, suit := range suits {
+		card := Card{suit, "J"}
+		if in(cards, card) && ins {
+			eqCards = append(eqCards, card)
+			ins = false
+		} else if !in(cards, card) {
+			if !in(s.cardsPlayed, card) {
+				ins = true
+			} else if in(s.trick, card) {
+				ins = true
+			}
+		}
+	}
+	ranks := []string{"9", "8", "7"}
+
+	for _, suit := range suits {
+		ins = true
+		for _, r := range ranks {
+			card := Card{suit, r}
+			if in(cards, card) && ins {
+				eqCards = append(eqCards, card)
+				ins = false
+			} else if !in(cards, card) {
+				if !in(s.cardsPlayed, card) {
+					ins = true
+				} else if in(s.trick, card) {
+					ins = true
+				}
+			}
+		}
+	}
+	return eqCards
 }
 
 func nextCard(trump string, c Card) Card {
@@ -289,7 +370,6 @@ func nextCard(trump string, c Card) Card {
 	return Card{"", ""}
 }
 
-
 func sortValue(cs []Card) []Card {
 	valueRanks := []string{"A", "10", "K", "D", "J", "7", "8", "9"}
 	return sortRankSpecial(cs, valueRanks)
@@ -309,33 +389,33 @@ func sortSuit(trump string, cs []Card) []Card {
 	cards := []Card{}
 
 	cardJs := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
 	}
 	cardsSuit := func(suit string) []Card {
 		return []Card{
-			Card{suit, "A"},
-			Card{suit, "10"},
-			Card{suit, "K"},
-			Card{suit, "D"},
-			Card{suit, "9"},
-			Card{suit, "8"},
-			Card{suit, "7"},
+			{suit, "A"},
+			{suit, "10"},
+			{suit, "K"},
+			{suit, "D"},
+			{suit, "9"},
+			{suit, "8"},
+			{suit, "7"},
 		}
 	}
 	if trump == NULL {
 		cardsSuit = func(suit string) []Card {
 			return []Card{
-				Card{suit, "A"},
-				Card{suit, "K"},
-				Card{suit, "D"},
-				Card{suit, "J"},
-				Card{suit, "10"},
-				Card{suit, "9"},
-				Card{suit, "8"},
-				Card{suit, "7"},
+				{suit, "A"},
+				{suit, "K"},
+				{suit, "D"},
+				{suit, "J"},
+				{suit, "10"},
+				{suit, "9"},
+				{suit, "8"},
+				{suit, "7"},
 			}
 		}
 	}
@@ -381,7 +461,6 @@ func Shuffle(cards []Card) []Card {
 	return ret
 }
 
-
 func ShuffleR(r *rand.Rand, cards []Card) []Card {
 	//r := rand.New(rand.NewSource(time.Now().Unix()))
 	ret := make([]Card, len(cards))
@@ -402,43 +481,42 @@ func sum(trick []Card) int {
 
 func makeSuitDeck(suit string) []Card {
 	return []Card{
-		Card{suit, "J"},
-		Card{suit, "A"},
-		Card{suit, "10"},
-		Card{suit, "K"},
-		Card{suit, "D"},
-		Card{suit, "9"},
-		Card{suit, "8"},
-		Card{suit, "7"},
+		{suit, "J"},
+		{suit, "A"},
+		{suit, "10"},
+		{suit, "K"},
+		{suit, "D"},
+		{suit, "9"},
+		{suit, "8"},
+		{suit, "7"},
 	}
 }
 
 func makeTrumpDeck(suit string) []Card {
 	return []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{suit, "A"},
-		Card{suit, "10"},
-		Card{suit, "K"},
-		Card{suit, "D"},
-		Card{suit, "9"},
-		Card{suit, "8"},
-		Card{suit, "7"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{suit, "A"},
+		{suit, "10"},
+		{suit, "K"},
+		{suit, "D"},
+		{suit, "9"},
+		{suit, "8"},
+		{suit, "7"},
 	}
 }
 
-
 func makeNoTrumpDeck(suit string) []Card {
 	return []Card{
-		Card{suit, "A"},
-		Card{suit, "10"},
-		Card{suit, "K"},
-		Card{suit, "D"},
-		Card{suit, "9"},
-		Card{suit, "8"},
-		Card{suit, "7"},
+		{suit, "A"},
+		{suit, "10"},
+		{suit, "K"},
+		{suit, "D"},
+		{suit, "9"},
+		{suit, "8"},
+		{suit, "7"},
 	}
 }
 
@@ -534,18 +612,17 @@ func removeOne(cs []Card, card Card) []Card {
 // 	return ncs
 // }
 
-
 func matadors(trump string, cs []Card) int {
 	cards := []Card{
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{trump, "A"},
-		Card{trump, "10"},
-		Card{trump, "K"},
-		Card{trump, "D"},
-		Card{trump, "9"},
-		Card{trump, "8"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{trump, "A"},
+		{trump, "10"},
+		{trump, "K"},
+		{trump, "D"},
+		{trump, "9"},
+		{trump, "8"},
 	}
 	m := 0
 	if in(cs, Card{CLUBS, "J"}) {
@@ -580,7 +657,6 @@ func nonTrumpCards(suit string, cards []Card) []Card {
 	})
 }
 
-
 // TACTICS aux functions
 
 func strength(cs []Card) int {
@@ -597,7 +673,7 @@ func strength(cs []Card) int {
 	if in(cs, Card{CARO, "J"}) {
 		s += 12
 	}
-	return s 
+	return s
 }
 
 func ShortestNonTrumpSuit(trump string, cards []Card) string {
@@ -633,7 +709,6 @@ func LongestNonTrumpSuit(trump string, cards []Card) string {
 	return suits[maxI]
 }
 
-
 // With a preference to non-A suits
 //   unless there are at least 3 suit
 // and a preference to weaker cards (between A-suits)
@@ -665,7 +740,6 @@ func mostCardsSuit(cards []Card) string {
 		return s
 	}
 
-
 	asuits := 0
 	for _, s := range suits {
 		if in(cards, Card{s, "A"}) {
@@ -696,15 +770,15 @@ func mostCardsSuit(cards []Card) string {
 	return suits[maxI]
 }
 
-
 func lessCardsSuitExcept(suitsToExclude []string, cards []Card) string {
 	copyCards := filter(cards, func(c Card) bool {
 		for _, s := range suitsToExclude {
 			if c.Suit == s {
-				return false}
+				return false
+			}
 		}
 		return true
-		})
+	})
 	return lessCardsSuit(copyCards)
 }
 
@@ -712,16 +786,16 @@ func lessCardsSuit(cards []Card) string {
 	nonA := func(cs []Card) []Card {
 		return filter(cs, func(c Card) bool {
 			return c.Rank != "A"
-			})
+		})
 	}
 	clubs := nonTrumpCards(CLUBS, cards)
 	spades := nonTrumpCards(SPADE, cards)
-	hearts :=nonTrumpCards(HEART, cards)
+	hearts := nonTrumpCards(HEART, cards)
 	caro := nonTrumpCards(CARO, cards)
-	c := 100 * len(clubs) - sum(nonA(clubs)) // we want to discard higher value cards
-	s := 100 * len(spades) - sum(nonA(spades))
-	h := 100 * len(hearts) - sum(nonA(hearts))
-	k := 100 * len(caro) - sum(nonA(caro))
+	c := 100*len(clubs) - sum(nonA(clubs)) // we want to discard higher value cards
+	s := 100*len(spades) - sum(nonA(spades))
+	h := 100*len(hearts) - sum(nonA(hearts))
+	k := 100*len(caro) - sum(nonA(caro))
 
 	if c == 0 {
 		c = 9999 // no cards for comparison below
@@ -793,7 +867,6 @@ func nullGreater(sfollow string, card1, card2 Card) bool {
 	return rank[card1.Rank] > rank[card2.Rank]
 }
 
-
 func (s SuitState) greater(card1 Card, cards ...Card) bool {
 	for _, card2 := range cards {
 		if s.greaterOne(card1, card2) {
@@ -813,8 +886,6 @@ func greater(strump, sfollow string, card1 Card, cards ...Card) bool {
 	}
 	return true
 }
-
-
 
 func (s SuitState) greaterOne(card1, card2 Card) bool {
 	return greaterOne(s.trump, s.follow, card1, card2)

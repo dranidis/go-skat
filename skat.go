@@ -12,9 +12,9 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"runtime/pprof"
 	"strconv"
 	"time"
-	"runtime/pprof"
 )
 
 var r = rand.New(rand.NewSource(1))
@@ -25,6 +25,7 @@ var totalGames = 21
 var oficialScoring = false
 
 var verbose = false
+
 /*
 channels for html and ISS comm
 */
@@ -49,12 +50,15 @@ var issSentDelay = 0
 var issUsername string
 var issDEBUG = false
 
-var	minMaxPlayerFlag = false
+var minMaxPlayerFlag = false
 var maxHandSizeFlag = 4
 var MINIMAX_ALG = "abt"
 var minmax2Flag = false
 var minmax3Flag = false
-var	minimaxSearching = false
+var minimaxSearching = false
+var MINIMAX_TO_ms = 10000
+var MINIMAX_worlds = 20
+var MINIMAX_EXTRA_DEPTH = 0
 
 var gameIndex = 1
 var player1 PlayerI
@@ -73,11 +77,11 @@ type SuitState struct {
 	leader   PlayerI
 	follow   string
 	trick    []Card
-	skat             []Card
+	skat     []Card
 	// not necessary for game but for tactics
 	Inference
 }
-	
+
 func voidString(m map[string]bool) string {
 	str := "("
 	for k, v := range m {
@@ -92,21 +96,21 @@ func voidString(m map[string]bool) string {
 
 func (s SuitState) String() string {
 
-	return fmt.Sprintf("D:%s, O1:%s, O2:%s, T:%s, Leads:%s, Fol: %s, TRICK:%v, SKAT:%v, InGame: %v, Played: %v, D_VOID:%s,%v,O1_VOID:%s, %v,O2_VOID:%s, %v\n", 
-		s.declarer.getName(), s.opp1.getName(), s.opp2.getName(), s.trump, s.leader.getName(), s.follow, s.trick, 
-		s.skat, s.trumpsInGame, s.cardsPlayed, 
-		voidString(s.declarerVoidSuit), s.declarerVoidCards, 
-		voidString(s.opp1VoidSuit), s.opp1VoidCards, 
+	return fmt.Sprintf("D:%s, O1:%s, O2:%s, T:%s, Leads:%s, Fol: %s, TRICK:%v, SKAT:%v, InGame: %v, Played: %v, D_VOID:%s,%v,O1_VOID:%s, %v,O2_VOID:%s, %v\n",
+		s.declarer.getName(), s.opp1.getName(), s.opp2.getName(), s.trump, s.leader.getName(), s.follow, s.trick,
+		s.skat, s.trumpsInGame, s.cardsPlayed,
+		voidString(s.declarerVoidSuit), s.declarerVoidCards,
+		voidString(s.opp1VoidSuit), s.opp1VoidCards,
 		voidString(s.opp2VoidSuit), s.opp2VoidCards)
 }
 
 func (s *SuitState) cloneSuitStateNotPlayers() SuitState {
 	newSS := makeSuitState()
 	newSS.declarer = s.declarer //is it necessary?
-	newSS.opp1 = s.opp1 // swallow copy, will be replaced anyway
-	newSS.opp2 = s.opp2 // swallow copy, will be replaced anyway 
+	newSS.opp1 = s.opp1         // swallow copy, will be replaced anyway
+	newSS.opp2 = s.opp2         // swallow copy, will be replaced anyway
 	newSS.trump = s.trump
-	newSS.leader = s.leader // swallow copy, will be replaced anyway 
+	newSS.leader = s.leader // swallow copy, will be replaced anyway
 	newSS.follow = s.follow
 	newTrick := make([]Card, len(s.trick))
 	copy(newTrick, s.trick)
@@ -212,7 +216,7 @@ func play(s *SuitState, p PlayerI) Card {
 	// }
 
 	// p.setHand(sortSuit(s.trump, p.getHand()))
-	
+
 	gameLog("Trick: %v\n", s.trick)
 	pName := p.getName()
 	if s.declarer.getName() == p.getName() {
@@ -235,7 +239,7 @@ func play(s *SuitState, p PlayerI) Card {
 
 	if issConnect && p.getName() == issUsername {
 		playCard(card)
-	}	
+	}
 
 	analysePlay(s, p, card)
 
@@ -424,13 +428,13 @@ func gameScore(state SuitState, cs []Card, handGame bool) Score {
 		state.opp1.getScore() + state.opp2.getScore(),
 		gs,
 		state.trump,
-		withMatadors, 
+		withMatadors,
 		handGame,
-		schneider, 
-		schwarz, 
-		ouvert, 
+		schneider,
+		schwarz,
+		ouvert,
 		overbid,
-		0,0,0,
+		0, 0, 0,
 	}
 	return scoreStruct
 }
@@ -447,7 +451,7 @@ var oldCards []Card
 func DealCards() {
 	debugTacticsLog("Dealing\n")
 
-	var cards []Card 
+	var cards []Card
 	for {
 		cards = Shuffle(makeDeck())
 		gamePlayers[0].setHand(sortSuit("", cards[:10]))
@@ -455,7 +459,7 @@ func DealCards() {
 			break
 		}
 		player := gamePlayers[0].(*Player)
-		g := player.canWin(false)	
+		g := player.canWin(false)
 		if g == dealGame {
 			break
 		}
@@ -543,14 +547,14 @@ func declareAndPlay() int {
 	if issConnect {
 		if len(state.skat) == 2 && state.skat[0].Rank != "" {
 			if !handGame {
-				fmt.Printf("sending trump %s and skat %v %v to server" , state.trump, state.skat[0], state.skat[1])
+				fmt.Printf("sending trump %s and skat %v %v to server", state.trump, state.skat[0], state.skat[1])
 				iss_declare(state.trump, false, state.skat)
-			} 
-		}  
+			}
+		}
 	}
 
 	if issConnect && handGame {
-		fmt.Printf("sending trump %s and Hand Game to server" , state.trump)
+		fmt.Printf("sending trump %s and Hand Game to server", state.trump)
 		iss_declare(state.trump, true, state.skat)
 	}
 
@@ -585,7 +589,6 @@ func declareAndPlay() int {
 	if issConnect && state.declarer.getName() == "goskat" {
 		debugTacticsLog("SKAT: %v\n", state.skat)
 	}
-
 
 	declarerCards := make([]Card, len(state.declarer.getHand()))
 	copy(declarerCards, state.declarer.getHand())
@@ -667,20 +670,20 @@ func declareAndPlay() int {
 }
 
 type Score struct {
-	Declarer string
+	Declarer       string
 	DeclarerPoints int
 	DefenderPoints int
 	GameScore      int
-	GameDeclared string
-	With int
-	Hand bool
-	Schneider bool
-	Schwarz bool
-	Ouvert bool
-	Overbid bool
-	Total1 int
-	Total2 int
-	Total3 int
+	GameDeclared   string
+	With           int
+	Hand           bool
+	Schneider      bool
+	Schwarz        bool
+	Ouvert         bool
+	Overbid        bool
+	Total1         int
+	Total2         int
+	Total3         int
 }
 
 func (s *SuitState) setDeclarerAndOpps(players []PlayerI, declarer PlayerI) {
@@ -695,7 +698,7 @@ func (s *SuitState) setDeclarerAndOpps(players []PlayerI, declarer PlayerI) {
 	if declarer == players[2] {
 		state.opp1, state.opp2 = players[0], players[1]
 	}
-	state.opp1.setPartner(state.opp2)	
+	state.opp1.setPartner(state.opp2)
 }
 
 func skatGame() int {
@@ -806,12 +809,12 @@ func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlay
 			issplayer2 := makeISSPlayer([]Card{})
 			issplayer3 := makeISSPlayer([]Card{})
 			lplayer1.setName("")
-			issplayer2.setName("ISS1") // this will change by ISS
-			issplayer3.setName("ISS2") // this will change by ISS
+			issplayer2.setName("ISS1")                                  // this will change by ISS
+			issplayer3.setName("ISS2")                                  // this will change by ISS
 			gamePlayers = []PlayerI{lplayer1, &issplayer2, &issplayer3} // this will change by ISS
 			delayMs = 0
 
-			return			
+			return
 		} else {
 			player := makeHumanPlayer([]Card{})
 			player1 = &player
@@ -840,7 +843,6 @@ func makePlayers(auto, html, issConnect, analysis bool, analysisPl, analysisPlay
 	player3.setName("Ana")
 	gamePlayers = []PlayerI{player1, player2, player3}
 }
-
 
 var dealGame = ""
 
@@ -876,16 +878,20 @@ func main() {
 	flag.IntVar(&maxHandSizeFlag, "mm-max", 4, "Max hand size for the minimax player. Below that normal tactics are used.")
 	flag.StringVar(&dealGame, "deal", "", "Force a specific game deal: Grand, Null")
 	var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
+	flag.IntVar(&MINIMAX_TO_ms, "mmtimeout", 5000, "Timeout (in ms) for minmax")
+	flag.IntVar(&MINIMAX_worlds, "mmworlds", 20, "Maximum worlds to generate for minmax")
+	flag.IntVar(&MINIMAX_EXTRA_DEPTH, "mmextradepth", 0, "Add extra depth to the default")
+
 	flag.Parse()
 
 	if *cpuprofile != "" {
-        f, err := os.Create(*cpuprofile)
-        if err != nil {
-            log.Fatal(err)
-        }
-        pprof.StartCPUProfile(f)
-        defer pprof.StopCPUProfile()
-    }
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
 
 	if auto {
 		gameLogFlag = false
@@ -934,7 +940,7 @@ func main() {
 	}
 
 	debugTacticsLog("SHUFFLING %d time(s)\n", gameNr)
-	for i := 0; i < gameNr - 1; i++ {
+	for i := 0; i < gameNr-1; i++ {
 		DealCards()
 	}
 
@@ -953,7 +959,7 @@ func main() {
 			fmt.Println("Target: Declarer should lose.")
 		} else {
 			fmt.Println("Target: Declarer should win.")
-		}		
+		}
 		gameLogFlag = false
 		gamePlayers = rotatePlayers(gamePlayers)
 		score := skatGame()
@@ -964,7 +970,7 @@ func main() {
 			if winAnalysis {
 				return s < 0
 			} else {
-				return s > 0 
+				return s > 0
 			}
 		}
 
@@ -973,8 +979,8 @@ func main() {
 		previousGameAnalysis = false
 		for condition(s) && !analysisEnded {
 			nextGameForAnalysis()
-			s = repeatGame()		
-			anim()	
+			s = repeatGame()
+			anim()
 			i++
 			// printScore(gamePlayers)
 		}
@@ -1044,16 +1050,16 @@ func main() {
 		100*float64(gamePlayers[0].getWonAsDefenders())/float64(totalGames-passed-(gamePlayers[0].getLost()+gamePlayers[0].getWon())),
 		100*float64(gamePlayers[1].getWonAsDefenders())/float64(totalGames-passed-(gamePlayers[1].getLost()+gamePlayers[1].getWon())),
 		100*float64(gamePlayers[2].getWonAsDefenders())/float64(totalGames-passed-(gamePlayers[2].getLost()+gamePlayers[2].getWon())))
-	fmt.Printf("AVG  %3.1f, played %d, passed %d, won %d, lost %d / %d games\n", avg, won+lost,passed, won, lost, totalGames)
-	fmt.Printf("Games       %5d, (%3.0f%%), Won: %5d (%3.0f%%)\n", 
-		won+lost, 100*float64(won+lost)/float64(totalGames), 
-		won, 100 *float64(won)/float64(won+lost))
-	fmt.Printf("Grand games %5d, (%3.0f%%), Won: %5d (%3.0f%%)\n", 
-		grandGames, 100*float64(grandGames)/float64(totalGames), 
-		wonGrandGames, 100 *float64(wonGrandGames)/float64(grandGames))
-	fmt.Printf("Null games  %5d, (%3.0f%%), Won: %5d (%3.0f%%)\n", 
+	fmt.Printf("AVG  %3.1f, played %d, passed %d, won %d, lost %d / %d games\n", avg, won+lost, passed, won, lost, totalGames)
+	fmt.Printf("Games       %5d, (%3.0f%%), Won: %5d (%3.0f%%)\n",
+		won+lost, 100*float64(won+lost)/float64(totalGames),
+		won, 100*float64(won)/float64(won+lost))
+	fmt.Printf("Grand games %5d, (%3.0f%%), Won: %5d (%3.0f%%)\n",
+		grandGames, 100*float64(grandGames)/float64(totalGames),
+		wonGrandGames, 100*float64(wonGrandGames)/float64(grandGames))
+	fmt.Printf("Null games  %5d, (%3.0f%%), Won: %5d (%3.0f%%)\n",
 		nullGames, 100*float64(nullGames)/float64(totalGames),
-		wonNullGames, 100 *float64(wonNullGames)/float64(nullGames))
+		wonNullGames, 100*float64(wonNullGames)/float64(nullGames))
 }
 
 func printScore(players []PlayerI) {
@@ -1070,7 +1076,7 @@ func animation() func() {
 		"\b|",
 	}
 
-	nextSymbol := func () string {
+	nextSymbol := func() string {
 		sym++
 		if sym == len(symbol) {
 			sym = 0
@@ -1080,19 +1086,19 @@ func animation() func() {
 
 	next := func() {
 		i++
-		if i % 50 == 0 {
+		if i%50 == 0 {
 			fmt.Print(nextSymbol())
 		}
-		if i % 1000 == 0 {
-			if i % 10000 == 0 {
+		if i%1000 == 0 {
+			if i%10000 == 0 {
 				fmt.Print("\b# ")
 			} else {
 				fmt.Print("\b. ")
 			}
-			if i % 50000 == 0 {
+			if i%50000 == 0 {
 				fmt.Printf(" (%d)\n", i)
 			}
-		}	
+		}
 	}
 	return next
 }
@@ -1135,7 +1141,7 @@ func startServer() *mux.Router {
 			}
 		}
 		data := initData{
-			player1.getHand(), 
+			player1.getHand(),
 			position,
 			player1.getTotalScore(),
 			player2.getTotalScore(),
@@ -1166,7 +1172,7 @@ func startServer() *mux.Router {
 			}
 		}
 		data := initData{
-			player1.getHand(), 
+			player1.getHand(),
 			position,
 			player1.getTotalScore(),
 			player2.getTotalScore(),
@@ -1200,12 +1206,11 @@ func startServer() *mux.Router {
 		}
 		pi := int(pl)
 
-		
 		// var player *HtmlPlayer
 		// player, _ = players[pi].(* HtmlPlayer)
 
-		skat1 := <-skatPositionChannel 
-		skat2 := <-skatPositionChannel 
+		skat1 := <-skatPositionChannel
+		skat2 := <-skatPositionChannel
 
 		if pi >= 0 && pi < len(players) {
 			data := SkatData{
@@ -1417,10 +1422,10 @@ func sendJson(w http.ResponseWriter, data interface{}) {
 type initData struct {
 	Hand     []Card
 	Position int
-	Score1 int
-	Score2 int
-	Score3 int
-	Game int
+	Score1   int
+	Score2   int
+	Score3   int
+	Game     int
 }
 
 type BidData struct {
@@ -1430,6 +1435,6 @@ type BidData struct {
 
 type SkatData struct {
 	Hand     []Card
-	SkatPos1	int
-	SkatPos2	int
+	SkatPos1 int
+	SkatPos2 int
 }
