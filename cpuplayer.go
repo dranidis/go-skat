@@ -123,7 +123,6 @@ func (p Player) canWinNull(afterSkat bool) int {
 			quiterisky++
 		default:
 			return -1 // one unplayable is enough to reject
-			unplayable++
 		}
 		if risk > 2 && !afterSkat {
 			//check if they can be discard it
@@ -286,7 +285,7 @@ func (p Player) canWin(afterSkat bool) string {
 		}
 		if len(Js) == 2 || (len(Js) == 1 && p.getName() == players[0].getName()) {
 			if len(asuits) >= 4 {
-				debugTacticsLog("WILL PLAY GRAND with %d Jack and 4 suits covered with A: %v\n", len(Js))
+				debugTacticsLog("WILL PLAY GRAND with %d Jack and 4 suits covered with A: %v\n", len(Js), Js)
 				return "GRAND"
 			}
 		}
@@ -545,7 +544,7 @@ func (p Player) declarerTactic(s *SuitState, c []Card) Card {
 				// }
 			} else if len(sureWinners) == 0 {
 				if len(highLosers) > 1 && cardValue(highLosers[len(highLosers)-1]) < 10 {
-					debugTacticsLog("..Playing a high loser..%d")
+					debugTacticsLog("..Playing a high loser..")
 					return highLosers[len(highLosers)-1]
 				}
 				// debugTacticsLog("..No winner, playing low trump")

@@ -68,11 +68,11 @@ func (p *HumanPlayer) declareTrump() string {
 			if p.declaredBid > 23 {
 				if p.handGame {
 					if p.declaredBid > 35 {
-						gameLog("Your bid %s is higher than Null Hand 35\n", p.declaredBid)
+						gameLog("Your bid %d is higher than Null Hand 35\n", p.declaredBid)
 						continue
 					}
 				}
-				gameLog("Your bid %s is higher than Null 23\n", p.declaredBid)
+				gameLog("Your bid %d is higher than Null 23\n", p.declaredBid)
 				continue
 			}
 			return NULL
@@ -81,7 +81,7 @@ func (p *HumanPlayer) declareTrump() string {
 		}
 	}
 
-	return mostCardsSuit(p.getHand())
+	// return mostCardsSuit(p.getHand())
 }
 
 func (p *HumanPlayer) calculateHighestBid(b bool) int {
@@ -163,7 +163,7 @@ func getYes(format string, a ...interface{}) bool {
 			continue
 		}
 	}
-	return false
+	// return false
 }
 
 func (p *HumanPlayer) pickUpSkat(skat []Card) bool {

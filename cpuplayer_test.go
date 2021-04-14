@@ -144,7 +144,7 @@ func TestPickUpSkatAndDeclareNew(t *testing.T) {
 	player.pickUpSkat(skat)
 
 	if player.trumpToDeclare != SPADE {
-		t.Errorf("Expected SPADE, found: ", player.trumpToDeclare)
+		t.Errorf("Expected SPADE, found: %s", player.trumpToDeclare)
 	}
 }
 
@@ -176,7 +176,7 @@ func TestPickUpSkatAndDeclare_10_D_9(t *testing.T) {
 	player.pickUpSkat(skat)
 
 	if player.trumpToDeclare != HEART {
-		t.Errorf("Expected HEART, since SPADE is a bit stronger, found: ", player.trumpToDeclare)
+		t.Errorf("Expected HEART, since SPADE is a bit stronger, found: %s", player.trumpToDeclare)
 	}
 }
 

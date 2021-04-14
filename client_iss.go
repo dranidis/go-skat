@@ -259,17 +259,17 @@ func parseServer(t string) {
 				if len(s[0]) > 1 {
 					handIndex := 1
 					if s[0][1] == 'O' {
-						fmt.Printf("Player: %s plays an OUVERT game %s\n", player)
+						fmt.Printf("Player: %s plays an OUVERT game\n", player)
 						handIndex++
 					}
 					if len(s[0]) > handIndex && s[0][handIndex] == 'H' {
-						fmt.Printf("Player: %s plays a HAND game %s\n", player)
+						fmt.Printf("Player: %s plays a HAND game\n", player)
 						if len(s[0]) > handIndex+1 {
 							if s[0][handIndex+1] == 'S' {
-								fmt.Printf("Player: %s announces a SCHNEIDER game %s\n", player)
+								fmt.Printf("Player: %s announces a SCHNEIDER game\n", player)
 							}
 							if s[0][handIndex+1] == 'Z' {
-								fmt.Printf("Player: %s announces a SCHWARZ game %s\n", player)
+								fmt.Printf("Player: %s announces a SCHWARZ game\n", player)
 							}
 						}
 					}
