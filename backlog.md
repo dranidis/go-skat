@@ -1,4 +1,49 @@
 
+# THrowing a Clubs J, when a CARO J would do!? See clubsJ... txt
+	Trick: []
+	(bernie) HAND [] valid: []
+		Previous suit: bernie:, ddmits:
+	(bernie) Trick: [A]
+	(ddmits) HAND [] valid: []
+		Previous suit: bernie:CLUBS, ddmits:
+	(ddmits) Trick: [A 7]
+	(goskat) HAND [J J A 10 8 A 7 A D 9] valid: [J J A 10 8 A 7 A D 9]
+	(goskat) Valid: [J J A 10 8 A 7 A D 9]
+	Equivalent: [A 10 A A D J J 9 7 8]
+	Valid: [A 10 A A D J J 9 7 8]Similar: [J J A 8 A 7 A D 9]
+	AB: ALL REMAINING CARDS (18): [10 K 9 8 J K 9 7 J 10 K D 9 8 10 K 8 7]
+	AB: REMAINING after void: 18 cards: [10 K 9 8 J K 9 7 J 10 K D 9 8 10 K 8 7] [] []
+	AB: (goskat) 20 Worlds, ab
+	AB: Opp1: [9 K 7 10 9 10 K 10 8] Opp2: [D 8 K K J 8 7 J 9], SKAT:[D D]	J   90
+	AB: Opp1: [8 K 9 D K J 8 9 10] Opp2: [K 10 7 K 8 J 9 10 7], SKAT:[D D]	J   90
+	AB: Opp1: [8 7 K 10 10 9 10 8 J] Opp2: [J 7 K D 9 K 9 8 K], SKAT:[D D]	J   76
+	AB: Opp1: [7 7 8 9 J 9 10 K J] Opp2: [10 K 8 K 9 8 10 D K], SKAT:[D D]	J   76
+	AB: Opp1: [7 J 8 9 10 7 9 K 10] Opp2: [K J 9 K 8 10 8 K D], SKAT:[D D]	J   69
+	AB: Opp1: [10 9 D K 8 K J J 10] Opp2: [K K 7 9 8 7 10 9 8], SKAT:[D D]	J   62
+	AB: Opp1: [8 7 8 9 K 9 K K 10] Opp2: [K 7 D 10 10 9 J 8 J], SKAT:[D D]	J   58
+	AB: Opp1: [K 8 10 7 9 K 9 K 8] Opp2: [10 8 10 J 9 7 J D K], SKAT:[D D]	J   66
+	AB: Opp1: [8 K K 10 J 9 8 K 9] Opp2: [10 7 D K 9 8 J 10 7], SKAT:[D D]	J   91
+	AB: TIMEOUT
+	AB: Time: 5.197365995s
+	AB: 9 Worlds: map[A:40.111111111111114 J:72.33333333333333 J:70.44444444444444 A:47.111111111111114 D:58.111111111111114 9:58 8:53.111111111111114 A:37.77777777777778 7:56.333333333333336]
+	AB: (goskat) Hand: [J J A 10 8 A 7 A D 9], Playing card: J with value  72.3)
+
+
+		goskat: void:	[]
+		bernie: void:	[]
+		bernie: (D) void:
+		ddmits: void:	[]
+			Played cards  : [A 7]
+			Trumps in game: [J J J J]
+
+	DECLARER Cards of suit Grand still in play: [J J       ]Cards of suit Grand still in play: [J J       ]..sure winners: [J]
+	BACKHAND must not follow...CHECKING the A... in trick [A 7], valid [A A A D J J 7 8 9], played [A 7]..Winners: [J J]
+	LAST RESORT: returning highWinnerLowLoser: J
+	AB: 
+	TACTICS suggest: J
+
+
+
 # Optimize Legal actions in MinMax
 	Evaluate only better actions.
 	For example when a player surely loses the trick and he needs to choose between 10, K, D, 9 only the 9 should be evaluated as a legal action.
