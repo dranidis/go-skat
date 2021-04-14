@@ -421,7 +421,7 @@ func analysePlay(s *SuitState, p PlayerI, card Card) {
 
 func opponentIsLosingTrick(s *SuitState, p PlayerI, card Card, lookSkat bool) bool {
 	dIndex := 0
-	for dIndex, _ = range players {
+	for dIndex = range players {
 		if players[dIndex].getName() == s.declarer.getName() {
 			break
 		}

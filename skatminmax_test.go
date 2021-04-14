@@ -11,21 +11,21 @@ func TestFindNextStateEndOfTrick(t *testing.T) {
 	dist := make([][]Card, 3)
 	dist[0] = []Card{
 		// Card{SPADE, "J"},
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "9"},
+		{SPADE, "A"},
+		{SPADE, "K"},
+		{SPADE, "9"},
 	}
 	dist[1] = []Card{
 		// Card{SPADE, "8"},
-		Card{CLUBS, "A"},
-		Card{HEART, "8"},
-		Card{CLUBS, "7"},
+		{CLUBS, "A"},
+		{HEART, "8"},
+		{CLUBS, "7"},
 	}
 	dist[2] = []Card{
-		Card{SPADE, "10"},
-		Card{SPADE, "7"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "9"},
+		{SPADE, "10"},
+		{SPADE, "7"},
+		{CLUBS, "8"},
+		{CLUBS, "9"},
 	}
 
 	p1 := makeMinMaxPlayer(dist[0])
@@ -46,7 +46,7 @@ func TestFindNextStateEndOfTrick(t *testing.T) {
 	ss.leader = &p1
 
 	ss.follow = CARO
-	ss.trick = []Card{Card{SPADE, "J"}, Card{SPADE, "8"}}
+	ss.trick = []Card{{SPADE, "J"}, {SPADE, "8"}}
 
 	skatState := SkatState{
 		ss,
@@ -235,20 +235,20 @@ func TestFindNextStateNewTrick(t *testing.T) {
 	dist[0] = []Card{
 		// Card{SPADE, "J"},
 		// Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "9"},
+		{SPADE, "K"},
+		{SPADE, "9"},
 	}
 	dist[1] = []Card{
 		// Card{SPADE, "8"},
 		// Card{CLUBS, "A"},
-		Card{HEART, "8"},
-		Card{CLUBS, "7"},
+		{HEART, "8"},
+		{CLUBS, "7"},
 	}
 	dist[2] = []Card{
-		Card{SPADE, "10"},
+		{SPADE, "10"},
 		// Card{SPADE, "7"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "9"},
+		{CLUBS, "8"},
+		{CLUBS, "9"},
 	}
 
 	p1 := makeMinMaxPlayer(dist[0])
@@ -300,19 +300,19 @@ func TestFindNextState2ndFollowsk(t *testing.T) {
 	dist[0] = []Card{
 		// Card{SPADE, "J"},
 		// Card{SPADE, "A"},
-		Card{SPADE, "9"},
+		{SPADE, "9"},
 	}
 	dist[1] = []Card{
 		// Card{SPADE, "8"},
 		// Card{CLUBS, "A"},
-		Card{HEART, "8"},
-		Card{CLUBS, "7"},
+		{HEART, "8"},
+		{CLUBS, "7"},
 	}
 	dist[2] = []Card{
-		Card{SPADE, "10"},
+		{SPADE, "10"},
 		// Card{SPADE, "7"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "9"},
+		{CLUBS, "8"},
+		{CLUBS, "9"},
 	}
 
 	p1 := makeMinMaxPlayer(dist[0])
@@ -330,7 +330,7 @@ func TestFindNextState2ndFollowsk(t *testing.T) {
 	ss.opp1 = &p2
 	ss.opp2 = &p3
 	ss.leader = &p1
-	ss.trick = []Card{Card{SPADE, "K"}}
+	ss.trick = []Card{{SPADE, "K"}}
 
 	skatState := SkatState{
 		ss,
@@ -363,18 +363,18 @@ func TestCopySkatState(t *testing.T) {
 	dist := make([][]Card, 3)
 	dist[0] = []Card{
 
-		Card{CLUBS, "8"},
-		Card{HEART, "A"},
+		{CLUBS, "8"},
+		{HEART, "A"},
 	}
 	dist[1] = []Card{
 
-		Card{CARO, "8"},
-		Card{SPADE, "A"},
+		{CARO, "8"},
+		{SPADE, "A"},
 	}
 	dist[2] = []Card{
-		Card{CLUBS, "9"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
+		{CLUBS, "9"},
+		{CARO, "10"},
+		{CARO, "K"},
 	}
 
 	p1 := makeMinMaxPlayer(dist[0])
@@ -392,7 +392,7 @@ func TestCopySkatState(t *testing.T) {
 	sst.opp1 = &p2
 	sst.opp2 = &p3
 	sst.leader = &p1
-	sst.trick = []Card{Card{CLUBS, "J"}, Card{HEART, "10"}}
+	sst.trick = []Card{{CLUBS, "J"}, {HEART, "10"}}
 
 	skatState := SkatState{
 		sst,
@@ -663,16 +663,16 @@ func TestCopySkatState(t *testing.T) {
 func TestAlphaBetaTactics2C(t *testing.T) {
 
 	h1 := []Card{
-		Card{CARO, "J"},
-		Card{SPADE, "A"},
+		{CARO, "J"},
+		{SPADE, "A"},
 	}
 	h2 := []Card{
-		Card{CARO, "10"},
-		Card{SPADE, "10"},
+		{CARO, "10"},
+		{SPADE, "10"},
 	}
 	h3 := []Card{
-		Card{HEART, "D"},
-		Card{CLUBS, "A"},
+		{HEART, "D"},
+		{CLUBS, "A"},
 	}
 
 	dist := [][]Card{h1, h2, h3}
@@ -719,19 +719,19 @@ func TestAlphaBetaTactics2C(t *testing.T) {
 func TestAlphaBetaTactics3C(t *testing.T) {
 
 	h1 := []Card{
-		Card{CARO, "A"},
-		Card{CARO, "J"},
-		Card{SPADE, "A"},
+		{CARO, "A"},
+		{CARO, "J"},
+		{SPADE, "A"},
 	}
 	h2 := []Card{
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{SPADE, "10"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{SPADE, "10"},
 	}
 	h3 := []Card{
-		Card{HEART, "D"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "K"},
+		{HEART, "D"},
+		{CLUBS, "A"},
+		{CLUBS, "K"},
 	}
 
 	dist := [][]Card{h1, h2, h3}
@@ -778,25 +778,25 @@ func TestAlphaBetaTactics3C(t *testing.T) {
 
 func TestAlphaBetaTactics4C(t *testing.T) {
 	h1 := []Card{
-		Card{SPADE, "A"},
-		Card{CLUBS, "J"},
-		Card{HEART, "A"},
-		Card{HEART, "K"},
-		Card{HEART, "9"},
+		{SPADE, "A"},
+		{CLUBS, "J"},
+		{HEART, "A"},
+		{HEART, "K"},
+		{HEART, "9"},
 	}
 	h2 := []Card{
-		Card{HEART, "10"},
-		Card{HEART, "7"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "9"},
-		Card{SPADE, "J"},
+		{HEART, "10"},
+		{HEART, "7"},
+		{CLUBS, "K"},
+		{CLUBS, "9"},
+		{SPADE, "J"},
 	}
 	h3 := []Card{
-		Card{CARO, "J"},
-		Card{SPADE, "8"},
-		Card{HEART, "D"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "D"},
+		{CARO, "J"},
+		{SPADE, "8"},
+		{HEART, "D"},
+		{CLUBS, "A"},
+		{CLUBS, "D"},
 	}
 
 	dist := [][]Card{h1, h2, h3}
@@ -805,25 +805,25 @@ func TestAlphaBetaTactics4C(t *testing.T) {
 
 func TestAlphaBeta4C(t *testing.T) {
 	h1 := []Card{
-		Card{SPADE, "A"},
-		Card{CLUBS, "J"},
-		Card{HEART, "A"},
-		Card{HEART, "K"},
-		Card{HEART, "9"},
+		{SPADE, "A"},
+		{CLUBS, "J"},
+		{HEART, "A"},
+		{HEART, "K"},
+		{HEART, "9"},
 	}
 	h2 := []Card{
-		Card{HEART, "10"},
-		Card{HEART, "7"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "9"},
-		Card{SPADE, "J"},
+		{HEART, "10"},
+		{HEART, "7"},
+		{CLUBS, "K"},
+		{CLUBS, "9"},
+		{SPADE, "J"},
 	}
 	h3 := []Card{
-		Card{CARO, "J"},
-		Card{SPADE, "8"},
-		Card{HEART, "D"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "D"},
+		{CARO, "J"},
+		{SPADE, "8"},
+		{HEART, "D"},
+		{CLUBS, "A"},
+		{CLUBS, "D"},
 	}
 
 	dist := [][]Card{h1, h2, h3}
@@ -832,19 +832,19 @@ func TestAlphaBeta4C(t *testing.T) {
 
 func TestAlphaBeta3C(t *testing.T) {
 	h1 := []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
-		Card{CLUBS, "D"},
+		{CLUBS, "J"},
+		{HEART, "J"},
+		{CLUBS, "D"},
 	}
 	h2 := []Card{
-		Card{CLUBS, "K"},
-		Card{SPADE, "A"},
-		Card{CLUBS, "8"},
+		{CLUBS, "K"},
+		{SPADE, "A"},
+		{CLUBS, "8"},
 	}
 	h3 := []Card{
-		Card{CARO, "J"},
-		Card{SPADE, "J"},
-		Card{CARO, "K"},
+		{CARO, "J"},
+		{SPADE, "J"},
+		{CARO, "K"},
 	}
 
 	dist := [][]Card{h1, h2, h3}
@@ -853,18 +853,18 @@ func TestAlphaBeta3C(t *testing.T) {
 
 func TestAlphaBeta23C(t *testing.T) {
 	h1 := []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
+		{CLUBS, "J"},
+		{HEART, "J"},
 	}
 	h2 := []Card{
-		Card{CLUBS, "K"},
-		Card{SPADE, "A"},
-		Card{CLUBS, "8"},
+		{CLUBS, "K"},
+		{SPADE, "A"},
+		{CLUBS, "8"},
 	}
 	h3 := []Card{
-		Card{CARO, "J"},
-		Card{SPADE, "J"},
-		Card{CARO, "K"},
+		{CARO, "J"},
+		{SPADE, "J"},
+		{CARO, "K"},
 	}
 
 	dist := [][]Card{h1, h2, h3}
@@ -901,8 +901,8 @@ func SecondPlays(t *testing.T, alg string, dist [][]Card, first Card, a, b float
 	})
 
 	sst.skat = []Card{
-		Card{CARO, "10"},
-		Card{CARO, "D"},
+		{CARO, "10"},
+		{CARO, "D"},
 	}
 	played := makeDeck()
 	played = remove(played, p1.hand...)
@@ -984,8 +984,8 @@ func FirstPlays(t *testing.T, alg string, dist [][]Card, tr string, a, b float64
 	})
 
 	sst.skat = []Card{
-		Card{CARO, "10"},
-		Card{CARO, "D"},
+		{CARO, "10"},
+		{CARO, "D"},
 	}
 	played := makeDeck()
 	played = remove(played, p1.hand...)
@@ -1042,30 +1042,30 @@ func TestAlphaBetaTactics7C_1(t *testing.T) {
 
 	h1 := []Card{
 		// Card{CARO, "J"},
-		Card{HEART, "10"},
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{HEART, "7"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "8"},
+		{HEART, "10"},
+		{HEART, "D"},
+		{HEART, "9"},
+		{HEART, "7"},
+		{CLUBS, "K"},
+		{CLUBS, "8"},
 	}
 	h2 := []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "D"},
-		Card{SPADE, "8"},
-		Card{SPADE, "10"},
-		Card{HEART, "K"},
-		Card{HEART, "A"},
-		Card{CARO, "9"},
+		{CLUBS, "A"},
+		{CLUBS, "D"},
+		{SPADE, "8"},
+		{SPADE, "10"},
+		{HEART, "K"},
+		{HEART, "A"},
+		{CARO, "9"},
 	}
 	h3 := []Card{
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "9"},
-		Card{CLUBS, "9"},
-		Card{CARO, "A"},
-		Card{CARO, "K"},
-		Card{CARO, "D"},
+		{SPADE, "A"},
+		{SPADE, "K"},
+		{SPADE, "9"},
+		{CLUBS, "9"},
+		{CARO, "A"},
+		{CARO, "K"},
+		{CARO, "D"},
 	}
 
 	dist := [][]Card{h1, h2, h3}
@@ -1086,13 +1086,13 @@ func TestAlphaBetaTactics7C_1(t *testing.T) {
 	sst.opp1 = &p2
 	sst.opp2 = &p3
 	sst.leader = &p1
-	sst.trick = []Card{Card{CARO, "J"}}
+	sst.trick = []Card{{CARO, "J"}}
 	sst.trumpsInGame = []Card{}
 	sst.cardsPlayed = []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
 	}
 
 	skatState := SkatState{
@@ -1121,37 +1121,37 @@ func TestAlphaBetaTactics7C_1(t *testing.T) {
 func TestAlphaBetaTactics7C_2(t *testing.T) {
 
 	h1 := []Card{
-		Card{CLUBS, "J"},
+		{CLUBS, "J"},
 
-		Card{CARO, "K"},
-		Card{CARO, "9"},
-		Card{CARO, "8"},
-		Card{CLUBS, "8"},
-		Card{HEART, "10"},
-		Card{HEART, "D"},
-		Card{HEART, "7"},
+		{CARO, "K"},
+		{CARO, "9"},
+		{CARO, "8"},
+		{CLUBS, "8"},
+		{HEART, "10"},
+		{HEART, "D"},
+		{HEART, "7"},
 	}
 	h2 := []Card{
-		Card{CARO, "J"},
+		{CARO, "J"},
 
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "K"},
-		Card{SPADE, "9"},
-		Card{SPADE, "7"},
-		Card{HEART, "8"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "K"},
+		{SPADE, "9"},
+		{SPADE, "7"},
+		{HEART, "8"},
 	}
 	h3 := []Card{
-		Card{CARO, "7"},
+		{CARO, "7"},
 
-		Card{CARO, "10"},
-		Card{CARO, "D"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "9"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
-		Card{SPADE, "D"},
+		{CARO, "10"},
+		{CARO, "D"},
+		{CLUBS, "10"},
+		{CLUBS, "9"},
+		{SPADE, "10"},
+		{SPADE, "K"},
+		{SPADE, "D"},
 	}
 
 	dist := [][]Card{h1, h2, h3}
@@ -1173,18 +1173,18 @@ func TestAlphaBetaTactics7C_2(t *testing.T) {
 	sst.opp1 = &p2
 	sst.opp2 = &p3
 	sst.leader = &p1
-	sst.skat = []Card{Card{CLUBS, "D"}, Card{CLUBS, "7"}}
+	sst.skat = []Card{{CLUBS, "D"}, {CLUBS, "7"}}
 	sst.trick = []Card{}
 
 	trick1 := []Card{
-		Card{SPADE, "A"},
-		Card{SPADE, "8"},
-		Card{CARO, "A"},
+		{SPADE, "A"},
+		{SPADE, "8"},
+		{CARO, "A"},
 	}
 	trick2 := []Card{
-		Card{HEART, "A"},
-		Card{HEART, "9"},
-		Card{HEART, "K"},
+		{HEART, "A"},
+		{HEART, "9"},
+		{HEART, "K"},
 	}
 	// trick3 := []Card{
 	// 	Card{CLUBS, "J"},
@@ -1203,7 +1203,7 @@ func TestAlphaBetaTactics7C_2(t *testing.T) {
 	debugTacticsLog("trumpsInGame: %v\n", sst.trumpsInGame)
 
 	sst.declarerVoidSuit[SPADE] = true
-	sst.opp2VoidCards = []Card{Card{HEART, "D"}, Card{HEART, "8"}, Card{HEART, "7"}}
+	sst.opp2VoidCards = []Card{{HEART, "D"}, {HEART, "8"}, {HEART, "7"}}
 
 	skatState := SkatState{
 		sst,
@@ -1241,37 +1241,37 @@ func TestAlphaBetaTactics7C_2(t *testing.T) {
 func TestAlphaBetaTactics8C_play(t *testing.T) {
 	MINIMAX_ALG = "ab"
 	h1 := []Card{
-		Card{CLUBS, "J"},
+		{CLUBS, "J"},
 
-		Card{CARO, "K"},
-		Card{CARO, "9"},
-		Card{CARO, "8"},
-		Card{CLUBS, "8"},
-		Card{HEART, "10"},
-		Card{HEART, "D"},
-		Card{HEART, "7"},
+		{CARO, "K"},
+		{CARO, "9"},
+		{CARO, "8"},
+		{CLUBS, "8"},
+		{HEART, "10"},
+		{HEART, "D"},
+		{HEART, "7"},
 	}
 	h2 := []Card{
-		Card{CARO, "J"},
+		{CARO, "J"},
 
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "K"},
-		Card{SPADE, "9"},
-		Card{SPADE, "7"},
-		Card{HEART, "8"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "K"},
+		{SPADE, "9"},
+		{SPADE, "7"},
+		{HEART, "8"},
 	}
 	h3 := []Card{
-		Card{CARO, "7"},
+		{CARO, "7"},
 
-		Card{CARO, "10"},
-		Card{CARO, "D"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "9"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
-		Card{SPADE, "D"},
+		{CARO, "10"},
+		{CARO, "D"},
+		{CLUBS, "10"},
+		{CLUBS, "9"},
+		{SPADE, "10"},
+		{SPADE, "K"},
+		{SPADE, "D"},
 	}
 
 	dist := [][]Card{h1, h2, h3}
@@ -1295,18 +1295,18 @@ func TestAlphaBetaTactics8C_play(t *testing.T) {
 	sst.opp1 = &p2
 	sst.opp2 = &p3
 	sst.leader = &p1
-	sst.skat = []Card{Card{CLUBS, "D"}, Card{CLUBS, "7"}}
+	sst.skat = []Card{{CLUBS, "D"}, {CLUBS, "7"}}
 	sst.trick = []Card{}
 
 	trick1 := []Card{
-		Card{SPADE, "A"},
-		Card{SPADE, "8"},
-		Card{CARO, "A"},
+		{SPADE, "A"},
+		{SPADE, "8"},
+		{CARO, "A"},
 	}
 	trick2 := []Card{
-		Card{HEART, "A"},
-		Card{HEART, "9"},
-		Card{HEART, "K"},
+		{HEART, "A"},
+		{HEART, "9"},
+		{HEART, "K"},
 	}
 	// trick3 := []Card{
 	// 	Card{CLUBS, "J"},
@@ -1325,7 +1325,7 @@ func TestAlphaBetaTactics8C_play(t *testing.T) {
 	debugTacticsLog("trumpsInGame: %v\n", sst.trumpsInGame)
 
 	sst.declarerVoidSuit[SPADE] = true
-	sst.opp2VoidCards = []Card{Card{HEART, "D"}, Card{HEART, "8"}, Card{HEART, "7"}}
+	sst.opp2VoidCards = []Card{{HEART, "D"}, {HEART, "8"}, {HEART, "7"}}
 
 	// skatState := SkatState{
 	// 	sst,
@@ -1362,35 +1362,35 @@ func TestAlphaBetaTactics7C_play(t *testing.T) {
 	h1 := []Card{
 		// Card{CLUBS, "J"},
 
-		Card{CARO, "K"},
-		Card{CARO, "9"},
-		Card{CARO, "8"},
-		Card{CLUBS, "8"},
-		Card{HEART, "10"},
-		Card{HEART, "D"},
-		Card{HEART, "7"},
+		{CARO, "K"},
+		{CARO, "9"},
+		{CARO, "8"},
+		{CLUBS, "8"},
+		{HEART, "10"},
+		{HEART, "D"},
+		{HEART, "7"},
 	}
 	h2 := []Card{
 		// Card{CARO, "J"},
 
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "K"},
-		Card{SPADE, "9"},
-		Card{SPADE, "7"},
-		Card{HEART, "8"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "K"},
+		{SPADE, "9"},
+		{SPADE, "7"},
+		{HEART, "8"},
 	}
 	h3 := []Card{
 		// Card{CARO, "7"},
 
-		Card{CARO, "10"},
-		Card{CARO, "D"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "9"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
-		Card{SPADE, "D"},
+		{CARO, "10"},
+		{CARO, "D"},
+		{CLUBS, "10"},
+		{CLUBS, "9"},
+		{SPADE, "10"},
+		{SPADE, "K"},
+		{SPADE, "D"},
 	}
 
 	dist := [][]Card{h1, h2, h3}
@@ -1414,23 +1414,23 @@ func TestAlphaBetaTactics7C_play(t *testing.T) {
 	sst.opp1 = &p2
 	sst.opp2 = &p3
 	sst.leader = &p1
-	sst.skat = []Card{Card{CLUBS, "D"}, Card{CLUBS, "7"}}
+	sst.skat = []Card{{CLUBS, "D"}, {CLUBS, "7"}}
 	sst.trick = []Card{}
 
 	trick1 := []Card{
-		Card{SPADE, "A"},
-		Card{SPADE, "8"},
-		Card{CARO, "A"},
+		{SPADE, "A"},
+		{SPADE, "8"},
+		{CARO, "A"},
 	}
 	trick2 := []Card{
-		Card{HEART, "A"},
-		Card{HEART, "9"},
-		Card{HEART, "K"},
+		{HEART, "A"},
+		{HEART, "9"},
+		{HEART, "K"},
 	}
 	trick3 := []Card{
-		Card{CLUBS, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "7"},
+		{CLUBS, "J"},
+		{CARO, "J"},
+		{CARO, "7"},
 	}
 	sst.cardsPlayed = append(sst.cardsPlayed, trick1...)
 	sst.cardsPlayed = append(sst.cardsPlayed, trick2...)
@@ -1444,7 +1444,7 @@ func TestAlphaBetaTactics7C_play(t *testing.T) {
 	debugTacticsLog("trumpsInGame: %v\n", sst.trumpsInGame)
 
 	sst.declarerVoidSuit[SPADE] = true
-	sst.opp2VoidCards = []Card{Card{HEART, "D"}, Card{HEART, "8"}, Card{HEART, "7"}}
+	sst.opp2VoidCards = []Card{{HEART, "D"}, {HEART, "8"}, {HEART, "7"}}
 
 	// skatState := SkatState{
 	// 	sst,

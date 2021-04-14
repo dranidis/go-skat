@@ -250,7 +250,7 @@ func (p *MinMaxPlayer) minmaxSkat(s *SuitState, c []Card, card Card) float64 {
 	}
 
 	// if p.depth != -1 {
-		minimax.MAXDEPTH += p.depth // extra depth
+	minimax.MAXDEPTH += p.depth // extra depth
 	// }
 	// var player1 PlayerI
 	// var player2 PlayerI

@@ -6,10 +6,10 @@ import (
 
 func TestSortRank(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "D"},
-		Card{CLUBS, "8"},
+		{CLUBS, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "D"},
+		{CLUBS, "8"},
 	}
 
 	sr := sortRank(cards)
@@ -21,12 +21,12 @@ func TestSortRank(t *testing.T) {
 
 func TestSortRank2(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{SPADE, "A"},
-		Card{HEART, "A"},
-		Card{HEART, "K"},
-		Card{CARO, "K"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{SPADE, "A"},
+		{HEART, "A"},
+		{HEART, "K"},
+		{CARO, "K"},
 	}
 
 	shCards := Shuffle(cards)
@@ -45,13 +45,13 @@ func TestSortRank2(t *testing.T) {
 
 func TestSortRankSpecial1(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "A"},
-		Card{HEART, "A"},
-		Card{HEART, "K"},
-		Card{CARO, "K"},
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "10"},
+		{SPADE, "A"},
+		{HEART, "A"},
+		{HEART, "K"},
+		{CARO, "K"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "10"},
 	}
 
 	shCards := Shuffle(cards)
@@ -70,16 +70,16 @@ func TestSortRankSpecial1(t *testing.T) {
 
 func TestRemove1(t *testing.T) {
 	hand := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{SPADE, "8"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{HEART, "D"},
+		{HEART, "9"},
+		{SPADE, "8"},
 	}
 
 	cardToRemove := Card{CLUBS, "J"}
@@ -92,16 +92,16 @@ func TestRemove1(t *testing.T) {
 
 func TestRemove2(t *testing.T) {
 	hand := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{SPADE, "8"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{HEART, "D"},
+		{HEART, "9"},
+		{SPADE, "8"},
 	}
 
 	cardToRemove := Card{SPADE, "8"}
@@ -113,16 +113,16 @@ func TestRemove2(t *testing.T) {
 
 func TestRemove3(t *testing.T) {
 	hand := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{SPADE, "8"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{HEART, "D"},
+		{HEART, "9"},
+		{SPADE, "8"},
 	}
 
 	i := 0
@@ -155,15 +155,15 @@ func TestNextCard(t *testing.T) {
 
 func TestSimilar1(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "D"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
+		{CLUBS, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
+		{CLUBS, "K"},
+		{CLUBS, "D"},
+		{CLUBS, "8"},
+		{CLUBS, "7"},
 	}
 	s := makeSuitState()
 	s.trump = CLUBS
@@ -183,16 +183,16 @@ func TestSimilar1(t *testing.T) {
 
 func TestSimilar2(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "D"},
-		Card{CLUBS, "7"},
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
-		Card{HEART, "9"},
-		Card{HEART, "7"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{CLUBS, "10"},
+		{CLUBS, "D"},
+		{CLUBS, "7"},
+		{SPADE, "A"},
+		{SPADE, "10"},
+		{SPADE, "K"},
+		{HEART, "9"},
+		{HEART, "7"},
 	}
 
 	s := makeSuitState()
@@ -213,24 +213,24 @@ func TestSimilar2(t *testing.T) {
 
 func TestSimilar3(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{CARO, "J"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "D"},
-		Card{CLUBS, "7"},
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
-		Card{HEART, "9"},
-		Card{HEART, "7"},
+		{CLUBS, "J"},
+		{CARO, "J"},
+		{CLUBS, "10"},
+		{CLUBS, "D"},
+		{CLUBS, "7"},
+		{SPADE, "A"},
+		{SPADE, "10"},
+		{SPADE, "K"},
+		{HEART, "9"},
+		{HEART, "7"},
 	}
 
 	s := makeSuitState()
 	s.trump = CLUBS
 	s.cardsPlayed = []Card{
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{HEART, "8"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{HEART, "8"},
 	}
 
 	equiv := similar(&s, cards)
@@ -248,10 +248,10 @@ func TestSimilar3(t *testing.T) {
 
 func TestSimilar4(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
+		{CLUBS, "J"},
+		{CLUBS, "9"},
+		{CLUBS, "8"},
+		{CLUBS, "7"},
 	}
 
 	s := makeSuitState()
@@ -273,13 +273,13 @@ func TestSimilar4(t *testing.T) {
 
 func TestEquivalent(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
+		{CLUBS, "J"},
+		{HEART, "J"},
+		{CLUBS, "10"},
+		{CLUBS, "K"},
+		{CLUBS, "9"},
+		{CLUBS, "8"},
+		{CLUBS, "7"},
 	}
 
 	s := makeSuitState()
@@ -305,7 +305,7 @@ func TestEquivalent(t *testing.T) {
 		t.Errorf("Wrong equivalent cards %v", equiv)
 	}
 
-	s.cardsPlayed = []Card{Card{SPADE, "J"}}
+	s.cardsPlayed = []Card{{SPADE, "J"}}
 	equiv = equivalent(&s, cards)
 
 	if len(equiv) != 4 {
@@ -315,8 +315,8 @@ func TestEquivalent(t *testing.T) {
 		t.Errorf("Wrong equivalent cards %v", equiv)
 	}
 
-	s.cardsPlayed = []Card{Card{SPADE, "J"}}
-	s.trick = []Card{Card{SPADE, "J"}}
+	s.cardsPlayed = []Card{{SPADE, "J"}}
+	s.trick = []Card{{SPADE, "J"}}
 	equiv = equivalent(&s, cards)
 
 	if len(equiv) != 5 {

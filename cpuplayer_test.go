@@ -23,16 +23,16 @@ func TestPickUpSkat0(t *testing.T) {
 	player2 := makePlayer([]Card{})
 	player3 := makePlayer([]Card{})
 	player := makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{HEART, "D"},
-		Card{CARO, "9"},
-		Card{SPADE, "8"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{HEART, "D"},
+		{CARO, "9"},
+		{SPADE, "8"},
 	})
 
 	players = []PlayerI{&player, &player2, &player3}
@@ -52,18 +52,18 @@ func TestPickUpSkat0(t *testing.T) {
 
 func TestPickUpSkat1(t *testing.T) {
 	player := makePlayer([]Card{
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CLUBS, "7"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
-		Card{SPADE, "D"},
-		Card{SPADE, "8"},
-		Card{HEART, "9"},
-		Card{CARO, "K"},
-		Card{CARO, "D"},
-		Card{CARO, "10"},
-		Card{HEART, "K"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CLUBS, "7"},
+		{SPADE, "10"},
+		{SPADE, "K"},
+		{SPADE, "D"},
+		{SPADE, "8"},
+		{HEART, "9"},
+		{CARO, "K"},
+		{CARO, "D"},
+		{CARO, "10"},
+		{HEART, "K"},
 	})
 
 	skat := player.cardsToDiscard(SPADE)
@@ -77,24 +77,24 @@ func TestPickUpSkat1(t *testing.T) {
 
 func TestPickUpSkat2(t *testing.T) {
 	player := makePlayer([]Card{
-		Card{CLUBS, "J"},
+		{CLUBS, "J"},
 
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "9"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
+		{CLUBS, "9"},
 
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "8"},
+		{SPADE, "A"},
+		{SPADE, "K"},
+		{SPADE, "8"},
 
-		Card{HEART, "D"},
-		Card{HEART, "7"},
-		Card{CARO, "A"},
+		{HEART, "D"},
+		{HEART, "7"},
+		{CARO, "A"},
 	})
 
 	skat := []Card{
-		Card{HEART, "8"},
-		Card{CARO, "8"},
+		{HEART, "8"},
+		{CARO, "8"},
 	}
 
 	p2 := makePlayer([]Card{})
@@ -120,25 +120,25 @@ func TestPickUpSkat2(t *testing.T) {
 
 func TestPickUpSkatAndDeclareNew(t *testing.T) {
 	player := makePlayer([]Card{
-		Card{CARO, "J"},
-		Card{HEART, "J"},
+		{CARO, "J"},
+		{HEART, "J"},
 
-		Card{CLUBS, "9"},
-		Card{CLUBS, "7"},
+		{CLUBS, "9"},
+		{CLUBS, "7"},
 
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
+		{SPADE, "A"},
+		{SPADE, "10"},
 
-		Card{HEART, "A"},
-		Card{HEART, "7"},
+		{HEART, "A"},
+		{HEART, "7"},
 
-		Card{CARO, "A"},
-		Card{CARO, "K"},
+		{CARO, "A"},
+		{CARO, "K"},
 	})
 
 	skat := []Card{
-		Card{SPADE, "7"},
-		Card{CLUBS, "8"},
+		{SPADE, "7"},
+		{CLUBS, "8"},
 	}
 
 	player.pickUpSkat(skat)
@@ -150,27 +150,27 @@ func TestPickUpSkatAndDeclareNew(t *testing.T) {
 
 func TestPickUpSkatAndDeclare_10_D_9(t *testing.T) {
 	player := makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
 
-		Card{SPADE, "10"},
-		Card{SPADE, "D"},
-		Card{SPADE, "9"},
+		{SPADE, "10"},
+		{SPADE, "D"},
+		{SPADE, "9"},
 
-		Card{HEART, "10"},
-		Card{HEART, "D"},
-		Card{HEART, "7"},
+		{HEART, "10"},
+		{HEART, "D"},
+		{HEART, "7"},
 
-		Card{CLUBS, "7"},
+		{CLUBS, "7"},
 
-		Card{CARO, "8"},
-		Card{CARO, "9"},
+		{CARO, "8"},
+		{CARO, "9"},
 	})
 
 	skat := []Card{
-		Card{CARO, "8"},
-		Card{CARO, "9"},
+		{CARO, "8"},
+		{CARO, "9"},
 	}
 
 	player.pickUpSkat(skat)
@@ -182,22 +182,22 @@ func TestPickUpSkatAndDeclare_10_D_9(t *testing.T) {
 
 func TestPickUpSkatGrandWith4Aces(t *testing.T) {
 	player := makePlayer([]Card{
-		Card{CLUBS, "9"},
+		{CLUBS, "9"},
 
-		Card{SPADE, "A"},
-		Card{SPADE, "D"},
-		Card{SPADE, "9"},
-		Card{SPADE, "8"},
-		Card{SPADE, "7"},
+		{SPADE, "A"},
+		{SPADE, "D"},
+		{SPADE, "9"},
+		{SPADE, "8"},
+		{SPADE, "7"},
 
-		Card{HEART, "A"},
-		Card{HEART, "10"},
+		{HEART, "A"},
+		{HEART, "10"},
 
-		Card{CARO, "A"},
-		Card{CARO, "D"},
+		{CARO, "A"},
+		{CARO, "D"},
 
-		Card{CLUBS, "A"},
-		Card{CLUBS, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "J"},
 	})
 
 	p2 := makePlayer([]Card{})
@@ -215,25 +215,25 @@ func TestPickUpSkatGrandWith4Aces(t *testing.T) {
 
 func TestPickUpSkat4(t *testing.T) {
 	player := makePlayer([]Card{
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
 
-		Card{CLUBS, "10"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
+		{CLUBS, "10"},
+		{CLUBS, "9"},
+		{CLUBS, "8"},
 
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
+		{SPADE, "A"},
+		{SPADE, "10"},
+		{SPADE, "K"},
 
-		Card{HEART, "K"},
+		{HEART, "K"},
 
-		Card{CARO, "K"},
+		{CARO, "K"},
 	})
 
 	skat := []Card{
-		Card{CLUBS, "K"},
-		Card{HEART, "7"},
+		{CLUBS, "K"},
+		{HEART, "7"},
 	}
 	// fmt.Println("TestPickUpSkat4")
 	// fmt.Println(player.hand)
@@ -254,25 +254,25 @@ func TestPickUpSkat4(t *testing.T) {
 
 func TestPickUpSkat5(t *testing.T) {
 	player := makePlayer([]Card{
-		Card{HEART, "J"},
+		{HEART, "J"},
 
-		Card{CLUBS, "A"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "D"},
+		{CLUBS, "A"},
+		{CLUBS, "K"},
+		{CLUBS, "D"},
 
-		Card{SPADE, "A"},
+		{SPADE, "A"},
 
-		Card{HEART, "9"},
+		{HEART, "9"},
 
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{CARO, "9"},
-		Card{CARO, "8"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{CARO, "9"},
+		{CARO, "8"},
 	})
 
 	skat := []Card{
-		Card{SPADE, "J"},
-		Card{SPADE, "9"},
+		{SPADE, "J"},
+		{SPADE, "9"},
 	}
 	player.trumpToDeclare = CARO
 	// fmt.Println("TestPickUpSkat5")
@@ -294,19 +294,19 @@ func TestPickUpSkat5(t *testing.T) {
 
 func TestPickUpSkatGRandWITH4jS(t *testing.T) {
 	player := makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
+		{CLUBS, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
 
-		Card{SPADE, "A"},
-		Card{SPADE, "9"},
+		{SPADE, "A"},
+		{SPADE, "9"},
 
-		Card{HEART, "A"},
+		{HEART, "A"},
 
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{CARO, "D"},
-		Card{CARO, "9"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{CARO, "D"},
+		{CARO, "9"},
 	})
 
 	p2 := makePlayer([]Card{})
@@ -325,20 +325,20 @@ func TestPickUpSkatGRandWITH4jS(t *testing.T) {
 
 func TestPickUpSkat7(t *testing.T) {
 	player := makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
-		Card{SPADE, "J"},
-		Card{CARO, "J"},
+		{CLUBS, "J"},
+		{HEART, "J"},
+		{SPADE, "J"},
+		{CARO, "J"},
 
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{CARO, "D"},
-		Card{CARO, "9"},
-		Card{CARO, "8"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{CARO, "D"},
+		{CARO, "9"},
+		{CARO, "8"},
 
-		Card{HEART, "A"},
-		Card{SPADE, "A"},
+		{HEART, "A"},
+		{SPADE, "A"},
 	})
 
 	// skat := []Card{
@@ -364,16 +364,16 @@ func TestPickUpSkat7(t *testing.T) {
 
 func TestCalculateHighestBid(t *testing.T) {
 	player := makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{HEART, "D"}, // loser
-		Card{HEART, "9"}, // loser
-		Card{SPADE, "8"}, // loser
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{HEART, "D"}, // loser
+		{HEART, "9"}, // loser
+		{SPADE, "8"}, // loser
 	})
 	player.risky = true
 
@@ -392,16 +392,16 @@ func TestCalculateHighestBid(t *testing.T) {
 }
 func TestHandEstimation(t *testing.T) {
 	player := makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{SPADE, "8"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{HEART, "D"},
+		{HEART, "9"},
+		{SPADE, "8"},
 	})
 	_ = player
 	//fmt.Println(player.handEstimation())
@@ -453,10 +453,10 @@ func TestOpponentTacticFOREFollowPreviousSuit3(t *testing.T) {
 
 	player.previousSuit = CARO
 
-	validCards := []Card{Card{CARO, "8"},
-		Card{HEART, "9"},
-		Card{HEART, "10"},
-		Card{HEART, "A"},
+	validCards := []Card{{CARO, "8"},
+		{HEART, "9"},
+		{HEART, "10"},
+		{HEART, "A"},
 	}
 	card := player.playerTactic(&s, validCards)
 	exp := Card{CARO, "8"}
@@ -482,10 +482,10 @@ func TestOpponentTacticFOREFollowPreviousSuit4(t *testing.T) {
 	s.trick = []Card{}
 	s.trumpsInGame = makeTrumpDeck(s.trump)
 	teamMate.previousSuit = CARO
-	validCards := []Card{Card{CARO, "8"},
-		Card{HEART, "9"},
-		Card{HEART, "10"},
-		Card{HEART, "A"},
+	validCards := []Card{{CARO, "8"},
+		{HEART, "9"},
+		{HEART, "10"},
+		{HEART, "A"},
 	}
 	//
 	s.opp1 = &player
@@ -524,10 +524,10 @@ func TestOpponentTacticFOREFollowPreviousSuit5(t *testing.T) {
 	s.trump = CLUBS
 	s.trick = []Card{}
 	teamMate.previousSuit = CARO
-	validCards := []Card{Card{CARO, "J"},
-		Card{HEART, "9"},
-		Card{HEART, "10"},
-		Card{HEART, "A"},
+	validCards := []Card{{CARO, "J"},
+		{HEART, "9"},
+		{HEART, "10"},
+		{HEART, "A"},
 	}
 	//
 	s.opp1 = &player
@@ -556,9 +556,9 @@ func TestOpponentTacticMID_PartnerLeads_Figure_or_Number(t *testing.T) {
 	s.trump = CLUBS
 	s.follow = CARO
 
-	validCards := []Card{Card{CARO, "10"}, Card{CARO, "8"}}
+	validCards := []Card{{CARO, "10"}, {CARO, "8"}}
 
-	s.trick = []Card{Card{CARO, "D"}}
+	s.trick = []Card{{CARO, "D"}}
 
 	s.declarer = &otherPlayer
 	s.opp1 = &player
@@ -575,7 +575,7 @@ func TestOpponentTacticMID_PartnerLeads_Figure_or_Number(t *testing.T) {
 			s.trick, validCards, exp, card)
 	}
 
-	s.trick = []Card{Card{CARO, "7"}}
+	s.trick = []Card{{CARO, "7"}}
 	s.cardsPlayed = s.trick
 
 	card = player.playerTactic(&s, validCards)
@@ -586,9 +586,9 @@ func TestOpponentTacticMID_PartnerLeads_Figure_or_Number(t *testing.T) {
 			s.trick, validCards, exp, card)
 	}
 
-	validCards = []Card{Card{CARO, "10"}, Card{CARO, "D"}, Card{CARO, "8"}}
+	validCards = []Card{{CARO, "10"}, {CARO, "D"}, {CARO, "8"}}
 
-	s.trick = []Card{Card{CARO, "K"}}
+	s.trick = []Card{{CARO, "K"}}
 	s.cardsPlayed = s.trick
 
 	card = player.playerTactic(&s, validCards)
@@ -599,7 +599,7 @@ func TestOpponentTacticMID_PartnerLeads_Figure_or_Number(t *testing.T) {
 			s.trick, validCards, exp, card)
 	}
 
-	s.trick = []Card{Card{CARO, "7"}}
+	s.trick = []Card{{CARO, "7"}}
 	s.cardsPlayed = s.trick
 
 	card = player.playerTactic(&s, validCards)
@@ -624,9 +624,9 @@ func TestOpponentTacticMIDTrump1(t *testing.T) {
 	s.trump = CLUBS
 	s.follow = CLUBS
 
-	validCards := []Card{Card{CARO, "J"}, Card{CLUBS, "A"}}
+	validCards := []Card{{CARO, "J"}, {CLUBS, "A"}}
 
-	s.trick = []Card{Card{CLUBS, "J"}}
+	s.trick = []Card{{CLUBS, "J"}}
 
 	s.declarer = &otherPlayer
 	s.opp1 = &player
@@ -648,7 +648,7 @@ func TestOpponentTacticMIDTrump1(t *testing.T) {
 			s.trick, validCards, exp, card)
 	}
 
-	s.trick = []Card{Card{CLUBS, "10"}}
+	s.trick = []Card{{CLUBS, "10"}}
 
 	s.leader = &otherPlayer
 	card = player.playerTactic(&s, validCards)
@@ -668,8 +668,8 @@ func TestOpponentTacticMIDTrump1(t *testing.T) {
 	}
 
 	//////////////
-	s.trick = []Card{Card{CLUBS, "J"}}
-	validCards = []Card{Card{CARO, "J"}, Card{CLUBS, "A"}, Card{CLUBS, "D"}, Card{CLUBS, "9"}}
+	s.trick = []Card{{CLUBS, "J"}}
+	validCards = []Card{{CARO, "J"}, {CLUBS, "A"}, {CLUBS, "D"}, {CLUBS, "9"}}
 	s.leader = &otherPlayer
 	s.declarer = &otherPlayer
 	card = player.playerTactic(&s, validCards)
@@ -680,8 +680,8 @@ func TestOpponentTacticMIDTrump1(t *testing.T) {
 	}
 
 	//////////////
-	s.trick = []Card{Card{CARO, "A"}, Card{CARO, "7"}}
-	validCards = []Card{Card{CARO, "K"}, Card{CARO, "10"}, Card{CARO, "7"}}
+	s.trick = []Card{{CARO, "A"}, {CARO, "7"}}
+	validCards = []Card{{CARO, "K"}, {CARO, "10"}, {CARO, "7"}}
 	s.leader = &teamMate
 	s.declarer = &otherPlayer
 	card = player.playerTactic(&s, validCards)
@@ -694,8 +694,8 @@ func TestOpponentTacticMIDTrump1(t *testing.T) {
 	//////////////
 	s.trump = SPADE
 	s.follow = SPADE
-	s.trick = []Card{Card{SPADE, "J"}, Card{HEART, "J"}}
-	validCards = []Card{Card{CARO, "J"}, Card{SPADE, "D"}}
+	s.trick = []Card{{SPADE, "J"}, {HEART, "J"}}
+	validCards = []Card{{CARO, "J"}, {SPADE, "D"}}
 	s.leader = &otherPlayer
 	s.declarer = &otherPlayer
 	card = player.playerTactic(&s, validCards)
@@ -720,9 +720,9 @@ func TestOpponentTacticMIDTrump2(t *testing.T) {
 	s.opp2 = &teamMate
 	s.trump = CLUBS
 	s.follow = CLUBS
-	s.trick = []Card{Card{CLUBS, "8"}}
+	s.trick = []Card{{CLUBS, "8"}}
 
-	validCards := []Card{Card{CARO, "J"}, Card{CLUBS, "9"}}
+	validCards := []Card{{CARO, "J"}, {CLUBS, "9"}}
 	card := player.playerTactic(&s, validCards)
 	exp := Card{CLUBS, "9"}
 	if !card.equals(exp) {
@@ -747,16 +747,16 @@ func TestOpponentTacticMIDTrump6(t *testing.T) {
 	s.opp2 = &teamMate
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{CLUBS, "D"}}
+	s.trick = []Card{{CLUBS, "D"}}
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
+		{CLUBS, "J"},
 	}
 
 	validCards := []Card{
-		Card{SPADE, "9"},
-		Card{HEART, "9"},
-		Card{HEART, "10"},
-		Card{HEART, "A"},
+		{SPADE, "9"},
+		{HEART, "9"},
+		{HEART, "10"},
+		{HEART, "A"},
 	}
 	//
 
@@ -784,17 +784,17 @@ func TestOpponentTacticMIDTrumpJ(t *testing.T) {
 	s.opp2 = &teamMate
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{HEART, "J"}}
+	s.trick = []Card{{HEART, "J"}}
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
 	}
 
 	validCards := []Card{
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "A"},
+		{CLUBS, "9"},
+		{CLUBS, "8"},
+		{CLUBS, "10"},
+		{CLUBS, "A"},
 	}
 	//
 
@@ -822,25 +822,25 @@ func TestOpponentTacticMIDTrumpJ_Opp_Cannot_Go_higher(t *testing.T) {
 	s.opp2 = &teamMate
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{CLUBS, "A"}}
+	s.trick = []Card{{CLUBS, "A"}}
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
 	}
 
 	validCards := []Card{
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "D"},
+		{CLUBS, "9"},
+		{CLUBS, "8"},
+		{CLUBS, "K"},
+		{CLUBS, "D"},
 	}
 	//
 
 	s.opp2VoidCards = []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
 	}
 
 	card := player.playerTactic(&s, validCards)
@@ -867,16 +867,16 @@ func TestOpponentTacticMIDTrump_NonJ_SMEAR(t *testing.T) {
 	s.opp2 = &teamMate
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{CLUBS, "K"}}
+	s.trick = []Card{{CLUBS, "K"}}
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
 	}
 
 	validCards := []Card{
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "D"},
+		{CLUBS, "9"},
+		{CLUBS, "8"},
+		{CLUBS, "D"},
 	}
 	//
 
@@ -890,10 +890,10 @@ func TestOpponentTacticMIDTrump_NonJ_SMEAR(t *testing.T) {
 
 func TestOpponentTacticMID_PartnerLeadsAVoidCard_Trump_only_if_still_points(t *testing.T) {
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "K"},
-		Card{CARO, "7"},
+		{HEART, "J"},
+		{CARO, "A"},
+		{CARO, "K"},
+		{CARO, "7"},
 	}
 	player := makePlayer([]Card{})
 	otherPlayer := makePlayer([]Card{})
@@ -906,12 +906,12 @@ func TestOpponentTacticMID_PartnerLeadsAVoidCard_Trump_only_if_still_points(t *t
 	players = []PlayerI{&teamMate, &player, &otherPlayer}
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{HEART, "8"}}
+	s.trick = []Card{{HEART, "8"}}
 	s.follow = HEART
 	s.trumpsInGame = []Card{
-		Card{HEART, "J"},
-		Card{CLUBS, "D"},
-		Card{CLUBS, "9"},
+		{HEART, "J"},
+		{CLUBS, "D"},
+		{CLUBS, "9"},
 	}
 
 	s.cardsPlayed = makeSuitDeck(HEART)
@@ -941,12 +941,12 @@ func TestOpponentTacticMIDPlayerLeadsLosingCard_Smear(t *testing.T) {
 	s.opp2 = &teamMate
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{HEART, "D"}}
+	s.trick = []Card{{HEART, "D"}}
 
 	validCards := []Card{
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "9"},
+		{SPADE, "A"},
+		{SPADE, "K"},
+		{SPADE, "9"},
 	}
 	//
 
@@ -964,12 +964,12 @@ func TestOpponentTacticMIDPlayerLeadsLosingCard_Smear1(t *testing.T) {
 	// if declarer leads a losing card (there are higher cards in game), SMEAR
 
 	validCards := []Card{
-		Card{HEART, "D"},
-		Card{HEART, "K"},
-		Card{HEART, "9"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{CARO, "8"},
+		{HEART, "D"},
+		{HEART, "K"},
+		{HEART, "9"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{CARO, "8"},
 	}
 	otherPlayer := makePlayer([]Card{})
 	teamMate := makePlayer([]Card{})
@@ -981,7 +981,7 @@ func TestOpponentTacticMIDPlayerLeadsLosingCard_Smear1(t *testing.T) {
 	s.opp2 = &teamMate
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{SPADE, "7"}}
+	s.trick = []Card{{SPADE, "7"}}
 
 	//
 	card := player.playerTactic(&s, validCards)
@@ -998,12 +998,12 @@ func TestOpponentTacticMIDPlayerLeadsLosingCard_Donot_Smear_if_partner_void(t *t
 	// if declarer leads a losing card (there are higher cards in game), SMEAR
 
 	validCards := []Card{
-		Card{HEART, "D"},
-		Card{HEART, "K"},
-		Card{HEART, "9"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{CARO, "8"},
+		{HEART, "D"},
+		{HEART, "K"},
+		{HEART, "9"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{CARO, "8"},
 	}
 	otherPlayer := makePlayer([]Card{})
 	teamMate := makePlayer([]Card{})
@@ -1015,7 +1015,7 @@ func TestOpponentTacticMIDPlayerLeadsLosingCard_Donot_Smear_if_partner_void(t *t
 	s.opp2 = &teamMate
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{SPADE, "7"}}
+	s.trick = []Card{{SPADE, "7"}}
 	s.opp2VoidSuit[SPADE] = true
 
 	//
@@ -1033,12 +1033,12 @@ func TestOpponentTacticMIDPlayerLeadsLosingTRUMP_Donot_Smear_if_partner_void(t *
 	// if declarer leads a losing card (there are higher cards in game), SMEAR
 
 	validCards := []Card{
-		Card{HEART, "D"},
-		Card{HEART, "K"},
-		Card{HEART, "9"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{CARO, "8"},
+		{HEART, "D"},
+		{HEART, "K"},
+		{HEART, "9"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{CARO, "8"},
 	}
 	otherPlayer := makePlayer([]Card{})
 	teamMate := makePlayer([]Card{})
@@ -1051,7 +1051,7 @@ func TestOpponentTacticMIDPlayerLeadsLosingTRUMP_Donot_Smear_if_partner_void(t *
 
 	s.trump = CLUBS
 	s.follow = CLUBS
-	s.trick = []Card{Card{CLUBS, "7"}}
+	s.trick = []Card{{CLUBS, "7"}}
 	s.opp2VoidSuit[CLUBS] = true
 	s.trumpsInGame = makeTrumpDeck(CLUBS)
 
@@ -1081,27 +1081,27 @@ func TestOpponentTacticMIDTrump7(t *testing.T) {
 	s.opp2 = &teamMate
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{CLUBS, "D"}}
+	s.trick = []Card{{CLUBS, "D"}}
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "9"},
+		{CLUBS, "9"},
 	}
 	s.cardsPlayed = []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
+		{CLUBS, "K"},
+		{CLUBS, "8"},
+		{CLUBS, "7"},
 	}
 
 	validCards := []Card{
-		Card{SPADE, "9"},
-		Card{HEART, "9"},
-		Card{HEART, "10"},
-		Card{HEART, "A"},
+		{SPADE, "9"},
+		{HEART, "9"},
+		{HEART, "10"},
+		{HEART, "A"},
 	}
 	//
 
@@ -1129,27 +1129,27 @@ func TestOpponentTacticMID1(t *testing.T) {
 	s.opp2 = &teamMate
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{SPADE, "7"}}
+	s.trick = []Card{{SPADE, "7"}}
 	s.follow = SPADE
 	s.cardsPlayed = []Card{
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
-		Card{SPADE, "D"},
-		Card{SPADE, "8"},
+		{SPADE, "A"},
+		{SPADE, "10"},
+		{SPADE, "K"},
+		{SPADE, "D"},
+		{SPADE, "8"},
 		//	Card{SPADE, "9"},
 	}
 
 	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
-		Card{HEART, "A"},
-		Card{CARO, "8"},
-		Card{CARO, "10"},
+		{CLUBS, "J"},
+		{CLUBS, "8"},
+		{CLUBS, "7"},
+		{HEART, "A"},
+		{CARO, "8"},
+		{CARO, "10"},
 	}
 	//
-	s.trumpsInGame = []Card{Card{CLUBS, "J"}, Card{CLUBS, "8"}, Card{CLUBS, "7"}, Card{SPADE, "J"}}
+	s.trumpsInGame = []Card{{CLUBS, "J"}, {CLUBS, "8"}, {CLUBS, "7"}, {SPADE, "J"}}
 
 	card := player.playerTactic(&s, validCards)
 	exp := Card{CLUBS, "7"}
@@ -1184,17 +1184,17 @@ func TestOpponentTacticMIDFollow(t *testing.T) {
 	s.opp2 = &player
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{SPADE, "7"}}
+	s.trick = []Card{{SPADE, "7"}}
 	s.follow = SPADE
 	s.cardsPlayed = []Card{}
 
 	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "8"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
-		Card{SPADE, "D"},
-		Card{SPADE, "8"},
+		{CLUBS, "J"},
+		{CLUBS, "8"},
+		{SPADE, "10"},
+		{SPADE, "K"},
+		{SPADE, "D"},
+		{SPADE, "8"},
 	}
 	//
 
@@ -1222,14 +1222,14 @@ func TestOpponentTacticMIDPartnerLeadsVoidSuit_Trump(t *testing.T) {
 	// cards still in play, trump it.
 
 	validCards := []Card{
-		Card{CARO, "K"},
-		Card{CARO, "8"},
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "D"},
-		Card{HEART, "A"},
-		Card{HEART, "K"},
-		Card{HEART, "8"},
+		{CARO, "K"},
+		{CARO, "8"},
+		{SPADE, "A"},
+		{SPADE, "K"},
+		{SPADE, "D"},
+		{HEART, "A"},
+		{HEART, "K"},
+		{HEART, "8"},
 	}
 
 	otherPlayer := makePlayer([]Card{})
@@ -1242,12 +1242,12 @@ func TestOpponentTacticMIDPartnerLeadsVoidSuit_Trump(t *testing.T) {
 	s.opp2 = &player
 
 	s.trump = CARO
-	s.trick = []Card{Card{CLUBS, "K"}}
+	s.trick = []Card{{CLUBS, "K"}}
 	s.follow = CLUBS
 	s.cardsPlayed = []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "7"},
-		Card{CLUBS, "8"},
+		{CLUBS, "A"},
+		{CLUBS, "7"},
+		{CLUBS, "8"},
 	}
 
 	//
@@ -1267,11 +1267,11 @@ func TestOpponentTacticMIDPartnerLeadsVoidSuitWinner_SmearNoTrump(t *testing.T) 
 	// that you are void and smear the trick.
 
 	validCards := []Card{
-		Card{CARO, "J"},
-		Card{CLUBS, "D"},
-		Card{HEART, "10"},
-		Card{HEART, "9"},
-		Card{CARO, "9"},
+		{CARO, "J"},
+		{CLUBS, "D"},
+		{HEART, "10"},
+		{HEART, "9"},
+		{CARO, "9"},
 	}
 
 	otherPlayer := makePlayer([]Card{})
@@ -1284,12 +1284,12 @@ func TestOpponentTacticMIDPartnerLeadsVoidSuitWinner_SmearNoTrump(t *testing.T) 
 	s.opp2 = &player
 
 	s.trump = GRAND
-	s.trick = []Card{Card{SPADE, "K"}}
+	s.trick = []Card{{SPADE, "K"}}
 	s.follow = SPADE
 	s.cardsPlayed = []Card{
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
-		Card{SPADE, "9"},
+		{SPADE, "A"},
+		{SPADE, "10"},
+		{SPADE, "9"},
 	}
 
 	//
@@ -1306,10 +1306,10 @@ func TestOpponentTacticMIDPartnerLeads_Trump_PlayLowTrump(t *testing.T) {
 	// MIDDLEHAND
 
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
+		{HEART, "J"},
+		{CLUBS, "10"},
+		{CLUBS, "9"},
+		{CLUBS, "8"},
 	}
 
 	otherPlayer := makePlayer([]Card{})
@@ -1322,11 +1322,11 @@ func TestOpponentTacticMIDPartnerLeads_Trump_PlayLowTrump(t *testing.T) {
 	s.opp2 = &player
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{CARO, "J"}}
+	s.trick = []Card{{CARO, "J"}}
 	s.follow = CLUBS
 	s.cardsPlayed = []Card{
-		Card{CLUBS, "D"},
-		Card{CLUBS, "7"},
+		{CLUBS, "D"},
+		{CLUBS, "7"},
 	}
 	s.trumpsInGame = makeTrumpDeck(CLUBS)
 	s.trumpsInGame = remove(s.trumpsInGame, s.cardsPlayed...)
@@ -1345,10 +1345,10 @@ func TestOpponentTacticMIDPartnerLeads_VOID_SUIT(t *testing.T) {
 	// MIDDLEHAND
 
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
+		{HEART, "J"},
+		{CLUBS, "10"},
+		{CLUBS, "9"},
+		{CLUBS, "8"},
 	}
 
 	otherPlayer := makePlayer([]Card{})
@@ -1361,13 +1361,13 @@ func TestOpponentTacticMIDPartnerLeads_VOID_SUIT(t *testing.T) {
 	s.opp2 = &player
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{SPADE, "10"}}
+	s.trick = []Card{{SPADE, "10"}}
 	s.follow = SPADE
 	s.cardsPlayed = []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{CLUBS, "D"},
-		Card{CLUBS, "7"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{CLUBS, "D"},
+		{CLUBS, "7"},
 	}
 	s.cardsPlayed = append(s.cardsPlayed, makeSuitDeck(SPADE)...)
 	s.trumpsInGame = makeTrumpDeck(CLUBS)
@@ -1453,16 +1453,16 @@ func TestOpponentTacticFORE_long_Not_Full_if_trumps_in_play(t *testing.T) {
 	_ = teamMate
 
 	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
-		Card{HEART, "A"},
-		Card{CARO, "8"},
-		Card{CARO, "K"},
-		Card{CARO, "D"},
-		Card{CARO, "A"},
+		{CLUBS, "J"},
+		{CLUBS, "8"},
+		{CLUBS, "7"},
+		{HEART, "A"},
+		{CARO, "8"},
+		{CARO, "K"},
+		{CARO, "D"},
+		{CARO, "A"},
 	}
-	s.trumpsInGame = []Card{Card{CARO, "J"}}
+	s.trumpsInGame = []Card{{CARO, "J"}}
 	// declarer MID
 	s.opp2 = &player
 	s.opp1 = &teamMate
@@ -1492,19 +1492,19 @@ func TestOpponentTacticFORE_Protect_the_10_of_the_Partner(t *testing.T) {
 	_ = teamMate
 
 	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{CARO, "J"},
-		Card{HEART, "10"},
+		{CLUBS, "J"},
+		{CARO, "J"},
+		{HEART, "10"},
 
-		Card{CLUBS, "10"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "D"},
+		{CLUBS, "10"},
+		{CLUBS, "K"},
+		{CLUBS, "D"},
 
-		Card{SPADE, "K"},
-		Card{SPADE, "8"},
+		{SPADE, "K"},
+		{SPADE, "8"},
 
-		Card{CARO, "8"},
-		Card{CARO, "9"},
+		{CARO, "8"},
+		{CARO, "9"},
 	}
 
 	// declarer BACK
@@ -1561,19 +1561,19 @@ func TestOpponentTacticFORE_Protect_the_10_of_the_Partner_2(t *testing.T) {
 	_ = teamMate
 
 	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "9"},
+		{CLUBS, "J"},
+		{CLUBS, "9"},
 
-		Card{SPADE, "A"},
-		Card{SPADE, "D"}, // not neceassary here since we have the A
-		Card{SPADE, "9"},
-		Card{SPADE, "7"}, // best card so that parner goes over
+		{SPADE, "A"},
+		{SPADE, "D"}, // not neceassary here since we have the A
+		{SPADE, "9"},
+		{SPADE, "7"}, // best card so that parner goes over
 
-		Card{HEART, "10"},
-		Card{HEART, "8"}, // you don't want to discard this not to make 10 blank
+		{HEART, "10"},
+		{HEART, "8"}, // you don't want to discard this not to make 10 blank
 
-		Card{CARO, "8"}, // bac choice
-		Card{CARO, "9"},
+		{CARO, "8"}, // bac choice
+		{CARO, "9"},
 	}
 
 	// declarer BACK
@@ -1607,18 +1607,18 @@ func TestOpponentTacticFORE_Protect_the_10_of_the_Partner_3(t *testing.T) {
 	_ = teamMate
 
 	validCards := []Card{
-		Card{SPADE, "D"},
+		{SPADE, "D"},
 
-		Card{CLUBS, "D"}, // not so good
-		Card{CLUBS, "7"},
+		{CLUBS, "D"}, // not so good
+		{CLUBS, "7"},
 
-		Card{HEART, "K"}, // too long
-		Card{HEART, "9"}, //
-		Card{HEART, "8"},
-		Card{HEART, "7"}, //
+		{HEART, "K"}, // too long
+		{HEART, "9"}, //
+		{HEART, "8"},
+		{HEART, "7"}, //
 
-		Card{CARO, "K"}, // good choice
-		Card{CARO, "8"},
+		{CARO, "K"}, // good choice
+		{CARO, "8"},
 	}
 
 	// declarer BACK
@@ -1761,11 +1761,11 @@ func TestOpponentTacticFORE_short_TOD_SUENDE_1_not_a_choice(t *testing.T) {
 	_ = teamMate
 
 	validCards := []Card{
-		Card{HEART, "D"},
-		Card{HEART, "8"},
+		{HEART, "D"},
+		{HEART, "8"},
 
-		Card{SPADE, "D"},
-		Card{SPADE, "7"},
+		{SPADE, "D"},
+		{SPADE, "7"},
 	}
 
 	// declarer BACK
@@ -1784,13 +1784,13 @@ func TestOpponentTacticFORE_StrongTrumps(t *testing.T) {
 	// if declarer is short on Trumps and you are strong
 
 	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "8"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "8"},
 
-		Card{CLUBS, "8"},
-		Card{CARO, "9"},
-		Card{CARO, "8"},
+		{CLUBS, "8"},
+		{CARO, "9"},
+		{CARO, "8"},
 	}
 	otherPlayer := makePlayer([]Card{})
 	teamMate := makePlayer([]Card{})
@@ -1810,8 +1810,8 @@ func TestOpponentTacticFORE_StrongTrumps(t *testing.T) {
 	s.opp1 = &teamMate
 
 	s.trumpsInGame = []Card{
-		Card{HEART, "J"},
-		Card{HEART, "10"},
+		{HEART, "J"},
+		{HEART, "10"},
 	}
 
 	card := player.playerTactic(&s, validCards)
@@ -1833,17 +1833,17 @@ func TestOpponentTacticBACK_MateLeads(t *testing.T) {
 	s.opp2 = &teamMate
 
 	s.trump = CARO
-	s.trick = []Card{Card{CLUBS, "9"}, Card{CARO, "A"}}
+	s.trick = []Card{{CLUBS, "9"}, {CARO, "A"}}
 	s.follow = CLUBS
 
 	validCards := []Card{
-		Card{CARO, "D"},
-		Card{CARO, "9"},
-		Card{CARO, "7"},
-		Card{SPADE, "D"},
-		Card{HEART, "10"},
-		Card{HEART, "D"},
-		Card{HEART, "8"},
+		{CARO, "D"},
+		{CARO, "9"},
+		{CARO, "7"},
+		{SPADE, "D"},
+		{HEART, "10"},
+		{HEART, "D"},
+		{HEART, "8"},
 	}
 	//
 
@@ -1866,15 +1866,15 @@ func TestOpponentTacticBACK_MateLeads_PlayerWins_Dont_Play_A_trump_on_A_Zero_tri
 	s.opp2 = &teamMate
 
 	s.trump = CARO
-	s.trick = []Card{Card{CLUBS, "7"}, Card{CLUBS, "9"}}
+	s.trick = []Card{{CLUBS, "7"}, {CLUBS, "9"}}
 	s.follow = CLUBS
 
 	validCards := []Card{
-		Card{CARO, "J"},
-		Card{SPADE, "D"},
-		Card{HEART, "10"},
-		Card{HEART, "D"},
-		Card{HEART, "8"},
+		{CARO, "J"},
+		{SPADE, "D"},
+		{HEART, "10"},
+		{HEART, "D"},
+		{HEART, "8"},
 	}
 	//
 
@@ -1897,15 +1897,15 @@ func TestOpponentTacticBACK_MateLeads_PlayerWins_Dont_Play_A_trump_on_A_Zero_tri
 	s.opp2 = &teamMate
 
 	s.trump = CARO
-	s.trick = []Card{Card{CLUBS, "7"}, Card{CLUBS, "9"}}
+	s.trick = []Card{{CLUBS, "7"}, {CLUBS, "9"}}
 	s.follow = CLUBS
 
 	validCards := []Card{
-		Card{CARO, "10"},
-		Card{SPADE, "D"},
-		Card{HEART, "10"},
-		Card{HEART, "D"},
-		Card{HEART, "8"},
+		{CARO, "10"},
+		{SPADE, "D"},
+		{HEART, "10"},
+		{HEART, "D"},
+		{HEART, "8"},
 	}
 	//
 
@@ -1972,8 +1972,8 @@ func TestOpponentTacticBACK_MateLeads_PlayerWins_Dont_Play_A_trump_on_A_Zero_tri
 
 func TestOpponentTacticBACK_PlayerLeads_Trump(t *testing.T) {
 	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{CARO, "8"},
+		{CLUBS, "J"},
+		{CARO, "8"},
 	}
 	player := makePlayer(validCards)
 	otherPlayer := makePlayer([]Card{})
@@ -1985,7 +1985,7 @@ func TestOpponentTacticBACK_PlayerLeads_Trump(t *testing.T) {
 	s.opp2 = &player
 
 	s.trump = CARO
-	s.trick = []Card{Card{CARO, "J"}, Card{HEART, "J"}}
+	s.trick = []Card{{CARO, "J"}, {HEART, "J"}}
 	s.follow = CARO
 
 	card := player.playerTactic(&s, validCards)
@@ -2008,14 +2008,14 @@ func TestOpponentTacticBACK2(t *testing.T) {
 	s.opp2 = &teamMate
 
 	s.trump = CARO
-	s.trick = []Card{Card{CLUBS, "10"}, Card{CLUBS, "7"}}
+	s.trick = []Card{{CLUBS, "10"}, {CLUBS, "7"}}
 	s.follow = CLUBS
 
 	validCards := []Card{
-		Card{CARO, "10"},
-		Card{SPADE, "D"},
-		Card{HEART, "K"},
-		Card{HEART, "8"},
+		{CARO, "10"},
+		{SPADE, "D"},
+		{HEART, "K"},
+		{HEART, "8"},
 	}
 	//
 
@@ -2036,10 +2036,10 @@ func TestOpponentTacticBACK_PlayHighTrumpWhenParterSMEARS(t *testing.T) {
 	otherPlayer := makePlayer([]Card{})
 	teamMate := makePlayer([]Card{})
 	validCards := []Card{
-		Card{SPADE, "J"},
-		Card{SPADE, "9"},
-		Card{CLUBS, "9"},
-		Card{CARO, "D"},
+		{SPADE, "J"},
+		{SPADE, "9"},
+		{CLUBS, "9"},
+		{CARO, "D"},
 	}
 	player := makePlayer(validCards)
 	s := makeSuitState()
@@ -2049,7 +2049,7 @@ func TestOpponentTacticBACK_PlayHighTrumpWhenParterSMEARS(t *testing.T) {
 	s.opp2 = &player
 
 	s.trump = SPADE
-	s.trick = []Card{Card{SPADE, "A"}, Card{SPADE, "10"}}
+	s.trick = []Card{{SPADE, "A"}, {SPADE, "10"}}
 	s.follow = SPADE
 	//
 	card := player.playerTactic(&s, validCards)
@@ -2065,10 +2065,10 @@ func TestOpponentTacticBACK_DoNotWasteHighTrump(t *testing.T) {
 	otherPlayer := makePlayer([]Card{})
 	teamMate := makePlayer([]Card{})
 	validCards := []Card{
-		Card{SPADE, "J"},
-		Card{SPADE, "9"},
-		Card{CLUBS, "9"},
-		Card{CARO, "D"},
+		{SPADE, "J"},
+		{SPADE, "9"},
+		{CLUBS, "9"},
+		{CARO, "D"},
 	}
 	player := makePlayer(validCards)
 	s := makeSuitState()
@@ -2078,7 +2078,7 @@ func TestOpponentTacticBACK_DoNotWasteHighTrump(t *testing.T) {
 	s.opp2 = &player
 
 	s.trump = SPADE
-	s.trick = []Card{Card{HEART, "K"}, Card{HEART, "D"}}
+	s.trick = []Card{{HEART, "K"}, {HEART, "D"}}
 	s.follow = HEART
 	//
 	card := player.playerTactic(&s, validCards)
@@ -2094,8 +2094,8 @@ func TestOpponentTacticBACK_DoNotWasteTrumpOnZeroValueTrickIfYouCanWinAnotherTru
 	otherPlayer := makePlayer([]Card{})
 	teamMate := makePlayer([]Card{})
 	validCards := []Card{
-		Card{SPADE, "J"},
-		Card{CARO, "D"},
+		{SPADE, "J"},
+		{CARO, "D"},
 	}
 	player := makePlayer(validCards)
 	s := makeSuitState()
@@ -2105,12 +2105,12 @@ func TestOpponentTacticBACK_DoNotWasteTrumpOnZeroValueTrickIfYouCanWinAnotherTru
 	s.opp2 = &player
 
 	s.trump = SPADE
-	s.trick = []Card{Card{HEART, "8"}, Card{CARO, "7"}}
+	s.trick = []Card{{HEART, "8"}, {CARO, "7"}}
 	s.follow = HEART
 
 	s.trumpsInGame = []Card{
-		Card{SPADE, "J"},
-		Card{SPADE, "K"},
+		{SPADE, "J"},
+		{SPADE, "K"},
 	}
 	s.cardsPlayed = remove(makeTrumpDeck(SPADE), s.trumpsInGame...)
 	//
@@ -2127,12 +2127,12 @@ func TestOpponentTacticBACK_DoNotWasteA_FullOne_on_a_trick_to_save_Trumps(t *tes
 	otherPlayer := makePlayer([]Card{})
 	teamMate := makePlayer([]Card{})
 	validCards := []Card{
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{SPADE, "D"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{SPADE, "D"},
 
-		Card{CLUBS, "10"},
+		{CLUBS, "10"},
 	}
 	player := makePlayer(validCards)
 	s := makeSuitState()
@@ -2142,7 +2142,7 @@ func TestOpponentTacticBACK_DoNotWasteA_FullOne_on_a_trick_to_save_Trumps(t *tes
 	s.opp2 = &player
 
 	s.trump = SPADE
-	s.trick = []Card{Card{HEART, "8"}, Card{CLUBS, "9"}}
+	s.trick = []Card{{HEART, "8"}, {CLUBS, "9"}}
 	s.follow = HEART
 
 	s.trumpsInGame = makeTrumpDeck(s.trump)
@@ -2161,12 +2161,12 @@ func TestOpponentTacticBACK_DoNotWasteA_FullOne_on_a_trick_to_save_Trumps(t *tes
 func TestDeclarerTacticFORE0(t *testing.T) {
 	// don't play your A-10 trumps if Js still there
 	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "D"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CLUBS, "K"},
+		{CLUBS, "D"},
 	}
 
 	player := makePlayer(validCards)
@@ -2178,17 +2178,17 @@ func TestDeclarerTacticFORE0(t *testing.T) {
 	s.trick = []Card{}
 
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "D"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
+		{CLUBS, "K"},
+		{CLUBS, "D"},
+		{CLUBS, "9"},
+		{CLUBS, "8"},
+		{CLUBS, "7"},
 	}
 	s.cardsPlayed = remove(makeTrumpDeck(s.trump), s.trumpsInGame...)
 
@@ -2203,11 +2203,11 @@ func TestDeclarerTacticFORE0(t *testing.T) {
 func TestDeclarerTacticFORE_DontPlayA10ifJsout(t *testing.T) {
 	// don't play your A-10 trumps if Js still there
 	validCards := []Card{
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CLUBS, "10"},
-		Card{SPADE, "A"},
-		Card{SPADE, "D"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CLUBS, "10"},
+		{SPADE, "A"},
+		{SPADE, "D"},
 	}
 
 	player := makePlayer(validCards)
@@ -2219,10 +2219,10 @@ func TestDeclarerTacticFORE_DontPlayA10ifJsout(t *testing.T) {
 	s.trick = []Card{}
 
 	s.trumpsInGame = []Card{
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "7"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "7"},
 	}
 	s.cardsPlayed = remove(makeTrumpDeck(s.trump), s.trumpsInGame...)
 
@@ -2286,13 +2286,13 @@ func TestDeclarerTacticFORE1(t *testing.T) {
 	s.trump = CLUBS
 	s.trick = []Card{}
 	validCards := []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "7"},
-		Card{HEART, "A"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
+		{CLUBS, "7"},
+		{HEART, "A"},
 	}
 
-	s.trumpsInGame = []Card{Card{CLUBS, "J"}}
+	s.trumpsInGame = []Card{{CLUBS, "J"}}
 
 	card := player.playerTactic(&s, validCards)
 	unexp1 := Card{CLUBS, "A"}
@@ -2308,14 +2308,14 @@ func TestDeclarerTacticFORE2(t *testing.T) {
 	// in game
 
 	validCards := []Card{
-		Card{CLUBS, "D"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
-		Card{SPADE, "A"},
-		Card{SPADE, "9"},
-		Card{HEART, "A"},
-		Card{HEART, "K"},
-		Card{HEART, "7"},
+		{CLUBS, "D"},
+		{CLUBS, "8"},
+		{CLUBS, "7"},
+		{SPADE, "A"},
+		{SPADE, "9"},
+		{HEART, "A"},
+		{HEART, "K"},
+		{HEART, "7"},
 	}
 	player := makePlayer(validCards)
 	s := makeSuitState()
@@ -2325,7 +2325,7 @@ func TestDeclarerTacticFORE2(t *testing.T) {
 	s.trump = CLUBS
 	s.trick = []Card{}
 
-	s.trumpsInGame = []Card{Card{SPADE, "J"}}
+	s.trumpsInGame = []Card{{SPADE, "J"}}
 
 	card := player.playerTactic(&s, validCards)
 	unexp1 := Card{CLUBS, "D"}
@@ -2339,9 +2339,9 @@ func TestDeclarerTacticFORE3(t *testing.T) {
 	// BUT play your A-10 trumps if Js ARE NOT still there
 
 	validCards := []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "7"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
+		{CLUBS, "7"},
 	}
 	player := makePlayer(validCards)
 	s := makeSuitState()
@@ -2352,10 +2352,10 @@ func TestDeclarerTacticFORE3(t *testing.T) {
 	s.trick = []Card{}
 
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "7"},
-		Card{CLUBS, "K"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
+		{CLUBS, "7"},
+		{CLUBS, "K"},
 	}
 
 	card := player.playerTactic(&s, validCards)
@@ -2377,16 +2377,16 @@ func TestDeclarerTacticFORE4(t *testing.T) {
 	s.trump = CLUBS
 	s.trick = []Card{}
 	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "A"},
-		Card{HEART, "A"},
-		Card{HEART, "7"},
+		{CLUBS, "J"},
+		{CLUBS, "A"},
+		{HEART, "A"},
+		{HEART, "7"},
 	}
 	player.hand = validCards
 
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "A"},
+		{CLUBS, "J"},
+		{CLUBS, "A"},
 	}
 
 	card := player.playerTactic(&s, validCards)
@@ -2401,12 +2401,12 @@ func TestDeclarerTacticFORE5(t *testing.T) {
 	// don't play a trump if opponents have many
 
 	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
-		Card{SPADE, "7"},
-		Card{HEART, "8"},
-		Card{CARO, "D"},
+		{CLUBS, "J"},
+		{CLUBS, "9"},
+		{CLUBS, "8"},
+		{SPADE, "7"},
+		{HEART, "8"},
+		{CARO, "D"},
 	}
 	player := makePlayer(validCards)
 	s := makeSuitState()
@@ -2417,9 +2417,9 @@ func TestDeclarerTacticFORE5(t *testing.T) {
 	s.trick = []Card{}
 
 	s.trumpsInGame = []Card{
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
 	}
 
 	card := player.playerTactic(&s, validCards)
@@ -2434,15 +2434,15 @@ func TestDeclarerTacticFORE_LowTrump(t *testing.T) {
 	// don't play a high trump if you are not strong
 
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{SPADE, "10"},
-		Card{SPADE, "8"},
-		Card{SPADE, "7"},
-		Card{HEART, "A"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "D"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{SPADE, "10"},
+		{SPADE, "8"},
+		{SPADE, "7"},
+		{HEART, "A"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "D"},
 	}
 	player := makePlayer(validCards)
 	s := makeSuitState()
@@ -2466,9 +2466,9 @@ func TestDeclarerTacticMID_LowTrump(t *testing.T) {
 	// don't play a high trump if you are not strong
 
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{SPADE, "9"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{SPADE, "9"},
 	}
 	player := makePlayer(validCards)
 	other := makePlayer([]Card{})
@@ -2477,7 +2477,7 @@ func TestDeclarerTacticMID_LowTrump(t *testing.T) {
 	s.declarer = &player
 
 	s.trump = SPADE
-	s.trick = []Card{Card{HEART, "9"}}
+	s.trick = []Card{{HEART, "9"}}
 
 	card := player.playerTactic(&s, validCards)
 	exp := Card{SPADE, "9"}
@@ -2489,16 +2489,16 @@ func TestDeclarerTacticMID_LowTrump(t *testing.T) {
 
 func TestDeclarerTacticMID_ThrowOff(t *testing.T) {
 	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
-		Card{SPADE, "D"},
+		{CLUBS, "J"},
+		{HEART, "J"},
+		{SPADE, "10"},
+		{SPADE, "K"},
+		{SPADE, "D"},
 
-		Card{CARO, "9"},
-		Card{HEART, "A"},
-		Card{HEART, "K"},
-		Card{HEART, "8"},
+		{CARO, "9"},
+		{HEART, "A"},
+		{HEART, "K"},
+		{HEART, "8"},
 	}
 	player := makePlayer(validCards)
 	other := makePlayer([]Card{})
@@ -2507,7 +2507,7 @@ func TestDeclarerTacticMID_ThrowOff(t *testing.T) {
 	s.declarer = &player
 
 	s.trump = SPADE
-	s.trick = []Card{Card{CLUBS, "9"}}
+	s.trick = []Card{{CLUBS, "9"}}
 
 	card := player.playerTactic(&s, validCards)
 	exp := Card{CARO, "9"}
@@ -2519,13 +2519,13 @@ func TestDeclarerTacticMID_ThrowOff(t *testing.T) {
 
 func TestDeclarerTacticMID_DontThrowOffTheProtectorOfa10(t *testing.T) {
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{HEART, "D"},
+		{HEART, "J"},
+		{HEART, "A"},
+		{HEART, "10"},
+		{HEART, "D"},
 
-		Card{CLUBS, "10"},
-		Card{CLUBS, "7"},
+		{CLUBS, "10"},
+		{CLUBS, "7"},
 	}
 	player := makePlayer(validCards)
 	other := makePlayer([]Card{})
@@ -2534,15 +2534,15 @@ func TestDeclarerTacticMID_DontThrowOffTheProtectorOfa10(t *testing.T) {
 	s.declarer = &player
 
 	s.trump = HEART
-	s.trick = []Card{Card{SPADE, "9"}}
+	s.trick = []Card{{SPADE, "9"}}
 	s.trumpsInGame = []Card{
-		Card{HEART, "J"},
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{HEART, "K"}, //
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{HEART, "8"},
+		{HEART, "J"},
+		{HEART, "A"},
+		{HEART, "10"},
+		{HEART, "K"}, //
+		{HEART, "D"},
+		{HEART, "9"},
+		{HEART, "8"},
 	}
 	s.cardsPlayed = remove(makeTrumpDeck(s.trump), s.trumpsInGame...)
 
@@ -2556,9 +2556,9 @@ func TestDeclarerTacticMID_DontThrowOffTheProtectorOfa10(t *testing.T) {
 
 func TestDeclarerTacticMID_DontThrowOffAor10(t *testing.T) {
 	validCards := []Card{
-		Card{SPADE, "9"},
-		Card{HEART, "A"},
-		Card{HEART, "10"},
+		{SPADE, "9"},
+		{HEART, "A"},
+		{HEART, "10"},
 	}
 	player := makePlayer(validCards)
 	other := makePlayer([]Card{})
@@ -2567,9 +2567,9 @@ func TestDeclarerTacticMID_DontThrowOffAor10(t *testing.T) {
 	s.declarer = &player
 
 	s.trump = SPADE
-	s.trick = []Card{Card{CARO, "7"}}
+	s.trick = []Card{{CARO, "7"}}
 	s.trumpsInGame = []Card{
-		Card{SPADE, "9"},
+		{SPADE, "9"},
 	}
 	s.cardsPlayed = remove(makeTrumpDeck(s.trump), s.trumpsInGame...)
 
@@ -2585,11 +2585,11 @@ func TestDeclarerTacticMID_ThrowOffToGoBack(t *testing.T) {
 	// throw off on a null opener to go in backhand
 
 	validCards := []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "A"},
-		Card{HEART, "D"},
-		Card{SPADE, "A"},
-		Card{SPADE, "7"},
+		{CLUBS, "J"},
+		{HEART, "A"},
+		{HEART, "D"},
+		{SPADE, "A"},
+		{SPADE, "7"},
 	}
 	player := makePlayer(validCards)
 	other := makePlayer([]Card{})
@@ -2598,7 +2598,7 @@ func TestDeclarerTacticMID_ThrowOffToGoBack(t *testing.T) {
 	s.declarer = &player
 
 	s.trump = HEART
-	s.trick = []Card{Card{CARO, "9"}}
+	s.trick = []Card{{CARO, "9"}}
 	s.follow = CARO
 
 	card := player.playerTactic(&s, validCards)
@@ -2612,11 +2612,11 @@ func TestDeclarerTacticMID_ThrowOffToGoBack(t *testing.T) {
 func TestDeclarerTacticBACK_TrumpWithLowJack(t *testing.T) {
 
 	validCards := []Card{
-		Card{SPADE, "J"},
-		Card{CARO, "J"},
-		Card{HEART, "D"},
-		Card{SPADE, "A"},
-		Card{SPADE, "7"},
+		{SPADE, "J"},
+		{CARO, "J"},
+		{HEART, "D"},
+		{SPADE, "A"},
+		{SPADE, "7"},
 	}
 	player := makePlayer(validCards)
 	other := makePlayer([]Card{})
@@ -2628,7 +2628,7 @@ func TestDeclarerTacticBACK_TrumpWithLowJack(t *testing.T) {
 	s.opp2 = &other1
 
 	s.trump = GRAND
-	s.trick = []Card{Card{CLUBS, "A"}, Card{CLUBS, "8"}}
+	s.trick = []Card{{CLUBS, "A"}, {CLUBS, "8"}}
 	s.follow = CLUBS
 
 	card := player.playerTactic(&s, validCards)
@@ -2642,11 +2642,11 @@ func TestDeclarerTacticBACK_TrumpWithLowJack(t *testing.T) {
 func TestDeclarerTacticBACK_DontWasteYourAonaZeroTrick(t *testing.T) {
 
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "D"},
-		Card{HEART, "A"},
-		Card{HEART, "8"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "D"},
+		{HEART, "A"},
+		{HEART, "8"},
 	}
 	player := makePlayer(validCards)
 	other := makePlayer([]Card{})
@@ -2655,7 +2655,7 @@ func TestDeclarerTacticBACK_DontWasteYourAonaZeroTrick(t *testing.T) {
 	s.declarer = &player
 
 	s.trump = CARO
-	s.trick = []Card{Card{HEART, "7"}, Card{HEART, "9"}}
+	s.trick = []Card{{HEART, "7"}, {HEART, "9"}}
 	s.follow = HEART
 
 	card := player.playerTactic(&s, validCards)
@@ -2669,13 +2669,13 @@ func TestDeclarerTacticBACK_DontWasteYourAonaZeroTrick(t *testing.T) {
 func TestDeclarerTacticBACK_DontWasteYourAonaZeroTrick_UnlessYouHavethe10(t *testing.T) {
 
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "D"},
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{HEART, "K"},
-		Card{HEART, "8"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "D"},
+		{HEART, "A"},
+		{HEART, "10"},
+		{HEART, "K"},
+		{HEART, "8"},
 	}
 	player := makePlayer(validCards)
 	other := makePlayer([]Card{})
@@ -2684,7 +2684,7 @@ func TestDeclarerTacticBACK_DontWasteYourAonaZeroTrick_UnlessYouHavethe10(t *tes
 	s.declarer = &player
 
 	s.trump = CARO
-	s.trick = []Card{Card{HEART, "7"}, Card{HEART, "9"}}
+	s.trick = []Card{{HEART, "7"}, {HEART, "9"}}
 	s.follow = HEART
 
 	card := player.playerTactic(&s, validCards)
@@ -2698,12 +2698,12 @@ func TestDeclarerTacticBACK_DontWasteYourAonaZeroTrick_UnlessYouHavethe10(t *tes
 func TestDeclarerTacticBACK_Dont_Throw_a_FullOne_on_a_zero_trick(t *testing.T) {
 
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{HEART, "10"},
-		Card{HEART, "K"},
-		Card{HEART, "8"},
-		Card{HEART, "7"},
-		Card{CARO, "10"},
+		{HEART, "J"},
+		{HEART, "10"},
+		{HEART, "K"},
+		{HEART, "8"},
+		{HEART, "7"},
+		{CARO, "10"},
 	}
 	player := makePlayer(validCards)
 	other1 := makePlayer([]Card{})
@@ -2716,7 +2716,7 @@ func TestDeclarerTacticBACK_Dont_Throw_a_FullOne_on_a_zero_trick(t *testing.T) {
 	players = []PlayerI{&other1, &other2, &player}
 
 	s.trump = HEART
-	s.trick = []Card{Card{CLUBS, "7"}, Card{CLUBS, "9"}}
+	s.trick = []Card{{CLUBS, "7"}, {CLUBS, "9"}}
 	s.follow = CLUBS
 
 	card := player.playerTactic(&s, validCards)
@@ -2730,13 +2730,13 @@ func TestDeclarerTacticBACK_Dont_Throw_a_FullOne_on_a_zero_trick(t *testing.T) {
 func TestDeclarerTacticBACK_Throw_MAX_a_D_a_zero_trick(t *testing.T) {
 
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{HEART, "10"},
-		Card{HEART, "K"},
-		Card{HEART, "8"},
-		Card{HEART, "7"},
-		Card{CARO, "10"},
-		Card{CARO, "D"},
+		{HEART, "J"},
+		{HEART, "10"},
+		{HEART, "K"},
+		{HEART, "8"},
+		{HEART, "7"},
+		{CARO, "10"},
+		{CARO, "D"},
 	}
 	player := makePlayer(validCards)
 	other1 := makePlayer([]Card{})
@@ -2749,7 +2749,7 @@ func TestDeclarerTacticBACK_Throw_MAX_a_D_a_zero_trick(t *testing.T) {
 	players = []PlayerI{&other1, &other2, &player}
 
 	s.trump = HEART
-	s.trick = []Card{Card{CLUBS, "7"}, Card{CLUBS, "9"}}
+	s.trick = []Card{{CLUBS, "7"}, {CLUBS, "9"}}
 	s.follow = CLUBS
 
 	card := player.playerTactic(&s, validCards)
@@ -2771,14 +2771,14 @@ func TestDeclarerTacticAKX(t *testing.T) {
 	s.trump = CLUBS
 	s.trick = []Card{}
 	player.hand = []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "A"},
-		Card{HEART, "K"},
-		Card{HEART, "7"},
+		{CLUBS, "J"},
+		{HEART, "A"},
+		{HEART, "K"},
+		{HEART, "7"},
 	}
 
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
+		{CLUBS, "J"},
 	}
 
 	card := player.playerTactic(&s, player.hand)
@@ -2808,13 +2808,13 @@ func TestDeclarerTacticKX(t *testing.T) {
 	s.trump = CLUBS
 	s.trick = []Card{}
 	player.hand = []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "K"},
-		Card{HEART, "7"},
+		{CLUBS, "J"},
+		{HEART, "K"},
+		{HEART, "7"},
 	}
 
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
+		{CLUBS, "J"},
 	}
 
 	card := player.playerTactic(&s, player.hand)
@@ -2844,15 +2844,15 @@ func TestDeclarerTacticKXLessValuableLoser(t *testing.T) {
 	s.trump = CLUBS
 	s.trick = []Card{}
 	player.hand = []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "K"},
-		Card{HEART, "D"},
-		Card{CARO, "10"},
-		Card{CARO, "7"},
+		{CLUBS, "J"},
+		{HEART, "K"},
+		{HEART, "D"},
+		{CARO, "10"},
+		{CARO, "7"},
 	}
 
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
+		{CLUBS, "J"},
 	}
 
 	card := player.playerTactic(&s, player.hand)
@@ -2911,16 +2911,16 @@ func TestDeclarerTacticDoNotTrumpZeroValueTricks(t *testing.T) {
 
 	s.trump = CLUBS
 	s.trick = []Card{
-		Card{HEART, "7"},
-		Card{HEART, "8"},
+		{HEART, "7"},
+		{HEART, "8"},
 	}
 	s.follow = HEART
 
 	player.hand = []Card{
-		Card{CLUBS, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "K"},
-		Card{CARO, "7"},
+		{CLUBS, "J"},
+		{CARO, "A"},
+		{CARO, "K"},
+		{CARO, "7"},
 	}
 
 	card := player.playerTactic(&s, player.hand)
@@ -2941,16 +2941,16 @@ func TestDeclarerTacticKeepTheAForThe10(t *testing.T) {
 
 	s.trump = CLUBS
 	s.trick = []Card{
-		Card{HEART, "7"},
-		Card{HEART, "K"},
+		{HEART, "7"},
+		{HEART, "K"},
 	}
 	s.follow = HEART
 
 	player.hand = []Card{
 		//	Card{HEART, "J"},
-		Card{HEART, "A"},
-		Card{HEART, "D"},
-		Card{HEART, "8"},
+		{HEART, "A"},
+		{HEART, "D"},
+		{HEART, "8"},
 	}
 
 	s.cardsPlayed = []Card{}
@@ -2972,16 +2972,16 @@ func TestDeclarerTacticKeepTheAForThe10_2(t *testing.T) {
 
 	s.trump = CLUBS
 	s.trick = []Card{
-		Card{HEART, "7"},
-		Card{HEART, "K"},
+		{HEART, "7"},
+		{HEART, "K"},
 	}
 	s.follow = HEART
 
 	player.hand = []Card{
 		//	Card{HEART, "J"},
-		Card{HEART, "A"},
-		Card{HEART, "D"},
-		Card{HEART, "8"},
+		{HEART, "A"},
+		{HEART, "D"},
+		{HEART, "8"},
 	}
 
 	s.cardsPlayed = makeDeck()
@@ -2996,8 +2996,8 @@ func TestDeclarerTacticKeepTheAForThe10_2(t *testing.T) {
 	}
 
 	s.trick = []Card{
-		Card{HEART, "7"},
-		Card{HEART, "10"},
+		{HEART, "7"},
+		{HEART, "10"},
 	}
 	s.cardsPlayed = []Card{}
 	s.cardsPlayed = makeDeck()
@@ -3025,16 +3025,16 @@ func TestDeclarerTacticKeepTheAForThe10_1(t *testing.T) {
 
 	player.hand = []Card{
 		//	Card{HEART, "J"},
-		Card{HEART, "A"},
-		Card{HEART, "D"},
-		Card{HEART, "8"},
+		{HEART, "A"},
+		{HEART, "D"},
+		{HEART, "8"},
 	}
 
 	s.cardsPlayed = []Card{}
 
 	s.trick = []Card{
-		Card{HEART, "7"},
-		Card{HEART, "9"},
+		{HEART, "7"},
+		{HEART, "9"},
 	}
 	s.cardsPlayed = []Card{}
 	card := player.playerTactic(&s, player.hand)
@@ -3058,16 +3058,16 @@ func TestDeclarerTacticKeepTheAForThe10_3(t *testing.T) {
 
 	player.hand = []Card{
 		//	Card{HEART, "J"},
-		Card{HEART, "A"},
-		Card{HEART, "K"},
-		Card{HEART, "8"},
+		{HEART, "A"},
+		{HEART, "K"},
+		{HEART, "8"},
 	}
 
 	s.cardsPlayed = []Card{}
 
 	s.trick = []Card{
-		Card{HEART, "7"},
-		Card{HEART, "9"},
+		{HEART, "7"},
+		{HEART, "9"},
 	}
 	s.cardsPlayed = []Card{}
 	card := player.playerTactic(&s, player.hand)
@@ -3089,10 +3089,10 @@ func TestDeclarerTacticGrand(t *testing.T) {
 	s.trump = GRAND
 
 	player.hand = []Card{
-		Card{HEART, "J"},
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{HEART, "8"},
+		{HEART, "J"},
+		{HEART, "A"},
+		{HEART, "10"},
+		{HEART, "8"},
 	}
 
 	s.cardsPlayed = []Card{}
@@ -3107,11 +3107,11 @@ func TestDeclarerTacticGrand(t *testing.T) {
 	}
 
 	player.hand = []Card{
-		Card{HEART, "J"},
-		Card{HEART, "10"},
-		Card{HEART, "8"},
+		{HEART, "J"},
+		{HEART, "10"},
+		{HEART, "8"},
 	}
-	s.cardsPlayed = []Card{Card{HEART, "A"}}
+	s.cardsPlayed = []Card{{HEART, "A"}}
 
 	card = player.playerTactic(&s, player.hand)
 	exp = Card{HEART, "10"}
@@ -3124,19 +3124,19 @@ func TestDeclarerTacticGrand(t *testing.T) {
 
 func TestDiscardInSkat1(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "D"},
-		Card{CLUBS, "9"},
+		{CLUBS, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "D"},
+		{CLUBS, "9"},
 
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
+		{SPADE, "A"},
+		{SPADE, "10"},
 
-		Card{HEART, "A"},
-		Card{HEART, "D"},
-		Card{HEART, "8"},
+		{HEART, "A"},
+		{HEART, "D"},
+		{HEART, "8"},
 
-		Card{CARO, "A"},
+		{CARO, "A"},
 	}
 	// skat := []Card{Card{CARO, "7"}, Card{SPADE, "D"}}
 	p := makePlayer(cards)
@@ -3149,21 +3149,21 @@ func TestDiscardInSkat1(t *testing.T) {
 
 func TestDiscardInSkatKeepLongSuit(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
 
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "8"},
-		Card{CARO, "7"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "8"},
+		{CARO, "7"},
 
-		Card{SPADE, "K"},
-		Card{SPADE, "D"},
-		Card{SPADE, "9"},
+		{SPADE, "K"},
+		{SPADE, "D"},
+		{SPADE, "9"},
 
-		Card{CLUBS, "K"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
+		{CLUBS, "K"},
+		{CLUBS, "8"},
+		{CLUBS, "7"},
 	}
 	// skat := []Card{Card{CARO, "7"}, Card{SPADE, "D"}}
 	p := makePlayer(cards)
@@ -3180,24 +3180,24 @@ func TestDiscardInSkatKeepLongSuit(t *testing.T) {
 
 func TestDiscardInSkatDiscart10s(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
 
-		Card{HEART, "A"},
-		Card{HEART, "D"},
-		Card{HEART, "8"},
-		Card{HEART, "7"},
+		{HEART, "A"},
+		{HEART, "D"},
+		{HEART, "8"},
+		{HEART, "7"},
 
-		Card{SPADE, "A"},
-		Card{SPADE, "7"},
+		{SPADE, "A"},
+		{SPADE, "7"},
 
-		Card{CARO, "K"},
-		Card{CARO, "7"},
+		{CARO, "K"},
+		{CARO, "7"},
 
-		Card{CLUBS, "10"},
-		Card{CLUBS, "8"},
+		{CLUBS, "10"},
+		{CLUBS, "8"},
 	}
-	skat := []Card{Card{CLUBS, "8"}, Card{CARO, "K"}}
+	skat := []Card{{CLUBS, "8"}, {CARO, "K"}}
 	p := makePlayer(cards)
 
 	p.discardInSkat(skat)
@@ -3210,22 +3210,22 @@ func TestDiscardInSkatDiscart10s(t *testing.T) {
 
 func TestDiscardInSkatNULLNoRisk(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "7"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "D"},
+		{CLUBS, "7"},
+		{CLUBS, "9"},
+		{CLUBS, "10"},
+		{CLUBS, "D"},
 
-		Card{SPADE, "7"},
-		Card{SPADE, "8"},
-		Card{SPADE, "10"},
-		Card{SPADE, "D"},
+		{SPADE, "7"},
+		{SPADE, "8"},
+		{SPADE, "10"},
+		{SPADE, "D"},
 
-		Card{CARO, "7"},
-		Card{CARO, "8"},
-		Card{CARO, "J"},
-		Card{CARO, "D"},
+		{CARO, "7"},
+		{CARO, "8"},
+		{CARO, "J"},
+		{CARO, "D"},
 	}
-	skat := []Card{Card{SPADE, "8"}, Card{SPADE, "D"}}
+	skat := []Card{{SPADE, "8"}, {SPADE, "D"}}
 	p := makePlayer(cards)
 	p.discardInSkat(skat)
 
@@ -3236,19 +3236,19 @@ func TestDiscardInSkatNULLNoRisk(t *testing.T) {
 
 func TestDiscardInSkatGRAND(t *testing.T) {
 	cards := []Card{
-		Card{HEART, "J"},  //L1
-		Card{CLUBS, "A"},  //1
-		Card{CLUBS, "9"},  //L2
-		Card{SPADE, "A"},  //2
-		Card{SPADE, "9"},  //DISCARD
-		Card{SPADE, "8"},  //L3
-		Card{HEART, "A"},  //3
-		Card{HEART, "10"}, //4
-		Card{HEART, "K"},
-		Card{HEART, "9"},
-		Card{CARO, "10"}, // DISCARD
+		{HEART, "J"},  //L1
+		{CLUBS, "A"},  //1
+		{CLUBS, "9"},  //L2
+		{SPADE, "A"},  //2
+		{SPADE, "9"},  //DISCARD
+		{SPADE, "8"},  //L3
+		{HEART, "A"},  //3
+		{HEART, "10"}, //4
+		{HEART, "K"},
+		{HEART, "9"},
+		{CARO, "10"}, // DISCARD
 	}
-	skat := []Card{Card{SPADE, "9"}, Card{HEART, "9"}}
+	skat := []Card{{SPADE, "9"}, {HEART, "9"}}
 	p := makePlayer(cards)
 	p.discardInSkat(skat)
 
@@ -3292,18 +3292,18 @@ func TestDiscardInSkatGRAND(t *testing.T) {
 
 func TestDiscardInSkatGRAND_10s(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CLUBS, "10"}, // DISCARD
-		Card{CLUBS, "D"},
-		Card{SPADE, "A"},
-		Card{SPADE, "D"},
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{CARO, "10"}, // DISCARD
-		Card{CARO, "D"},
-		Card{CARO, "7"},
+		{CLUBS, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CLUBS, "10"}, // DISCARD
+		{CLUBS, "D"},
+		{SPADE, "A"},
+		{SPADE, "D"},
+		{HEART, "A"},
+		{HEART, "10"},
+		{CARO, "10"}, // DISCARD
+		{CARO, "D"},
+		{CARO, "7"},
 	}
 	// skat := []Card{Card{SPADE, "9"}, Card{HEART, "9"}}
 	p := makePlayer(cards)
@@ -3318,18 +3318,18 @@ func TestDiscardInSkatGRAND_10s(t *testing.T) {
 
 func TestDiscardInSkatGRANDBlank(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{CARO, "J"}, //LOSER
-		Card{CLUBS, "A"},
-		Card{CLUBS, "8"}, //LOSER
-		Card{CLUBS, "9"}, //LOSER
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
-		Card{SPADE, "D"}, //LOSER
-		Card{SPADE, "9"}, //LOSER
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{CARO, "9"}, //LOSER
+		{CLUBS, "J"},
+		{CARO, "J"}, //LOSER
+		{CLUBS, "A"},
+		{CLUBS, "8"}, //LOSER
+		{CLUBS, "9"}, //LOSER
+		{SPADE, "A"},
+		{SPADE, "10"},
+		{SPADE, "D"}, //LOSER
+		{SPADE, "9"}, //LOSER
+		{HEART, "A"},
+		{HEART, "10"},
+		{CARO, "9"}, //LOSER
 	}
 	// skat := []Card{Card{CLUBS, "9"}, Card{SPADE, "D"}}
 	p := makePlayer(cards)
@@ -3343,24 +3343,24 @@ func TestDiscardInSkatGRANDBlank(t *testing.T) {
 
 func TestDiscardInSkat_2CardsOfASuit(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
 
-		Card{CLUBS, "10"},
-		Card{CLUBS, "D"},
-		Card{CLUBS, "8"},
+		{CLUBS, "10"},
+		{CLUBS, "D"},
+		{CLUBS, "8"},
 
-		Card{HEART, "A"},
-		Card{HEART, "D"},
-		Card{HEART, "7"},
+		{HEART, "A"},
+		{HEART, "D"},
+		{HEART, "7"},
 
-		Card{SPADE, "D"},
-		Card{SPADE, "9"},
+		{SPADE, "D"},
+		{SPADE, "9"},
 
-		Card{CARO, "7"},
+		{CARO, "7"},
 	}
-	skat := []Card{Card{CLUBS, "8"}, Card{SPADE, "D"}}
+	skat := []Card{{CLUBS, "8"}, {SPADE, "D"}}
 	p := makePlayer(cards)
 	p.trumpToDeclare = CLUBS
 	p.discardInSkat(skat)
@@ -3372,23 +3372,23 @@ func TestDiscardInSkat_2CardsOfASuit(t *testing.T) {
 
 func TestDiscardInSkat_Blank10_2CardsOfASuit(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "J"},
-		Card{CARO, "J"},
+		{SPADE, "J"},
+		{CARO, "J"},
 
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{HEART, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "8"},
+		{HEART, "A"},
+		{HEART, "10"},
+		{HEART, "K"},
+		{HEART, "D"},
+		{HEART, "8"},
 
-		Card{CLUBS, "10"},
-		Card{SPADE, "10"},
-		Card{SPADE, "9"},
+		{CLUBS, "10"},
+		{SPADE, "10"},
+		{SPADE, "9"},
 
-		Card{CARO, "8"},
-		Card{CARO, "7"},
+		{CARO, "8"},
+		{CARO, "7"},
 	}
-	skat := []Card{Card{CLUBS, "10"}, Card{SPADE, "10"}}
+	skat := []Card{{CLUBS, "10"}, {SPADE, "10"}}
 	p := makePlayer(cards)
 	p.trumpToDeclare = CLUBS
 	p.discardInSkat(skat)
@@ -3400,18 +3400,18 @@ func TestDiscardInSkat_Blank10_2CardsOfASuit(t *testing.T) {
 
 func TestDiscardInSkatAllTrumps(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "D"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
-		Card{SPADE, "A"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
+		{CLUBS, "K"},
+		{CLUBS, "D"},
+		{CLUBS, "9"},
+		{CLUBS, "8"},
+		{CLUBS, "7"},
+		{SPADE, "A"},
 	}
 	p := makePlayer(cards)
 	p.trumpToDeclare = CLUBS
@@ -3472,17 +3472,17 @@ func TestDiscardInSkatAllTrumps(t *testing.T) {
 
 func TestCanWinNULL1(t *testing.T) {
 	cards := []Card{
-		Card{HEART, "D"},
-		Card{HEART, "K"},
+		{HEART, "D"},
+		{HEART, "K"},
 
-		Card{CLUBS, "A"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
-		Card{CARO, "10"},
-		Card{CARO, "9"},
-		Card{CARO, "K"},
-		Card{CARO, "7"},
+		{CLUBS, "A"},
+		{CLUBS, "9"},
+		{CLUBS, "8"},
+		{CLUBS, "7"},
+		{CARO, "10"},
+		{CARO, "9"},
+		{CARO, "K"},
+		{CARO, "7"},
 	}
 	p := makePlayer(cards)
 
@@ -3494,18 +3494,18 @@ func TestCanWinNULL1(t *testing.T) {
 
 func TestCanWinNULL2(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "D"},
+		{CLUBS, "D"},
 
-		Card{HEART, "9"},
+		{HEART, "9"},
 
-		Card{CLUBS, "A"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "7"},
-		Card{CARO, "10"},
-		Card{CARO, "9"},
-		Card{CARO, "K"},
-		Card{CARO, "7"},
+		{CLUBS, "A"},
+		{CLUBS, "9"},
+		{CLUBS, "8"},
+		{CLUBS, "7"},
+		{CARO, "10"},
+		{CARO, "9"},
+		{CARO, "K"},
+		{CARO, "7"},
 	}
 	p := makePlayer(cards)
 
@@ -3517,17 +3517,17 @@ func TestCanWinNULL2(t *testing.T) {
 
 func TestCanWinGRAND1(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
 
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
 
-		Card{CLUBS, "9"}, // LOSER
-		Card{CLUBS, "8"}, // LOSER
-		Card{CLUBS, "7"}, // LOSER
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
+		{CLUBS, "9"}, // LOSER
+		{CLUBS, "8"}, // LOSER
+		{CLUBS, "7"}, // LOSER
+		{SPADE, "A"},
+		{SPADE, "10"},
 	}
 	p := makePlayer(cards)
 	p2 := makePlayer(cards)
@@ -3543,18 +3543,18 @@ func TestCanWinGRAND1(t *testing.T) {
 
 func TestCanWinGRAND2(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
 
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "K"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
+		{CLUBS, "K"},
 
-		Card{CLUBS, "8"}, // LOSER
-		Card{CLUBS, "7"}, // LOSER
-		Card{SPADE, "10"},
-		Card{SPADE, "9"}, // LOSER
-		Card{SPADE, "D"}, // LOSER
+		{CLUBS, "8"}, // LOSER
+		{CLUBS, "7"}, // LOSER
+		{SPADE, "10"},
+		{SPADE, "9"}, // LOSER
+		{SPADE, "D"}, // LOSER
 	}
 	p := makePlayer(cards)
 	p2 := makePlayer(cards)
@@ -3581,12 +3581,12 @@ func TestOpponentTacticNULLBack1(t *testing.T) {
 
 	s.trump = NULL
 	s.follow = HEART
-	s.trick = []Card{Card{HEART, "8"}, Card{HEART, "10"}}
+	s.trick = []Card{{HEART, "8"}, {HEART, "10"}}
 
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{HEART, "D"},
-		Card{HEART, "A"},
+		{HEART, "J"},
+		{HEART, "D"},
+		{HEART, "A"},
 	}
 
 	card := player.playerTactic(&s, validCards)
@@ -3609,12 +3609,12 @@ func TestOpponentTacticNULLBack2(t *testing.T) {
 
 	s.trump = NULL
 	s.follow = HEART
-	s.trick = []Card{Card{HEART, "8"}, Card{HEART, "10"}}
+	s.trick = []Card{{HEART, "8"}, {HEART, "10"}}
 
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{HEART, "D"},
-		Card{HEART, "A"},
+		{HEART, "J"},
+		{HEART, "D"},
+		{HEART, "A"},
 	}
 
 	card := player.playerTactic(&s, validCards)
@@ -3667,13 +3667,13 @@ func TestOpponentTacticNULLMIDDeclBack4(t *testing.T) {
 
 	s.trump = NULL
 	s.follow = HEART
-	s.trick = []Card{Card{HEART, "J"}}
+	s.trick = []Card{{HEART, "J"}}
 
 	validCards := []Card{
-		Card{HEART, "8"},
-		Card{HEART, "9"},
-		Card{HEART, "D"},
-		Card{HEART, "A"},
+		{HEART, "8"},
+		{HEART, "9"},
+		{HEART, "D"},
+		{HEART, "A"},
 	}
 
 	card := player.playerTactic(&s, validCards)
@@ -3698,11 +3698,11 @@ func TestOpponentTacticNULLMIDDeclBack2(t *testing.T) {
 	s.cardsPlayed = []Card{}
 	s.trump = NULL
 	s.follow = HEART
-	s.trick = []Card{Card{HEART, "9"}}
+	s.trick = []Card{{HEART, "9"}}
 
 	validCards := []Card{
-		Card{HEART, "10"},
-		Card{HEART, "K"},
+		{HEART, "10"},
+		{HEART, "K"},
 	}
 
 	// Changed:
@@ -3717,7 +3717,7 @@ func TestOpponentTacticNULLMIDDeclBack2(t *testing.T) {
 			s.trick, validCards, s.cardsPlayed, exp, card)
 	}
 
-	s.cardsPlayed = []Card{Card{HEART, "7"}, Card{HEART, "8"}}
+	s.cardsPlayed = []Card{{HEART, "7"}, {HEART, "8"}}
 
 	card = player.playerTactic(&s, validCards)
 	exp = Card{HEART, "10"}
@@ -3739,12 +3739,12 @@ func TestOpponentTacticNULLMIDDeclBack(t *testing.T) {
 	s.leader = &teamMate
 	s.trump = NULL
 	s.follow = HEART
-	s.trick = []Card{Card{HEART, "10"}}
+	s.trick = []Card{{HEART, "10"}}
 
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{HEART, "D"},
-		Card{HEART, "A"},
+		{HEART, "J"},
+		{HEART, "D"},
+		{HEART, "A"},
 	}
 	s.cardsPlayed = []Card{}
 
@@ -3768,11 +3768,11 @@ func TestOpponentTacticNULLMIDDeclBack1(t *testing.T) {
 	s.leader = &otherPlayer
 	s.trump = NULL
 	s.follow = HEART
-	s.trick = []Card{Card{HEART, "K"}, Card{HEART, "8"}}
+	s.trick = []Card{{HEART, "K"}, {HEART, "8"}}
 
 	validCards := []Card{
-		Card{HEART, "9"},
-		Card{HEART, "A"},
+		{HEART, "9"},
+		{HEART, "A"},
 	}
 	s.cardsPlayed = []Card{}
 
@@ -3796,12 +3796,12 @@ func TestOpponentTacticNULLMIDDeclBack3(t *testing.T) {
 	s.leader = &teamMate
 	s.trump = NULL
 	s.follow = HEART
-	s.trick = []Card{Card{HEART, "D"}, Card{HEART, "9"}}
+	s.trick = []Card{{HEART, "D"}, {HEART, "9"}}
 
 	validCards := []Card{
-		Card{HEART, "8"},
-		Card{HEART, "10"},
-		Card{HEART, "A"},
+		{HEART, "8"},
+		{HEART, "10"},
+		{HEART, "A"},
 	}
 	s.cardsPlayed = []Card{}
 
@@ -3815,10 +3815,10 @@ func TestOpponentTacticNULLMIDDeclBack3(t *testing.T) {
 
 func TestOpponentTacticFORE_PlayerVoid(t *testing.T) {
 	validCards := []Card{
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "8"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "8"},
 	}
 	player := makePlayer(validCards)
 
@@ -3831,8 +3831,8 @@ func TestOpponentTacticFORE_PlayerVoid(t *testing.T) {
 	s.opp2 = &player
 	s.trump = CLUBS
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
+		{CLUBS, "J"},
+		{HEART, "J"},
 	}
 
 	teamMate.previousSuit = "CARO"
@@ -3856,14 +3856,14 @@ func TestOpponentTacticFORE_PlayerVoid(t *testing.T) {
 
 func TestOpponentTacticFORE_PlayerVoid2(t *testing.T) {
 	validCards := []Card{
-		Card{CARO, "J"},
-		Card{SPADE, "K"},
-		Card{SPADE, "D"},
-		Card{SPADE, "8"},
-		Card{CARO, "10"},
-		Card{HEART, "A"},
-		Card{HEART, "D"},
-		Card{HEART, "8"},
+		{CARO, "J"},
+		{SPADE, "K"},
+		{SPADE, "D"},
+		{SPADE, "8"},
+		{CARO, "10"},
+		{HEART, "A"},
+		{HEART, "D"},
+		{HEART, "8"},
 	}
 	player := makePlayer(validCards)
 
@@ -3876,8 +3876,8 @@ func TestOpponentTacticFORE_PlayerVoid2(t *testing.T) {
 	s.opp2 = &player
 	s.trump = CLUBS
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
+		{CLUBS, "J"},
+		{HEART, "J"},
 	}
 
 	teamMate.previousSuit = "CARO"
@@ -3895,11 +3895,11 @@ func TestOpponentTacticFORE_PlayerVoid2(t *testing.T) {
 
 func TestOpponentTacticFORE_PlayerNoTrumps(t *testing.T) {
 	validCards := []Card{
-		Card{CARO, "J"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "7"},
-		Card{CARO, "7"},
-		Card{HEART, "7"},
+		{CARO, "J"},
+		{CLUBS, "10"},
+		{CLUBS, "7"},
+		{CARO, "7"},
+		{HEART, "7"},
 	}
 	player := makePlayer(validCards)
 
@@ -3912,7 +3912,7 @@ func TestOpponentTacticFORE_PlayerNoTrumps(t *testing.T) {
 	s.opp2 = &player
 	s.trump = SPADE
 	s.trumpsInGame = []Card{
-		Card{CARO, "J"},
+		{CARO, "J"},
 	}
 	s.cardsPlayed = remove(makeTrumpDeck(s.trump), s.trumpsInGame...)
 
@@ -3931,13 +3931,13 @@ func TestOpponentTacticFORE_ToPartnerLongSuitWithAss(t *testing.T) {
 	// declarer at backhand
 	// play a low card to allow the partner take the trick
 	validCards := []Card{
-		Card{SPADE, "J"},
-		Card{CARO, "J"},
-		Card{HEART, "10"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{CARO, "8"},
+		{SPADE, "J"},
+		{CARO, "J"},
+		{HEART, "10"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{CARO, "8"},
 	}
 	player := makePlayer(validCards)
 
@@ -3950,8 +3950,8 @@ func TestOpponentTacticFORE_ToPartnerLongSuitWithAss(t *testing.T) {
 	s.opp1 = &player
 	s.trump = CLUBS
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
+		{CLUBS, "J"},
+		{HEART, "J"},
 	}
 
 	s.trick = []Card{}
@@ -3976,14 +3976,14 @@ func TestOpponentTacticNULLFORE(t *testing.T) {
 	s.trump = NULL
 
 	validCards := []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "10"},
-		Card{SPADE, "A"},
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{HEART, "8"},
-		Card{CARO, "9"},
+		{CLUBS, "A"},
+		{CLUBS, "8"},
+		{CLUBS, "10"},
+		{SPADE, "A"},
+		{HEART, "A"},
+		{HEART, "10"},
+		{HEART, "8"},
+		{CARO, "9"},
 	}
 
 	teamMate.previousSuit = "HEART"
@@ -4017,22 +4017,22 @@ func TestOpponentTacticNULLFORE1(t *testing.T) {
 	s.trump = NULL
 
 	validCards := []Card{
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{HEART, "8"},
-		Card{CARO, "9"},
-		Card{CARO, "J"},
+		{HEART, "A"},
+		{HEART, "10"},
+		{HEART, "8"},
+		{CARO, "9"},
+		{CARO, "J"},
 	}
 
 	teamMate.previousSuit = "SPADE"
 	s.trick = []Card{}
 
 	s.cardsPlayed = []Card{
-		Card{HEART, "A"},
-		Card{HEART, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "B"},
-		Card{HEART, "7"},
+		{HEART, "A"},
+		{HEART, "K"},
+		{HEART, "D"},
+		{HEART, "B"},
+		{HEART, "7"},
 	}
 
 	card := player.playerTactic(&s, validCards)
@@ -4053,11 +4053,11 @@ func TestStrongestLowest1(t *testing.T) {
 	s.trump = CLUBS
 
 	cs := []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
-		Card{CLUBS, "10"},
-		Card{SPADE, "9"},
-		Card{CARO, "9"},
+		{CLUBS, "J"},
+		{HEART, "J"},
+		{CLUBS, "10"},
+		{SPADE, "9"},
+		{CARO, "9"},
 	}
 	p := makePlayer(cs)
 
@@ -4073,11 +4073,11 @@ func TestStrongestLowest2(t *testing.T) {
 	s.trump = CLUBS
 
 	cs := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{CARO, "J"},
-		Card{SPADE, "9"},
-		Card{CARO, "9"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{CARO, "J"},
+		{SPADE, "9"},
+		{CARO, "9"},
 	}
 	p := makePlayer(cs)
 
@@ -4093,12 +4093,12 @@ func TestStrongestLowestNotA(t *testing.T) {
 	s.trump = CLUBS
 
 	cs := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "K"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "K"},
 	}
 	p := makePlayer(cs)
 
@@ -4114,13 +4114,13 @@ func TestStrongestLowestNot10(t *testing.T) {
 	s.trump = CLUBS
 
 	cs := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "D"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
+		{CLUBS, "D"},
 	}
 	p := makePlayer(cs)
 
@@ -4136,8 +4136,8 @@ func TestStrongestLowestA_IfOnly(t *testing.T) {
 	s.trump = CLUBS
 
 	cs := []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "D"},
+		{CLUBS, "A"},
+		{CLUBS, "D"},
 	}
 	p := makePlayer(cs)
 
@@ -4151,16 +4151,16 @@ func TestStrongestLowestA_IfOnly(t *testing.T) {
 func TestStrongestLowestinSkat(t *testing.T) {
 	s := makeSuitState()
 	s.trump = CLUBS
-	s.skat = []Card{Card{CLUBS, "10"}}
+	s.skat = []Card{{CLUBS, "10"}}
 
 	cs := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "9"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "K"},
+		{CLUBS, "9"},
 	}
 	p := makePlayer(cs)
 
@@ -4175,11 +4175,11 @@ func TestStrongestLowestBug1(t *testing.T) {
 	s := makeSuitState()
 	s.trump = CLUBS
 	//s.cardsPlayed = []Card{Card{CLUBS, "8"}}
-	s.trumpsInGame = []Card{Card{CLUBS, "D"}}
+	s.trumpsInGame = []Card{{CLUBS, "D"}}
 
 	cs := []Card{
-		Card{CLUBS, "9"},
-		Card{CLUBS, "7"},
+		{CLUBS, "9"},
+		{CLUBS, "7"},
 	}
 	p := makePlayer(cs)
 
@@ -4205,24 +4205,24 @@ func TestNoHigherCard(t *testing.T) {
 
 func TestOverbid(t *testing.T) {
 	p := makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
+		{CLUBS, "J"},
+		{HEART, "J"},
 
-		Card{CARO, "8"},
-		Card{CARO, "D"},
+		{CARO, "8"},
+		{CARO, "D"},
 
-		Card{SPADE, "9"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
+		{SPADE, "9"},
+		{SPADE, "10"},
+		{SPADE, "K"},
 
-		Card{HEART, "A"}, // loser
-		Card{HEART, "D"}, // loser
-		Card{HEART, "8"}, // loser
+		{HEART, "A"}, // loser
+		{HEART, "D"}, // loser
+		{HEART, "8"}, // loser
 	})
 
 	skat := []Card{
-		Card{HEART, "9"},
-		Card{HEART, "K"},
+		{HEART, "9"},
+		{HEART, "K"},
 	}
 
 	p.calculateHighestBid(false)
@@ -4236,21 +4236,21 @@ func TestOverbid(t *testing.T) {
 
 func TestChangeGrandToSuit(t *testing.T) {
 	p := makePlayer([]Card{
-		Card{SPADE, "J"},
+		{SPADE, "J"},
 
-		Card{CLUBS, "A"},
+		{CLUBS, "A"},
 		// Card{CLUBS, "10"},
-		Card{CLUBS, "9"},
+		{CLUBS, "9"},
 
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
-		Card{SPADE, "D"},
+		{SPADE, "A"},
+		{SPADE, "10"},
+		{SPADE, "K"},
+		{SPADE, "D"},
 
-		Card{HEART, "A"}, // loser
+		{HEART, "A"}, // loser
 		// Card{HEART, "K"},// loser
-		Card{HEART, "8"}, // loser
-		Card{HEART, "7"}, // loser
+		{HEART, "8"}, // loser
+		{HEART, "7"}, // loser
 	})
 	o1 := makePlayer([]Card{})
 	o2 := makePlayer([]Card{})
@@ -4258,8 +4258,8 @@ func TestChangeGrandToSuit(t *testing.T) {
 
 	s := makeSuitState()
 	s.skat = []Card{
-		Card{CLUBS, "10"},
-		Card{HEART, "K"},
+		{CLUBS, "10"},
+		{HEART, "K"},
 	}
 
 	p.declaredBid = 20
@@ -4293,9 +4293,9 @@ func TestOpponentTacticFORE_No_trumps_in_Game1(t *testing.T) {
 	player.previousSuit = CARO
 
 	validCards := []Card{
-		Card{SPADE, "9"},
-		Card{HEART, "D"},
-		Card{HEART, "A"},
+		{SPADE, "9"},
+		{HEART, "D"},
+		{HEART, "A"},
 	}
 
 	player.hand = validCards
@@ -4312,9 +4312,9 @@ func TestOpponentTacticFORE_No_trumps_in_Game2(t *testing.T) {
 	teamMate := makePlayer([]Card{})
 
 	validCards := []Card{
-		Card{CARO, "J"},
-		Card{HEART, "D"},
-		Card{HEART, "A"},
+		{CARO, "J"},
+		{HEART, "D"},
+		{HEART, "A"},
 	}
 
 	player := makePlayer(validCards)
@@ -4324,7 +4324,7 @@ func TestOpponentTacticFORE_No_trumps_in_Game2(t *testing.T) {
 	s.opp1 = &player
 	s.opp2 = &teamMate
 	s.trump = GRAND
-	s.trumpsInGame = []Card{Card{CARO, "J"}}
+	s.trumpsInGame = []Card{{CARO, "J"}}
 	s.trick = []Card{}
 	s.cardsPlayed = makeTrumpDeck(s.trump)
 	s.cardsPlayed = remove(s.cardsPlayed, s.trumpsInGame...)
@@ -4342,9 +4342,9 @@ func TestOpponentTacticFORE_No_trumps_in_Game2(t *testing.T) {
 func TestDeclarerTacticBACK_Just_Enough_To_Win(t *testing.T) {
 
 	validCards := []Card{
-		Card{HEART, "J"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
+		{HEART, "J"},
+		{CARO, "10"},
+		{CARO, "K"},
 	}
 	player := makePlayer(validCards)
 	other := makePlayer([]Card{})
@@ -4355,12 +4355,12 @@ func TestDeclarerTacticBACK_Just_Enough_To_Win(t *testing.T) {
 	s.opp1 = &other
 	s.opp2 = &other1
 	s.skat = []Card{
-		Card{HEART, "9"},
-		Card{SPADE, "8"},
+		{HEART, "9"},
+		{SPADE, "8"},
 	}
 
 	s.trump = CLUBS
-	s.trick = []Card{Card{SPADE, "K"}, Card{SPADE, "7"}}
+	s.trick = []Card{{SPADE, "K"}, {SPADE, "7"}}
 	s.follow = SPADE
 
 	player.score = 38
@@ -4369,10 +4369,10 @@ func TestDeclarerTacticBACK_Just_Enough_To_Win(t *testing.T) {
 	// remaining 11 points: 38 + 11 = 49
 	// +10 (caro 10) + 2 (HEART J) = 61!
 	remaining := []Card{
-		Card{CLUBS, "7"},
-		Card{SPADE, "9"},
-		Card{SPADE, "A"},
-		Card{CARO, "8"},
+		{CLUBS, "7"},
+		{SPADE, "9"},
+		{SPADE, "A"},
+		{CARO, "8"},
 	}
 
 	s.cardsPlayed = remove(s.cardsPlayed, remaining...)

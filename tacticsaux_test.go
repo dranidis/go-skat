@@ -6,15 +6,15 @@ import (
 
 func TestGrandLosers1(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "K"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
+		{CLUBS, "K"},
 
-		Card{CLUBS, "9"}, //LOSER
+		{CLUBS, "9"}, //LOSER
 
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},  //LOSER
-		Card{HEART, "10"}, //LOSER
+		{SPADE, "A"},
+		{SPADE, "K"},  //LOSER
+		{HEART, "10"}, //LOSER
 	}
 
 	losers := grandLosers(cards)
@@ -26,19 +26,19 @@ func TestGrandLosers1(t *testing.T) {
 
 func TestGrandLosers2(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
+		{SPADE, "A"},
+		{SPADE, "10"},
+		{SPADE, "K"},
 
-		Card{SPADE, "8"},
-		Card{SPADE, "7"},
+		{SPADE, "8"},
+		{SPADE, "7"},
 
-		Card{CLUBS, "K"},
+		{CLUBS, "K"},
 
-		Card{HEART, "10"}, // will be discarded!
+		{HEART, "10"}, // will be discarded!
 
-		Card{CARO, "9"},
-		Card{CARO, "8"},
+		{CARO, "9"},
+		{CARO, "8"},
 	}
 
 	losers := grandLosers(cards)
@@ -49,11 +49,11 @@ func TestGrandLosers2(t *testing.T) {
 
 func TestGrandLosers3(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
-		Card{SPADE, "9"},
-		Card{SPADE, "8"},
-		Card{SPADE, "7"},
+		{SPADE, "A"},
+		{SPADE, "10"},
+		{SPADE, "9"},
+		{SPADE, "8"},
+		{SPADE, "7"},
 	}
 
 	losers := grandLosers(cards)
@@ -64,12 +64,12 @@ func TestGrandLosers3(t *testing.T) {
 
 func TestGrandLosers4(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "A"},
-		Card{SPADE, "K"},
-		Card{SPADE, "Q"},
-		Card{SPADE, "9"},
-		Card{SPADE, "8"},
-		Card{SPADE, "7"},
+		{SPADE, "A"},
+		{SPADE, "K"},
+		{SPADE, "Q"},
+		{SPADE, "9"},
+		{SPADE, "8"},
+		{SPADE, "7"},
 	}
 
 	losers := grandLosers(cards)
@@ -80,16 +80,16 @@ func TestGrandLosers4(t *testing.T) {
 
 func TestGrandLosersCount(t *testing.T) {
 	cs := []Card{
-		Card{SPADE, "J"}, //LOSER
-		Card{CLUBS, "A"},
-		Card{CLUBS, "8"}, //LOSER
-		Card{SPADE, "A"},
-		Card{SPADE, "10"},
-		Card{SPADE, "9"}, //LOSER
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{HEART, "K"},
-		Card{CARO, "9"}, //LOSER
+		{SPADE, "J"}, //LOSER
+		{CLUBS, "A"},
+		{CLUBS, "8"}, //LOSER
+		{SPADE, "A"},
+		{SPADE, "10"},
+		{SPADE, "9"}, //LOSER
+		{HEART, "A"},
+		{HEART, "10"},
+		{HEART, "K"},
+		{CARO, "9"}, //LOSER
 	}
 
 	losers := len(grandLosers(cs)) + jackLosers(cs)
@@ -100,7 +100,7 @@ func TestGrandLosersCount(t *testing.T) {
 
 func TestGrandLosersJ0(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "J"},
+		{SPADE, "J"},
 	}
 
 	losers := jackLosers(cards)
@@ -111,7 +111,7 @@ func TestGrandLosersJ0(t *testing.T) {
 
 func TestGrandLosersJNo(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
+		{CLUBS, "J"},
 	}
 
 	losers := jackLosers(cards)
@@ -122,8 +122,8 @@ func TestGrandLosersJNo(t *testing.T) {
 
 func TestGrandLosersJ1(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
 	}
 
 	losers := jackLosers(cards)
@@ -134,8 +134,8 @@ func TestGrandLosersJ1(t *testing.T) {
 
 func TestGrandLosersJ2(t *testing.T) {
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{HEART, "J"},
+		{CLUBS, "J"},
+		{HEART, "J"},
 	}
 
 	losers := jackLosers(cards)
@@ -146,8 +146,8 @@ func TestGrandLosersJ2(t *testing.T) {
 
 func TestGrandLosersJ3(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
 	}
 
 	losers := jackLosers(cards)
@@ -158,8 +158,8 @@ func TestGrandLosersJ3(t *testing.T) {
 
 func TestGrandLosersJ4(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "J"},
-		Card{CARO, "J"},
+		{SPADE, "J"},
+		{CARO, "J"},
 	}
 
 	losers := jackLosers(cards)
@@ -170,8 +170,8 @@ func TestGrandLosersJ4(t *testing.T) {
 
 func TestGrandLosersJ5(t *testing.T) {
 	cards := []Card{
-		Card{HEART, "J"},
-		Card{CARO, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
 	}
 
 	losers := jackLosers(cards)
@@ -182,7 +182,7 @@ func TestGrandLosersJ5(t *testing.T) {
 
 func TestGrandLosersJ6(t *testing.T) {
 	cards := []Card{
-		Card{CARO, "J"},
+		{CARO, "J"},
 	}
 
 	losers := jackLosers(cards)
@@ -193,8 +193,8 @@ func TestGrandLosersJ6(t *testing.T) {
 
 func TestGrandLosersJ7(t *testing.T) {
 	cards := []Card{
-		Card{HEART, "J"},
-		Card{CARO, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
 	}
 
 	losers := jackLosers(cards)

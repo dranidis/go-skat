@@ -191,7 +191,7 @@ func (m *SkatState) cardIsLosingTheTrick(card Card) bool {
 		if m.players[2].getName() == m.opp1.getName() || m.players[2].getName() == m.opp2.getName() {
 			//opponent is playing last
 			dIndex := 0
-			for dIndex, _ = range m.players {
+			for dIndex = range m.players {
 				if m.players[dIndex].getName() == m.declarer.getName() {
 					break
 				}

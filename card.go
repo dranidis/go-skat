@@ -389,33 +389,33 @@ func sortSuit(trump string, cs []Card) []Card {
 	cards := []Card{}
 
 	cardJs := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
 	}
 	cardsSuit := func(suit string) []Card {
 		return []Card{
-			Card{suit, "A"},
-			Card{suit, "10"},
-			Card{suit, "K"},
-			Card{suit, "D"},
-			Card{suit, "9"},
-			Card{suit, "8"},
-			Card{suit, "7"},
+			{suit, "A"},
+			{suit, "10"},
+			{suit, "K"},
+			{suit, "D"},
+			{suit, "9"},
+			{suit, "8"},
+			{suit, "7"},
 		}
 	}
 	if trump == NULL {
 		cardsSuit = func(suit string) []Card {
 			return []Card{
-				Card{suit, "A"},
-				Card{suit, "K"},
-				Card{suit, "D"},
-				Card{suit, "J"},
-				Card{suit, "10"},
-				Card{suit, "9"},
-				Card{suit, "8"},
-				Card{suit, "7"},
+				{suit, "A"},
+				{suit, "K"},
+				{suit, "D"},
+				{suit, "J"},
+				{suit, "10"},
+				{suit, "9"},
+				{suit, "8"},
+				{suit, "7"},
 			}
 		}
 	}
@@ -481,42 +481,42 @@ func sum(trick []Card) int {
 
 func makeSuitDeck(suit string) []Card {
 	return []Card{
-		Card{suit, "J"},
-		Card{suit, "A"},
-		Card{suit, "10"},
-		Card{suit, "K"},
-		Card{suit, "D"},
-		Card{suit, "9"},
-		Card{suit, "8"},
-		Card{suit, "7"},
+		{suit, "J"},
+		{suit, "A"},
+		{suit, "10"},
+		{suit, "K"},
+		{suit, "D"},
+		{suit, "9"},
+		{suit, "8"},
+		{suit, "7"},
 	}
 }
 
 func makeTrumpDeck(suit string) []Card {
 	return []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{suit, "A"},
-		Card{suit, "10"},
-		Card{suit, "K"},
-		Card{suit, "D"},
-		Card{suit, "9"},
-		Card{suit, "8"},
-		Card{suit, "7"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{suit, "A"},
+		{suit, "10"},
+		{suit, "K"},
+		{suit, "D"},
+		{suit, "9"},
+		{suit, "8"},
+		{suit, "7"},
 	}
 }
 
 func makeNoTrumpDeck(suit string) []Card {
 	return []Card{
-		Card{suit, "A"},
-		Card{suit, "10"},
-		Card{suit, "K"},
-		Card{suit, "D"},
-		Card{suit, "9"},
-		Card{suit, "8"},
-		Card{suit, "7"},
+		{suit, "A"},
+		{suit, "10"},
+		{suit, "K"},
+		{suit, "D"},
+		{suit, "9"},
+		{suit, "8"},
+		{suit, "7"},
 	}
 }
 
@@ -614,15 +614,15 @@ func removeOne(cs []Card, card Card) []Card {
 
 func matadors(trump string, cs []Card) int {
 	cards := []Card{
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{trump, "A"},
-		Card{trump, "10"},
-		Card{trump, "K"},
-		Card{trump, "D"},
-		Card{trump, "9"},
-		Card{trump, "8"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{trump, "A"},
+		{trump, "10"},
+		{trump, "K"},
+		{trump, "D"},
+		{trump, "9"},
+		{trump, "8"},
 	}
 	m := 0
 	if in(cs, Card{CLUBS, "J"}) {

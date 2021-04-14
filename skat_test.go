@@ -69,7 +69,7 @@ func TestGetSuite(t *testing.T) {
 func TestValidPlay(t *testing.T) {
 	clubsHeart := mState(CLUBS, HEART)
 
-	playerHand := []Card{Card{SPADE, "J"}, Card{HEART, "A"}, Card{CARO, "7"}}
+	playerHand := []Card{{SPADE, "J"}, {HEART, "A"}, {CARO, "7"}}
 	validAux(t, clubsHeart, playerHand, Card{HEART, "A"})
 	notValidAux(t, clubsHeart, playerHand, Card{CARO, "7"})
 	notValidAux(t, clubsHeart, playerHand, Card{SPADE, "J"})
@@ -103,9 +103,9 @@ func notValidAux(t *testing.T, s SuitState, cards []Card, card Card) {
 func TestValidCards(t *testing.T) {
 	clubsHeart := mState(CLUBS, HEART)
 
-	playerHand := []Card{Card{SPADE, "J"}, Card{HEART, "A"}, Card{CARO, "7"}}
+	playerHand := []Card{{SPADE, "J"}, {HEART, "A"}, {CARO, "7"}}
 	cards := validCards(clubsHeart, playerHand)
-	compareLists(t, cards, []Card{Card{HEART, "A"}})
+	compareLists(t, cards, []Card{{HEART, "A"}})
 
 	cards = validCards(mState(CLUBS, SPADE), playerHand)
 	compareLists(t, cards, playerHand)
@@ -124,7 +124,7 @@ func compareLists(t *testing.T, returned, expected []Card) {
 
 func TestSetNextTrickOrder(t *testing.T) {
 	state := mState(CLUBS, "")
-	state.trick = []Card{Card{SPADE, "J"}, Card{HEART, "A"}, Card{HEART, "K"}}
+	state.trick = []Card{{SPADE, "J"}, {HEART, "A"}, {HEART, "K"}}
 
 	player1 := makePlayer([]Card{})
 	player2 := makePlayer([]Card{})
@@ -141,7 +141,7 @@ func TestSetNextTrickOrder(t *testing.T) {
 		t.Errorf("OUT OF SCHWARZ")
 	}
 
-	state.trick = []Card{Card{HEART, "D"}, Card{SPADE, "J"}, Card{HEART, "10"}}
+	state.trick = []Card{{HEART, "D"}, {SPADE, "J"}, {HEART, "10"}}
 	newPlayers = setNextTrickOrder(&state, players)
 	expected := []PlayerI{&player2, &player3, &player1}
 	comparePlayers(t, expected, newPlayers)
@@ -152,7 +152,7 @@ func TestSetNextTrickOrder(t *testing.T) {
 		t.Errorf("OUT OF SCHWARZ")
 	}
 
-	state.trick = []Card{Card{HEART, "9"}, Card{HEART, "8"}, Card{SPADE, "J"}}
+	state.trick = []Card{{HEART, "9"}, {HEART, "8"}, {SPADE, "J"}}
 	newPlayers = setNextTrickOrder(&state, players)
 	expected = []PlayerI{&player3, &player1, &player2}
 	comparePlayers(t, expected, newPlayers)
@@ -272,16 +272,16 @@ func TestMatadors(t *testing.T) {
 	player.hand = []Card{}
 
 	cards := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{state, "A"},
-		Card{state, "10"},
-		Card{state, "K"},
-		Card{state, "D"},
-		Card{state, "9"},
-		Card{state, "8"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{state, "A"},
+		{state, "10"},
+		{state, "K"},
+		{state, "D"},
+		{state, "9"},
+		{state, "8"},
 	}
 	m := 0
 	for _, card := range cards {
@@ -411,16 +411,16 @@ func TestBidding(t *testing.T) {
 func TestMostCardsSuit(t *testing.T) {
 
 	player := makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{HEART, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{SPADE, "8"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{HEART, "K"},
+		{HEART, "D"},
+		{HEART, "9"},
+		{SPADE, "8"},
 	})
 
 	act := len(trumpCards(CLUBS, player.hand))
@@ -446,16 +446,16 @@ func TestMostCardsSuit(t *testing.T) {
 	}
 
 	player = makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{SPADE, "8"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{HEART, "D"},
+		{HEART, "9"},
+		{SPADE, "8"},
 	})
 	most = mostCardsSuit(player.hand)
 	if most != CARO {
@@ -463,32 +463,32 @@ func TestMostCardsSuit(t *testing.T) {
 	}
 
 	player = makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{SPADE, "10"},
-		Card{SPADE, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{SPADE, "8"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{SPADE, "10"},
+		{SPADE, "K"},
+		{HEART, "D"},
+		{HEART, "9"},
+		{SPADE, "8"},
 	})
 	most = mostCardsSuit(player.hand)
 	if most != SPADE {
 		t.Errorf("Expected %s, got %s", SPADE, most)
 	}
 	player = makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{SPADE, "10"},
-		Card{CLUBS, "K"},
-		Card{CLUBS, "D"},
-		Card{HEART, "9"},
-		Card{CLUBS, "8"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{SPADE, "10"},
+		{CLUBS, "K"},
+		{CLUBS, "D"},
+		{HEART, "9"},
+		{CLUBS, "8"},
 	})
 	most = mostCardsSuit(player.hand)
 	if most != CLUBS {
@@ -499,17 +499,17 @@ func TestMostCardsSuit(t *testing.T) {
 func TestMostCardsSuitA(t *testing.T) {
 	// if two suits have the same length, choose the non-A suit
 	player := makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
 
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{HEART, "8"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{HEART, "D"},
+		{HEART, "9"},
+		{HEART, "8"},
 	})
 	most := mostCardsSuit(player.hand)
 	if most != HEART {
@@ -520,18 +520,18 @@ func TestMostCardsSuitA(t *testing.T) {
 func TestMostCardsSuit1(t *testing.T) {
 	// from two A-suits prefer the weakest
 	player := makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
 
-		Card{CARO, "A"},
-		Card{CARO, "7"},
-		Card{CARO, "8"},
-		Card{CARO, "9"},
+		{CARO, "A"},
+		{CARO, "7"},
+		{CARO, "8"},
+		{CARO, "9"},
 
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{HEART, "K"},
-		Card{HEART, "8"},
+		{HEART, "A"},
+		{HEART, "10"},
+		{HEART, "K"},
+		{HEART, "8"},
 	})
 	most := mostCardsSuit(player.hand)
 	exp := CARO
@@ -540,18 +540,18 @@ func TestMostCardsSuit1(t *testing.T) {
 	}
 
 	player = makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
 
-		Card{HEART, "A"},
-		Card{HEART, "7"},
-		Card{HEART, "8"},
-		Card{HEART, "9"},
+		{HEART, "A"},
+		{HEART, "7"},
+		{HEART, "8"},
+		{HEART, "9"},
 
-		Card{CARO, "A"}, // keep as suit
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{CARO, "8"},
+		{CARO, "A"}, // keep as suit
+		{CARO, "10"},
+		{CARO, "K"},
+		{CARO, "8"},
 	})
 	most = mostCardsSuit(player.hand)
 	if most != HEART {
@@ -562,19 +562,19 @@ func TestMostCardsSuit1(t *testing.T) {
 func TestMostCardsSuitTwoAsuitsAndAWeakSuit(t *testing.T) {
 	// from two A-suits prefer the weakest
 	player := makePlayer([]Card{
-		Card{CLUBS, "J"},
+		{CLUBS, "J"},
 
-		Card{CARO, "A"},
-		Card{CARO, "7"},
-		Card{CARO, "8"},
-		Card{CARO, "9"},
+		{CARO, "A"},
+		{CARO, "7"},
+		{CARO, "8"},
+		{CARO, "9"},
 
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{HEART, "K"},
-		Card{HEART, "8"},
+		{HEART, "A"},
+		{HEART, "10"},
+		{HEART, "K"},
+		{HEART, "8"},
 
-		Card{SPADE, "10"},
+		{SPADE, "10"},
 	})
 	most := mostCardsSuit(player.hand)
 	exp := CARO
@@ -586,20 +586,20 @@ func TestMostCardsSuitTwoAsuitsAndAWeakSuit(t *testing.T) {
 func TestMostCardsSuitTwoAsuitsAndAWeakSuit2(t *testing.T) {
 	// from two A-suits prefer the weakest
 	player := makePlayer([]Card{
-		Card{CLUBS, "J"},
+		{CLUBS, "J"},
 
-		Card{CARO, "A"},
-		Card{CARO, "7"},
-		Card{CARO, "8"},
+		{CARO, "A"},
+		{CARO, "7"},
+		{CARO, "8"},
 
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{HEART, "K"},
+		{HEART, "A"},
+		{HEART, "10"},
+		{HEART, "K"},
 
-		Card{SPADE, "10"},
+		{SPADE, "10"},
 
-		Card{CLUBS, "K"},
-		Card{CLUBS, "D"},
+		{CLUBS, "K"},
+		{CLUBS, "D"},
 	})
 	most := mostCardsSuit(player.hand)
 	exp := CARO
@@ -631,16 +631,16 @@ var testState SuitState
 
 func TestGameScore(t *testing.T) {
 	declarerCards := []Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{HEART, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{SPADE, "8"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{HEART, "K"},
+		{HEART, "D"},
+		{HEART, "9"},
+		{SPADE, "8"},
 	}
 
 	act := gameScore1(CARO, declarerCards, 61, 63, false, false, false)
@@ -688,15 +688,15 @@ func TestGameScore(t *testing.T) {
 
 	declarerCards = []Card{
 		//Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{HEART, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{SPADE, "8"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{HEART, "K"},
+		{HEART, "D"},
+		{HEART, "9"},
+		{SPADE, "8"},
 	}
 	act = gameScore1(CARO, declarerCards, 61, 18, false, false, false)
 	exp = 18
@@ -735,16 +735,16 @@ func TestGameScore(t *testing.T) {
 
 func TestFindBlankCards(t *testing.T) {
 	player := makePlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{SPADE, "J"},
-		Card{HEART, "J"},
-		Card{CARO, "J"},
-		Card{CARO, "A"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{HEART, "D"},
-		Card{HEART, "9"},
-		Card{SPADE, "10"},
+		{CLUBS, "J"},
+		{SPADE, "J"},
+		{HEART, "J"},
+		{CARO, "J"},
+		{CARO, "A"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{HEART, "D"},
+		{HEART, "9"},
+		{SPADE, "10"},
 	})
 	cards := findBlankCards(player.hand)
 
@@ -817,14 +817,14 @@ func TestGame2(t *testing.T) {
 
 func TestLongestNonTrumpSuit(t *testing.T) {
 	cards := []Card{
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{CARO, "7"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "K"},
-		Card{SPADE, "8"},
-		Card{SPADE, "7"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{CARO, "7"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
+		{CLUBS, "K"},
+		{SPADE, "8"},
+		{SPADE, "7"},
 	}
 	suit := LongestNonTrumpSuit(CARO, cards)
 	if suit == CARO {
@@ -832,13 +832,13 @@ func TestLongestNonTrumpSuit(t *testing.T) {
 	}
 
 	cards = []Card{
-		Card{SPADE, "K"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "7"},
-		Card{HEART, "K"},
-		Card{HEART, "8"},
-		Card{HEART, "7"},
+		{SPADE, "K"},
+		{CLUBS, "10"},
+		{CLUBS, "9"},
+		{CLUBS, "7"},
+		{HEART, "K"},
+		{HEART, "8"},
+		{HEART, "7"},
 	}
 	suit = LongestNonTrumpSuit(SPADE, cards)
 	if suit == CARO {
@@ -848,14 +848,14 @@ func TestLongestNonTrumpSuit(t *testing.T) {
 
 func TestShortestNonTrumpSuit(t *testing.T) {
 	cards := []Card{
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{CARO, "7"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "K"},
-		Card{SPADE, "8"},
-		Card{SPADE, "7"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{CARO, "7"},
+		{CLUBS, "A"},
+		{CLUBS, "10"},
+		{CLUBS, "K"},
+		{SPADE, "8"},
+		{SPADE, "7"},
 	}
 	suit := ShortestNonTrumpSuit(CARO, cards)
 	if suit == CARO {
@@ -863,13 +863,13 @@ func TestShortestNonTrumpSuit(t *testing.T) {
 	}
 
 	cards = []Card{
-		Card{SPADE, "K"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "7"},
-		Card{HEART, "K"},
-		Card{HEART, "8"},
-		Card{HEART, "7"},
+		{SPADE, "K"},
+		{CLUBS, "10"},
+		{CLUBS, "9"},
+		{CLUBS, "7"},
+		{HEART, "K"},
+		{HEART, "8"},
+		{HEART, "7"},
 	}
 	suit = ShortestNonTrumpSuit(CARO, cards)
 	if suit == CARO {
@@ -883,13 +883,13 @@ func TestShortestNonTrumpSuit(t *testing.T) {
 
 func TestHighestLong(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "K"},
-		Card{CLUBS, "10"},
-		Card{CLUBS, "9"},
-		Card{CLUBS, "7"},
-		Card{HEART, "K"},
-		Card{HEART, "8"},
-		Card{HEART, "7"},
+		{SPADE, "K"},
+		{CLUBS, "10"},
+		{CLUBS, "9"},
+		{CLUBS, "7"},
+		{HEART, "K"},
+		{HEART, "8"},
+		{HEART, "7"},
 	}
 
 	card := HighestLong(SPADE, cards)
@@ -901,14 +901,14 @@ func TestHighestLong(t *testing.T) {
 
 func TestHighestShort(t *testing.T) {
 	cards := []Card{
-		Card{SPADE, "K"},
-		Card{SPADE, "10"},
-		Card{SPADE, "9"},
-		Card{HEART, "7"},
-		Card{HEART, "K"},
-		Card{HEART, "8"},
-		Card{CARO, "10"},
-		Card{CARO, "7"},
+		{SPADE, "K"},
+		{SPADE, "10"},
+		{SPADE, "9"},
+		{HEART, "7"},
+		{HEART, "K"},
+		{HEART, "8"},
+		{CARO, "10"},
+		{CARO, "7"},
 	}
 
 	card := HighestShort(SPADE, cards)
@@ -924,15 +924,15 @@ func TestOtherPlayersTrumps(t *testing.T) {
 
 	s.trump = CLUBS
 	player.hand = []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "A"},
-		Card{HEART, "A"},
-		Card{HEART, "7"},
+		{CLUBS, "J"},
+		{CLUBS, "A"},
+		{HEART, "A"},
+		{HEART, "7"},
 	}
 
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "A"},
+		{CLUBS, "J"},
+		{CLUBS, "A"},
 	}
 
 	other := player.otherPlayersTrumps(&s)
@@ -943,9 +943,9 @@ func TestOtherPlayersTrumps(t *testing.T) {
 	}
 
 	s.trumpsInGame = []Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "K"},
+		{CLUBS, "J"},
+		{CLUBS, "A"},
+		{CLUBS, "K"},
 	}
 
 	other = player.otherPlayersTrumps(&s)
@@ -1033,8 +1033,8 @@ func TestRotatePlayers(t *testing.T) {
 
 func TestIsAKX(t *testing.T) {
 	hand := []Card{
-		Card{CARO, "A"},
-		Card{CARO, "K"},
+		{CARO, "A"},
+		{CARO, "K"},
 	}
 
 	act := isAKX(CARO, hand)
@@ -1057,9 +1057,9 @@ func TestIsAKX(t *testing.T) {
 
 func TestInMany(t *testing.T) {
 	cards := []Card{
-		Card{CARO, "A"},
-		Card{CARO, "K"},
-		Card{CARO, "7"},
+		{CARO, "A"},
+		{CARO, "K"},
+		{CARO, "7"},
 	}
 
 	act := in(cards, Card{CARO, "K"}, Card{CARO, "A"})
@@ -1080,14 +1080,14 @@ func TestInMany(t *testing.T) {
 func TestNextLowestCardsStillInPlay(t *testing.T) {
 	s := makeSuitState()
 
-	s.trick = []Card{Card{SPADE, "7"}, Card{SPADE, "9"}}
+	s.trick = []Card{{SPADE, "7"}, {SPADE, "9"}}
 	s.cardsPlayed = []Card{
-		Card{SPADE, "D"},
-		Card{SPADE, "8"},
+		{SPADE, "D"},
+		{SPADE, "8"},
 		//	Card{SPADE, "9"},
 	}
 	w := Card{SPADE, "A"}
-	followCards := []Card{Card{SPADE, "A"}, Card{SPADE, "K"}}
+	followCards := []Card{{SPADE, "A"}, {SPADE, "K"}}
 	still10 := true
 	if nextLowestCardsStillInPlay(&s, w, followCards) != still10 {
 		t.Errorf("10 not played")
@@ -1102,14 +1102,14 @@ func TestNextLowestCardsStillInPlay(t *testing.T) {
 
 func TestSingletons(t *testing.T) {
 	cs := []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "10"},
-		Card{SPADE, "9"},
-		Card{HEART, "A"},
-		Card{HEART, "10"},
-		Card{HEART, "K"},
-		Card{CARO, "9"},
+		{CLUBS, "A"},
+		{CLUBS, "8"},
+		{CLUBS, "10"},
+		{SPADE, "9"},
+		{HEART, "A"},
+		{HEART, "10"},
+		{HEART, "K"},
+		{CARO, "9"},
 	}
 
 	s := singletons(cs)
@@ -1124,11 +1124,11 @@ func TestSingletons(t *testing.T) {
 
 func TestDeclarerVoidSuits(t *testing.T) {
 	cs := []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "8"},
-		Card{CLUBS, "10"},
-		Card{SPADE, "9"},
-		Card{CARO, "9"},
+		{CLUBS, "A"},
+		{CLUBS, "8"},
+		{CLUBS, "10"},
+		{SPADE, "9"},
+		{CARO, "9"},
 	}
 	player := makePlayer(cs)
 	opp1 := makePlayer([]Card{})
@@ -1138,7 +1138,7 @@ func TestDeclarerVoidSuits(t *testing.T) {
 	s.declarer = &player
 	s.trump = NULL
 	s.follow = HEART
-	s.trick = []Card{Card{HEART, "10"}}
+	s.trick = []Card{{HEART, "10"}}
 	s.opp1 = &opp1
 	s.opp2 = &opp2
 
@@ -1152,8 +1152,8 @@ func TestDeclarerVoidSuits(t *testing.T) {
 func TestSmallerCardsInPlay(t *testing.T) {
 	s := makeSuitState()
 	trick := Card{HEART, "J"}
-	s.cardsPlayed = []Card{Card{HEART, "8"}, Card{HEART, "10"}}
-	cs := []Card{Card{HEART, "K"}, Card{HEART, "9"}}
+	s.cardsPlayed = []Card{{HEART, "8"}, {HEART, "10"}}
+	cs := []Card{{HEART, "K"}, {HEART, "9"}}
 	// {8, 10} J  {K,9} ===> 7 in play
 	act := smallerCardsInPlay(&s, trick, cs)
 
@@ -1161,7 +1161,7 @@ func TestSmallerCardsInPlay(t *testing.T) {
 		t.Errorf("Error in smallerCardsInPlay")
 	}
 
-	s.cardsPlayed = []Card{Card{HEART, "7"}, Card{HEART, "8"}, Card{HEART, "10"}}
+	s.cardsPlayed = []Card{{HEART, "7"}, {HEART, "8"}, {HEART, "10"}}
 	act = smallerCardsInPlay(&s, trick, cs)
 
 	if act {
@@ -1467,17 +1467,17 @@ func TestHTMLBid4(t *testing.T) {
 
 func TestWinnerCards(t *testing.T) {
 	cards := []Card{
-		Card{HEART, "D"},
-		Card{HEART, "K"},
-		Card{HEART, "9"},
-		Card{CARO, "10"},
-		Card{CARO, "K"},
-		Card{CARO, "8"},
+		{HEART, "D"},
+		{HEART, "K"},
+		{HEART, "9"},
+		{CARO, "10"},
+		{CARO, "K"},
+		{CARO, "8"},
 	}
 	s := makeSuitState()
 	s.trump = CLUBS
 	s.follow = SPADE
-	s.trick = []Card{Card{SPADE, "7"}}
+	s.trick = []Card{{SPADE, "7"}}
 
 	winners := winnerCards(&s, cards)
 
@@ -1501,24 +1501,24 @@ func TestGreaterTrump(t *testing.T) {
 
 func TestDealCardsMID(t *testing.T) {
 	p := makeMinMaxPlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "8"},
-		Card{SPADE, "A"},
+		{CLUBS, "J"},
+		{CLUBS, "8"},
+		{SPADE, "A"},
 	})
 	p.maxHandSize = 6
 
 	s := makeSuitState()
 	s.declarer = &p
-	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
+	s.skat = []Card{{CLUBS, "10"}, {SPADE, "K"}}
 
-	s.trick = []Card{Card{CLUBS, "K"}}
+	s.trick = []Card{{CLUBS, "K"}}
 
 	notPlayedYet := []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "D"},
-		Card{SPADE, "10"},
-		Card{CARO, "10"},
-		Card{HEART, "10"},
+		{CLUBS, "A"},
+		{CLUBS, "D"},
+		{SPADE, "10"},
+		{CARO, "10"},
+		{HEART, "10"},
 	}
 
 	s.cardsPlayed = makeDeck()
@@ -1559,24 +1559,24 @@ func TestDealCardsMID(t *testing.T) {
 
 func TestDealCardsMID2(t *testing.T) {
 	p := makeMinMaxPlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "8"},
-		Card{SPADE, "A"},
+		{CLUBS, "J"},
+		{CLUBS, "8"},
+		{SPADE, "A"},
 	})
 	p.maxHandSize = 6
 
 	s := makeSuitState()
 	s.declarer = &p
-	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
+	s.skat = []Card{{CLUBS, "10"}, {SPADE, "K"}}
 
-	s.trick = []Card{Card{CLUBS, "K"}}
+	s.trick = []Card{{CLUBS, "K"}}
 
 	notPlayedYet := []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "D"},
-		Card{SPADE, "10"},
-		Card{CARO, "10"},
-		Card{HEART, "10"},
+		{CLUBS, "A"},
+		{CLUBS, "D"},
+		{SPADE, "10"},
+		{CARO, "10"},
+		{HEART, "10"},
 	}
 
 	s.cardsPlayed = makeDeck()
@@ -1626,26 +1626,26 @@ func TestDealCardsMID2(t *testing.T) {
 
 func TestDealCardsLeader(t *testing.T) {
 	p := makeMinMaxPlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "8"},
-		Card{SPADE, "A"},
+		{CLUBS, "J"},
+		{CLUBS, "8"},
+		{SPADE, "A"},
 	})
 	p.maxHandSize = 6
 
 	s := makeSuitState()
 	s.declarer = &p
-	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
+	s.skat = []Card{{CLUBS, "10"}, {SPADE, "K"}}
 
 	s.trick = []Card{}
 
 	notPlayedYet := []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "D"},
-		Card{SPADE, "10"},
-		Card{CARO, "10"},
-		Card{HEART, "10"},
+		{CLUBS, "A"},
+		{CLUBS, "D"},
+		{SPADE, "10"},
+		{CARO, "10"},
+		{HEART, "10"},
 		//
-		Card{CLUBS, "K"},
+		{CLUBS, "K"},
 	}
 
 	s.cardsPlayed = makeDeck()
@@ -1688,26 +1688,26 @@ func TestDealCardsLeader(t *testing.T) {
 
 func TestDealCardsLeader3(t *testing.T) {
 	p := makeMinMaxPlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "8"},
-		Card{SPADE, "A"},
+		{CLUBS, "J"},
+		{CLUBS, "8"},
+		{SPADE, "A"},
 	})
 	p.maxHandSize = 6
 
 	s := makeSuitState()
 	s.declarer = &p
-	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
+	s.skat = []Card{{CLUBS, "10"}, {SPADE, "K"}}
 
 	s.trick = []Card{}
 
 	notPlayedYet := []Card{
-		Card{CLUBS, "A"},
-		Card{CLUBS, "D"},
-		Card{SPADE, "10"},
-		Card{CARO, "10"},
-		Card{HEART, "10"},
+		{CLUBS, "A"},
+		{CLUBS, "D"},
+		{SPADE, "10"},
+		{CARO, "10"},
+		{HEART, "10"},
 		//
-		Card{CLUBS, "K"},
+		{CLUBS, "K"},
 	}
 
 	s.cardsPlayed = makeDeck()
@@ -1760,23 +1760,23 @@ func TestDealCardsLeader3(t *testing.T) {
 
 func TestDealCardsBack(t *testing.T) {
 	p := makeMinMaxPlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "8"},
-		Card{SPADE, "A"},
+		{CLUBS, "J"},
+		{CLUBS, "8"},
+		{SPADE, "A"},
 	})
 	p.maxHandSize = 6
 
 	s := makeSuitState()
 	s.declarer = &p
-	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
+	s.skat = []Card{{CLUBS, "10"}, {SPADE, "K"}}
 
-	s.trick = []Card{Card{CLUBS, "K"}, Card{CLUBS, "A"}}
+	s.trick = []Card{{CLUBS, "K"}, {CLUBS, "A"}}
 
 	notPlayedYet := []Card{
-		Card{CLUBS, "D"},
-		Card{SPADE, "10"},
-		Card{CARO, "10"},
-		Card{HEART, "10"},
+		{CLUBS, "D"},
+		{SPADE, "10"},
+		{CARO, "10"},
+		{HEART, "10"},
 		//
 
 	}
@@ -1823,23 +1823,23 @@ func TestDealCardsBack(t *testing.T) {
 
 func TestDealCardsBack2(t *testing.T) {
 	p := makeMinMaxPlayer([]Card{
-		Card{CLUBS, "J"},
-		Card{CLUBS, "8"},
-		Card{SPADE, "A"},
+		{CLUBS, "J"},
+		{CLUBS, "8"},
+		{SPADE, "A"},
 	})
 	p.maxHandSize = 6
 
 	s := makeSuitState()
 	s.declarer = &p
-	s.skat = []Card{Card{CLUBS, "10"}, Card{SPADE, "K"}}
+	s.skat = []Card{{CLUBS, "10"}, {SPADE, "K"}}
 
-	s.trick = []Card{Card{CLUBS, "K"}, Card{CLUBS, "A"}}
+	s.trick = []Card{{CLUBS, "K"}, {CLUBS, "A"}}
 
 	notPlayedYet := []Card{
-		Card{CLUBS, "D"},
-		Card{SPADE, "10"},
-		Card{CARO, "10"},
-		Card{HEART, "10"},
+		{CLUBS, "D"},
+		{SPADE, "10"},
+		{CARO, "10"},
+		{HEART, "10"},
 		//
 
 	}
@@ -1894,30 +1894,30 @@ func TestDealCardsBack2(t *testing.T) {
 
 func TestDealCardsLeader2(t *testing.T) {
 	p := makeMinMaxPlayer([]Card{
-		Card{CLUBS, "K"},
-		Card{SPADE, "K"},
-		Card{HEART, "8"},
-		Card{CARO, "7"},
+		{CLUBS, "K"},
+		{SPADE, "K"},
+		{HEART, "8"},
+		{CARO, "7"},
 	})
 	p.maxHandSize = 6
 
 	s := makeSuitState()
 	s.declarer = &p
-	s.skat = []Card{Card{HEART, "10"}, Card{HEART, "9"}}
+	s.skat = []Card{{HEART, "10"}, {HEART, "9"}}
 	s.trump = HEART
 	s.trick = []Card{}
 
 	notPlayedYet := []Card{
-		Card{CLUBS, "10"},
-		Card{CLUBS, "A"},
-		Card{CLUBS, "8"},
+		{CLUBS, "10"},
+		{CLUBS, "A"},
+		{CLUBS, "8"},
 
-		Card{CARO, "10"},
+		{CARO, "10"},
 		//
-		Card{HEART, "D"},
-		Card{HEART, "A"},
-		Card{HEART, "K"},
-		Card{HEART, "J"},
+		{HEART, "D"},
+		{HEART, "A"},
+		{HEART, "K"},
+		{HEART, "J"},
 	}
 
 	s.cardsPlayed = makeDeck()
